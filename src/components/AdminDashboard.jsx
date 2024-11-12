@@ -76,7 +76,7 @@ const AdminDashboard = () => {
       created_at: selectedEvent.created_at,
     });
 
-    const response = await fetch(`${backendUrl}/api/event/${selectedEvent.slug}`, {
+    const response = await fetch(`${backendUrl}/api/admin/event/${selectedEvent.slug}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ const AdminDashboard = () => {
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    const response = await fetch(`${backendUrl}/api/create_event`, {
+    const response = await fetch(`${backendUrl}/api/admin/create_event`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apiKey': API_KEY },
       body: JSON.stringify({
