@@ -54,6 +54,7 @@ const Login = ({ onLogin }) => {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
+            autoComplete="username"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -64,6 +65,7 @@ const Login = ({ onLogin }) => {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
             type="password"
+            autoComplete="current-password password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

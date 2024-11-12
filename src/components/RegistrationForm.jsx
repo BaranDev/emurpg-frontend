@@ -75,7 +75,8 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
         <div className="mb-4">
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-gray-100 leading-tight focus:outline-none focus:shadow-outline focus:border-yellow-500"
-            type="text"
+            type="number"
+            maxLength={8}
             placeholder="Student ID*"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
@@ -95,7 +96,8 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
         <div className="mb-4">
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-gray-100 leading-tight focus:outline-none focus:shadow-outline focus:border-yellow-500"
-            type="text"
+            type="number"
+            maxLength={15}
             placeholder="Contact Number (OPTIONAL)"
             value={contact}
             onChange={(e) => setContact(e.target.value)}

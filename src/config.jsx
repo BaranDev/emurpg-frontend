@@ -1,6 +1,10 @@
 // config.js
+const DEV = false;
+
+const backendUrl = DEV ? "http://localhost:8000" : "https://api.emurpg.com";
+
 const config = {
-  backendUrl: "https://api.emurpg.com",  // Dev url http://localhost:8000, Prod url https://api.emurpg.com
+  backendUrl: backendUrl,
   DISCORD_LINK: 'https://discord.gg/QFynV24URr',
   WHATSAPP_LINK: 'https://chat.whatsapp.com/IMoi88nhVWDDU5lS65dgLL',
   INSTAGRAM_LINK: 'https://www.instagram.com/emurpgclub/',

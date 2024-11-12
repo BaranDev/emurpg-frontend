@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import TablesPage from './pages/TablesPage';
 import TableDetailPage from './pages/TableDetailPage';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
@@ -55,7 +54,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/tables" element={<TablesPage />} />
           <Route path="/table/:slug" element={<TableDetailPage />} />
           <Route 
             path="/admin" 
