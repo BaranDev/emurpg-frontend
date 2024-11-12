@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import config from '../config';
 
 const AdminDashboard = () => {
-  const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [selectedTable, setSelectedTable] = useState(null);
   const [updateData, setUpdateData] = useState({ playerQuota: '', totalJoined: '', gameMaster: '', gameName: '' });
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isPlayersModalOpen, setIsPlayersModalOpen] = useState(false);
   const [isEditingTableModalOpen, setIsEditingTableModalOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState({ game_name: '', game_master: '', player_quota: '' });
+  const [newTable, setnewTable] = useState({ game_name: '', game_master: '', player_quota: '' });
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [newPlayer, setNewPlayer] = useState({ name: '', student_id: '', table_id: '', seat_id: '', contact: '' });
@@ -17,21 +17,21 @@ const AdminDashboard = () => {
   const API_KEY = localStorage.getItem("apiKey");
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      console.log('Fetching events with API key:',  API_KEY);
-      const response = await fetch(`${backendUrl}/api/admin/events`, {
+    const fetchTables = async () => {
+      console.log('Fetching tables with API key:',  API_KEY);
+      const response = await fetch(`${backendUrl}/api/admin/tables`, {
         headers: {
           "Content-Type": "application/json",
           "apiKey": API_KEY,
         },
       });
       const data = await response.json();
-      setEvents(data);
+      setTables(data);
     };
 
     const fetchPlayers = async () => {
-      if (selectedEvent) {
-        const response = await fetch(`${backendUrl}/api/admin/get_players/${selectedEvent.slug}`, {
+      if (selectedTable) {
+        const response = await fetch(`${backendUrl}/api/admin/get_players/${selectedTable.slug}`, {
           headers: {
             "Content-Type": "application/json",
             "apiKey": API_KEY,
@@ -44,60 +44,60 @@ const AdminDashboard = () => {
       }
     };
 
-    fetchEvents();
+    fetchTables();
     fetchPlayers();
 
-    const eventsIntervalId = setInterval(fetchEvents, 3000);
-    const playersIntervalId = setInterval(fetchPlayers, 3000);
+    const tablesIntervalId = setInterval(fetchTables, 5000);
+    const playersIntervalId = setInterval(fetchPlayers, 5000);
 
     return () => {
-      clearInterval(eventsIntervalId);
+      clearInterval(tablesIntervalId);
       clearInterval(playersIntervalId);
     };
-  }, [backendUrl, API_KEY, selectedEvent]);
+  }, [backendUrl, API_KEY, selectedTable]);
 
-  const handleEventSelect = (event) => {
-    setSelectedEvent(event);
+  const handleTableSelect = (table) => {
+    setSelectedTable(table);
     setIsEditingTableModalOpen(true);
-    setUpdateData({ playerQuota: event.player_quota, totalJoined: event.total_joined_players, gameMaster: event.game_master, gameName: event.game_name });
+    setUpdateData({ playerQuota: table.player_quota, totalJoined: table.total_joined_players, gameMaster: table.game_master, gameName: table.game_name });
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    if (!selectedEvent) return;
+    if (!selectedTable) return;
     
-    const updated_event = JSON.stringify({
+    const updated_table = JSON.stringify({
       game_name: updateData.gameName,
       game_master: updateData.gameMaster,
       player_quota: updateData.playerQuota,
       total_joined_players: updateData.totalJoined,
-      joined_players: selectedEvent.joined_players,
-      slug: selectedEvent.slug,
-      created_at: selectedEvent.created_at,
+      joined_players: selectedTable.joined_players,
+      slug: selectedTable.slug,
+      created_at: selectedTable.created_at,
     });
 
-    const response = await fetch(`${backendUrl}/api/admin/event/${selectedEvent.slug}`, {
+    const response = await fetch(`${backendUrl}/api/admin/table/${selectedTable.slug}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apiKey': API_KEY,
       },
-      body: updated_event,
+      body: updated_table,
     });
 
     if (response.ok) {
-      alert('Event updated successfully!');
-      setSelectedEvent(null);
-      const newEventsResponse = await fetch(`${backendUrl}/api/events`);
-      const newEventsData = await newEventsResponse.json();
-      setEvents(newEventsData);
+      alert('Table updated successfully!');
+      setSelectedTable(null);
+      const newTablesResponse = await fetch(`${backendUrl}/api/tables`);
+      const newTablesData = await newTablesResponse.json();
+      setTables(newTablesData);
     } else {
-      alert('Failed to update event.');
+      alert('Failed to update table.');
     }
   };
 
   const handleDelete = async (slug) => {
-    const response = await fetch(`${backendUrl}/api/admin/event/${slug}`, {
+    const response = await fetch(`${backendUrl}/api/admin/table/${slug}`, {
       method: 'DELETE',
       headers: {
         'apiKey': API_KEY,
@@ -105,35 +105,35 @@ const AdminDashboard = () => {
     });
 
     if (response.ok) {
-      alert('Event deleted successfully!');
-      const newEventsResponse = await fetch(`${backendUrl}/api/events`);
-      const newEventsData = await newEventsResponse.json();
-      setEvents(newEventsData);
+      alert('Table deleted successfully!');
+      const newTablesResponse = await fetch(`${backendUrl}/api/tables`);
+      const newTablesData = await newTablesResponse.json();
+      setTables(newTablesData);
     } else {
-      alert('Failed to delete event.');
+      alert('Failed to delete table.');
     }
   };
 
   const handleGenerateTableImage = async () => {
     setIsGeneratingTable(true);
     try {
-      // Convert events data to the required format
-      const formattedData = events.map(event => ({
-        name: event.game_master,
+      // Convert tables data to the required format
+      const formattedData = tables.map(table => ({
+        name: table.game_master,
         is_manager: 1,
         manager_name: "",
-        game_played: event.game_name,
-        players: event.joined_players.map(player => ({
+        game_played: table.game_name,
+        players: table.joined_players.map(player => ({
           name: player.name,
           is_manager: 0,
-          manager_name: event.game_master,
+          manager_name: table.game_master,
           game_played: ""
         }))
       })).flat();
 
       // Create CSV content
       const csvContent = generateCSVContent(formattedData);
-      const csvFile = new File([csvContent], "events.csv", { type: "text/csv" });
+      const csvFile = new File([csvContent], "tables.csv", { type: "text/csv" });
 
       const formData = new FormData();
       formData.append("file", csvFile);
@@ -199,26 +199,26 @@ const AdminDashboard = () => {
   };
 
   const handleDownloadCSV = () => {
-    const csvContent = convertToCSV(events);
-    downloadCSV(csvContent, 'events.csv');
+    const csvContent = convertToCSV(tables);
+    downloadCSV(csvContent, 'tables.csv');
   };
 
   const convertToCSV = (data) => {
     const headers = "isim,yonetici_mi,birlikte_oynadigi_yonetici,oynattigi_oyun\n";
     const players = [];
-    data.forEach((event) => {
+    data.forEach((table) => {
       players.push({
-        name: event.game_master,
+        name: table.game_master,
         isGameMaster: 1,
         gameMaster: "",
-        gameName: event.game_name,
+        gameName: table.game_name,
       });
 
-      event.joined_players.forEach((player) => {
+      table.joined_players.forEach((player) => {
         players.push({
           name: player.name,
           isGameMaster: 0,
-          gameMaster: event.game_master,
+          gameMaster: table.game_master,
           gameName: "",
         });
       });
@@ -243,15 +243,15 @@ const AdminDashboard = () => {
     document.body.removeChild(link);
   };
 
-  const handleCreateEvent = async (e) => {
+  const handleCreateTable = async (e) => {
     e.preventDefault();
-    const response = await fetch(`${backendUrl}/api/admin/create_event`, {
+    const response = await fetch(`${backendUrl}/api/admin/create_table`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apiKey': API_KEY },
       body: JSON.stringify({
-        game_name: newEvent.game_name,
-        game_master: newEvent.game_master,
-        player_quota: parseInt(newEvent.player_quota),
+        game_name: newTable.game_name,
+        game_master: newTable.game_master,
+        player_quota: parseInt(newTable.player_quota),
         total_joined_players: 0,
         joined_players: [],
         created_at: new Date(),
@@ -259,14 +259,14 @@ const AdminDashboard = () => {
     });
 
     if (response.ok) {
-      alert('Event created successfully!');
+      alert('Table created successfully!');
       setIsCreateModalOpen(false);
-      setNewEvent({ game_name: '', game_master: '', player_quota: '' });
-      const updatedEventsResponse = await fetch(`${backendUrl}/api/events`);
-      const updatedEvents = await updatedEventsResponse.json();
-      setEvents(updatedEvents);
+      setnewTable({ game_name: '', game_master: '', player_quota: '' });
+      const updatedTablesResponse = await fetch(`${backendUrl}/api/tables`);
+      const updatedTables = await updatedTablesResponse.json();
+      setTables(updatedTables);
     } else {
-      alert('Failed to create event.');
+      alert('Failed to create table.');
     }
   };
 
@@ -287,7 +287,7 @@ const AdminDashboard = () => {
 
   const handleAddPlayer = async (e) => {
     e.preventDefault();
-    const response = await fetch(`${backendUrl}/api/admin/add_player/${selectedEvent.slug}`, {
+    const response = await fetch(`${backendUrl}/api/admin/add_player/${selectedTable.slug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apiKey': API_KEY },
       body: JSON.stringify(newPlayer),
@@ -296,7 +296,7 @@ const AdminDashboard = () => {
     if (response.ok) {
       alert('Player added successfully!');
       setNewPlayer({ name: '', student_id: '', table_id: '', seat_id: '', contact: '' });
-      handleShowPlayers(selectedEvent.slug);
+      handleShowPlayers(selectedTable.slug);
     } else {
       alert('Failed to add player.');
     }
@@ -304,7 +304,7 @@ const AdminDashboard = () => {
 
   const handleUpdatePlayer = async (e) => {
     e.preventDefault();
-    const response = await fetch(`${backendUrl}/api/admin/update_player/${selectedEvent.slug}/${selectedPlayer.student_id}`, {
+    const response = await fetch(`${backendUrl}/api/admin/update_player/${selectedTable.slug}/${selectedPlayer.student_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -316,14 +316,14 @@ const AdminDashboard = () => {
     if (response.ok) {
       alert('Player updated successfully!');
       setSelectedPlayer(null);
-      handleShowPlayers(selectedEvent.slug);
+      handleShowPlayers(selectedTable.slug);
     } else {
       alert('Failed to update player.');
     }
   };
 
   const handleDeletePlayer = async (studentId) => {
-    const response = await fetch(`${backendUrl}/api/admin/delete_player/${selectedEvent.slug}/${studentId}`, {
+    const response = await fetch(`${backendUrl}/api/admin/delete_player/${selectedTable.slug}/${studentId}`, {
       method: 'DELETE',
       headers: {
         'apiKey': API_KEY,
@@ -332,7 +332,7 @@ const AdminDashboard = () => {
 
     if (response.ok) {
       alert('Player deleted successfully!');
-      handleShowPlayers(selectedEvent.slug);
+      handleShowPlayers(selectedTable.slug);
     } else {
       alert('Failed to delete player.');
     }
@@ -357,30 +357,30 @@ const AdminDashboard = () => {
       </button>
       <h1 className="sm:text-2xl text-base text-center font-bold text-yellow-500 mb-4 py-4 w-screen justify-center items-center ">Admin Dashboard</h1>
 
-      <div className="event-list grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mx-auto w-screen px-10">
-        {events.map(event => (
-          <div key={event.slug} className="event-item border p-4  mb-2">
-            <h2 className='py-1'>{event.game_name}</h2>
-            <p className='text-red-900 text-xs py-1'>ID: {event.slug}</p>
-            <p>Game Master: {event.game_master}</p>
-            <p>Player Quota: {event.player_quota}</p>
-            <p>Total Joined Players: {event.total_joined_players}</p>
+      <div className="table-list grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mx-auto w-screen px-10">
+        {tables.map(table => (
+          <div key={table.slug} className="table-item border p-4  mb-2">
+            <h2 className='py-1'>{table.game_name}</h2>
+            <p className='text-red-900 text-xs py-1'>ID: {table.slug}</p>
+            <p>Game Master: {table.game_master}</p>
+            <p>Player Quota: {table.player_quota}</p>
+            <p>Total Joined Players: {table.total_joined_players}</p>
             <button
-              onClick={() => handleEventSelect(event)}
+              onClick={() => handleTableSelect(table)}
               className="bg-yellow-600 text-white px-2 py-1 rounded mr-2"
             >
               Edit
             </button>
             <button
-              onClick={() => handleDelete(event.slug)}
+              onClick={() => handleDelete(table.slug)}
               className="bg-red-600 text-white px-2 py-1 rounded mr-2"
             >
               Delete
             </button>
             <button
               onClick={() => {
-                setSelectedEvent(event);
-                handleShowPlayers(event.slug);
+                setSelectedTable(table);
+                handleShowPlayers(table.slug);
               }}
               className="bg-blue-600 text-white px-2 py-1 rounded"
             >
@@ -390,17 +390,17 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      {(selectedEvent && isEditingTableModalOpen) && (
+      {(selectedTable && isEditingTableModalOpen) && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-black bg-opacity-75 rounded-lg p-8 w-96 relative">
             <button
-              onClick={() => setSelectedEvent(null)}
+              onClick={() => setSelectedTable(null)}
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-xl"
             >
               &times;
             </button>
             <h2 className="text-xl py-2 font-bold text-yellow-500 mb-4">
-              Update Event: {selectedEvent.game_name}
+              Update Table: {selectedTable.game_name}
             </h2>
             <form onSubmit={handleUpdate} className="update-form">
               <div className="mb-4">
@@ -442,7 +442,7 @@ const AdminDashboard = () => {
                 />
               </div>
               <button type="submit" className="bg-yellow-600 text-white px-4 py-2 rounded mt-2 w-full">
-                Update Event
+                Update Table
               </button>
             </form>
           </div>
@@ -458,14 +458,14 @@ const AdminDashboard = () => {
             >
               &times;
             </button>
-            <h2 className="text-lg font-bold text-yellow-500 mb-4">Create New Event</h2>
-            <form onSubmit={handleCreateEvent}>
+            <h2 className="text-lg font-bold text-yellow-500 mb-4">Create New Table</h2>
+            <form onSubmit={handleCreateTable}>
               <div className="mb-4">
                 <label>Game Name:</label>
                 <input
                   type="text"
-                  value={newEvent.game_name}
-                  onChange={(e) => setNewEvent({ ...newEvent, game_name: e.target.value })}
+                  value={newTable.game_name}
+                  onChange={(e) => setnewTable({ ...newTable, game_name: e.target.value })}
                   className="border p-2 rounded w-full"
                   required
                 />
@@ -474,8 +474,8 @@ const AdminDashboard = () => {
                 <label>Game Master:</label>
                 <input
                   type="text"
-                  value={newEvent.game_master}
-                  onChange={(e) => setNewEvent({ ...newEvent, game_master: e.target.value })}
+                  value={newTable.game_master}
+                  onChange={(e) => setnewTable({ ...newTable, game_master: e.target.value })}
                   className="border p-2 rounded w-full"
                   required
                 />
@@ -484,14 +484,14 @@ const AdminDashboard = () => {
                 <label>Player Quota:</label>
                 <input
                   type="number"
-                  value={newEvent.player_quota}
-                  onChange={(e) => setNewEvent({ ...newEvent, player_quota: e.target.value })}
+                  value={newTable.player_quota}
+                  onChange={(e) => setnewTable({ ...newTable, player_quota: e.target.value })}
                   className="border p-2 rounded w-full"
                   required
                 />
               </div>
               <button type="submit" className="bg-yellow-600 text-white px-4 py-2 rounded mt-2 w-full">
-                Create Event
+                Create Table
               </button>
             </form>
           </div>
@@ -508,7 +508,7 @@ const AdminDashboard = () => {
             >
               &times;
             </button>
-            <h2 className="text-lg font-bold text-yellow-500 mb-4">Players for {selectedEvent.game_name}</h2>
+            <h2 className="text-lg font-bold text-yellow-500 mb-4">Players for {selectedTable.game_name}</h2>
             
             <div className="mb-4">
               <h3 className="text-md font-bold text-yellow-500 mb-2">Add New Player</h3>
@@ -532,7 +532,7 @@ const AdminDashboard = () => {
                 <input
                   type="text"
                   placeholder="Table ID"
-                  value={newPlayer.table_id=selectedEvent.slug}
+                  value={newPlayer.table_id=selectedTable.slug}
                   onChange={(e) => setNewPlayer({ ...newPlayer, table_id: e.target.value })}
                   className="border p-2 rounded"
                   required
@@ -671,7 +671,7 @@ const AdminDashboard = () => {
           onClick={() => setIsCreateModalOpen(true)}
           className="bg-green-500 text-white px-5 py-2 rounded mt-4 mx-auto"
         >
-          Create New Event
+          Create New Table
         </button>
         <button
           onClick={handleGenerateTableImage}

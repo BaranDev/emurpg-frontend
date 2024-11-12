@@ -3,14 +3,14 @@ import { Table } from 'antd';
 import { Link } from 'react-router-dom';
 import config from '../config';
 
-const EventTable = () => {
-  const [events, setEvents] = useState([]);
+const TablesTable = () => {
+  const [tables, setTables] = useState([]);
   const backendUrl = config.backendUrl;
 
   useEffect(() => {
-    fetch(`${backendUrl}/api/events`)
+    fetch(`${backendUrl}/api/tables`)
       .then((res) => res.json())
-      .then((data) => setEvents(data));
+      .then((data) => setTables(data));
   }, []);
 
   const columns = [
@@ -38,8 +38,8 @@ const EventTable = () => {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
-        <Link to={`${backendUrl}/event/${record.slug}`} className="text-yellow-500 hover:text-yellow-400">
-          View Event
+        <Link to={`${backendUrl}/table/${record.slug}`} className="text-yellow-500 hover:text-yellow-400">
+          View Table
         </Link>
       ),
     },
@@ -49,9 +49,9 @@ const EventTable = () => {
     <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center py-8">
       <div className="container mx-auto px-4">
         <div className="bg-gray-800 rounded-lg border-4 border-yellow-600 shadow-2xl p-8">
-          <h1 className="text-4xl font-bold text-center text-yellow-500 mb-6">Events Table</h1>
+          <h1 className="text-4xl font-bold text-center text-yellow-500 mb-6">Tables</h1>
           <Table
-            dataSource={events}
+            dataSource={tables}
             columns={columns}
             rowClassName="bg-gray-700 border-b border-gray-600 hover:bg-gray-600 transition-colors duration-200"
             pagination={{ pageSize: 5 }}
@@ -63,4 +63,4 @@ const EventTable = () => {
   );
 };
 
-export default EventTable;
+export default TablesTable;

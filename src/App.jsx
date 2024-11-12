@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import EventsPage from './pages/EventsPage';
-import EventDetailPage from './pages/EventDetailPage';
+import TablesPage from './pages/TablesPage';
+import TableDetailPage from './pages/TableDetailPage';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import AdminDashboard from './components/AdminDashboard';
@@ -55,8 +55,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/event/:slug" element={<EventDetailPage />} />
+          <Route path="/tables" element={<TablesPage />} />
+          <Route path="/table/:slug" element={<TableDetailPage />} />
           <Route 
             path="/admin" 
             element={

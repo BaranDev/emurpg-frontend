@@ -24,9 +24,8 @@ const Login = ({ onLogin }) => {
         headers: {
           'Content-Type': 'application/json',
           'apiKey': apiKey,
-          
         },
-        body: JSON.stringify({ username, hashedPassword }),
+        body: JSON.stringify({ username, hashedPassword: hashedPassword }),
       });
 
       const result = await response.json();
