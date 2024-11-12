@@ -1,5 +1,5 @@
 import React from 'react';
-import EventList from '../components/EventList';
+import TableList from '../components/TableList';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
@@ -15,7 +15,7 @@ const HomePage = () => {
             </h1>
       
            
-            <EventList />
+            <TableList />
           </div>
         </div>
       </main>

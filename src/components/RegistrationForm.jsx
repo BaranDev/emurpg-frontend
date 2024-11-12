@@ -13,7 +13,7 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-const RegistrationForm = ({ eventSlug, seatId, tableId }) => {
+const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
   const [studentId, setStudentId] = useState('');
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
@@ -46,7 +46,7 @@ const RegistrationForm = ({ eventSlug, seatId, tableId }) => {
       return;
     }
   
-    const response = await fetch(`${backendUrl}/api/register/${eventSlug}`, {
+    const response = await fetch(`${backendUrl}/api/register/${tableSlug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
