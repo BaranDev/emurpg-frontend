@@ -234,7 +234,7 @@ useEffect(() => {
 
       const csvFile = new File([csvContent], "tables.csv", { type: "text/csv" });
       const formData = new FormData();
-      formData.append("file", csvFile);
+      formData.append("file", csvFile, "tables.csv");
 
       const response = await fetch(`${backendUrl}/api/admin/generate-tables`, {
         method: "POST",
@@ -246,7 +246,7 @@ useEffect(() => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to generate table layout');
+        throw new Error(JSON.stringify(errorData.detail) || 'Failed to generate table layout');
       }
 
       const blob = await response.blob();
@@ -270,41 +270,65 @@ useEffect(() => {
 
   const generateCSVContent = (data) => {
     try {
-      // Validate input data
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error('Invalid data format for CSV generation');
       }
-
-      const headers = ["isim", "yonetici_mi", "birlikte_oynadigi_yonetici", "oynattigi_oyun"];
-      const csvRows = [headers];
-
-      data.forEach(item => {
-        // Validate each row data
-        const row = [
-          (item.name || '').toString(),
-          (item.is_manager || 0).toString(),
-          (item.manager_name || '').toString(),
-          (item.game_played || '').toString()
-        ];
-        csvRows.push(row);
+  
+      const csvRows = [
+        ["isim", "yonetici_mi", "birlikte_oynadigi_yonetici", "oynattigi_oyun", "player_quota"]
+      ];
+  
+      data.forEach(table => {
+        // Add game master entry
+        csvRows.push([
+          table.game_master,
+          "1",
+          "",
+          table.game_name,
+          table.player_quota
+        ]);
+  
+        // Add players
+        if (Array.isArray(table.joined_players)) {
+          table.joined_players.forEach(player => {
+            csvRows.push([
+              player.name,
+              "0",
+              table.game_master,
+              "",
+              ""
+            ]);
+          });
+        }
       });
-
-      return csvRows.map(row => row.join(",")).join("\n");
+  
+      return csvRows.map(row => 
+        row.map(cell => 
+          `"${(cell || '').toString().replace(/"/g, '""')}"`
+        ).join(",")
+      ).join("\n");
     } catch (error) {
       console.error('Error generating CSV content:', error);
       return null;
     }
   };
 
-  const handleDownloadCSV = () => {
-    const csvContent = convertToCSV(tables);
+  const handleDownloadCSV = async () => {
+    let response = await fetch(`${backendUrl}/api/admin/tables`, {
+      method: "GET",
+      headers: {
+        "apiKey": API_KEY
+      }
+    });
+    let l_tables = await response.json();
+    const csvContent = convertToCSV(l_tables);
     downloadCSV(csvContent, 'tables.csv');
   };
 
-  const convertToCSV = (data) => {
+  const convertToCSV = (l_tables) => {
     const headers = "isim,yonetici_mi,birlikte_oynadigi_yonetici,oynattigi_oyun\n";
     const players = [];
-    data.forEach((table) => {
+    l_tables.forEach((table) => {
       players.push({
         name: table.game_master,
         isGameMaster: 1,
