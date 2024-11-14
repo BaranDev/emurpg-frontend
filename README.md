@@ -1,4 +1,4 @@
-# EMU RPG API
+# EMU RPG WEBSITE
 
 > Website is hosted on https://emurpg.com
 
