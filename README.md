@@ -1,4 +1,4 @@
-# 🐲EMU RPG WEB🐲
+# 🐲EMURPG WEB🐲
 
 > Website is hosted on https://emurpg.com
 
