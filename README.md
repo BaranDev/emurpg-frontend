@@ -1,6 +1,6 @@
 # EMU RPG API
 
-> Website is hosted on `https://emurpg.com`
+> Website is hosted on https://emurpg.com
 
 ## Backend Integration
 
