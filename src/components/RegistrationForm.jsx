@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import config from '../config';
+import React, { useState } from "react";
+import config from "../config";
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -14,12 +14,12 @@ const Modal = ({ isOpen, onClose, children }) => {
 };
 
 const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
-  const [studentId, setStudentId] = useState('');
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
+  const [studentId, setStudentId] = useState("");
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [ruleLanguage, setRuleLanguage] = useState('EN');
+  const [ruleLanguage, setRuleLanguage] = useState("EN");
   const backendUrl = config.backendUrl;
 
   const rules = {
@@ -28,50 +28,54 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
       "2. Respect all other participants and staff members.",
       "3. Follow the event schedule and guidelines.",
       "4. No cheating or unfair play is allowed.",
-      "5. Have fun and embrace the spirit of role-playing!"
+      "5. Have fun and embrace the spirit of role-playing!",
     ],
     TR: [
       "1. Katılımcılar kayıtlı öğrenci olmalıdır.",
       "2. Tüm diğer katılımcılara ve personele saygılı olun.",
       "3. Etkinlik programını ve yönergelerini takip edin.",
       "4. Hile yapmak veya haksız oyun oynamak yasaktır.",
-      "5. Eğlenin ve rol yapma ruhunu benimseyin!"
-    ]
+      "5. Eğlenin!",
+    ],
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!termsAccepted) {
-      alert('You must accept the EMURPG Event Join Rules.');
+      alert("You must accept the EMURPG Event Join Rules.");
       return;
     }
-  
+
     const response = await fetch(`${backendUrl}/api/register/${tableSlug}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        student_id: studentId, 
-        name: name, 
-        table_id: tableId, 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        student_id: studentId,
+        name: name,
+        table_id: tableId,
         seat_id: parseInt(seatId, 10),
-        contact: contact
+        contact: contact,
       }),
     });
-  
+
     const result = await response.json();
     if (!response.ok) {
-      alert(result.detail || 'An error occurred during registration.');
+      alert(result.detail || "An error occurred during registration.");
     } else {
       alert(result.message);
     }
   };
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const toggleRuleLanguage = () => setRuleLanguage(ruleLanguage === 'EN' ? 'TR' : 'EN');
+  const toggleRuleLanguage = () =>
+    setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN");
 
   return (
     <>
-      <form onSubmit={handleRegister} className="max-w-md mx-auto bg-gray-800 shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 border-2 border-yellow-600">
+      <form
+        onSubmit={handleRegister}
+        className="max-w-md mx-auto bg-gray-800 shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 border-2 border-yellow-600"
+      >
         <div className="mb-4">
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-gray-100 leading-tight focus:outline-none focus:shadow-outline focus:border-yellow-500"
@@ -112,7 +116,7 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
               onChange={() => setTermsAccepted(!termsAccepted)}
             />
             <span className="ml-2 text-sm text-gray-300 items-center justify-center text-center py-1">
-              I accept the{' '}
+              I accept the{" "}
               <span
                 onClick={toggleModal}
                 className="text-yellow-500 text-sm items-center justify-center hover:text-yellow-400 underline cursor-pointer"
@@ -134,17 +138,21 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
 
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-yellow-500 text-xl font-bold">EMURPG Event Join Rules</h2>
+          <h2 className="text-yellow-500 text-xl font-bold">
+            EMURPG Event Join Rules
+          </h2>
           <button
             onClick={toggleRuleLanguage}
             className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
           >
-            {ruleLanguage === 'EN' ? 'TR' : 'EN'}
+            {ruleLanguage === "EN" ? "TR" : "EN"}
           </button>
         </div>
         <div className="text-gray-300">
           {rules[ruleLanguage].map((rule, index) => (
-            <p key={index} className="mb-2">{rule}</p>
+            <p key={index} className="mb-2">
+              {rule}
+            </p>
           ))}
         </div>
         <button

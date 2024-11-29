@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import TableDetailPage from './pages/TableDetailPage';
-import { I18nextProvider } from 'react-i18next';
-import i18n from './i18n';
-import AdminDashboard from './components/AdminDashboard';
-import Login from './components/Login';
+import React, { useState, useEffect } from "react";import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import TableDetailPage from "./pages/TableDetailPage";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
+import AdminDashboard from "./components/AdminDashboard";
+import Login from "./components/Login";
+import NotFound from "./components/NotFound";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,8 +16,8 @@ function App() {
   }, []);
 
   const checkLoginStatus = () => {
-    const loginData = localStorage.getItem('login');
-    const apiKeyData = localStorage.getItem('apiKey');
+    const loginData = localStorage.getItem("login");
+    const apiKeyData = localStorage.getItem("apiKey");
 
     if (loginData && apiKeyData) {
       const { expirationTime } = JSON.parse(loginData);
@@ -27,8 +27,8 @@ function App() {
         setIsLoggedIn(true);
       } else {
         // Session expired, clear localStorage
-        localStorage.removeItem('login');
-        localStorage.removeItem('apiKey');
+        localStorage.removeItem("login");
+        localStorage.removeItem("apiKey");
       }
     }
 
@@ -40,8 +40,8 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('login');
-    localStorage.removeItem('apiKey');
+    localStorage.removeItem("login");
+    localStorage.removeItem("apiKey");
     setIsLoggedIn(false);
   };
 
@@ -55,14 +55,17 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/table/:slug" element={<TableDetailPage />} />
-          <Route 
-            path="/admin" 
+          <Route
+            path="/admin"
             element={
-              isLoggedIn 
-                ? <AdminDashboard onLogout={handleLogout} /> 
-                : <Login onLogin={handleLogin} />
-            } 
+              isLoggedIn ? (
+                <AdminDashboard onLogout={handleLogout} />
+              ) : (
+                <Login onLogin={handleLogin} />
+              )
+            }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </I18nextProvider>
