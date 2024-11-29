@@ -64,6 +64,41 @@ const EventList = () => {
       }
     };
   }, []);
+
+  if (events.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold text-center text-yellow-500 mb-4 md:mb-8 font-medieval">
+          {selectedEvent ? selectedEvent.name : "EMU RPG Events"}
+        </h1>
+        <p className="text-lg text-gray-300 mb-4">
+          There are no ongoing events, stay tuned for our next events!
+        </p>
+        <p className="text-lg text-gray-300 mb-4">
+          Make sure to join our{" "}
+          <a
+            href={config.WHATSAPP_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-500 hover:text-green-400 underline"
+          >
+            WhatsApp
+          </a>{" "}
+          and our{" "}
+          <a
+            href={config.DISCORD_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-500 hover:text-indigo-400 underline"
+          >
+            Discord
+          </a>
+          !
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       {(selectedEvent && (
