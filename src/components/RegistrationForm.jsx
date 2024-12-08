@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import config from "../config";
+import React, { useState } from "react";import config from "../config";
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -42,7 +41,7 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!termsAccepted) {
-      alert("You must accept the EMURPG Event Join Rules.");
+      alert("You must accept the EMURPG Event Rules and Privacy Policy.");
       return;
     }
 
@@ -116,7 +115,16 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
               onChange={() => setTermsAccepted(!termsAccepted)}
             />
             <span className="ml-2 text-sm text-gray-300 items-center justify-center text-center py-1">
-              I accept the{" "}
+              I accept the and am aware of the Privacy Policy
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-yellow-500 hover:text-yellow-400 underline cursor-pointer mx-1"
+              >
+                Privacy Policy
+              </a>
+              and the{" "}
               <span
                 onClick={toggleModal}
                 className="text-yellow-500 text-sm items-center justify-center hover:text-yellow-400 underline cursor-pointer"

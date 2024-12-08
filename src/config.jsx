@@ -1,5 +1,5 @@
 // config.js
-const DEV = false;
+const DEV = true;
 
 const backendUrl = DEV ? "http://localhost:8000" : "https://api.emurpg.com";
 

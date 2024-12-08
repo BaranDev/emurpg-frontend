@@ -140,7 +140,7 @@ const EventList = () => {
                   }
                 >
                   {event.available_tables > 0
-                    ? `Available Tables/Seats: ${event.available_tables}/${event.available_seats}`
+                    ? `Available Seats: ${event.available_seats}`
                     : "Event is full"}
                 </span>
                 <span>

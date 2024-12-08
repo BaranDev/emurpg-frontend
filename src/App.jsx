@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
 import TableDetailPage from "./pages/TableDetailPage";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import AdminDashboard from "./components/AdminDashboard";
 import Login from "./components/Login";
+import EventsPage from "./pages/EventsPage";
 import NotFound from "./components/NotFound";
+import Privacy from "./components/Privacy";
+import HomePage from "./pages/HomePage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,6 +56,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/events" element={<EventsPage />} />
           <Route path="/table/:slug" element={<TableDetailPage />} />
           <Route
             path="/admin"
@@ -66,6 +69,7 @@ function App() {
             }
           />
           <Route path="*" element={<NotFound />} />
+          <Route path="/privacy" element={<Privacy />} />
         </Routes>
       </Router>
     </I18nextProvider>
