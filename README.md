@@ -1,6 +1,6 @@
 # 🐲EMURPG WEB🐲
 
-> Website is hosted on https://emurpg.com
+> Website is hosted on https://www.emurpg.com
 
 ## Backend Integration
 
