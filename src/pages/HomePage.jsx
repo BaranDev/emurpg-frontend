@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";import {
+import React, { useState, useEffect } from "react";
+import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
@@ -252,13 +253,13 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
-                title=""
+                title="Game Master"
                 description=""
                 image={photo_ayberk}
               />
               <GameMasterCard
                 name="Çağan Meriç"
-                title=""
+                title="Game Master"
                 description=""
                 image={photo_cagan}
               />
@@ -270,13 +271,13 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Kerem Ata Bakim"
-                title=""
-                description=""
+                title="Game Master"
+                description="Someone who lives his life differently"
                 image={photo_kerem}
               />
               <GameMasterCard
                 name="Yunus Bahadır"
-                title=""
+                title="Game Master"
                 description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
                 image={photo_yunus}
               />
