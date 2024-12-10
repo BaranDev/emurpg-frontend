@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useState, useEffect } from "react";import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import TableDetailPage from "./pages/TableDetailPage";
 import { I18nextProvider } from "react-i18next";
@@ -9,9 +8,6 @@ import Login from "./components/Login";
 import EventsPage from "./pages/EventsPage";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
-import HomePage from "./pages/HomePage";
-import NotFound from "./components/NotFound";
-
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
