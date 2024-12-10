@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import {
+import React, { useState, useEffect } from "react";import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
@@ -253,13 +252,13 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
-                title="Game Master"
-                description=""
+                title="Master of Cards"
+                description="Always rolls 1"
                 image={photo_ayberk}
               />
               <GameMasterCard
                 name="Çağan Meriç"
-                title="Game Master"
+                title="Game(Fate) Master"
                 description=""
                 image={photo_cagan}
               />
@@ -318,7 +317,9 @@ const HomePage = () => {
               />
             </div>
           </div>
-        </section>}
+        </section>*/}
+
+        {/* Team Photo */}
 
         {/* Join CTA Section */}
         <section className="py-16 bg-gradient-to-b from-gray-800 to-gray-900">
