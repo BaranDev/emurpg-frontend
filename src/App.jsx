@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import TableDetailPage from "./pages/TableDetailPage";
 import { I18nextProvider } from "react-i18next";
