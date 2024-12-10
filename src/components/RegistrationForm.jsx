@@ -1,4 +1,5 @@
-import React, { useState } from "react";import config from "../config";
+import React, { useState } from "react";
+import { config } from "../config";
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;

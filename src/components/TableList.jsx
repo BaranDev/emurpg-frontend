@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import config from "../config";
+import React, { useState, useEffect, useRef } from "react";import { Link } from "react-router-dom";
+import { config } from "../config";
 
 const TableList = ({ eventSlug }) => {
   const [tables, setTables] = useState([]);

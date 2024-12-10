@@ -1,10 +1,24 @@
-import React, { useEffect, useState, useRef } from "react";
-import TableList from "./TableList";
-import config from "../config";
+import React, { useEffect, useState, useRef } from "react";import TableList from "./TableList";
+import { config } from "../config";
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [title, setTitle] = useState("EMU RPG Events");
+
+  // Fallback for unsupported browsers
+  if (!window.fetch || !window.WebSocket) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
+          Browser Not Supported
+        </h1>
+        <p className="text-lg text-gray-300 mb-4">
+          Please use a modern browser like Chrome, Firefox, or Edge for the best
+          experience.
+        </p>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
