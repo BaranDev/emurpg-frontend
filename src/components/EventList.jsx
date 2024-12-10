@@ -3,12 +3,10 @@ import TableList from "./TableList";
 import { config } from "../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
-
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [title, setTitle] = useState("EMU RPG Events");
-
   // Fallback for unsupported browsers
   if (!window.fetch || !window.WebSocket) {
     return (
@@ -28,8 +26,6 @@ const EventList = () => {
       </motion.div>
     );
   }
-
-  
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
       .then((res) => res.json())

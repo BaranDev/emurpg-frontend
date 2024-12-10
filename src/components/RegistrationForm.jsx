@@ -239,7 +239,6 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
           </div>
         </form>
       </div>
-
       {/* Rules Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="flex flex-col">
