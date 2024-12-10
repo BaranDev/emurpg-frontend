@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from "react";
-import {
+import React, { useState, useEffect } from "react";import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
-  FaMapMarkedAlt,
   FaScroll,
   FaBookOpen,
   FaDragon,
-  FaChessRook,
   FaUser,
-  FaQuoteLeft,
-  FaNewspaper,
-  FaEnvelope,
   FaDice,
   FaInstagram,
   FaLinkedin,

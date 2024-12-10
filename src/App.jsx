@@ -9,9 +9,6 @@ import Login from "./components/Login";
 import EventsPage from "./pages/EventsPage";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
-import HomePage from "./pages/HomePage";
-import NotFound from "./components/NotFound";
-
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
