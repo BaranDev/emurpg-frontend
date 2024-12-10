@@ -177,14 +177,14 @@ const HomePage = () => {
             <div className="max-w-4xl mx-auto text-center">
               <p className="text-xl text-gray-300 mb-8">
                 We're not just your average RPG club - we're a community of
-                gamers who love all sorts of adventures! 
-                <br /><br />
-                From epic D&D campaigns
-                to exciting board game nights, we know how to have a fun while
-                rolling dice and telling stories. Whether you're an experienced
-                player or just curious about tabletop gaming, our doors are
-                always open for new friends who want to join in on the fun since
-                2023.
+                gamers who love all sorts of adventures!
+                <br />
+                <br />
+                From epic D&D campaigns to exciting board game nights, we know
+                how to have a fun while rolling dice and telling stories.
+                Whether you're an experienced player or just curious about
+                tabletop gaming, our doors are always open for new friends who
+                want to join in on the fun since 2023.
               </p>
             </div>
           </div>
@@ -252,37 +252,37 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Kaya Acarbay"
-                title="Dungeon Master/"
+                title="Dungeon Master"
                 description=""
                 image={photo_kaya}
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
-                title="Event Architect"
+                title=""
                 description=""
                 image={photo_ayberk}
               />
               <GameMasterCard
                 name="Çağan Meriç"
-                title="Master of Ceremonies"
+                title=""
                 description=""
                 image={photo_cagan}
               />
               <GameMasterCard
                 name="Ata Hunu"
-                title="Master of Ceremonies"
+                title="President / Game Master"
                 description=""
                 image={photo_ata}
               />
               <GameMasterCard
                 name="Kerem Ata Bakim"
-                title="Master of Ceremonies"
+                title=""
                 description=""
                 image={photo_kerem}
               />
               <GameMasterCard
                 name="Yunus Bahadır"
-                title="Master of Ceremonies"
+                title=""
                 description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
                 image={photo_yunus}
               />
@@ -383,17 +383,14 @@ const HomePage = () => {
                   Follow Us
                 </h3>
                 <div className="flex space-x-4 text-center items-center justify-center">
-                  <SocialIcon
-                    icon={<FaDiscord />}
-                    onClick={() => window.open(config.DISCORD_LINK, "_blank")}
-                  />
+                  <SocialIcon icon={<FaDiscord />} href={config.DISCORD_LINK} />
                   <SocialIcon
                     icon={<FaInstagram />}
-                    onClick={() => window.open(config.INSTAGRAM_LINK, "_blank")}
+                    href={config.INSTAGRAM_LINK}
                   />
                   <SocialIcon
                     icon={<FaLinkedin />}
-                    onClick={() => window.open(config.LINKEDIN_LINK, "_blank")}
+                    href={config.LINKEDIN_LINK}
                   />
                 </div>
               </div>

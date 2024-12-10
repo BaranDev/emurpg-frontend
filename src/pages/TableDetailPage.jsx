@@ -85,7 +85,7 @@ const TableDetailPage = () => {
     <div className="min-h-screen text-center bg-gray-900 text-gray-100 flex items-center justify-center bg-medieval-pattern relative select-none">
       <button
         className="absolute top-4 left-4 text-yellow-500 hover:text-yellow-300 bg-gray-800 rounded px-3 py-1 transition duration-300"
-        onClick={() => (window.location.href = window.location.origin)}
+        onClick={() => (window.location.href = "/events")}
       >
         Back
       </button>
