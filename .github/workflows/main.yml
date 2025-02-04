@@ -1,0 +1,23 @@
+name: Check Dev Flags
+
+on: 
+  pull_request:
+    branches:
+      - main 
+      
+jobs:
+  check-dev-flags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Check Dev Flags in Frontend
+        run: |
+          if grep -q 'const DEV = true;' src/config.jsx; then
+            echo "❌ DEV flag must be False in src/config.jsx before merging!"
+            exit 1
+          else
+            echo "✅ DEV flag is correctly set in src/config.jsx."
+          fi
