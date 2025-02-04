@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";import {
+import React, { useState, useEffect } from "react";
+import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
@@ -211,14 +212,14 @@ const HomePage = () => {
               transition={{ duration: 0.1 }}
               onClick={rollDice}
               className="text-6xl text-yellow-500 ease-in-out transition-all duration-300 rounded-full p-4 
-    border-2 border-yellow-500/50
-    bg-transparent
-    hover:bg-transparent
-    md:hover:text-yellow-400 
-    md:hover:bg-transparent
-    md:hover:border-yellow-400 
-    md:hover:border-opacity-0 
-    md:hover:shadow-[0_0px_35px_5px_rgba(255,255,153,0.10)]"
+                border-2 border-yellow-500/50
+                bg-transparent
+                hover:bg-transparent
+                md:hover:text-yellow-400 
+                md:hover:bg-transparent
+                md:hover:border-yellow-400 
+                md:hover:border-opacity-0 
+                md:hover:shadow-[0_0px_35px_5px_rgba(255,255,153,0.10)]"
             >
               <FaDiceD20 size={80} />
             </motion.button>
@@ -239,16 +240,16 @@ const HomePage = () => {
             <SectionTitle icon={FaUser}>Meet the Game Masters</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <GameMasterCard
-                name="Cevdet Baran Oral"
-                title="Dungeon Master / Activity Manager / Software Developer"
-                description="El. Psy. Kongroo."
-                image={photo_baran}
+                name="Ata Hunu"
+                title="President | Game Master"
+                description=""
+                image={photo_ata}
               />
               <GameMasterCard
-                name="Kaya Acarbay"
-                title="Dungeon Master"
-                description=""
-                image={photo_kaya}
+                name="Cevdet Baran Oral"
+                title="Dungeon Master | Activity Manager | Software Developer"
+                description="El. Psy. Kongroo."
+                image={photo_baran}
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
@@ -263,12 +264,6 @@ const HomePage = () => {
                 image={photo_cagan}
               />
               <GameMasterCard
-                name="Ata Hunu"
-                title="President / Game Master"
-                description=""
-                image={photo_ata}
-              />
-              <GameMasterCard
                 name="Kerem Ata Bakim"
                 title="Game Master"
                 description="Someone who lives his life differently"
@@ -279,6 +274,12 @@ const HomePage = () => {
                 title="Game Master"
                 description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
                 image={photo_yunus}
+              />
+              <GameMasterCard
+                name="Araklon RPG"
+                title="Dungeon Master | Instructor"
+                description=""
+                image={photo_kaya}
               />
             </div>
           </div>

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { config } from "../config";
-import { 
-  FaDiceD20, 
-  FaCheck, 
-  FaScroll, 
-  FaUser, 
-  FaIdCard, 
+import {
+  FaDiceD20,
+  FaCheck,
+  FaScroll,
+  FaUser,
+  FaIdCard,
   FaPhoneAlt,
   FaShieldAlt,
   FaTimes,
-  FaDharmachakra
+  FaDharmachakra,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -142,7 +142,9 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
+              rotate: [0, 360],
             }}
+            style={{ transformOrigin: "center " }}
             transition={{
               duration: 3,
               repeat: Infinity,
@@ -152,7 +154,9 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
           >
             <FaDharmachakra className="text-6xl text-yellow-500 mx-auto mb-4" />
           </motion.div>
-          <h2 className="text-3xl font-bold text-yellow-500 mb-2">Join the Adventure</h2>
+          <h2 className="text-3xl font-bold text-yellow-500 mb-2">
+            Join the Adventure
+          </h2>
           <p className="text-gray-400">Your quest awaits, brave adventurer!</p>
         </div>
 
@@ -210,8 +214,8 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
                   className="text-yellow-500 hover:text-yellow-400 underline"
                 >
                   Privacy Policy
-                </a>
-                {" "}and the{" "}
+                </a>{" "}
+                and the{" "}
                 <span
                   onClick={() => setIsModalOpen(true)}
                   className="text-yellow-500 hover:text-yellow-400 underline cursor-pointer"
@@ -252,8 +256,8 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
             whileTap={{ scale: 0.98 }}
             onClick={() => setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN")}
             className="w-40 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-            >
-           {ruleLanguage === "EN" ? "TR" : "EN"}
+          >
+            {ruleLanguage === "EN" ? "TR" : "EN"}
           </motion.button>
           <div className="text-gray-300 space-y-4">
             {rules[ruleLanguage].map((rule, index) => (
