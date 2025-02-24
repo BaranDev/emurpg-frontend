@@ -5,7 +5,6 @@ const FireButton = ({
   onClick,
   color1 = "yellow",
   color2 = "orange",
-  sparkcolor = "red",
   textcolor = "white",
   text = "",
 }) => (
@@ -26,7 +25,7 @@ const FireButton = ({
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className={`absolute w-1 h-1 bg-${sparkcolor}-200 rounded-full`}
+            className={`absolute w-1 h-1 bg-red-200 rounded-full`}
             animate={{
               y: [-20, -60],
               x: [0, i % 2 === 0 ? 20 : -20],
