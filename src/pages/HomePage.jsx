@@ -130,6 +130,7 @@ const HomePage = () => {
             <FireButton
               onClick={handleJoinButton_events}
               text="Register for Events"
+              color2="red"
             ></FireButton>
             <br />
             <FireButton
