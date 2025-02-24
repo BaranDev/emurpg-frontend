@@ -125,7 +125,7 @@ By focusing on these elements, the front-end aims to deliver a user-friendly and
 - **Event Notifications**: Implementing a notification system to alert users about upcoming events and important updates.
 - **User Profiles**: Allowing users to create and manage their profiles, including their game history and achievements.
 - **Integration with University Systems**: Integrating with university systems for user authentication and event management.
-- 
+- `You can commit your suggestions here!`
 ### Installation & Setup
 1. Clone the repository.
 2. Install dependencies using `npm install`.
