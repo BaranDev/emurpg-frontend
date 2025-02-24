@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import {
+import React, { useState, useEffect } from "react";import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
@@ -260,7 +259,6 @@ const HomePage = () => {
                   linkedin: "https://www.linkedin.com/in/cevdetbaranoral/",
                   github: "https://github.com/barandev",
                 }}
-                image={photo_baran}
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
