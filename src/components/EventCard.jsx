@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import PropTypes from "prop-types";
+import { motion } from "framer-motion";import PropTypes from "prop-types";
 
 const EventCard = ({ title, date, description, icon: Icon }) => (
   <motion.div
@@ -22,7 +21,7 @@ const EventCard = ({ title, date, description, icon: Icon }) => (
       className="absolute inset-0 border-2 border-yellow-600 rounded-lg opacity-0 group-hover:opacity-100 
       transition-opacity duration-300 shadow-[inset_0_0_20px_rgba(234,179,8,0.1)]"
       initial={false}
-      whileHover={{ scale: 1.03 }}
+      whileHover={{ scale: 1.01 }}
     />
   </motion.div>
 );

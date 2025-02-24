@@ -217,14 +217,14 @@ const HomePage = () => {
               transition={{ duration: 0.1 }}
               onClick={rollDice}
               className="text-6xl text-yellow-500 ease-in-out transition-all duration-300 rounded-full p-4 
-    border-2 border-yellow-500/50
-    bg-transparent
-    hover:bg-transparent
-    md:hover:text-yellow-400 
-    md:hover:bg-transparent
-    md:hover:border-yellow-400 
-    md:hover:border-opacity-0 
-    md:hover:shadow-[0_0px_35px_5px_rgba(255,255,153,0.10)]"
+                border-2 border-yellow-500/50
+                bg-transparent
+                hover:bg-transparent
+                md:hover:text-yellow-400 
+                md:hover:bg-transparent
+                md:hover:border-yellow-400 
+                md:hover:border-opacity-0 
+                md:hover:shadow-[0_0px_35px_5px_rgba(255,255,153,0.10)]"
             >
               <FaDiceD20 size={80} />
             </motion.button>
@@ -252,7 +252,7 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Cevdet Baran Oral"
-                title="Dungeon Master / Activity Manager / Software Developer"
+                title="Dungeon Master | Activity Manager | Software Developer"
                 description="El. Psy. Kongroo."
                 image={photos.photo_baran}
                 socials={{
@@ -260,6 +260,7 @@ const HomePage = () => {
                   linkedin: "https://www.linkedin.com/in/cevdetbaranoral/",
                   github: "https://github.com/barandev",
                 }}
+                image={photo_baran}
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
