@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";import {
+import React, { useState, useEffect } from "react";
+import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
@@ -20,19 +21,11 @@ import {
   SectionTitle,
   EventCard,
   Navbar,
-  Footer,
   InstagramGrid,
   FireButton,
+  MainFooter,
 } from "../components";
-import {
-  photo_ata,
-  photo_ayberk,
-  photo_baran,
-  photo_cagan,
-  photo_kaya,
-  photo_kerem,
-  photo_yunus,
-} from "../assets/member_photos";
+import * as photos from "../assets/member_photos";
 import { config, rpgQuotes } from "../config";
 
 // Background pattern
@@ -74,8 +67,12 @@ const HomePage = () => {
     );
   }
 
-  const handleJoinButton = () => {
+  const handleJoinButton_discord = () => {
     window.open(config.DISCORD_LINK, "_blank");
+  };
+
+  const handleJoinButton_events = () => {
+    window.location.href = "/events";
   };
 
   return (
@@ -131,9 +128,18 @@ const HomePage = () => {
               Crafting Worlds, Rolling Dice, Building Legends
             </motion.p>
 
-            <FireButton onClick={handleJoinButton}>
-              Join the Adventure
-            </FireButton>
+            <FireButton
+              onClick={handleJoinButton_events}
+              text="Register for Events"
+            ></FireButton>
+            <br />
+            <FireButton
+              onClick={handleJoinButton_discord}
+              color1="blue"
+              color2="yellow"
+              textcolor="red"
+              text={<FaDiscord size={20} />}
+            ></FireButton>
           </div>
           <motion.div
             initial={{ y: -20, opacity: 0 }}
@@ -239,46 +245,63 @@ const HomePage = () => {
             <SectionTitle icon={FaUser}>Meet the Game Masters</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <GameMasterCard
+                name="Ata Hunu"
+                title="President / Game Master"
+                description=""
+                image={photos.photo_ata}
+              />
+              <GameMasterCard
                 name="Cevdet Baran Oral"
                 title="Dungeon Master / Activity Manager / Software Developer"
                 description="El. Psy. Kongroo."
-                image={photo_baran}
-              />
-              <GameMasterCard
-                name="Kaya Acarbay"
-                title="Dungeon Master"
-                description=""
-                image={photo_kaya}
+                image={photos.photo_baran}
+                socials={{
+                  instagram: "https://www.instagram.com/baranbvb/",
+                  linkedin: "https://www.linkedin.com/in/cevdetbaranoral/",
+                  github: "https://github.com/barandev",
+                }}
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
                 title="Master of Cards"
                 description="Always rolls 1"
-                image={photo_ayberk}
+                image={photos.photo_ayberk}
               />
               <GameMasterCard
                 name="Çağan Meriç"
-                title="Game(Fate) Master"
-                description=""
-                image={photo_cagan}
-              />
-              <GameMasterCard
-                name="Ata Hunu"
-                title="President / Game Master"
-                description=""
-                image={photo_ata}
-              />
-              <GameMasterCard
-                name="Kerem Ata Bakim"
                 title="Game Master"
-                description="Someone who lives his life differently"
-                image={photo_kerem}
+                description="A terrifying presence has entered the room..."
+                image={photos.photo_cagan}
               />
               <GameMasterCard
                 name="Yunus Bahadır"
                 title="Game Master"
                 description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
-                image={photo_yunus}
+                image={photos.photo_yunus}
+              />
+              <GameMasterCard
+                name="Kerem Ata Bakim"
+                title="Game Master"
+                description="Someone who lives his life differently"
+                image={photos.photo_kerem}
+              />
+              <GameMasterCard
+                name="Yusuf Mete Kuzu"
+                title="Game Master"
+                description=""
+                image={photos.photo_mete}
+              />
+              <GameMasterCard
+                name="Araklon RPG"
+                title="Dungeon Master"
+                description=""
+                image={photos.photo_roman}
+                socials={{
+                  instagram: "https://www.instagram.com/araklonrpg/",
+                  youtube: "https://www.youtube.com/@araklon",
+                  website: "https://www.araklon.com/",
+                  discord: "https://discord.gg/2QKj3tyVYX",
+                }}
               />
             </div>
           </div>
@@ -344,58 +367,7 @@ const HomePage = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-900 py-12">
-          <div className="container mx-auto px-4 items-center justify-center text-center">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-400 text-center">
-              <div>
-                <h3 className="text-xl font-bold text-yellow-500 mb-4">
-                  Quick Links
-                </h3>
-                <ul className="space-y-2">
-                  <li>
-                    <a
-                      href="/events"
-                      className="hover:text-yellow-500 transition-colors"
-                    >
-                      Events
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-yellow-500 mb-4">
-                  Contact Us
-                </h3>
-                <p>Send your ravens to:</p>
-                <a
-                  href="mailto:emufrpclub@gmail.com"
-                  className="text-yellow-500 hover:text-yellow-400"
-                >
-                  emufrpclub@gmail.com
-                </a>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-yellow-500 mb-4">
-                  Follow Us
-                </h3>
-                <div className="flex space-x-4 text-center items-center justify-center">
-                  <SocialIcon icon={<FaDiscord />} href={config.DISCORD_LINK} />
-                  <SocialIcon
-                    icon={<FaInstagram />}
-                    href={config.INSTAGRAM_LINK}
-                  />
-                  <SocialIcon
-                    icon={<FaLinkedin />}
-                    href={config.LINKEDIN_LINK}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="text-center mt-8 text-gray-500">
-              <p>{config.FOOTER_TEXT}</p>
-            </div>
-          </div>
-        </footer>
+        <MainFooter />
       </motion.div>
     </>
   );

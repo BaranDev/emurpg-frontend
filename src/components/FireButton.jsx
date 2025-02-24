@@ -1,23 +1,32 @@
-import { motion } from "framer-motion";import React from "react";
+import { motion } from "framer-motion";
+import React from "react";
 
-const FireButton = ({ onClick, children }) => (
+const FireButton = ({
+  onClick,
+  children,
+  color1 = "yellow",
+  color2 = "orange",
+  textcolor = "white",
+  text = "",
+}) => (
   <motion.button
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
-    className="relative overflow-hidden group bg-yellow-600 text-white font-bold py-4 px-8 rounded-lg transform transition-all duration-300"
+    className={`relative overflow-hidden group bg-${color1}-600 text-${textcolor} font-bold py-4 px-8 rounded-lg transform transition-all duration-300 mx-2 my-2`}
     onClick={onClick}
   >
     {/* Fire effects container */}
     <div className="absolute inset-0 overflow-hidden">
       {/* Base glow */}
-      <div className="absolute inset-0 bg-gradient-to-t from-orange-600 via-yellow-500 to-transparent opacity-50 animate-pulse" />
-
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-${color2}-600 via-${color1}-500 to-transparent opacity-50 animate-pulse`}
+      />
       {/* Ember particles */}
       <div className="absolute inset-0">
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-yellow-200 rounded-full"
+            className={`absolute w-1 h-1 bg-${color1}-200 rounded-full`}
             animate={{
               y: [-20, -60],
               x: [0, i % 2 === 0 ? 20 : -20],
@@ -40,7 +49,7 @@ const FireButton = ({ onClick, children }) => (
     </div>
 
     {/* Button content */}
-    <span className="relative z-10">{children}</span>
+    <span className="relative z-10">{text}</span>
     <div className="absolute inset-0 bg-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-1000" />
   </motion.button>
 );

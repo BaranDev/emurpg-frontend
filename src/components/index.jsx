@@ -1,5 +1,6 @@
-export { default as AdminDashboard } from "./AdminDashboard";export { default as EventList } from "./EventList";
-export { default as Footer } from "./Footer";
+export { default as AdminDashboard } from "./AdminDashboard";
+export { default as EventList } from "./EventList";
+export { default as EventsFooter } from "./EventsFooter";
 export { default as Navbar } from "./Navbar";
 export { default as Privacy } from "./Privacy";
 export { default as TableList } from "./TableList";
@@ -16,3 +17,4 @@ export { default as SectionTitle } from "./SectionTitle";
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as InstagramGrid } from "./InstagramGrid";
 export { default as FireButton } from "./FireButton";
+export { default as MainFooter } from "./MainFooter";
