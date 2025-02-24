@@ -4,7 +4,6 @@ import React from "react";
 const FireButton = ({
   onClick,
   color1 = "yellow",
-  color2 = "orange",
   textcolor = "white",
   text = "",
 }) => (
@@ -18,7 +17,7 @@ const FireButton = ({
     <div className="absolute inset-0 overflow-hidden">
       {/* Base glow */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-${color2}-600 via-${color1}-500 to-transparent opacity-50 animate-pulse`}
+        className={`absolute inset-0 bg-gradient-to-t from-red-600 via-${color1}-500 to-transparent opacity-50 animate-pulse`}
       />
       {/* Ember particles */}
       <div className="absolute inset-0">
