@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
-import TableList from "./TableList";
+import React, { useEffect, useState, useRef } from "react";import TableList from "./TableList";
 import { config } from "../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [title, setTitle] = useState("EMU RPG Events");
   // Fallback for unsupported browsers
   if (!window.fetch || !window.WebSocket) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gray-900"
@@ -87,14 +85,14 @@ const EventList = () => {
 
   if (events.length === 0) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center min-h-[400px] p-6 text-center bg-gray-800/50 rounded-lg shadow-xl"
       >
         <FaCalendar className="text-6xl text-yellow-500 mb-6" />
         <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
-          {selectedEvent ? selectedEvent.name : "EMU RPG Events"}
+          {selectedEvent ? selectedEvent.name : "EMURPG Events"}
         </h1>
         <p className="text-xl text-gray-300 mb-6">
           There are no ongoing events, stay tuned for our next events!
@@ -122,7 +120,7 @@ const EventList = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="container mx-auto px-4 py-8"
@@ -137,8 +135,8 @@ const EventList = () => {
           ← Back to Events
         </motion.button>
       )}
-      
-      <motion.h1 
+
+      <motion.h1
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-4xl md:text-6xl font-bold text-center text-yellow-500 mb-8 md:mb-12"
@@ -147,7 +145,7 @@ const EventList = () => {
       </motion.h1>
 
       {!selectedEvent ? (
-        <motion.div 
+        <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className="grid gap-6"
@@ -158,22 +156,28 @@ const EventList = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              onClick={() => event.total_tables > 0 ? setSelectedEvent(event) : null}
+              onClick={() =>
+                event.total_tables > 0 ? setSelectedEvent(event) : null
+              }
               className={`bg-gray-800/50 rounded-lg border-2 border-yellow-600/50 p-6 
-                ${event.total_tables > 0 
-                  ? "cursor-pointer hover:bg-gray-700/50 hover:border-yellow-500 transform hover:scale-[1.01] transition-all" 
-                  : "opacity-75"}`}
+                ${
+                  event.total_tables > 0
+                    ? "cursor-pointer hover:bg-gray-700/50 hover:border-yellow-500 transform hover:scale-[1.01] transition-all"
+                    : "opacity-75"
+                }`}
             >
               <h2 className="text-2xl md:text-3xl font-bold text-yellow-500 mb-3">
                 {event.name}
               </h2>
               <p className="text-gray-300 mb-4 text-lg">{event.description}</p>
               <div className="flex flex-wrap justify-between text-sm md:text-base gap-4">
-                <span className={`px-4 py-2 rounded-full ${
-                  event.available_tables > 0 
-                    ? "bg-green-900/50 text-green-400"
-                    : "bg-red-900/50 text-red-400"
-                }`}>
+                <span
+                  className={`px-4 py-2 rounded-full ${
+                    event.available_tables > 0
+                      ? "bg-green-900/50 text-green-400"
+                      : "bg-red-900/50 text-red-400"
+                  }`}
+                >
                   {event.available_tables > 0
                     ? `${event.available_seats} Seats Available`
                     : "Event is Full"}

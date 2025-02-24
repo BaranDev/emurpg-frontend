@@ -1,5 +1,4 @@
-import React from "react";
-import { FaDiscord, FaWhatsapp, FaInstagram, FaLinkedin } from "react-icons/fa";
+import React from "react";import { FaDiscord, FaWhatsapp, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { config } from "../config";
 const Footer = () => {
   return (
