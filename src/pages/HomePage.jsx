@@ -8,15 +8,10 @@ import {
   FaDragon,
   FaUser,
   FaDice,
-  FaInstagram,
-  FaLinkedin,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import {
-  NewsCard,
-  TestimonialCard,
   SocialButton,
-  SocialIcon,
   GameMasterCard,
   SectionTitle,
   EventCard,
@@ -271,12 +266,20 @@ const HomePage = () => {
                 title="Game Master"
                 description="A terrifying presence has entered the room..."
                 image={photos.photo_cagan}
+                socials={{
+                  instagram: "https://www.instagram.com/caganmeric.77",
+                }}
               />
               <GameMasterCard
                 name="Yunus Bahadır"
                 title="Game Master"
                 description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
                 image={photos.photo_yunus}
+                socials={{
+                  instagram: "https://www.instagram.com/ynsbahadir",
+                  linkedin:
+                    "https://www.linkedin.com/in/yunus-bahadır-565090341",
+                }}
               />
               <GameMasterCard
                 name="Kerem Ata Bakim"
