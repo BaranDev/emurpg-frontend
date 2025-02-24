@@ -260,7 +260,6 @@ const HomePage = () => {
                   linkedin: "https://www.linkedin.com/in/cevdetbaranoral/",
                   github: "https://github.com/barandev",
                 }}
-                image={photo_baran}
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
