@@ -19,6 +19,7 @@ import {
   InstagramGrid,
   FireButton,
   MainFooter,
+  HomePageEventList,
 } from "../components";
 import * as photos from "../assets/member_photos";
 import { config, rpgQuotes } from "../config";
@@ -189,14 +190,7 @@ const HomePage = () => {
           <div className="container mx-auto px-4">
             <SectionTitle icon={FaScroll}>Upcoming Events</SectionTitle>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
-              <EventCard
-                title="Please stay tuned!"
-                date="We are currently planning our next adventure."
-                description="Events are frequently updated, so be sure to check back soon!"
-                icon={FaDragon}
-              />
-            </div>
+            <HomePageEventList />
           </div>
         </section>
         {/* Interactive Dice Section */}
@@ -253,6 +247,7 @@ const HomePage = () => {
                   instagram: "https://www.instagram.com/baranbvb/",
                   linkedin: "https://www.linkedin.com/in/cevdetbaranoral/",
                   github: "https://github.com/barandev",
+                  website: "https://cevdetbaran.com/",
                 }}
               />
               <GameMasterCard

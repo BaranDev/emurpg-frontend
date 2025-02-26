@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { config } from "../config";
-
+import React, { useState, useEffect, useRef } from "react";import { config } from "../config";
+import { FaArrowRightFromBracket as LogoutIcon } from "react-icons/fa6";
 
 const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
@@ -27,6 +26,12 @@ const AdminDashboard = () => {
     game_name: "",
     game_master: "",
     player_quota: "",
+    language: "Turkish",
+    game_id: null,
+    game_image: "",
+    game_play_time: 0,
+    game_guide_text: "",
+    game_guide_video: "",
   });
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -34,7 +39,6 @@ const AdminDashboard = () => {
     name: "",
     student_id: "",
     table_id: "",
-    seat_id: "",
     contact: "",
   });
   const [isGeneratingTable, setIsGeneratingTable] = useState(false);
@@ -58,6 +62,37 @@ const AdminDashboard = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportLanguage, setReportLanguage] = useState("en");
+  const [showGameFormModal, setShowGameFormModal] = useState(false);
+  const [games, setGames] = useState([]);
+  const [selectedGameId, setSelectedGameId] = useState("");
+  const [isCustomGame, setIsCustomGame] = useState(false);
+  const [newGame, setNewGame] = useState({
+    id: "",
+    name: "",
+    avg_play_time: 0,
+    min_players: 1,
+    max_players: 8,
+    image_url: "",
+    guide_text: "",
+    guide_video_url: "",
+  });
+  const [isGameListModalOpen, setIsGameListModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/api/games`, {
+          headers: { apiKey: API_KEY },
+        });
+        const data = await response.json();
+        setGames(data);
+      } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    };
+
+    fetchGames();
+  }, []);
 
   // Player WebSocket connection
   useEffect(() => {
@@ -96,7 +131,7 @@ const AdminDashboard = () => {
     const fetchPlayers = async (tableSlug) => {
       try {
         const response = await fetch(
-          `${backendUrl}/api/admin/get_players/${tableSlug}`,
+          `${backendUrl}/api/admin/table/${tableSlug}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -105,11 +140,12 @@ const AdminDashboard = () => {
           }
         );
 
-        if (!response.ok) throw new Error("Failed to fetch players");
+        if (!response.ok) throw new Error("Failed to fetch table details");
         const data = await response.json();
-        setPlayers(data.players || []);
+        setSelectedTable(data.data);
+        setPlayers(data.data.joined_players || []);
       } catch (error) {
-        console.error("Error fetching players:", error);
+        console.error("Error fetching table details:", error);
       }
     };
 
@@ -211,7 +247,62 @@ const AdminDashboard = () => {
       totalJoined: table.total_joined_players,
       gameMaster: table.game_master,
       gameName: table.game_name,
+      language: table.language,
     });
+  };
+
+  const handleApprovePlayer = async (studentId) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/approve_player/${selectedTable.slug}/${studentId}`,
+        {
+          method: "POST",
+          headers: { apiKey: API_KEY },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to approve player");
+      alert("Player approved successfully!");
+    } catch (error) {
+      console.error("Error approving player:", error);
+      alert("Failed to approve player");
+    }
+  };
+
+  const handleBackupPlayer = async (studentId) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/backup_player/${selectedTable.slug}/${studentId}`,
+        {
+          method: "POST",
+          headers: { apiKey: API_KEY },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to set player as backup");
+      alert("Player added to backup successfully!");
+    } catch (error) {
+      console.error("Error setting player as backup:", error);
+      alert("Failed to set player as backup");
+    }
+  };
+
+  const handleRejectPlayer = async (studentId) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/reject_player/${selectedTable.slug}/${studentId}`,
+        {
+          method: "POST",
+          headers: { apiKey: API_KEY },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to reject player");
+      alert("Player rejected successfully!");
+    } catch (error) {
+      console.error("Error rejecting player:", error);
+      alert("Failed to reject player");
+    }
   };
 
   const handleUpdateTable = async (e) => {
@@ -225,6 +316,7 @@ const AdminDashboard = () => {
       total_joined_players: updateData.totalJoined,
       joined_players: selectedTable.joined_players,
       slug: selectedTable.slug,
+      language: updateData.language,
       created_at: selectedTable.created_at,
     });
 
@@ -847,7 +939,6 @@ const AdminDashboard = () => {
         name: "",
         student_id: "",
         table_id: "",
-        seat_id: "",
         contact: "",
       });
       // WebSocket will handle the update
@@ -942,13 +1033,74 @@ const AdminDashboard = () => {
     }
   };
 
+  const getPlayerStatus = (studentId) => {
+    if (!selectedTable) return null;
+
+    // Check arrays in selectedTable
+    const isApproved = selectedTable.approved_players?.some(
+      (p) => p.student_id === studentId
+    );
+    const isBackup = selectedTable.backup_players?.some(
+      (p) => p.student_id === studentId
+    );
+    const isRejected = selectedTable.rejected_players?.some(
+      (p) => p.student_id === studentId
+    );
+
+    if (isApproved) return "approved";
+    if (isBackup) return "backup";
+    if (isRejected) return "rejected";
+    return "pending"; // Default status for new registrations
+  };
+
+  const handleCreateGame = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${backendUrl}/api/admin/games`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: API_KEY,
+        },
+        body: JSON.stringify(newGame),
+      });
+
+      if (response.ok) {
+        alert("Game created successfully!");
+        setShowGameFormModal(false);
+        setNewGame({
+          id: "",
+          name: "",
+          avg_play_time: 0,
+          min_players: 1,
+          max_players: 8,
+          image_url: "",
+          guide_text: "",
+          guide_video_url: "",
+        });
+
+        // Fetch updated game list
+        const updatedResponse = await fetch(`${backendUrl}/api/games`, {
+          headers: { apiKey: API_KEY },
+        });
+        const updatedData = await updatedResponse.json();
+        setGames(updatedData);
+      } else {
+        alert("Failed to create game");
+      }
+    } catch (error) {
+      console.error("Error creating game:", error);
+      alert("Error creating game");
+    }
+  };
+
   return (
     <div className="admin-dashboard grid text-center w-screen">
       <button
         onClick={handleLogout}
         className="absolute top-4 left-4 text-yellow-500 hover:text-yellow-300 bg-gray-800 rounded px-3 py-1"
       >
-        Logout
+        <LogoutIcon className="inline-block rotate-180" />
       </button>
 
       <h1 className="text-2xl font-bold text-yellow-500 mb-4 py-4">
@@ -956,17 +1108,17 @@ const AdminDashboard = () => {
       </h1>
 
       {/* Events List */}
-      <div className="events-list grid grid-cols-1 gap-4 mx-auto w-screen px-10 mb-8">
+      <div className="events-list grid grid-cols-1 gap-4 mx-auto w-screen px-4 sm:px-10 mb-8">
         {eventsWithTables.map((event) => (
           <div key={event.slug} className="event-item border p-4 mb-2">
-            <div className="event-header flex justify-between items-center mb-4">
-              <div>
+            <div className="event-header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+              <div className="mb-4 sm:mb-0">
                 <h2 className="text-xl font-bold text-yellow-500">
                   {event.name}
                 </h2>
                 <p className="text-sm text-gray-400">{event.description}</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {event.is_ongoing && (
                   <>
                     <button
@@ -1078,8 +1230,10 @@ const AdminDashboard = () => {
                   </h3>
                   <p className="text-sm">GM: {table.game_master}</p>
                   <p className="text-sm">
-                    Players: {table.total_joined_players}/{table.player_quota}
+                    Applied Players: {table.total_joined_players}
                   </p>
+                  <p className="text-sm">Player Quota: {table.player_quota}</p>
+                  <p className="text-sm">Language: {table.language}</p>
                   <p className="text-xs text-gray-500">ID: {table.slug}</p>
                   <div className="mt-2 flex gap-2">
                     <button
@@ -1130,6 +1284,12 @@ const AdminDashboard = () => {
       {/* Global Buttons */}
       <div className="flex gap-4 justify-center mt-4">
         <button
+          onClick={() => setShowGameFormModal(true)}
+          className="bg-lime-600 text-white px-4 py-2 rounded"
+        >
+          Add New Game
+        </button>
+        <button
           onClick={() => setIsCreateEventModalOpen(true)}
           className="bg-green-500 text-white px-5 py-2 rounded"
         >
@@ -1141,7 +1301,222 @@ const AdminDashboard = () => {
         >
           Generate Report
         </button>
+        <button
+          onClick={() => setIsGameListModalOpen(true)}
+          className="bg-violet-500 text-white px-5 py-2 rounded"
+        >
+          Game List
+        </button>
       </div>
+      {/* Game Creation Modal */}
+      {showGameFormModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-black bg-opacity-75 rounded-lg p-8 w-96 relative">
+            <button
+              onClick={() => setShowGameFormModal(false)}
+              className="absolute top-2 right-2 text-white hover:text-gray-300 text-xl"
+            >
+              ×
+            </button>
+            <h2 className="text-lg font-bold text-yellow-500 mb-4">
+              Add New Game
+            </h2>
+            <form onSubmit={handleCreateGame}>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Game ID:</label>
+                <input
+                  type="text"
+                  value={newGame.id}
+                  onChange={(e) =>
+                    setNewGame({ ...newGame, id: e.target.value })
+                  }
+                  placeholder="e.g., dnd-5e, catan"
+                  className="border p-2 rounded w-full text-white"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Game Name:</label>
+                <input
+                  type="text"
+                  value={newGame.name}
+                  onChange={(e) =>
+                    setNewGame({ ...newGame, name: e.target.value })
+                  }
+                  placeholder="e.g., Dungeons & Dragons"
+                  className="border p-2 rounded w-full text-white"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">
+                  Avg. Play Time (min):
+                </label>
+                <input
+                  type="number"
+                  value={newGame.avg_play_time}
+                  onChange={(e) =>
+                    setNewGame({
+                      ...newGame,
+                      avg_play_time: parseInt(e.target.value),
+                    })
+                  }
+                  className="border p-2 rounded w-full text-white"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Min Players:</label>
+                <input
+                  type="number"
+                  value={newGame.min_players}
+                  onChange={(e) =>
+                    setNewGame({
+                      ...newGame,
+                      min_players: parseInt(e.target.value),
+                    })
+                  }
+                  className="border p-2 rounded w-full text-white"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Max Players:</label>
+                <input
+                  type="number"
+                  value={newGame.max_players}
+                  onChange={(e) =>
+                    setNewGame({
+                      ...newGame,
+                      max_players: parseInt(e.target.value),
+                    })
+                  }
+                  className="border p-2 rounded w-full text-white"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Image URL:</label>
+                <input
+                  type="text"
+                  value={newGame.image_url}
+                  onChange={(e) =>
+                    setNewGame({ ...newGame, image_url: e.target.value })
+                  }
+                  placeholder="https://example.com/image.jpg"
+                  className="border p-2 rounded w-full text-white"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Guide Text:</label>
+                <textarea
+                  value={newGame.guide_text}
+                  onChange={(e) =>
+                    setNewGame({ ...newGame, guide_text: e.target.value })
+                  }
+                  placeholder="Game description and how to play..."
+                  className="border p-2 rounded w-full text-white"
+                  rows="4"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">
+                  Guide Video URL:
+                </label>
+                <input
+                  type="text"
+                  value={newGame.guide_video_url}
+                  onChange={(e) =>
+                    setNewGame({ ...newGame, guide_video_url: e.target.value })
+                  }
+                  placeholder="https://www.youtube.com/embed/..."
+                  className="border p-2 rounded w-full text-white"
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-yellow-600 text-white px-4 py-2 rounded mt-2 w-full hover:bg-yellow-700"
+              >
+                Create Game
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Game List Modal */}
+      {isGameListModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-black bg-opacity-75 rounded-lg p-4 sm:p-8 w-full max-w-6xl mx-2 my-4 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsGameListModalOpen(false)}
+              className="absolute top-2 right-2 text-white hover:text-gray-300 text-xl z-50"
+            >
+              ×
+            </button>
+            <h2 className="text-xl font-bold text-yellow-500 mb-6 top-0 bg-black bg-opacity-75 py-2">
+              Game List
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+              {games.map((game) => (
+                <div
+                  key={game.id}
+                  className="game-item border border-gray-700 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors flex flex-col"
+                >
+                  <h3 className="font-bold text-yellow-500 text-lg mb-2 truncate">
+                    {game.name}
+                  </h3>
+                  <div className="relative h-40 mb-3">
+                    <img
+                      src={game.image_url || "https://picsum.photos/200/300"}
+                      className="w-full h-full object-cover rounded-md absolute inset-0"
+                      alt={game.name}
+                      onError={(e) => {
+                        e.target.src = "https://picsum.photos/200/300";
+                      }}
+                    />
+                  </div>
+                  <div className="space-y-1 text-gray-300 text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-semibold">ID:</span>
+                      <span className="truncate ml-2">{game.id}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-semibold">Play Time:</span>
+                      <span>{game.avg_play_time} min</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-semibold">Players:</span>
+                      <span>
+                        {game.min_players} - {game.max_players}
+                      </span>
+                    </div>
+                    <div className="space-y-1 mt-2">
+                      <details className="cursor-pointer">
+                        <summary className="font-semibold">Image URL</summary>
+                        <p className="text-xs break-all mt-1 pl-2">
+                          {game.image_url || "N/A"}
+                        </p>
+                      </details>
+                      <details className="cursor-pointer">
+                        <summary className="font-semibold">Guide Text</summary>
+                        <p className="text-xs break-all mt-1 pl-2">
+                          {game.guide_text || "N/A"}
+                        </p>
+                      </details>
+                      <details className="cursor-pointer">
+                        <summary className="font-semibold">Video URL</summary>
+                        <p className="text-xs break-all mt-1 pl-2">
+                          {game.guide_video_url || "N/A"}
+                        </p>
+                      </details>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       {/* Report Generation Modal */}
       {isReportModalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
@@ -1288,17 +1663,115 @@ const AdminDashboard = () => {
             </h2>
             <form onSubmit={handleCreateTable}>
               <div className="mb-4">
-                <label className="block text-white mb-2">Game Name:</label>
-                <input
-                  type="text"
-                  value={newTable.game_name}
-                  onChange={(e) =>
-                    setNewTable({ ...newTable, game_name: e.target.value })
-                  }
+                <label className="block text-white mb-2">Game:</label>
+                <select
+                  value={selectedGameId || ""}
+                  onChange={(e) => {
+                    const gameId = e.target.value;
+                    setSelectedGameId(gameId);
+
+                    if (gameId === "custom") {
+                      setIsCustomGame(true);
+                      setNewTable({
+                        ...newTable,
+                        game_id: null,
+                        game_image: "",
+                        game_play_time: 0,
+                        game_guide_text: "",
+                        game_guide_video: "",
+                      });
+                    } else {
+                      setIsCustomGame(false);
+                      const game = games.find((g) => g.id === gameId);
+                      if (game) {
+                        setNewTable({
+                          ...newTable,
+                          game_name: game.name,
+                          game_id: game.id,
+                          game_image: game.image_url,
+                          game_play_time: game.avg_play_time,
+                          game_guide_text: game.guide_text,
+                          game_guide_video: game.guide_video_url,
+                        });
+                      }
+                    }
+                  }}
                   className="border p-2 rounded w-full text-white"
-                  required
-                />
+                >
+                  <option value="">Select a game</option>
+                  {games.map((game) => (
+                    <option key={game.id} value={game.id}>
+                      {game.name}
+                    </option>
+                  ))}
+                  <option value="custom">Custom Game</option>
+                </select>
               </div>
+
+              {isCustomGame && (
+                <>
+                  <div className="mb-4">
+                    <label className="block text-white mb-2">Image URL:</label>
+                    <input
+                      type="text"
+                      value={newTable.game_image || ""}
+                      onChange={(e) =>
+                        setNewTable({ ...newTable, game_image: e.target.value })
+                      }
+                      placeholder="https://example.com/image.jpg"
+                      className="border p-2 rounded w-full text-white"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-white mb-2">
+                      Avg. Play Time (min):
+                    </label>
+                    <input
+                      type="number"
+                      value={newTable.game_play_time || 0}
+                      onChange={(e) =>
+                        setNewTable({
+                          ...newTable,
+                          game_play_time: parseInt(e.target.value),
+                        })
+                      }
+                      className="border p-2 rounded w-full text-white"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-white mb-2">Guide Text:</label>
+                    <textarea
+                      value={newTable.game_guide_text || ""}
+                      onChange={(e) =>
+                        setNewTable({
+                          ...newTable,
+                          game_guide_text: e.target.value,
+                        })
+                      }
+                      placeholder="Game description and how to play..."
+                      className="border p-2 rounded w-full text-white"
+                      rows="4"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-white mb-2">
+                      Guide Video URL:
+                    </label>
+                    <input
+                      type="text"
+                      value={newTable.game_guide_video || ""}
+                      onChange={(e) =>
+                        setNewTable({
+                          ...newTable,
+                          game_guide_video: e.target.value,
+                        })
+                      }
+                      placeholder="https://www.youtube.com/embed/..."
+                      className="border p-2 rounded w-full text-white"
+                    />
+                  </div>
+                </>
+              )}
               <div className="mb-4">
                 <label className="block text-white mb-2">Game Master:</label>
                 <input
@@ -1322,6 +1795,18 @@ const AdminDashboard = () => {
                   className="border p-2 rounded w-full text-white"
                   required
                   min="1"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Language:</label>
+                <input
+                  type="text"
+                  value={newTable.language}
+                  onChange={(e) =>
+                    setNewTable({ ...newTable, language: e.target.value })
+                  }
+                  className="border p-2 rounded w-full text-white"
+                  required
                 />
               </div>
               <button
@@ -1407,6 +1892,18 @@ const AdminDashboard = () => {
                   min="0"
                 />
               </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Language:</label>
+                <input
+                  type="text"
+                  value={updateData.language}
+                  onChange={(e) =>
+                    setUpdateData({ ...updateData, language: e.target.value })
+                  }
+                  className="border p-2 rounded w-full text-white"
+                  required
+                />
+              </div>
               <button
                 type="submit"
                 className="bg-yellow-600 text-white px-4 py-2 rounded mt-2 w-full hover:bg-yellow-700"
@@ -1421,16 +1918,18 @@ const AdminDashboard = () => {
       {/* Players Modal */}
       {isPlayersModalOpen && selectedTable && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-black bg-opacity-75 rounded-lg p-8 w-3/4 max-h-[90vh] relative overflow-auto">
-            <button
-              onClick={() => {
-                setIsPlayersModalOpen(false);
-                setSelectedTable(null);
-              }}
-              className="absolute top-2 right-2 text-white hover:text-gray-300 text-xl"
-            >
-              ×
-            </button>
+          <div className="bg-black bg-opacity-75 rounded-lg p-8 w-[80%] max-h-[90vh] relative overflow-auto">
+            <div className="sticky top-2 right-2 flex justify-end z-50">
+              <button
+                onClick={() => {
+                  setIsPlayersModalOpen(false);
+                  setSelectedTable(null);
+                }}
+                className="text-white hover:text-gray-300 text-xl"
+              >
+                ×
+              </button>
+            </div>
             <h2 className="text-lg font-bold text-yellow-500 mb-4">
               Players for {selectedTable.game_name}
             </h2>
@@ -1463,19 +1962,6 @@ const AdminDashboard = () => {
                   required
                 />
                 <input
-                  type="number"
-                  placeholder="Seat ID"
-                  value={newPlayer.seat_id}
-                  onChange={(e) =>
-                    setNewPlayer({
-                      ...newPlayer,
-                      seat_id: parseInt(e.target.value),
-                    })
-                  }
-                  className="border p-2 rounded text-white"
-                  required
-                />
-                <input
                   type="text"
                   placeholder="Contact"
                   value={newPlayer.contact}
@@ -1495,12 +1981,12 @@ const AdminDashboard = () => {
 
             {/* Players Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              {/* Desktop version */}
+              <table className="w-full text-left hidden md:table">
                 <thead className="bg-gray-700">
                   <tr>
                     <th className="p-3 text-yellow-500">Name</th>
                     <th className="p-3 text-yellow-500">Student ID</th>
-                    <th className="p-3 text-yellow-500">Seat ID</th>
                     <th className="p-3 text-yellow-500">Contact</th>
                     <th className="p-3 text-yellow-500">Actions</th>
                   </tr>
@@ -1513,26 +1999,130 @@ const AdminDashboard = () => {
                     >
                       <td className="p-3 text-white">{player.name}</td>
                       <td className="p-3 text-white">{player.student_id}</td>
-                      <td className="p-3 text-white">{player.seat_id}</td>
-                      <td className="p-3 text-white">{player.contact}</td>
+                      <td className="p-3 text-white">
+                        {player.contact || "N/A"}
+                      </td>
                       <td className="p-3">
-                        <button
-                          onClick={() => setSelectedPlayer(player)}
-                          className="bg-blue-600 text-white px-2 py-1 rounded mr-2 hover:bg-blue-700"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeletePlayer(player.student_id)}
-                          className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex flex-wrap gap-1">
+                          <button
+                            onClick={() =>
+                              handleApprovePlayer(player.student_id)
+                            }
+                            className="bg-stone-800 text-white px-2 py-1 rounded hover:bg-stone-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-lime-700"
+                            disabled={
+                              getPlayerStatus(player.student_id) === "approved"
+                            }
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleBackupPlayer(player.student_id)
+                            }
+                            className="bg-stone-800 text-white px-2 py-1 rounded hover:bg-stone-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-lime-700"
+                            disabled={
+                              getPlayerStatus(player.student_id) === "backup"
+                            }
+                          >
+                            Backup
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleRejectPlayer(player.student_id)
+                            }
+                            className="bg-stone-800 text-white px-2 py-1 rounded hover:bg-stone-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-lime-700"
+                            disabled={
+                              getPlayerStatus(player.student_id) === "rejected"
+                            }
+                          >
+                            Reject
+                          </button>
+                          <button
+                            onClick={() => setSelectedPlayer(player)}
+                            className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDeletePlayer(player.student_id)
+                            }
+                            className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Mobile version */}
+              <div className="md:hidden space-y-4">
+                {players.map((player) => (
+                  <div
+                    key={player.student_id}
+                    className="bg-gray-800 p-4 rounded-lg"
+                  >
+                    <div className="mb-2">
+                      <div className="text-yellow-500 text-sm">Name</div>
+                      <div className="text-white">{player.name}</div>
+                    </div>
+                    <div className="mb-2">
+                      <div className="text-yellow-500 text-sm">Student ID</div>
+                      <div className="text-white">{player.student_id}</div>
+                    </div>
+                    <div className="mb-4">
+                      <div className="text-yellow-500 text-sm">Contact</div>
+                      <div className="text-white">
+                        {player.contact || "N/A"}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setSelectedPlayer(player)}
+                        className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeletePlayer(player.student_id)}
+                        className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                      <button
+                        onClick={() => handleApprovePlayer(player.student_id)}
+                        className="bg-stone-800 text-white px-2 py-1 rounded hover:bg-stone-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-lime-700"
+                        disabled={
+                          getPlayerStatus(player.student_id) === "approved"
+                        }
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleBackupPlayer(player.student_id)}
+                        className="bg-stone-800 text-white px-2 py-1 rounded hover:bg-stone-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-lime-700"
+                        disabled={
+                          getPlayerStatus(player.student_id) === "backup"
+                        }
+                      >
+                        Backup
+                      </button>
+                      <button
+                        onClick={() => handleRejectPlayer(player.student_id)}
+                        className="bg-stone-800 text-white px-2 py-1 rounded hover:bg-stone-700 col-span-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-lime-700"
+                        disabled={
+                          getPlayerStatus(player.student_id) === "rejected"
+                        }
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
             {/* Player Edit Modal */}
             {selectedPlayer && (
@@ -1574,21 +2164,6 @@ const AdminDashboard = () => {
                           setSelectedPlayer({
                             ...selectedPlayer,
                             student_id: e.target.value,
-                          })
-                        }
-                        className="border p-2 rounded w-full text-white"
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-white mb-2">Seat ID:</label>
-                      <input
-                        type="number"
-                        value={selectedPlayer.seat_id}
-                        onChange={(e) =>
-                          setSelectedPlayer({
-                            ...selectedPlayer,
-                            seat_id: parseInt(e.target.value),
                           })
                         }
                         className="border p-2 rounded w-full text-white"

@@ -1,10 +1,15 @@
-import { motion } from "framer-motion";import PropTypes from "prop-types";
+import { motion } from "framer-motion";
+import PropTypes from "prop-types";
 
-const EventCard = ({ title, date, description, icon: Icon }) => (
+const EventCard = ({ title, date, description, icon: Icon = null }) => (
   <motion.div
     whileHover={{ scale: 1.02 }}
+    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+    dragElastic={0}
+    dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+    drag={false} // Explicitly disable drag while keeping the passive event handling
     className="relative bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg p-8 border-2 border-yellow-600/30 
-    shadow-lg transition-all duration-300 group backdrop-blur-sm z-10"
+  shadow-lg transition-all duration-300 group backdrop-blur-sm z-10 w-full"
   >
     <div className="absolute inset-0 bg-gradient-to-b from-yellow-600/10 to-transparent rounded-lg" />
     {Icon && (
@@ -31,10 +36,6 @@ EventCard.propTypes = {
   date: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   icon: PropTypes.elementType,
-};
-
-EventCard.defaultProps = {
-  icon: null,
 };
 
 export default EventCard;

@@ -179,8 +179,8 @@ const EventList = () => {
                   }`}
                 >
                   {event.available_tables > 0
-                    ? `${event.available_seats} Seats Available`
-                    : "Event is Full"}
+                    ? `${event.available_seats} total seats available`
+                    : "Event is under maintenance"}
                 </span>
                 <span className="text-gray-400 flex items-center gap-2">
                   <FaCalendar />

@@ -28,12 +28,6 @@ const Modal = ({ isOpen, onClose, children }) => (
           exit={{ scale: 0.9, opacity: 0 }}
           className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg p-6 max-w-md w-full relative shadow-[0_0_15px_rgba(202,138,4,0.15)]"
         >
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-yellow-500 transition-colors"
-          >
-            <FaTimes size={24} />
-          </button>
           {children}
         </motion.div>
       </motion.div>
@@ -53,7 +47,7 @@ const Input = ({ icon: Icon, ...props }) => (
   </div>
 );
 
-const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
+const RegistrationForm = ({ tableSlug, tableId }) => {
   const [studentId, setStudentId] = useState("");
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
@@ -95,7 +89,6 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
         student_id: studentId,
         name: name,
         table_id: tableId,
-        seat_id: parseInt(seatId, 10),
         contact: contact,
       }),
     });
@@ -104,7 +97,7 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
     if (!response.ok) {
       alert(result.detail || "An error occurred during registration.");
     } else {
-      alert(result.message);
+      alert(result.message + " Your registration was successful!");
     }
   };
 
@@ -117,7 +110,7 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center"
+      className="py-2 px-4 sm:px-6 lg:px-8 flex flex-col items-center relative select-none"
     >
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -136,25 +129,25 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
         />
       </div>
 
-      <div className="w-full max-w-md relative items-center justify-center">
+      <div className="w-full max-w-md h-fit relative items-center ">
         {/* Header Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 ">
           <motion.div
             animate={{
-              scale: [1, 1.2, 1],
+              scale: [1.2, 1.4, 1.2],
               rotate: [0, 360],
             }}
-            style={{ transformOrigin: "center " }}
+            style={{ transformOrigin: "center" }}
             transition={{
-              duration: 3,
+              duration: 5,
               repeat: Infinity,
               ease: "linear",
             }}
-            className="inline-block"
+            className="relative mx-auto"
           >
             <FaDharmachakra className="text-6xl text-yellow-500 mx-auto mb-4" />
           </motion.div>
-          <h2 className="text-3xl font-bold text-yellow-500 mb-2">
+          <h2 className="text-3xl font-bold text-yellow-500 mb-2 my-10">
             Join the Adventure
           </h2>
           <p className="text-gray-400">Your quest awaits, brave adventurer!</p>
@@ -273,7 +266,6 @@ const RegistrationForm = ({ tableSlug, seatId, tableId }) => {
               </motion.div>
             ))}
           </div>
-
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

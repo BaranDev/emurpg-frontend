@@ -1,5 +1,4 @@
-export { default as AdminDashboard } from "./AdminDashboard";
-export { default as EventList } from "./EventList";
+export { default as AdminDashboard } from "./AdminDashboard";export { default as EventList } from "./EventList";
 export { default as EventsFooter } from "./EventsFooter";
 export { default as Navbar } from "./Navbar";
 export { default as Privacy } from "./Privacy";
@@ -18,3 +17,5 @@ export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as InstagramGrid } from "./InstagramGrid";
 export { default as FireButton } from "./FireButton";
 export { default as MainFooter } from "./MainFooter";
+export { default as GameGuideModal } from "./GameGuideModal";
+export { default as HomePageEventList } from "./HomePageEventList";
