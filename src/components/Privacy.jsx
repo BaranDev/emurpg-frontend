@@ -92,7 +92,7 @@ const Privacy = () => {
       },
     },
   };
-
+  const lastUpdateDate = "08/12/2024";
   return (
     <div className="min-h-screen bg-medieval-pattern py-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -115,6 +115,18 @@ const Privacy = () => {
 
           {/* Content Sections */}
           <div className="space-y-12 text-gray-300">
+            {/* Retention Section */}
+            <section className="transform hover:scale-[1.01] transition-transform duration-300">
+              <div className="bg-black/40 rounded-xl p-8 border border-yellow-600/20">
+                <h2 className="text-2xl font-bold text-yellow-500 mb-6 flex items-center">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full mr-3" />
+                  {content[language].retention.title}
+                </h2>
+                <p className="leading-relaxed">
+                  {content[language].retention.text}
+                </p>
+              </div>
+            </section>
             {/* Information Collection Section */}
             <section className="transform hover:scale-[1.01] transition-transform duration-300">
               <div className="bg-black/40 rounded-xl p-8 border border-yellow-600/20">
@@ -174,26 +186,12 @@ const Privacy = () => {
                 </ul>
               </div>
             </section>
-
-            {/* Retention Section */}
-            <section className="transform hover:scale-[1.01] transition-transform duration-300">
-              <div className="bg-black/40 rounded-xl p-8 border border-yellow-600/20">
-                <h2 className="text-2xl font-bold text-yellow-500 mb-6 flex items-center">
-                  <span className="w-2 h-2 bg-yellow-500 rounded-full mr-3" />
-                  {content[language].retention.title}
-                </h2>
-                <p className="leading-relaxed">
-                  {content[language].retention.text}
-                </p>
-              </div>
-            </section>
           </div>
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-yellow-600/30 text-gray-400 text-center">
             <p className="text-sm">
-              {content[language].footer.lastUpdated}{" "}
-              {new Date().toLocaleDateString()}
+              {content[language].footer.lastUpdated} {lastUpdateDate}{" "}
             </p>
             <p className="mt-4 text-sm">
               {content[language].footer.contact}

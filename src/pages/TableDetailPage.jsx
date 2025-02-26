@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import RegistrationForm from "../components/RegistrationForm";
 import { config } from "../config";
-import { FaDiceD20 } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaDiceD20 } from "react-icons/fa";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa6";
 
 const TableDetailPage = () => {
@@ -83,40 +83,30 @@ const TableDetailPage = () => {
 
   return (
     <div className="min-h-screen text-center bg-gray-900 text-gray-100 flex items-center justify-center bg-medieval-pattern relative select-none">
-      <button
-        className="absolute top-4 left-4 text-yellow-500 hover:text-yellow-300 bg-gray-800 rounded px-3 py-1 transition duration-300"
-        onClick={() => (window.location.href = "/events")}
-      >
-        Back
-      </button>
-      <div className="container px-4 py-8">
-        <div className="bg-gray-800 rounded-lg border-4 border-yellow-600 shadow-2xl p-8">
+      <div className="container w-full md:w-[50%] px-4 md:px-0 py-8 relative">
+        <button
+          className="absolute top-12 left-8 text-yellow-500 bg-gray-800 rounded-full p-0 hover:text-yellow-400 hover:opacity-50 transition duration-300 flex items-center gap-2"
+          onClick={() => (window.location.href = "/events")}
+        >
+          <FaArrowAltCircleLeft size={24} />
+        </button>
+        <div className="bg-gray-800 rounded-lg border-4 border-yellow-600 shadow-2xl p-1">
           <div className="flex justify-center">
             <FaCaretLeft className="text-6xl py-2 text-yellow-500" />
             <FaDiceD20 className="text-6xl py-2 text-yellow-500" />
             <FaCaretRight className="text-6xl py-2 text-yellow-500" />
           </div>
-          <h1 className="text-4xl font-bold text-yellow-500 mb-2">
+          <h1 className="text-xl md:text-2xl font-bold text-yellow-500 mb-2">
             {table.game_name}
           </h1>
-          <h2 className="text-2xl text-gray-300 mb-4">{table.game_master}</h2>
-          {canJoin ? (
-            <>
-              <p className="text-lg mb-2">Game Master: {table.game_master}</p>
-              <p className="text-lg mb-2">Player Quota: {table.player_quota}</p>
-              <p className="text-lg mb-2">
-                Total Joined Players: {table.total_joined_players}
-              </p>
-              <p className="text-lg mb-4">Seat Number: {seatId}</p>
-              <RegistrationForm
-                tableSlug={table.slug}
-                seatId={seatId}
-                tableId={table.slug}
-              />
-            </>
-          ) : (
-            <p className="text-lg text-red-500">Table is full.</p>
-          )}
+          <p className="text-[10px] text-gray-400">GM</p>
+          <h2 className="text-lg md:text-sm text-gray-300 m-0">
+            {table.game_master}
+          </h2>
+          <p className="text-base md:text-xs mb-2 my-0">
+            Player Quota: {table.player_quota}
+          </p>
+          <RegistrationForm tableSlug={table.slug} tableId={table.slug} />
         </div>
       </div>
     </div>

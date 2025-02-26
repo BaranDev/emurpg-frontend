@@ -1,6 +1,7 @@
-import React from "react";import PropTypes from "prop-types";
+import React from "react";
+import PropTypes from "prop-types";
 
-const SectionTitle = ({ children, icon: Icon }) => (
+const SectionTitle = ({ children, icon: Icon = null }) => (
   <div className="relative flex items-center justify-center mb-12">
     <div className="relative px-12 py-4">
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-900/5 to-transparent" />
@@ -16,10 +17,6 @@ const SectionTitle = ({ children, icon: Icon }) => (
 SectionTitle.propTypes = {
   children: PropTypes.node.isRequired,
   icon: PropTypes.elementType,
-};
-
-SectionTitle.defaultProps = {
-  icon: null,
 };
 
 export default SectionTitle;
