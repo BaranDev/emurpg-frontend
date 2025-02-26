@@ -234,7 +234,7 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <GameMasterCard
                 name="Ata Hunu"
-                title="President / Game Master"
+                title="President | Game Master"
                 description=""
                 image={photos.photo_ata}
               />
@@ -290,7 +290,7 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Araklon RPG"
-                title="Dungeon Master"
+                title="Dungeon Master | Instrucor | Content Creator"
                 description=""
                 image={photos.photo_roman}
                 socials={{
