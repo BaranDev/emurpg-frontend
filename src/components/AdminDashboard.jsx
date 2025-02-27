@@ -77,6 +77,9 @@ const AdminDashboard = () => {
     guide_video_url: "",
   });
   const [isGameListModalOpen, setIsGameListModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Loading events...");
+  const [loadingRetryCount, setLoadingRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -174,11 +177,24 @@ const AdminDashboard = () => {
   }, [isPlayersModalOpen, selectedTable]);
 
   useEffect(() => {
-    const fetchAndUpdateEvents = async () => {
+    const fetchAndUpdateEvents = async (retryCount = 0, maxRetries = 5) => {
+      setIsLoading(true);
+      if (retryCount > 0) {
+        setLoadingRetryCount(retryCount);
+        setLoadingMessage(
+          `Loading events... (Attempt ${retryCount + 1}/${maxRetries})`
+        );
+      }
       try {
-        const response = await fetch(`${backendUrl}/api/admin/events`, {
-          headers: { apiKey: API_KEY },
-        });
+        const response = await fetchWithTimeout(
+          `${backendUrl}/api/admin/events`,
+          { headers: { apiKey: API_KEY } },
+          60000 // 60 seconds timeout
+        );
+
+        if (!response.ok)
+          throw new Error(`Error fetching events: ${response.status}`);
+
         const events = await response.json();
         const withTableDetails = await Promise.all(
           events.map(async (event) => {
@@ -192,8 +208,29 @@ const AdminDashboard = () => {
           })
         );
         setEventsWithTables(withTableDetails);
+        setIsLoading(false);
+        setLoadingRetryCount(0);
       } catch (error) {
-        console.error("Error fetching events:", error);
+        console.error(
+          `Error fetching events (attempt ${retryCount + 1}/${maxRetries}):`,
+          error
+        );
+
+        // Add more aggressive retry logic with exponential backoff
+        if (retryCount < maxRetries) {
+          const delay = 2000 * Math.pow(2, retryCount); // Exponential backoff: 2s, 4s, 8s, 16s, 32s
+          console.log(`Retrying in ${delay / 1000} seconds...`);
+          setTimeout(
+            () => fetchAndUpdateEvents(retryCount + 1, maxRetries),
+            delay
+          );
+        } else {
+          // Only show failure message after all retries are exhausted
+          setIsLoading(false);
+          alert(
+            "Failed to load events after multiple attempts. Please check your connection and try again."
+          );
+        }
       }
     };
 
@@ -497,6 +534,24 @@ const AdminDashboard = () => {
       alert(`Failed to generate table layout: ${error.message}`);
     } finally {
       setIsGeneratingTable(false);
+    }
+  };
+
+  const fetchWithTimeout = async (url, options, timeout = 30000) => {
+    // 30 seconds timeout
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+      clearTimeout(id);
+      return response;
+    } catch (error) {
+      clearTimeout(id);
+      throw error;
     }
   };
 
@@ -1016,19 +1071,34 @@ const AdminDashboard = () => {
     window.location.reload();
   };
 
-  const fetchTableDetails = async (tableSlug) => {
+  const fetchTableDetails = async (
+    tableSlug,
+    retryCount = 0,
+    maxRetries = 5
+  ) => {
     try {
-      const response = await fetch(
+      const response = await fetchWithTimeout(
         `${backendUrl}/api/admin/table/${tableSlug}`,
-        {
-          headers: { apiKey: API_KEY },
-        }
+        { headers: { apiKey: API_KEY } },
+        30000 // 30 seconds timeout
       );
+
       if (!response.ok) throw new Error("Failed to fetch table");
       const { data } = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching table:", error);
+      console.error(
+        `Error fetching table ${tableSlug} (attempt ${
+          retryCount + 1
+        }/${maxRetries}):`,
+        error
+      );
+
+      if (retryCount < maxRetries) {
+        const delay = 1000 * Math.pow(1.5, retryCount); // Different backoff: 1s, 1.5s, 2.25s, 3.4s, 5s
+        await new Promise((r) => setTimeout(r, delay));
+        return fetchTableDetails(tableSlug, retryCount + 1, maxRetries);
+      }
       return null;
     }
   };
@@ -1102,7 +1172,37 @@ const AdminDashboard = () => {
       >
         <LogoutIcon className="inline-block rotate-180" />
       </button>
-
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gray-900 border-2 border-yellow-600 p-6 rounded-lg shadow-lg text-center max-w-md">
+            <div className="mx-auto mb-5 w-16 h-16 relative">
+              {/* Medieval-style hourglass animation instead of spinner */}
+              <svg
+                className="animate-pulse"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2C8 2 4 3 4 6V10C4 12 7 14 10 15C7 16 4 18 4 20V22H20V20C20 18 17 16 14 15C17 14 20 12 20 10V6C20 3 16 2 12 2Z"
+                  fill="#D4AF37"
+                  stroke="#FFF"
+                  strokeWidth="1"
+                />
+              </svg>
+            </div>
+            <p className="text-lg font-semibold text-yellow-500 font-serif">
+              {loadingMessage}
+            </p>
+            {loadingRetryCount > 0 && (
+              <p className="text-yellow-300 mt-3 italic text-sm">
+                The scrolls are taking time to unfurl. Please await the royal
+                data...
+              </p>
+            )}
+          </div>
+        </div>
+      )}
       <h1 className="text-2xl font-bold text-yellow-500 mb-4 py-4">
         Admin Dashboard
       </h1>
