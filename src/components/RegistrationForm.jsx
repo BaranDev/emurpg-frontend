@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { config } from "../config";
+import React, { useState } from "react";import { config } from "../config";
 import {
   FaDiceD20,
   FaCheck,
@@ -97,7 +96,7 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
     if (!response.ok) {
       alert(result.detail || "An error occurred during registration.");
     } else {
-      alert(result.message + " Your registration was successful!");
+      alert("Your registration was successful!");
     }
   };
 
