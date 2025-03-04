@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import EventCard from "./EventCard";
+import { useState, useEffect } from "react";import EventCard from "./EventCard";
 import { motion } from "framer-motion";
 import { config } from "../config";
 import { FaDragon } from "react-icons/fa";
@@ -36,10 +35,19 @@ const HomePageEventList = () => {
     );
   }
 
-  if (error) {
+  const StayTunedCard = () => (
+    <EventCard
+      title="Please stay tuned!"
+      date="We are currently planning our next adventure."
+      description="Events are frequently updated, so be sure to check back soon!"
+      icon={FaDragon}
+    />
+  );
+
+  if (error || events.length === 0) {
     return (
-      <div className="flex justify-center items-center min-h-[200px]">
-        <div className="text-red-500">Error: {error}</div>
+      <div className="container mx-auto px-4 py-8">
+        <StayTunedCard />
       </div>
     );
   }
@@ -68,14 +76,6 @@ const HomePageEventList = () => {
           />
         ))}
       </motion.div>
-      {events.length === 0 && (
-        <EventCard
-          title="Please stay tuned!"
-          date="We are currently planning our next adventure."
-          description="Events are frequently updated, so be sure to check back soon!"
-          icon={FaDragon}
-        />
-      )}
     </div>
   );
 };
