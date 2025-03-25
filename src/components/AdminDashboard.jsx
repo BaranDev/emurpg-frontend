@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";import { config } from "../config";
+import React, { useState, useEffect, useRef } from "react";
+import { config } from "../config";
 import { FaArrowRightFromBracket as LogoutIcon } from "react-icons/fa6";
 
 const AdminDashboard = () => {
@@ -1296,7 +1297,6 @@ const AdminDashboard = () => {
                 )}
               </div>
             </div>
-
             <div className="event-info grid grid-cols-3 gap-4 mb-4">
               <div className="text-left">
                 <p className="text-gray-400">Start Date:</p>
@@ -1317,7 +1317,6 @@ const AdminDashboard = () => {
                 </p>
               </div>
             </div>
-
             {/* Tables List */}
             <div className="tables-list mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {event.tableDetails?.map((table) => (
@@ -1335,7 +1334,7 @@ const AdminDashboard = () => {
                   <p className="text-sm">Player Quota: {table.player_quota}</p>
                   <p className="text-sm">Language: {table.language}</p>
                   <p className="text-xs text-gray-500">ID: {table.slug}</p>
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       onClick={() => {
                         setSelectedTable(table);
@@ -1347,7 +1346,7 @@ const AdminDashboard = () => {
                         });
                         setIsEditingTableModalOpen(true);
                       }}
-                      className="bg-blue-600 text-white px-2 py-1 rounded"
+                      className="bg-blue-600 text-white px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0"
                     >
                       Edit
                     </button>
@@ -1363,13 +1362,36 @@ const AdminDashboard = () => {
                         setSelectedTable(table);
                         handleShowPlayersModal(table.slug);
                       }}
-                      className="bg-purple-600 text-white px-2 py-1 rounded"
+                      className="bg-purple-600 text-white px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0"
                     >
                       Players
                     </button>
                     <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(
+                            `${backendUrl}/api/admin/set_table_full/${table.slug}`,
+                            {
+                              method: "POST",
+                              headers: { apiKey: API_KEY },
+                            }
+                          );
+
+                          if (!response.ok)
+                            throw new Error("Failed to mark table as full");
+                          alert("Table marked as full successfully!");
+                        } catch (error) {
+                          console.error("Error marking table as full:", error);
+                          alert("Failed to mark table as full");
+                        }
+                      }}
+                      className="bg-amber-600 text-white px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0"
+                    >
+                      Full
+                    </button>
+                    <button
                       onClick={() => handleDeleteTable(table.slug)}
-                      className="bg-red-600 text-white px-2 py-1 rounded"
+                      className="bg-red-600 text-white px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0"
                     >
                       Delete
                     </button>
@@ -1382,30 +1404,30 @@ const AdminDashboard = () => {
       </div>
 
       {/* Global Buttons */}
-      <div className="flex gap-4 justify-center mt-4">
+      <div className="flex flex-wrap gap-2 sm:gap-4 justify-center mt-4 px-2">
         <button
           onClick={() => setShowGameFormModal(true)}
-          className="bg-lime-600 text-white px-4 py-2 rounded"
+          className="bg-lime-600 text-white px-3 py-2 text-sm sm:text-base sm:px-4 rounded flex-1 sm:flex-none min-w-0"
         >
-          Add New Game
+          Add Game
         </button>
         <button
           onClick={() => setIsCreateEventModalOpen(true)}
-          className="bg-green-500 text-white px-5 py-2 rounded"
+          className="bg-green-500 text-white px-3 py-2 text-sm sm:text-base sm:px-5 rounded flex-1 sm:flex-none min-w-0"
         >
-          Create New Event
+          New Event
         </button>
         <button
           onClick={() => setIsReportModalOpen(true)}
-          className="bg-blue-500 text-white px-5 py-2 rounded"
+          className="bg-blue-500 text-white px-3 py-2 text-sm sm:text-base sm:px-5 rounded flex-1 sm:flex-none min-w-0"
         >
-          Generate Report
+          Reports
         </button>
         <button
           onClick={() => setIsGameListModalOpen(true)}
-          className="bg-violet-500 text-white px-5 py-2 rounded"
+          className="bg-violet-500 text-white px-3 py-2 text-sm sm:text-base sm:px-5 rounded flex-1 sm:flex-none min-w-0"
         >
-          Game List
+          Games
         </button>
       </div>
       {/* Game Creation Modal */}

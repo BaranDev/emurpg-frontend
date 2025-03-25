@@ -150,91 +150,7 @@ const TableList = ({ eventSlug }) => {
           const gameData = table.game_id ? gameDetails[table.game_id] : null;
           console.log(`Table ${table.slug} game data:`, gameData);
 
-          return (
-            <div
-              key={table.slug}
-              className="bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 border-2 border-yellow-600 flex flex-col h-full"
-            >
-              {(gameData?.image_url || table.game_image) && (
-                <div className="w-full h-32 overflow-hidden">
-                  <img
-                    src={gameData?.image_url || table.game_image}
-                    alt={table.game_name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      console.error(`Image failed to load:`, e.target.src);
-                      e.target.src =
-                        "https://placehold.co/600x400/333/CCC?text=Game+Image";
-                    }}
-                  />
-                </div>
-              )}
-              <div className="p-6 flex-grow">
-                <h3 className="text-xl font-bold text-yellow-500 mb-2 text-center font-medieval">
-                  {table.game_name}
-                </h3>
-
-                {table.language && (
-                  <p className="text-sm text-red-500 mb-1 text-center">
-                    {table.language}
-                  </p>
-                )}
-
-                <p className="text-sm text-gray-300 mb-1 text-center">
-                  Quest Master: {table.game_master}
-                </p>
-
-                <p className="text-sm text-center text-gray-400 mb-2">
-                  ⏱️ ~
-                  {gameData
-                    ? gameData.avg_play_time
-                    : table.game_play_time || "?"}{" "}
-                  minutes
-                </p>
-
-                <p className="text-sm text-center text-green-400 mb-3">
-                  {table.player_quota} seats
-                </p>
-              </div>
-
-              <div className="p-4 bg-gray-700">
-                <div className="flex gap-2">
-                  <Link
-                    to={`/table/${table.slug}`}
-                    className="flex-1 text-center bg-yellow-600 text-white px-4 py-2 rounded-md transition-colors hover:bg-yellow-700"
-                  >
-                    Register
-                  </Link>
-                  <button
-                    onClick={() => {
-                      // First scroll to top
-                      window.scrollTo({
-                        top: 400,
-                        behavior: "smooth",
-                      });
-                      // Set a small timeout to ensure scroll completes before modal opens
-                      setTimeout(() => {
-                        setSelectedGame(
-                          gameData || {
-                            name: table.game_name,
-                            image_url: table.game_image,
-                            avg_play_time: table.game_play_time,
-                            guide_text: table.game_guide_text,
-                            guide_video_url: table.game_guide_video,
-                            min_players: 1,
-                            max_players: table.player_quota,
-                          }
-                        );
-                      }, 300);
-                    }}
-                    className="text-center text-sm bg-blue-600/50 hover:bg-blue-600/70 text-white px-3 py-2 rounded-md transition-colors"
-                  >
-                    Game Info
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
+          return tableListFunction(table, gameData, setSelectedGame);
         })}
 
         {/* Host your own table card */}
@@ -265,3 +181,98 @@ const TableList = ({ eventSlug }) => {
 };
 
 export default TableList;
+function tableListFunction(table, gameData, setSelectedGame) {
+  return (
+    <div
+      key={table.slug}
+      className="bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 border-2 border-yellow-600 flex flex-col h-full"
+    >
+      {(gameData?.image_url || table.game_image) && (
+        <div className="w-full h-32 overflow-hidden">
+          <img
+            src={gameData?.image_url || table.game_image}
+            alt={table.game_name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              console.error(`Image failed to load:`, e.target.src);
+              e.target.src =
+                "https://placehold.co/600x400/333/CCC?text=Game+Image";
+            }}
+          />
+        </div>
+      )}
+      <div className="p-6 flex-grow">
+        <h3
+          className={
+            "text-xl font-bold text-yellow-500 mb-2 text-center font-medieval"
+          }
+        >
+          {table.game_name}
+        </h3>
+
+        {table.language && (
+          <p className="text-sm text-red-500 mb-1 text-center">
+            {table.language}
+          </p>
+        )}
+
+        <p className="text-sm text-gray-300 mb-1 text-center">
+          Quest Master: {table.game_master}
+        </p>
+
+        <p className="text-sm text-center text-gray-400 mb-2">
+          ⏱️ ~{gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
+          minutes
+        </p>
+
+        {!table.is_marked_full && (
+          <p className="text-sm text-center text-green-400 mb-3">
+            {table.player_quota} seats
+          </p>
+        )}
+      </div>
+
+      <div className="p-4 bg-gray-700">
+        <div className="flex gap-2">
+          <Link
+            to={`/table/${table.slug}`}
+            className={`flex-1 text-center ${
+              table.is_marked_full
+                ? "bg-gray-500 cursor-not-allowed"
+                : "bg-yellow-600 hover:bg-yellow-700"
+            } text-white px-4 py-2 rounded-md transition-colors`}
+            onClick={(e) => table.is_marked_full && e.preventDefault()}
+          >
+            {table.is_marked_full ? "Full" : "Register"}
+          </Link>
+          <button
+            onClick={() => {
+              // First scroll to top
+              window.scrollTo({
+                top: 400,
+                behavior: "smooth",
+              });
+              // Set a small timeout to ensure scroll completes before modal opens
+              setTimeout(() => {
+                setSelectedGame(
+                  gameData || {
+                    name: table.game_name,
+                    image_url: table.game_image,
+                    avg_play_time: table.game_play_time,
+                    guide_text: table.game_guide_text,
+                    guide_video_url: table.game_guide_video,
+                    min_players: 1,
+                    max_players: table.player_quota,
+                  }
+                );
+              }, 300);
+            }}
+            className="text-center text-sm bg-blue-600/50 hover:bg-blue-600/70 text-white px-3 py-2 rounded-md transition-colors"
+          >
+            Game Info
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
