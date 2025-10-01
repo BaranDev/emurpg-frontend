@@ -1,4 +1,4 @@
-import React from "react";import { FaCalendar } from "react-icons/fa";
+import { FaCalendar } from "react-icons/fa";
 import { motion } from "framer-motion";
 import {
   EventsFooter,

@@ -1,5 +1,6 @@
 import React from "react";
 import { FaRegSadTear } from "react-icons/fa";
+import PropTypes from "prop-types";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -7,7 +8,7 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
@@ -21,13 +22,13 @@ class ErrorBoundary extends React.Component {
               Oops! Browser Not Supported
             </h1>
             <p className="text-gray-400 text-lg mb-6 max-w-md mx-auto">
-              We apologize, but it seems your browser isn't compatible with some
-              of our features. Please try using a modern browser like Chrome,
-              Firefox, or Edge.
+              We apologize, but it seems your browser isn&apos;t compatible with
+              some of our features. Please try using a modern browser like
+              Chrome, Firefox, or Edge.
             </p>
             <p className="text-gray-400 text-lg mb-6 max-w-md mx-auto">
               If you believe this is a mistake, please try refreshing the page.
-              Or reach the developer at{" "}
+              Or reach the developer (also a club admin) at{" "}
               <a
                 href="mailto:cevdetbaranoral@gmail.com"
                 className="text-yellow-500 hover:underline"
@@ -49,5 +50,9 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default ErrorBoundary;

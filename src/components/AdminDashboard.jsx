@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
 import { config } from "../config";
 import { FaArrowRightFromBracket as LogoutIcon } from "react-icons/fa6";
@@ -1268,7 +1269,10 @@ const AdminDashboard = () => {
                           document.body.removeChild(link);
                           URL.revokeObjectURL(url);
                         } catch (error) {
-                          alert("Failed to generate announcement image");
+                          alert(
+                            "Failed to generate announcement image: " +
+                              error.message
+                          );
                         }
                       }}
                       className="bg-cyan-600 text-white px-3 py-1 rounded"
@@ -1317,23 +1321,134 @@ const AdminDashboard = () => {
                 </p>
               </div>
             </div>
+
+            {/* Table Status Summary */}
+            {event.tableDetails && event.tableDetails.length > 0 && (
+              <div className="mb-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                <h4 className="text-sm font-semibold text-gray-300 mb-2">
+                  Table Status Summary
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">✅ Open Tables:</span>
+                    <span className="font-bold text-green-300">
+                      {
+                        event.tableDetails.filter(
+                          (table) => !table.is_marked_full
+                        ).length
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-red-400">🔒 Full Tables:</span>
+                    <span className="font-bold text-red-300">
+                      {
+                        event.tableDetails.filter(
+                          (table) => table.is_marked_full
+                        ).length
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">📊 Total Tables:</span>
+                    <span className="font-bold text-gray-300">
+                      {event.tableDetails.length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Tables List */}
             <div className="tables-list mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {event.tableDetails?.map((table) => (
                 <div
                   key={table.slug}
-                  className="table-item border p-4 rounded-lg"
+                  className={`table-item border p-4 rounded-lg relative transition-all duration-300 ${
+                    table.is_marked_full
+                      ? "border-red-500 bg-red-900/20 shadow-red-500/30 shadow-lg"
+                      : "border-green-500 bg-green-900/10 shadow-green-500/20 shadow-md"
+                  }`}
                 >
-                  <h3 className="font-bold text-yellow-500">
+                  {/* Full Status Indicator */}
+                  <div className="absolute top-2 right-2">
+                    {table.is_marked_full ? (
+                      <span className="flex items-center gap-1 text-xs font-bold text-red-400 bg-red-900/50 px-2 py-1 rounded-full border border-red-500">
+                        🔒 FULL
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-xs font-bold text-green-400 bg-green-900/50 px-2 py-1 rounded-full border border-green-500">
+                        ✅ OPEN
+                      </span>
+                    )}
+                  </div>
+
+                  <h3
+                    className={`font-bold mb-2 ${
+                      table.is_marked_full ? "text-red-400" : "text-yellow-500"
+                    }`}
+                  >
                     {table.game_name}
                   </h3>
                   <p className="text-sm">GM: {table.game_master}</p>
-                  <p className="text-sm">
+                  <p
+                    className={`text-sm ${
+                      table.is_marked_full ? "text-red-300" : "text-gray-300"
+                    }`}
+                  >
                     Applied Players: {table.total_joined_players}
                   </p>
-                  <p className="text-sm">Player Quota: {table.player_quota}</p>
+                  <p
+                    className={`text-sm ${
+                      table.is_marked_full ? "text-red-300" : "text-gray-300"
+                    }`}
+                  >
+                    Player Quota: {table.player_quota}
+                  </p>
                   <p className="text-sm">Language: {table.language}</p>
                   <p className="text-xs text-gray-500">ID: {table.slug}</p>
+
+                  {/* Seat Occupancy Progress Bar */}
+                  <div className="mt-3 mb-3">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span
+                        className={
+                          table.is_marked_full
+                            ? "text-red-300"
+                            : "text-gray-300"
+                        }
+                      >
+                        Seats Filled
+                      </span>
+                      <span
+                        className={
+                          table.is_marked_full
+                            ? "text-red-300"
+                            : "text-gray-300"
+                        }
+                      >
+                        {table.total_joined_players}/{table.player_quota}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          table.is_marked_full
+                            ? "bg-red-500"
+                            : table.total_joined_players >= table.player_quota
+                            ? "bg-amber-500"
+                            : "bg-green-500"
+                        }`}
+                        style={{
+                          width: `${Math.min(
+                            (table.total_joined_players / table.player_quota) *
+                              100,
+                            100
+                          )}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       onClick={() => {
@@ -1378,16 +1493,33 @@ const AdminDashboard = () => {
                           );
 
                           if (!response.ok)
-                            throw new Error("Failed to mark table as full");
-                          alert("Table marked as full successfully!");
+                            throw new Error("Failed to toggle table status");
+
+                          // Success message based on current status
+                          const action = table.is_marked_full
+                            ? "unmarked"
+                            : "marked";
+                          alert(`Table ${action} as full successfully!`);
+
+                          // Refresh the events to update the UI
+                          window.location.reload();
                         } catch (error) {
-                          console.error("Error marking table as full:", error);
-                          alert("Failed to mark table as full");
+                          console.error("Error toggling table status:", error);
+                          alert("Failed to toggle table status");
                         }
                       }}
-                      className="bg-amber-600 text-white px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0"
+                      className={`px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0 transition-colors ${
+                        table.is_marked_full
+                          ? "bg-gray-600 hover:bg-gray-700 text-white border border-gray-500"
+                          : "bg-amber-600 hover:bg-amber-700 text-white"
+                      }`}
+                      title={
+                        table.is_marked_full
+                          ? "Click to reopen table"
+                          : "Click to mark as full"
+                      }
                     >
-                      Full
+                      {table.is_marked_full ? "🔓 Reopen" : "🔒 Mark Full"}
                     </button>
                     <button
                       onClick={() => handleDeleteTable(table.slug)}

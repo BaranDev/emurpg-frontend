@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 import { config } from "../config";
 import GameGuideModal from "./GameGuideModal";
 
@@ -10,7 +11,6 @@ const TableList = ({ eventSlug }) => {
   const wsConnected = useRef(false);
   const wsConnectionAttempted = useRef(false);
   const [selectedGame, setSelectedGame] = useState(null);
-  const [games, setGames] = useState([]);
   const [gameDetails, setGameDetails] = useState({});
 
   useEffect(() => {
@@ -24,7 +24,8 @@ const TableList = ({ eventSlug }) => {
       try {
         const response = await fetch(`${config.backendUrl}/api/games`);
         const data = await response.json();
-        setGames(data);
+        // Games data is fetched but not currently used in the component
+        console.log("Games loaded:", data);
       } catch (error) {
         console.error("Error fetching games:", error);
       }
@@ -72,7 +73,7 @@ const TableList = ({ eventSlug }) => {
         ws.close();
       }
     };
-  }, [eventSlug]);
+  }, [eventSlug, backendUrl, ws]);
 
   useEffect(() => {
     const fetchGameDetails = async (gameId) => {
@@ -104,7 +105,7 @@ const TableList = ({ eventSlug }) => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
         <p className="text-lg text-gray-300 mb-4">
-          Event is full, stay tuned for our next event!
+          Event is still being created. Please check back later!
         </p>
         <p className="text-lg text-gray-300 mb-4">
           Make sure to join our{" "}
@@ -178,6 +179,10 @@ const TableList = ({ eventSlug }) => {
       </div>
     </>
   );
+};
+
+TableList.propTypes = {
+  eventSlug: PropTypes.string.isRequired,
 };
 
 export default TableList;

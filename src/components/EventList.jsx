@@ -1,38 +1,21 @@
-import React, { useEffect, useState, useRef } from "react";import TableList from "./TableList";
+import { useEffect, useState, useRef } from "react";
+import TableList from "./TableList";
 import { config } from "../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
+
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  // Fallback for unsupported browsers
-  if (!window.fetch || !window.WebSocket) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gray-900"
-      >
-        <FaExclamationTriangle className="text-6xl text-yellow-500 mb-6" />
-        <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
-          Browser Not Supported
-        </h1>
-        <p className="text-lg text-gray-300 mb-4">
-          Please use a modern browser like Chrome, Firefox, or Edge for the best
-          experience.
-        </p>
-      </motion.div>
-    );
-  }
+  const [ws, setWs] = useState(null);
+  const wsConnected = useRef(false);
+  const wsConnectionAttempted = useRef(false);
+
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
       .then((res) => res.json())
       .then((data) => setEvents(data));
   }, []);
-
-  const [ws, setWs] = useState(null);
-  const wsConnected = useRef(false);
-  const wsConnectionAttempted = useRef(false);
 
   useEffect(() => {
     const connectWebSocket = () => {
@@ -81,7 +64,27 @@ const EventList = () => {
         wsConnectionAttempted.current = false;
       }
     };
-  }, []);
+  }, [ws]);
+
+  // Fallback for unsupported browsers
+  if (!window.fetch || !window.WebSocket) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gray-900"
+      >
+        <FaExclamationTriangle className="text-6xl text-yellow-500 mb-6" />
+        <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
+          Browser Not Supported
+        </h1>
+        <p className="text-lg text-gray-300 mb-4">
+          Please use a modern browser like Chrome, Firefox, or Edge for the best
+          experience.
+        </p>
+      </motion.div>
+    );
+  }
 
   if (events.length === 0) {
     return (
@@ -180,7 +183,7 @@ const EventList = () => {
                 >
                   {event.available_tables > 0
                     ? `${event.available_seats} total seats available`
-                    : "Event is under maintenance"}
+                    : "Event's registrations haven't started yet"}
                 </span>
                 <span className="text-gray-400 flex items-center gap-2">
                   <FaCalendar />
