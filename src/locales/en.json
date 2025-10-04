@@ -1,4 +1,72 @@
-{  "welcome": "Welcome to EMU RPG Events",
+{
+  "welcome": "Welcome to EMU RPG Events",
   "event_list": "Available Events",
-  "register": "Register"
+  "register": "Register",
+  "language_selection": {
+    "title": "Select Language",
+    "description": "Please choose your preferred language for the website",
+    "english": "English",
+    "turkish": "Türkçe",
+    "continue": "Continue"
+  },
+  "events_page": {
+    "title": "Upcoming Events",
+    "homepage": "Homepage",
+    "character_roller": "Character Roller",
+    "soon_badge": "Soon"
+  },
+  "event_list_component": {
+    "browser_not_supported": "Browser Not Supported",
+    "use_modern_browser": "Please use a modern browser like Chrome, Firefox, or Edge for the best experience.",
+    "emurpg_events": "EMURPG Events",
+    "no_ongoing_events": "There are no ongoing events, stay tuned for our next events!",
+    "join_whatsapp": "Join WhatsApp",
+    "join_discord": "Join Discord",
+    "back_to_events": "Back to Events",
+    "seats_available": "total seats available",
+    "registrations_not_started": "Event's registrations haven't started yet"
+  },
+  "table_list": {
+    "event_being_created": "Event is still being created. Please check back later!",
+    "make_sure_join": "Make sure to join our",
+    "and_our": "and our",
+    "welcome_adventurer": "Welcome, brave adventurer, to the realm of tabletop quests and epic tales!",
+    "want_to_host": "Want to host your own table?",
+    "share_favorite_game": "Share your favorite game with fellow friends!",
+    "mail_us": "Mail Us",
+    "quest_master": "Quest Master",
+    "minutes": "minutes",
+    "seats": "seats",
+    "full": "Full",
+    "register": "Register",
+    "game_info": "Game Info"
+  },
+  "navbar": {
+    "events": "Events",
+    "character_roller": "Character Roller",
+    "made_by": "Made by",
+    "language": "Language",
+    "english": "English",
+    "turkish": "Turkish"
+  },
+  "homepage": {
+    "hero_title": "EMU RPG Club",
+    "hero_subtitle": "Crafting Worlds, Rolling Dice, Building Legends",
+    "register_events": "Register for Events",
+    "about_title": "About Our Club",
+    "about_text_1": "We're not just your average RPG club - we're a community of gamers who love all sorts of adventures!",
+    "about_text_2": "From epic D&D campaigns to exciting board game nights, we know how to have a fun while rolling dice and telling stories. Whether you're an experienced player or just curious about tabletop gaming, our doors are always open for new friends who want to join in on the fun since 2023.",
+    "upcoming_events": "Upcoming Events",
+    "roll_dice": "Roll the Dice!",
+    "meet_gm": "Meet the Game Masters",
+    "adventure_gallery": "Adventure Gallery",
+    "ready_to_join": "Ready to Join the Quest?",
+    "join_discord": "Join Discord",
+    "view_events": "View Events",
+    "gm_president": "President | Game Master",
+    "gm_dungeon_master": "Dungeon Master | Activity Manager | Software Developer",
+    "gm_master_cards": "Master of Cards",
+    "gm_game_master": "Game Master",
+    "gm_instructor": "Dungeon Master | Instructor | Content Creator"
+  }
 }

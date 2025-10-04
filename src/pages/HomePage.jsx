@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   FaDiceD20,
   FaDiscord,
   FaCalendar,
   FaScroll,
   FaBookOpen,
-  FaDragon,
   FaUser,
   FaDice,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   SocialButton,
   GameMasterCard,
   SectionTitle,
-  EventCard,
   Navbar,
   InstagramGrid,
   FireButton,
@@ -33,7 +33,8 @@ const PATTERN_BG = `data:image/svg+xml,${encodeURIComponent(`
   </svg>
 `)}`;
 
-const HomePage = () => {
+const HomePage = ({ onLanguageSwitch }) => {
+  const { t } = useTranslation();
   const [diceQuote, setDiceQuote] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -73,18 +74,19 @@ const HomePage = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar onLanguageSwitch={onLanguageSwitch} />
       <Navbar
+        onLanguageSwitch={onLanguageSwitch}
         buttons={[
           {
-            label: "Events",
+            label: t("navbar.events"),
             onClick: () => (window.location.href = "/events"),
             disabled: false,
           },
           {
-            label: "Character Roller",
+            label: t("navbar.character_roller"),
             disabled: true,
-            badge: "Soon",
+            badge: t("events_page.soon_badge"),
             onClick: () => {},
           },
         ]}
@@ -113,7 +115,7 @@ const HomePage = () => {
               animate={{ y: 0, opacity: 1 }}
               className="text-6xl md:text-7xl font-bold mb-6 text-yellow-500 drop-shadow-lg"
             >
-              EMU RPG Club
+              {t("homepage.hero_title")}
             </motion.h1>
 
             <motion.p
@@ -121,12 +123,12 @@ const HomePage = () => {
               animate={{ y: 0, opacity: 1 }}
               className="text-xl md:text-2xl mb-8 text-yellow-300"
             >
-              Crafting Worlds, Rolling Dice, Building Legends
+              {t("homepage.hero_subtitle")}
             </motion.p>
 
             <FireButton
               onClick={handleJoinButton_events}
-              text="Register for Events"
+              text={t("homepage.register_events")}
             ></FireButton>
             <br />
             <FireButton
@@ -168,18 +170,15 @@ const HomePage = () => {
         {/* About Section */}
         <section className="py-24 bg-gray-800/50">
           <div className="container mx-auto px-4">
-            <SectionTitle icon={FaScroll}>About Our Club</SectionTitle>
+            <SectionTitle icon={FaScroll}>
+              {t("homepage.about_title")}
+            </SectionTitle>
             <div className="max-w-4xl mx-auto text-center">
               <p className="text-xl text-gray-300 mb-8">
-                We're not just your average RPG club - we're a community of
-                gamers who love all sorts of adventures!
+                {t("homepage.about_text_1")}
                 <br />
                 <br />
-                From epic D&D campaigns to exciting board game nights, we know
-                how to have a fun while rolling dice and telling stories.
-                Whether you're an experienced player or just curious about
-                tabletop gaming, our doors are always open for new friends who
-                want to join in on the fun since 2023.
+                {t("homepage.about_text_2")}
               </p>
             </div>
           </div>
@@ -188,7 +187,9 @@ const HomePage = () => {
         {/* Events Section */}
         <section className="relative py-24 bg-gray-900/50">
           <div className="container mx-auto px-4">
-            <SectionTitle icon={FaScroll}>Upcoming Events</SectionTitle>
+            <SectionTitle icon={FaScroll}>
+              {t("homepage.upcoming_events")}
+            </SectionTitle>
 
             <HomePageEventList />
           </div>
@@ -196,7 +197,7 @@ const HomePage = () => {
         {/* Interactive Dice Section */}
         <section className="py-16 bg-gray-900/80">
           <SectionTitle icon={FaDice} className="mx-auto">
-            Roll the Dice!
+            {t("homepage.roll_dice")}
           </SectionTitle>
           <div className="container mx-auto px-4 text-center ">
             <motion.button
@@ -230,17 +231,17 @@ const HomePage = () => {
         {/* Game Masters Section */}
         <section className="py-24 bg-gray-800/50">
           <div className="container mx-auto px-4">
-            <SectionTitle icon={FaUser}>Meet the Game Masters</SectionTitle>
+            <SectionTitle icon={FaUser}>{t("homepage.meet_gm")}</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <GameMasterCard
                 name="Ata Hunu"
-                title="President | Game Master"
+                title={t("homepage.gm_president")}
                 description=""
                 image={photos.photo_ata}
               />
               <GameMasterCard
                 name="Cevdet Baran Oral"
-                title="Dungeon Master | Activity Manager | Software Developer"
+                title={t("homepage.gm_dungeon_master")}
                 description="El. Psy. Kongroo."
                 image={photos.photo_baran}
                 socials={{
@@ -252,13 +253,13 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Ayberk Onaylı"
-                title="Master of Cards"
+                title={t("homepage.gm_master_cards")}
                 description="Always rolls 1"
                 image={photos.photo_ayberk}
               />
               <GameMasterCard
                 name="Çağan Meriç"
-                title="Game Master"
+                title={t("homepage.gm_game_master")}
                 description="A terrifying presence has entered the room..."
                 image={photos.photo_cagan}
                 socials={{
@@ -267,7 +268,7 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Yunus Bahadır"
-                title="Game Master"
+                title={t("homepage.gm_game_master")}
                 description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
                 image={photos.photo_yunus}
                 socials={{
@@ -278,19 +279,19 @@ const HomePage = () => {
               />
               <GameMasterCard
                 name="Kerem Ata Bakim"
-                title="Game Master"
+                title={t("homepage.gm_game_master")}
                 description="Someone who lives his life differently"
                 image={photos.photo_kerem}
               />
               <GameMasterCard
                 name="Yusuf Mete Kuzu"
-                title="Game Master"
+                title={t("homepage.gm_game_master")}
                 description=""
                 image={photos.photo_mete}
               />
               <GameMasterCard
                 name="Araklon RPG"
-                title="Dungeon Master | Instrucor | Content Creator"
+                title={t("homepage.gm_instructor")}
                 description=""
                 image={photos.photo_roman}
                 socials={{
@@ -316,7 +317,9 @@ const HomePage = () => {
 
         {/* Gallery Section */}
         <section className="py-24 bg-gray-900/50">
-          <SectionTitle icon={FaBookOpen}>Adventure Gallery</SectionTitle>
+          <SectionTitle icon={FaBookOpen}>
+            {t("homepage.adventure_gallery")}
+          </SectionTitle>
           <InstagramGrid />
         </section>
 
@@ -345,18 +348,18 @@ const HomePage = () => {
         <section className="py-16 bg-gradient-to-b from-gray-800 to-gray-900">
           <div className="container mx-auto px-4 text-center items-center justify-center">
             <h2 className="text-4xl font-bold mb-8 text-yellow-500">
-              Ready to Join the Quest?
+              {t("homepage.ready_to_join")}
             </h2>
             <div className="flex flex-wrap justify-center gap-4">
               <SocialButton
                 icon={<FaDiscord />}
-                text="Join Discord"
+                text={t("homepage.join_discord")}
                 onClick={() => window.open(config.DISCORD_LINK, "_blank")}
               />
 
               <SocialButton
                 icon={<FaCalendar />}
-                text="View Events"
+                text={t("homepage.view_events")}
                 onClick={() => window.open("/events", "_blank")}
               />
             </div>
@@ -368,6 +371,10 @@ const HomePage = () => {
       </motion.div>
     </>
   );
+};
+
+HomePage.propTypes = {
+  onLanguageSwitch: PropTypes.func,
 };
 
 export default HomePage;

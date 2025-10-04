@@ -1,4 +1,6 @@
-import React, { useState } from "react";import { config } from "../config";
+import { useState } from "react";
+import PropTypes from "prop-types";
+import { config } from "../config";
 import {
   FaDiceD20,
   FaCheck,
@@ -7,12 +9,11 @@ import {
   FaIdCard,
   FaPhoneAlt,
   FaShieldAlt,
-  FaTimes,
   FaDharmachakra,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Modal = ({ isOpen, onClose, children }) => (
+const Modal = ({ isOpen, children }) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div
@@ -34,6 +35,11 @@ const Modal = ({ isOpen, onClose, children }) => (
   </AnimatePresence>
 );
 
+Modal.propTypes = {
+  isOpen: PropTypes.bool,
+  children: PropTypes.node,
+};
+
 const Input = ({ icon: Icon, ...props }) => (
   <div className="relative">
     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -45,6 +51,10 @@ const Input = ({ icon: Icon, ...props }) => (
     />
   </div>
 );
+
+Input.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+};
 
 const RegistrationForm = ({ tableSlug, tableId }) => {
   const [studentId, setStudentId] = useState("");
@@ -62,7 +72,8 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
       "3. Follow the event schedule and guidelines.",
       "4. No cheating or unfair play is allowed.",
       "5. Do not carry any weapons or dangerous items to the event even though they are related to your cosplay.",
-      "6. Have fun and embrace the spirit of role-playing without breaking the rules or bothering others.",
+      "6. Each participant may register only once per event. Multiple registrations with the same credentials will be automatically rejected by the system.",
+      "7. Have fun and embrace the spirit of role-playing without breaking the rules or bothering others.",
     ],
     TR: [
       "1. Katılımcılar kayıtlı öğrenci olmalıdır.",
@@ -70,7 +81,8 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
       "3. Etkinlik programını ve yönergelerini takip edin.",
       "4. Hile yapmak veya haksız oyun oynamak yasaktır.",
       "5. Kostümle ilgili olsa bile etkinliğe silah veya tehlikeli eşya getirmeyin.",
-      "6. Kuralları ihlal etmeden ve diğerlerini rahatsız etmeden rol yapma ruhunu benimseyin ve eğlenin.",
+      "6. Her katılımcı etkinlik başına yalnızca bir kez kayıt olabilir. Aynı kimlik bilgileriyle yapılan tekrarlı kayıtlar sistem tarafından otomatik olarak reddedilecektir.",
+      "7. Kuralları ihlal etmeden ve diğerlerini rahatsız etmeden rol yapma ruhunu benimseyin ve eğlenin.",
     ],
   };
 
@@ -99,10 +111,6 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
       alert("Your registration was successful!");
     }
   };
-
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const toggleRuleLanguage = () =>
-    setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN");
 
   return (
     <motion.div
@@ -277,6 +285,11 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
       </Modal>
     </motion.div>
   );
+};
+
+RegistrationForm.propTypes = {
+  tableSlug: PropTypes.string,
+  tableId: PropTypes.number,
 };
 
 export default RegistrationForm;

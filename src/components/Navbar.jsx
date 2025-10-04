@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { FaDiceD20, FaBars, FaTimes, FaGithub } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { FaDiceD20, FaBars, FaTimes, FaGithub, FaGlobe } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
-const Navbar = ({ buttons = [], scrollEffectEnabled = true }) => {
+const Navbar = ({
+  buttons = [],
+  scrollEffectEnabled = true,
+  onLanguageSwitch,
+}) => {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(!scrollEffectEnabled);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  const currentLanguage = i18n.language;
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -48,20 +56,12 @@ const Navbar = ({ buttons = [], scrollEffectEnabled = true }) => {
   );
 
   return (
-    <AnimatePresence>
+    <>
       {isVisible && (
-        <motion.nav
-          initial={
-            scrollEffectEnabled ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }
-          }
-          animate={{ y: 0, opacity: 1 }}
-          exit={
-            scrollEffectEnabled ? { y: -100, opacity: 0 } : { y: 0, opacity: 0 }
-          }
-          transition={{ duration: 0.3 }}
+        <nav
           className={`${
-            scrollEffectEnabled ? "fixed" : "relative"
-          } top-0 left-0 right-0 bg-gray-800/50 backdrop-blur-[2px] border-b-2 border-yellow-600 z-50`}
+            scrollEffectEnabled ? "fixed animate-slideDown" : "relative"
+          } top-0 left-0 right-0 bg-gray-800/50 backdrop-blur-[2px] border-b-2 border-yellow-600 z-50 transition-all duration-200`}
         >
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center h-16">
@@ -73,7 +73,7 @@ const Navbar = ({ buttons = [], scrollEffectEnabled = true }) => {
                   </span>
                 </div>
                 <div className="flex items-center text-[10px] text-yellow-500 mt-1">
-                  Made by
+                  {t("navbar.made_by")}
                   <FaGithub className="ml-1 mr-1" />
                   <a
                     href="https://github.com/barandev"
@@ -89,6 +89,19 @@ const Navbar = ({ buttons = [], scrollEffectEnabled = true }) => {
               {/* Desktop menu */}
               <div className="hidden md:flex items-center space-x-4">
                 {buttons.map(renderButton)}
+                {/* Language Switcher */}
+                <button
+                  onClick={onLanguageSwitch}
+                  className="px-3 py-2 rounded relative group text-yellow-500 hover:text-yellow-400 flex items-center gap-2 border border-yellow-600/30 hover:border-yellow-500/50 transition-all"
+                  title={t("navbar.language")}
+                >
+                  <FaGlobe className="text-lg" />
+                  <span className="text-sm">
+                    {currentLanguage === "en"
+                      ? t("navbar.english")
+                      : t("navbar.turkish")}
+                  </span>
+                </button>
               </div>
 
               {/* Mobile menu button */}
@@ -104,13 +117,7 @@ const Navbar = ({ buttons = [], scrollEffectEnabled = true }) => {
 
             {/* Mobile menu */}
             {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="md:hidden border-t border-gray-700"
-              >
+              <div className="md:hidden border-t border-gray-700 animate-fadeIn">
                 <div className="px-2 pt-2 pb-3 space-y-1">
                   {buttons.map((button) => (
                     <button
@@ -131,14 +138,32 @@ const Navbar = ({ buttons = [], scrollEffectEnabled = true }) => {
                       )}
                     </button>
                   ))}
+                  {/* Language Switcher for Mobile */}
+                  <button
+                    onClick={onLanguageSwitch}
+                    className="block px-3 py-2 rounded w-full text-left text-yellow-500 hover:text-yellow-400 flex items-center gap-2 border border-yellow-600/30 hover:border-yellow-500/50 transition-all"
+                  >
+                    <FaGlobe className="text-lg" />
+                    <span>
+                      {currentLanguage === "en"
+                        ? t("navbar.english")
+                        : t("navbar.turkish")}
+                    </span>
+                  </button>
                 </div>
-              </motion.div>
+              </div>
             )}
           </div>
-        </motion.nav>
+        </nav>
       )}
-    </AnimatePresence>
+    </>
   );
+};
+
+Navbar.propTypes = {
+  buttons: PropTypes.array,
+  scrollEffectEnabled: PropTypes.bool,
+  onLanguageSwitch: PropTypes.func,
 };
 
 export default Navbar;

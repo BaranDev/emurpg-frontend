@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import RegistrationForm from "../components/RegistrationForm";
 import { config } from "../config";
@@ -8,28 +8,22 @@ import { FaCaretLeft, FaCaretRight } from "react-icons/fa6";
 const TableDetailPage = () => {
   const { slug } = useParams();
   const [table, setTable] = useState(null);
-  const [seatId, setSeatId] = useState(null); // Use state for seatId
-  const [canJoin, setCanJoin] = useState(false); // Use state for canJoin
   const backendUrl = config.backendUrl;
-  const [ws, setWs] = useState(null); // WebSocket state to manage connection
-  const wsConnected = useRef(false); // Ref to track WebSocket connection status
+  const [ws, setWs] = useState(null);
+  const wsConnected = useRef(false);
 
   // Function to fetch the table data
-  const fetchTableData = () => {
+  const fetchTableData = useCallback(() => {
     fetch(`${backendUrl}/api/table/${slug}`)
       .then((res) => res.json())
       .then((data) => {
         data = data.data;
-        setTable(data); // Set the table data
-        if (data.total_joined_players < data.player_quota) {
-          setCanJoin(true);
-          setSeatId(data.total_joined_players + 1);
-        } else {
-          setCanJoin(false);
-          setSeatId(null);
-        }
+        setTable(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching table data:", error);
       });
-  };
+  }, [backendUrl, slug]);
 
   useEffect(() => {
     // Fetch data initially
@@ -74,7 +68,8 @@ const TableDetailPage = () => {
         ws.close();
       }
     };
-  }, [slug, backendUrl]); // Dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, backendUrl, fetchTableData]);
 
   // Display loading message while data is being fetched
   if (!table) {

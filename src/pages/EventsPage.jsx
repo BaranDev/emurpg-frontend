@@ -1,5 +1,7 @@
 import { FaCalendar } from "react-icons/fa";
+import PropTypes from "prop-types";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   EventsFooter,
   Navbar,
@@ -17,55 +19,66 @@ const PATTERN_BG = `data:image/svg+xml,${encodeURIComponent(`
   </svg>
 `)}`;
 
-const EventsPage = () => (
-  (document.title = "EMURPG - Events"),
-  (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-gray-900 text-gray-100 flex flex-col"
-      style={{ backgroundImage: `url(${PATTERN_BG})` }}
-    >
-      <Navbar
-        buttons={[
-          {
-            label: "Homepage",
-            onClick: () => (window.location.href = "/"),
-          },
-          {
-            label: "Character Roller",
-            badge: "Soon",
-            disabled: true,
-          },
-        ]}
-        scrollEffectEnabled={false}
-      />
+const EventsPage = ({ onLanguageSwitch }) => {
+  const { t } = useTranslation();
 
-      <main className="flex-grow py-24">
-        <div className="container mx-auto px-4">
-          <SectionTitle icon={FaCalendar}>Upcoming Events</SectionTitle>
+  return (
+    (document.title = "EMURPG - Events"),
+    (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-gray-900 text-gray-100 flex flex-col"
+        style={{ backgroundImage: `url(${PATTERN_BG})` }}
+      >
+        <Navbar
+          onLanguageSwitch={onLanguageSwitch}
+          buttons={[
+            {
+              label: t("events_page.homepage"),
+              onClick: () => (window.location.href = "/"),
+            },
+            {
+              label: t("events_page.character_roller"),
+              badge: t("events_page.soon_badge"),
+              disabled: true,
+            },
+          ]}
+          scrollEffectEnabled={false}
+        />
 
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="mt-8"
-          >
-            <div
-              className="bg-gray-800/50 rounded-lg border border-yellow-500/20 shadow-2xl p-6 md:p-8
-            backdrop-blur-sm hover:border-yellow-500/30 transition-all duration-300"
+        <main className="flex-grow py-24">
+          <div className="container mx-auto px-4">
+            <SectionTitle icon={FaCalendar}>
+              {t("events_page.title")}
+            </SectionTitle>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mt-8"
             >
-              <ErrorBoundary>
-                <EventList />
-              </ErrorBoundary>
-            </div>
-          </motion.div>
-        </div>
-      </main>
+              <div
+                className="bg-gray-800/50 rounded-lg border border-yellow-500/20 shadow-2xl p-6 md:p-8
+              backdrop-blur-sm hover:border-yellow-500/30 transition-all duration-300"
+              >
+                <ErrorBoundary>
+                  <EventList />
+                </ErrorBoundary>
+              </div>
+            </motion.div>
+          </div>
+        </main>
 
-      <EventsFooter />
-    </motion.div>
-  )
-);
+        <EventsFooter />
+      </motion.div>
+    )
+  );
+};
+
+EventsPage.propTypes = {
+  onLanguageSwitch: PropTypes.func,
+};
 
 export default EventsPage;

@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";const GameGuideModal = ({ isOpen, onClose, game }) => {
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+const GameGuideModal = ({ isOpen, onClose, game }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // Detect screen size changes dynamically
@@ -95,6 +98,20 @@ import React, { useState, useEffect } from "react";const GameGuideModal = ({ isO
       </div>
     </div>
   );
+};
+
+GameGuideModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  game: PropTypes.shape({
+    name: PropTypes.string,
+    image_url: PropTypes.string,
+    avg_play_time: PropTypes.number,
+    min_players: PropTypes.number,
+    max_players: PropTypes.number,
+    guide_text: PropTypes.string,
+    guide_video_url: PropTypes.string,
+  }),
 };
 
 export default GameGuideModal;

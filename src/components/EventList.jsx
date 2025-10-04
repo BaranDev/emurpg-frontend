@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import TableList from "./TableList";
 import { config } from "../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
 
 const EventList = () => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [ws, setWs] = useState(null);
@@ -76,11 +78,10 @@ const EventList = () => {
       >
         <FaExclamationTriangle className="text-6xl text-yellow-500 mb-6" />
         <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
-          Browser Not Supported
+          {t("event_list_component.browser_not_supported")}
         </h1>
         <p className="text-lg text-gray-300 mb-4">
-          Please use a modern browser like Chrome, Firefox, or Edge for the best
-          experience.
+          {t("event_list_component.use_modern_browser")}
         </p>
       </motion.div>
     );
@@ -95,10 +96,12 @@ const EventList = () => {
       >
         <FaCalendar className="text-6xl text-yellow-500 mb-6" />
         <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
-          {selectedEvent ? selectedEvent.name : "EMURPG Events"}
+          {selectedEvent
+            ? selectedEvent.name
+            : t("event_list_component.emurpg_events")}
         </h1>
         <p className="text-xl text-gray-300 mb-6">
-          There are no ongoing events, stay tuned for our next events!
+          {t("event_list_component.no_ongoing_events")}
         </p>
         <div className="flex gap-4">
           <a
@@ -107,7 +110,7 @@ const EventList = () => {
             rel="noopener noreferrer"
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
-            Join WhatsApp
+            {t("event_list_component.join_whatsapp")}
           </a>
           <a
             href={config.DISCORD_LINK}
@@ -115,7 +118,7 @@ const EventList = () => {
             rel="noopener noreferrer"
             className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            Join Discord
+            {t("event_list_component.join_discord")}
           </a>
         </div>
       </motion.div>
@@ -135,7 +138,7 @@ const EventList = () => {
           onClick={() => setSelectedEvent(null)}
           className="mb-6 text-yellow-500 hover:text-yellow-400 flex items-center gap-2 text-lg"
         >
-          ← Back to Events
+          ← {t("event_list_component.back_to_events")}
         </motion.button>
       )}
 
@@ -144,7 +147,9 @@ const EventList = () => {
         animate={{ y: 0, opacity: 1 }}
         className="text-4xl md:text-6xl font-bold text-center text-yellow-500 mb-8 md:mb-12"
       >
-        {selectedEvent ? selectedEvent.name : "EMU RPG Events"}
+        {selectedEvent
+          ? selectedEvent.name
+          : t("event_list_component.emurpg_events")}
       </motion.h1>
 
       {!selectedEvent ? (
@@ -182,8 +187,10 @@ const EventList = () => {
                   }`}
                 >
                   {event.available_tables > 0
-                    ? `${event.available_seats} total seats available`
-                    : "Event's registrations haven't started yet"}
+                    ? `${event.available_seats} ${t(
+                        "event_list_component.seats_available"
+                      )}`
+                    : t("event_list_component.registrations_not_started")}
                 </span>
                 <span className="text-gray-400 flex items-center gap-2">
                   <FaCalendar />

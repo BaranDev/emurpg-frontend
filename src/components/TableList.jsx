@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { config } from "../config";
 import GameGuideModal from "./GameGuideModal";
 
 const TableList = ({ eventSlug }) => {
+  const { t } = useTranslation();
   const [tables, setTables] = useState([]);
   const backendUrl = config.backendUrl;
   const [ws, setWs] = useState(null);
@@ -105,10 +107,10 @@ const TableList = ({ eventSlug }) => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
         <p className="text-lg text-gray-300 mb-4">
-          Event is still being created. Please check back later!
+          {t("table_list.event_being_created")}
         </p>
         <p className="text-lg text-gray-300 mb-4">
-          Make sure to join our{" "}
+          {t("table_list.make_sure_join")}{" "}
           <a
             href={config.WHATSAPP_LINK}
             target="_blank"
@@ -117,7 +119,7 @@ const TableList = ({ eventSlug }) => {
           >
             WhatsApp
           </a>{" "}
-          and our{" "}
+          {t("table_list.and_our")}{" "}
           <a
             href={config.DISCORD_LINK}
             target="_blank"
@@ -143,15 +145,14 @@ const TableList = ({ eventSlug }) => {
         />
       )}
       <p className="text-lg md:text-xl text-center mb-4 md:mb-8 font-medieval">
-        Welcome, brave adventurer, to the realm of tabletop quests and epic
-        tales!
+        {t("table_list.welcome_adventurer")}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
         {tables.map((table) => {
           const gameData = table.game_id ? gameDetails[table.game_id] : null;
           console.log(`Table ${table.slug} game data:`, gameData);
 
-          return tableListFunction(table, gameData, setSelectedGame);
+          return tableListFunction(table, gameData, setSelectedGame, t);
         })}
 
         {/* Host your own table card */}
@@ -161,10 +162,10 @@ const TableList = ({ eventSlug }) => {
           </div>
           <div className="p-6 flex-grow flex flex-col items-center justify-center">
             <h3 className="text-xl font-bold text-purple-400 mb-4 text-center font-medieval">
-              Want to host your own table?
+              {t("table_list.want_to_host")}
             </h3>
             <p className="text-sm text-gray-300 mb-6 text-center">
-              Share your favorite game with fellow friends!
+              {t("table_list.share_favorite_game")}
             </p>
           </div>
           <div className="p-4 bg-gray-700">
@@ -172,7 +173,7 @@ const TableList = ({ eventSlug }) => {
               href="mailto:emufrpclub@gmail.com"
               className="block w-full text-center bg-purple-600 text-white px-4 py-2 rounded-md transition-colors hover:bg-purple-700"
             >
-              Mail Us
+              {t("table_list.mail_us")}
             </a>
           </div>
         </div>
@@ -186,7 +187,7 @@ TableList.propTypes = {
 };
 
 export default TableList;
-function tableListFunction(table, gameData, setSelectedGame) {
+function tableListFunction(table, gameData, setSelectedGame, t) {
   return (
     <div
       key={table.slug}
@@ -222,17 +223,17 @@ function tableListFunction(table, gameData, setSelectedGame) {
         )}
 
         <p className="text-sm text-gray-300 mb-1 text-center">
-          Quest Master: {table.game_master}
+          {t("table_list.quest_master")}: {table.game_master}
         </p>
 
         <p className="text-sm text-center text-gray-400 mb-2">
           ⏱️ ~{gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
-          minutes
+          {t("table_list.minutes")}
         </p>
 
         {!table.is_marked_full && (
           <p className="text-sm text-center text-green-400 mb-3">
-            {table.player_quota} seats
+            {table.player_quota} {t("table_list.seats")}
           </p>
         )}
       </div>
@@ -248,7 +249,9 @@ function tableListFunction(table, gameData, setSelectedGame) {
             } text-white px-4 py-2 rounded-md transition-colors`}
             onClick={(e) => table.is_marked_full && e.preventDefault()}
           >
-            {table.is_marked_full ? "Full" : "Register"}
+            {table.is_marked_full
+              ? t("table_list.full")
+              : t("table_list.register")}
           </Link>
           <button
             onClick={() => {
@@ -274,7 +277,7 @@ function tableListFunction(table, gameData, setSelectedGame) {
             }}
             className="text-center text-sm bg-blue-600/50 hover:bg-blue-600/70 text-white px-3 py-2 rounded-md transition-colors"
           >
-            Game Info
+            {t("table_list.game_info")}
           </button>
         </div>
       </div>
