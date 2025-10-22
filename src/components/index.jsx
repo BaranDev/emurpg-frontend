@@ -21,3 +21,4 @@ export { default as MainFooter } from "./MainFooter";
 export { default as GameGuideModal } from "./GameGuideModal";
 export { default as HomePageEventList } from "./HomePageEventList";
 export { default as LanguageSelector } from "./LanguageSelector";
+export { default as GeneralEventRegistrationForm } from "./GeneralEventRegistrationForm";

@@ -24,7 +24,8 @@
     "join_discord": "Discord'a Katıl",
     "back_to_events": "Etkinliklere Dön",
     "seats_available": "toplam koltuk mevcut",
-    "registrations_not_started": "Etkinlik kayıtları henüz başlamadı"
+    "registrations_not_started": "Etkinlik kayıtları henüz başlamadı",
+    "general_event": "Genel Etkinlik"
   },
   "table_list": {
     "event_being_created": "Etkinlik hala oluşturuluyor. Lütfen daha sonra tekrar kontrol edin!",
@@ -68,5 +69,25 @@
     "gm_master_cards": "Kart Ustası",
     "gm_game_master": "Game Master",
     "gm_instructor": "Dungeon Master | Eğitmen | İçerik Üreticisi"
+  },
+  "registration": {
+    "join_event": "Etkinliğe Katıl",
+    "subtitle": "Bu etkinliğe kayıt ol!",
+    "student_id": "Öğrenci Numarası*",
+    "name": "Ad/Soyad*",
+    "contact": "İletişim Numarası (İSTEĞE BAĞLI)",
+    "club_selection": "Kayıtlı olduğunuz kulüp(ler)i seçin:",
+    "not_registered": "Bu kulüplerden hiçbirine kayıtlı değilim",
+    "accept_terms": "Etkinlik kurallarını ve gizlilik politikasını kabul etmelisiniz.",
+    "select_club": "Lütfen en az bir kulüp seçin veya kayıtlı olmadığınızı belirtin.",
+    "accept_privacy": "Kabul ediyorum:",
+    "privacy_policy": "Gizlilik Politikası",
+    "club_registration": "kaydı",
+    "and_the": "ve",
+    "event_rules": "Etkinlik Kuralları",
+    "submit": "Etkinliğe Kayıt Ol"
+  },
+  "common": {
+    "close": "Kapat"
   }
 }

@@ -24,7 +24,8 @@
     "join_discord": "Join Discord",
     "back_to_events": "Back to Events",
     "seats_available": "total seats available",
-    "registrations_not_started": "Event's registrations haven't started yet"
+    "registrations_not_started": "Event's registrations haven't started yet",
+    "general_event": "General Event"
   },
   "table_list": {
     "event_being_created": "Event is still being created. Please check back later!",
@@ -68,5 +69,25 @@
     "gm_master_cards": "Master of Cards",
     "gm_game_master": "Game Master",
     "gm_instructor": "Dungeon Master | Instructor | Content Creator"
+  },
+  "registration": {
+    "join_event": "Join the Event",
+    "subtitle": "Register for this event!",
+    "student_id": "Student ID*",
+    "name": "Name/Surname*",
+    "contact": "Contact Number (OPTIONAL)",
+    "club_selection": "Select your registered club(s):",
+    "not_registered": "I am not registered to any of these clubs",
+    "accept_terms": "You must accept the event rules and privacy policy.",
+    "select_club": "Please select at least one club or indicate you are not registered.",
+    "accept_privacy": "I accept the",
+    "privacy_policy": "Privacy Policy",
+    "club_registration": "registration",
+    "and_the": "and the",
+    "event_rules": "Event Rules",
+    "submit": "Register for Event"
+  },
+  "common": {
+    "close": "Close"
   }
 }
