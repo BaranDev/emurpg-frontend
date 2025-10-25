@@ -103,6 +103,10 @@ const AdminDashboard = () => {
     contact: "",
     clubs: [],
   });
+  // Analytics state - New
+  const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -432,6 +436,15 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteTable = async (slug) => {
+    // New: confirmation dialog before deleting table
+    if (
+      !confirm(
+        "Are you sure you want to delete this table? This will remove all players associated with it."
+      )
+    ) {
+      return;
+    }
+
     try {
       const response = await fetch(`${backendUrl}/api/admin/table/${slug}`, {
         method: "DELETE",
@@ -844,6 +857,15 @@ const AdminDashboard = () => {
   };
 
   const handleFinishEvent = async (slug) => {
+    // New: confirmation dialog before finishing event
+    if (
+      !confirm(
+        "Are you sure you want to finish this event? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
     const response = await fetch(
       `${backendUrl}/api/admin/events/${slug}/finish`,
       {
@@ -868,6 +890,15 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteEvent = async (slug) => {
+    // New: confirmation dialog before deleting event
+    if (
+      !confirm(
+        "Are you sure you want to DELETE this event? This action cannot be undone and will remove all associated data."
+      )
+    ) {
+      return;
+    }
+
     const response = await fetch(`${backendUrl}/api/admin/events/${slug}`, {
       method: "DELETE",
       headers: { apiKey: API_KEY },
@@ -1064,6 +1095,13 @@ const AdminDashboard = () => {
 
   const handleDeletePlayer = async (studentId) => {
     if (!selectedTable) return;
+
+    // New: confirmation dialog before deleting player
+    if (
+      !confirm("Are you sure you want to remove this player from the table?")
+    ) {
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -1355,6 +1393,31 @@ const AdminDashboard = () => {
     });
   };
 
+  // New: fetch analytics data
+  const fetchAnalytics = async () => {
+    setLoadingAnalytics(true);
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/reports/analytics`,
+        {
+          headers: { apiKey: API_KEY },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setAnalyticsData(data);
+        setIsAnalyticsModalOpen(true);
+      } else {
+        alert("Failed to fetch analytics data");
+      }
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      alert("Error fetching analytics");
+    } finally {
+      setLoadingAnalytics(false);
+    }
+  };
+
   return (
     <div className="admin-dashboard grid text-center w-screen">
       <button
@@ -1362,6 +1425,14 @@ const AdminDashboard = () => {
         className="absolute top-4 left-4 text-yellow-500 hover:text-yellow-300 bg-gray-800 rounded px-3 py-1"
       >
         <LogoutIcon className="inline-block rotate-180" />
+      </button>
+      {/* New: Analytics button */}
+      <button
+        onClick={fetchAnalytics}
+        disabled={loadingAnalytics}
+        className="absolute top-4 right-4 text-white bg-purple-600 hover:bg-purple-700 rounded px-4 py-2 disabled:opacity-50"
+      >
+        {loadingAnalytics ? "Loading..." : "📊 View Analytics"}
       </button>
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
@@ -1429,12 +1500,81 @@ const AdminDashboard = () => {
                       </button>
                     )}
                     {event.event_type === "general" && (
-                      <button
-                        onClick={() => handleShowGeneralRegistrations(event)}
-                        className="bg-purple-600 text-white px-3 py-1 rounded"
-                      >
-                        View Registrations
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleShowGeneralRegistrations(event)}
+                          className="bg-purple-600 text-white px-3 py-1 rounded"
+                        >
+                          View Registrations
+                        </button>
+                        {/* New: attendance list download button */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(
+                                `${backendUrl}/api/admin/events/${event.slug}/attendance`,
+                                {
+                                  headers: { apiKey: API_KEY },
+                                }
+                              );
+                              if (!response.ok)
+                                throw new Error(
+                                  "Failed to generate attendance list"
+                                );
+
+                              const blob = await response.blob();
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = `${event.name}_attendance.xlsx`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              alert(
+                                "Failed to generate attendance list: " +
+                                  error.message
+                              );
+                            }
+                          }}
+                          className="bg-teal-600 text-white px-3 py-1 rounded"
+                        >
+                          Download Attendance
+                        </button>
+                        {/* New: Generate comprehensive report button */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(
+                                `${backendUrl}/api/admin/events/${event.slug}/report`,
+                                {
+                                  headers: { apiKey: API_KEY },
+                                }
+                              );
+                              if (!response.ok)
+                                throw new Error("Failed to generate report");
+
+                              const blob = await response.blob();
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = `${event.name}_report.xlsx`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              alert(
+                                "Failed to generate report: " + error.message
+                              );
+                            }
+                          }}
+                          className="bg-indigo-600 text-white px-3 py-1 rounded"
+                        >
+                          Generate Report
+                        </button>
+                      </>
                     )}
                     <button
                       onClick={() => {
@@ -3270,6 +3410,187 @@ const AdminDashboard = () => {
                   Cancel
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analytics Modal - New */}
+      {isAnalyticsModalOpen && analyticsData && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 border-2 border-purple-600 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-purple-400">
+                  📊 Event Analytics Dashboard
+                </h2>
+                <button
+                  onClick={() => setIsAnalyticsModalOpen(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Summary Statistics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gray-800 p-4 rounded border border-purple-500">
+                  <div className="text-gray-400 text-sm mb-1">Total Events</div>
+                  <div className="text-3xl font-bold text-purple-400">
+                    {analyticsData.summary.total_events_reported}
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-4 rounded border border-blue-500">
+                  <div className="text-gray-400 text-sm mb-1">
+                    Total Registrations
+                  </div>
+                  <div className="text-3xl font-bold text-blue-400">
+                    {analyticsData.summary.total_registrations}
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-4 rounded border border-green-500">
+                  <div className="text-gray-400 text-sm mb-1">
+                    Total Approved
+                  </div>
+                  <div className="text-3xl font-bold text-green-400">
+                    {analyticsData.summary.total_approved}
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-4 rounded border border-yellow-500">
+                  <div className="text-gray-400 text-sm mb-1">
+                    Approval Rate
+                  </div>
+                  <div className="text-3xl font-bold text-yellow-400">
+                    {analyticsData.summary.overall_approval_rate}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Club Totals */}
+              {Object.keys(analyticsData.club_totals).length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-purple-400 mb-4">
+                    Club Participation (All Events)
+                  </h3>
+                  <div className="bg-gray-800 rounded p-4">
+                    <div className="space-y-2">
+                      {Object.entries(analyticsData.club_totals)
+                        .sort(([, a], [, b]) => b - a)
+                        .map(([club, count]) => (
+                          <div
+                            key={club}
+                            className="flex justify-between items-center border-b border-gray-700 pb-2"
+                          >
+                            <span className="text-gray-300">{club}</span>
+                            <div className="flex items-center gap-4">
+                              <div className="w-48 bg-gray-700 rounded h-6 overflow-hidden">
+                                <div
+                                  className="bg-purple-600 h-full"
+                                  style={{
+                                    width: `${
+                                      (count /
+                                        analyticsData.summary.total_approved) *
+                                      100
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <span className="text-purple-400 font-bold w-16 text-right">
+                                {count}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Individual Event Reports */}
+              <div>
+                <h3 className="text-xl font-bold text-purple-400 mb-4">
+                  Event Reports
+                </h3>
+                <div className="space-y-4">
+                  {analyticsData.event_reports.map((report) => (
+                    <div
+                      key={report.event_slug}
+                      className="bg-gray-800 rounded p-4 border border-gray-700"
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h4 className="text-lg font-bold text-yellow-400">
+                            {report.event_name}
+                          </h4>
+                          <p className="text-sm text-gray-400">
+                            {report.start_date} - {report.end_date}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-400">
+                            Approval Rate
+                          </div>
+                          <div className="text-lg font-bold text-green-400">
+                            {report.statistics.approval_rate}%
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2 text-sm">
+                        <div>
+                          <div className="text-gray-400">Total</div>
+                          <div className="text-white font-semibold">
+                            {report.statistics.total_registrations}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-400">Approved</div>
+                          <div className="text-green-400 font-semibold">
+                            {report.statistics.approved}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-400">Pending</div>
+                          <div className="text-yellow-400 font-semibold">
+                            {report.statistics.pending}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-400">Rejected</div>
+                          <div className="text-red-400 font-semibold">
+                            {report.statistics.rejected}
+                          </div>
+                        </div>
+                      </div>
+                      {Object.keys(report.club_distribution).length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-700">
+                          <div className="text-xs text-gray-400 mb-2">
+                            Clubs:
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {Object.entries(report.club_distribution).map(
+                              ([club, count]) => (
+                                <span
+                                  key={club}
+                                  className="bg-purple-900 text-purple-200 px-2 py-1 rounded text-xs"
+                                >
+                                  {club}: {count}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsAnalyticsModalOpen(false)}
+                className="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded font-semibold"
+              >
+                Close Analytics
+              </button>
             </div>
           </div>
         </div>
