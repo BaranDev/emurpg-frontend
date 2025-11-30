@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import React from "react";
+import PropTypes from "prop-types";
 
 const FireButton = ({
   onClick,
@@ -51,5 +51,12 @@ const FireButton = ({
     <div className="absolute inset-0 bg-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-1000" />
   </motion.button>
 );
+
+FireButton.propTypes = {
+  onClick: PropTypes.func,
+  color1: PropTypes.string,
+  textcolor: PropTypes.string,
+  text: PropTypes.string,
+};
 
 export default FireButton;

@@ -1,4 +1,93 @@
-{  "welcome": "EMU RPG Etkinliklerine Hoşgeldiniz",
+{
+  "welcome": "DAÜ FKK Etkinliklerine Hoş Geldiniz",
   "event_list": "Mevcut Etkinlikler",
-  "register": "Kayıt Ol"
+  "register": "Kayıt Ol",
+  "language_selection": {
+    "title": "Dil Seçiniz",
+    "description": "Lütfen website için tercih ettiğiniz dili seçiniz",
+    "english": "English",
+    "turkish": "Türkçe",
+    "continue": "Devam Et"
+  },
+  "events_page": {
+    "title": "Yaklaşan Etkinlikler",
+    "homepage": "Ana Sayfa",
+    "character_roller": "Character Roller",
+    "soon_badge": "Yakında"
+  },
+  "event_list_component": {
+    "browser_not_supported": "Tarayıcı Desteklenmiyor",
+    "use_modern_browser": "Lütfen en iyi deneyim için Chrome, Firefox veya Edge gibi modern bir tarayıcı kullanın.",
+    "emurpg_events": "EMURPG Etkinlikleri",
+    "no_ongoing_events": "Devam eden etkinlik yok, bir sonraki etkinliklerimiz için bizi takip edin!",
+    "join_whatsapp": "WhatsApp'a Katıl",
+    "join_discord": "Discord'a Katıl",
+    "back_to_events": "Etkinliklere Dön",
+    "seats_available": "toplam koltuk mevcut",
+    "registrations_not_started": "Etkinlik kayıtları henüz başlamadı",
+    "general_event": "Genel Etkinlik"
+  },
+  "table_list": {
+    "event_being_created": "Etkinlik hala oluşturuluyor. Lütfen daha sonra tekrar kontrol edin!",
+    "make_sure_join": "Mutlaka",
+    "and_our": "ve",
+    "welcome_adventurer": "Hoş geldin cesur maceracı, masa oyunları ve destansı hikayelerin diyarına!",
+    "want_to_host": "Kendi masanı yönetmek ister misin?",
+    "share_favorite_game": "En sevdiğin oyunu arkadaşlarınla paylaş!",
+    "mail_us": "Game Master Ol",
+    "quest_master": "Görev Ustası",
+    "minutes": "dakika",
+    "seats": "koltuk",
+    "full": "Dolu",
+    "register": "Kayıt Ol",
+    "game_info": "Oyun Bilgisi"
+  },
+  "navbar": {
+    "events": "Etkinlikler",
+    "character_roller": "Karakter Oluşturucu",
+    "made_by": "Yapımcı",
+    "language": "Dil",
+    "english": "İngilizce",
+    "turkish": "Türkçe"
+  },
+  "homepage": {
+    "hero_title": "EMU RPG Kulübü",
+    "hero_subtitle": "Dünyalar Yaratıyoruz, Zar Atıyoruz, Efsaneler İnşa Ediyoruz",
+    "register_events": "Etkinliklere Kayıt Ol",
+    "about_title": "Kulübümüz Hakkında",
+    "about_text_1": "Biz sadece sıradan bir RPG kulübü değiliz - her türlü maceraya aşık oyunculardan oluşan bir toplulukuz!",
+    "about_text_2": "Destansı D&D kampanyalarından heyecan verici masa oyunu gecelerine kadar, zar atarken ve hikaye anlatırken nasıl eğleneceğimizi biliyoruz. İster deneyimli bir oyuncu olun ister masa oyunlarına meraklı biri, kapılarımız 2023'ten beri eğlenceye katılmak isteyen yeni arkadaşlara her zaman açık.",
+    "upcoming_events": "Yaklaşan Etkinlikler",
+    "roll_dice": "Zarı At!",
+    "meet_gm": "Game Masterlarla Tanışın",
+    "adventure_gallery": "Macera Galerisi",
+    "ready_to_join": "Göreve Katılmaya Hazır mısın?",
+    "join_discord": "Discord'a Katıl",
+    "view_events": "Etkinlikleri Görüntüle",
+    "gm_president": "Başkan | Game Master",
+    "gm_dungeon_master": "Dungeon Master | Aktivite Yöneticisi | Yazılım Geliştirici",
+    "gm_master_cards": "Kart Ustası",
+    "gm_game_master": "Game Master",
+    "gm_instructor": "Dungeon Master | Eğitmen | İçerik Üreticisi"
+  },
+  "registration": {
+    "join_event": "Etkinliğe Katıl",
+    "subtitle": "Bu etkinliğe kayıt ol!",
+    "student_id": "Öğrenci Numarası*",
+    "name": "Ad/Soyad*",
+    "contact": "İletişim Numarası (İSTEĞE BAĞLI)",
+    "club_selection": "Kayıtlı olduğunuz kulüp(ler)i seçin:",
+    "not_registered": "Bu kulüplerden hiçbirine kayıtlı değilim",
+    "accept_terms": "Etkinlik kurallarını ve gizlilik politikasını kabul etmelisiniz.",
+    "select_club": "Lütfen en az bir kulüp seçin veya kayıtlı olmadığınızı belirtin.",
+    "accept_privacy": "Kabul ediyorum:",
+    "privacy_policy": "Gizlilik Politikası",
+    "club_registration": "kaydı",
+    "and_the": "ve",
+    "event_rules": "Etkinlik Kuralları",
+    "submit": "Etkinliğe Kayıt Ol"
+  },
+  "common": {
+    "close": "Kapat"
+  }
 }

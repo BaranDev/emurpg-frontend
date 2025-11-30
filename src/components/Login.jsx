@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import { sha256 } from "js-sha256";
 import { config } from "../config";
-import Navbar from "./Navbar";
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
@@ -102,6 +102,10 @@ const Login = ({ onLogin }) => {
       </form>
     </div>
   );
+};
+
+Login.propTypes = {
+  onLogin: PropTypes.func,
 };
 
 export default Login;

@@ -2,8 +2,6 @@ import { InstagramEmbed } from "react-social-media-embed";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { FaBookOpen } from "react-icons/fa";
-import SectionTitle from "./SectionTitle";
 
 const InstagramSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

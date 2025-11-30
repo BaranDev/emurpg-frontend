@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
 import { config } from "../config";
 import { FaArrowRightFromBracket as LogoutIcon } from "react-icons/fa6";
@@ -22,7 +23,10 @@ const AdminDashboard = () => {
     description: "",
     start_date: "",
     end_date: "",
+    event_type: "game",
+    clubs: [],
   });
+  const [clubInput, setClubInput] = useState("");
   const [newTable, setNewTable] = useState({
     game_name: "",
     game_master: "",
@@ -81,6 +85,28 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Loading events...");
   const [loadingRetryCount, setLoadingRetryCount] = useState(0);
+  const [isGeneralRegistrationsModalOpen, setIsGeneralRegistrationsModalOpen] =
+    useState(false);
+  const [generalRegistrations, setGeneralRegistrations] = useState([]);
+  const [selectedGeneralEvent, setSelectedGeneralEvent] = useState(null);
+  // Filter states for general registrations
+  const [registrationSearchTerm, setRegistrationSearchTerm] = useState("");
+  const [registrationStatusFilter, setRegistrationStatusFilter] =
+    useState("all");
+  const [registrationClubFilter, setRegistrationClubFilter] = useState("all");
+  // Manual registration modal
+  const [isAddRegistrationModalOpen, setIsAddRegistrationModalOpen] =
+    useState(false);
+  const [newManualRegistration, setNewManualRegistration] = useState({
+    name: "",
+    student_id: "",
+    contact: "",
+    clubs: [],
+  });
+  // Analytics state - New
+  const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -410,6 +436,15 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteTable = async (slug) => {
+    // New: confirmation dialog before deleting table
+    if (
+      !confirm(
+        "Are you sure you want to delete this table? This will remove all players associated with it."
+      )
+    ) {
+      return;
+    }
+
     try {
       const response = await fetch(`${backendUrl}/api/admin/table/${slug}`, {
         method: "DELETE",
@@ -799,7 +834,15 @@ const AdminDashboard = () => {
     if (response.ok) {
       alert("Event created successfully!");
       setIsCreateEventModalOpen(false);
-      setNewEvent({ name: "", description: "", start_date: "", end_date: "" });
+      setNewEvent({
+        name: "",
+        description: "",
+        start_date: "",
+        end_date: "",
+        event_type: "game",
+        clubs: [],
+      });
+      setClubInput("");
       const updatedEventsResponse = await fetch(
         `${backendUrl}/api/admin/events`,
         {
@@ -814,6 +857,15 @@ const AdminDashboard = () => {
   };
 
   const handleFinishEvent = async (slug) => {
+    // New: confirmation dialog before finishing event
+    if (
+      !confirm(
+        "Are you sure you want to finish this event? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
     const response = await fetch(
       `${backendUrl}/api/admin/events/${slug}/finish`,
       {
@@ -838,6 +890,15 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteEvent = async (slug) => {
+    // New: confirmation dialog before deleting event
+    if (
+      !confirm(
+        "Are you sure you want to DELETE this event? This action cannot be undone and will remove all associated data."
+      )
+    ) {
+      return;
+    }
+
     const response = await fetch(`${backendUrl}/api/admin/events/${slug}`, {
       method: "DELETE",
       headers: { apiKey: API_KEY },
@@ -1035,6 +1096,13 @@ const AdminDashboard = () => {
   const handleDeletePlayer = async (studentId) => {
     if (!selectedTable) return;
 
+    // New: confirmation dialog before deleting player
+    if (
+      !confirm("Are you sure you want to remove this player from the table?")
+    ) {
+      return;
+    }
+
     try {
       const response = await fetch(
         `${backendUrl}/api/admin/delete_player/${selectedTable.slug}/${studentId}`,
@@ -1165,6 +1233,191 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleShowGeneralRegistrations = async (event) => {
+    setSelectedGeneralEvent(event);
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/general_registrations/${event.slug}`,
+        {
+          headers: { apiKey: API_KEY },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setGeneralRegistrations(data.registrations);
+        setIsGeneralRegistrationsModalOpen(true);
+      } else {
+        alert("Failed to load registrations");
+      }
+    } catch (error) {
+      console.error("Error loading registrations:", error);
+      alert("Error loading registrations");
+    }
+  };
+
+  const handleApproveGeneralRegistration = async (studentId) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/general_registrations/${selectedGeneralEvent.slug}/approve/${studentId}`,
+        {
+          method: "POST",
+          headers: { apiKey: API_KEY },
+        }
+      );
+      if (response.ok) {
+        alert("Registration approved successfully!");
+        handleShowGeneralRegistrations(selectedGeneralEvent);
+      } else {
+        alert("Failed to approve registration");
+      }
+    } catch (error) {
+      console.error("Error approving registration:", error);
+      alert("Error approving registration");
+    }
+  };
+
+  const handleRejectGeneralRegistration = async (studentId) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/general_registrations/${selectedGeneralEvent.slug}/reject/${studentId}`,
+        {
+          method: "POST",
+          headers: { apiKey: API_KEY },
+        }
+      );
+      if (response.ok) {
+        alert("Registration rejected successfully!");
+        handleShowGeneralRegistrations(selectedGeneralEvent);
+      } else {
+        alert("Failed to reject registration");
+      }
+    } catch (error) {
+      console.error("Error rejecting registration:", error);
+      alert("Error rejecting registration");
+    }
+  };
+
+  const handleDeleteGeneralRegistration = async (studentId) => {
+    if (!confirm("Are you sure you want to delete this registration?")) return;
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/general_registrations/${selectedGeneralEvent.slug}/${studentId}`,
+        {
+          method: "DELETE",
+          headers: { apiKey: API_KEY },
+        }
+      );
+      if (response.ok) {
+        alert("Registration deleted successfully!");
+        handleShowGeneralRegistrations(selectedGeneralEvent);
+      } else {
+        alert("Failed to delete registration");
+      }
+    } catch (error) {
+      console.error("Error deleting registration:", error);
+      alert("Error deleting registration");
+    }
+  };
+
+  const handleAddManualRegistration = async () => {
+    // Validation
+    if (!newManualRegistration.name.trim()) {
+      alert("Please enter a name");
+      return;
+    }
+    if (
+      !newManualRegistration.student_id.trim() ||
+      newManualRegistration.student_id.length !== 8 ||
+      !/^\d+$/.test(newManualRegistration.student_id)
+    ) {
+      alert("Student ID must be exactly 8 digits");
+      return;
+    }
+    if (newManualRegistration.clubs.length === 0) {
+      alert("Please select at least one club or 'Not Registered'");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/register/general/${selectedGeneralEvent.slug}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newManualRegistration),
+        }
+      );
+
+      if (response.ok) {
+        alert("Registration added successfully!");
+        setIsAddRegistrationModalOpen(false);
+        setNewManualRegistration({
+          name: "",
+          student_id: "",
+          contact: "",
+          clubs: [],
+        });
+        handleShowGeneralRegistrations(selectedGeneralEvent);
+      } else {
+        const error = await response.json();
+        alert(`Failed to add registration: ${error.detail || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error adding registration:", error);
+      alert("Error adding registration");
+    }
+  };
+
+  const handleManualClubToggle = (club) => {
+    setNewManualRegistration((prev) => {
+      const currentClubs = prev.clubs;
+
+      // If selecting "not_registered", clear all other clubs
+      if (club === "not_registered") {
+        return { ...prev, clubs: ["not_registered"] };
+      }
+
+      // If "not_registered" is selected and user selects another club, remove "not_registered"
+      if (currentClubs.includes("not_registered")) {
+        return { ...prev, clubs: [club] };
+      }
+
+      // Toggle club selection
+      if (currentClubs.includes(club)) {
+        return { ...prev, clubs: currentClubs.filter((c) => c !== club) };
+      } else {
+        return { ...prev, clubs: [...currentClubs, club] };
+      }
+    });
+  };
+
+  // New: fetch analytics data
+  const fetchAnalytics = async () => {
+    setLoadingAnalytics(true);
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/reports/analytics`,
+        {
+          headers: { apiKey: API_KEY },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setAnalyticsData(data);
+        setIsAnalyticsModalOpen(true);
+      } else {
+        alert("Failed to fetch analytics data");
+      }
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      alert("Error fetching analytics");
+    } finally {
+      setLoadingAnalytics(false);
+    }
+  };
+
   return (
     <div className="admin-dashboard grid text-center w-screen">
       <button
@@ -1172,6 +1425,14 @@ const AdminDashboard = () => {
         className="absolute top-4 left-4 text-yellow-500 hover:text-yellow-300 bg-gray-800 rounded px-3 py-1"
       >
         <LogoutIcon className="inline-block rotate-180" />
+      </button>
+      {/* New: Analytics button */}
+      <button
+        onClick={fetchAnalytics}
+        disabled={loadingAnalytics}
+        className="absolute top-4 right-4 text-white bg-purple-600 hover:bg-purple-700 rounded px-4 py-2 disabled:opacity-50"
+      >
+        {loadingAnalytics ? "Loading..." : "📊 View Analytics"}
       </button>
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
@@ -1218,19 +1479,103 @@ const AdminDashboard = () => {
                   {event.name}
                 </h2>
                 <p className="text-sm text-gray-400">{event.description}</p>
+                <p className="text-xs text-purple-400 mt-1">
+                  {event.event_type === "general"
+                    ? "📋 General Event"
+                    : "🎲 Game Event"}
+                </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {event.is_ongoing && (
                   <>
-                    <button
-                      onClick={() => {
-                        setSelectedEvent(event);
-                        setIsCreateTableModalOpen(true);
-                      }}
-                      className="bg-green-600 text-white px-3 py-1 rounded"
-                    >
-                      Add Table
-                    </button>
+                    {event.event_type === "game" && (
+                      <button
+                        onClick={() => {
+                          setSelectedEvent(event);
+                          setIsCreateTableModalOpen(true);
+                        }}
+                        className="bg-green-600 text-white px-3 py-1 rounded"
+                      >
+                        Add Table
+                      </button>
+                    )}
+                    {event.event_type === "general" && (
+                      <>
+                        <button
+                          onClick={() => handleShowGeneralRegistrations(event)}
+                          className="bg-purple-600 text-white px-3 py-1 rounded"
+                        >
+                          View Registrations
+                        </button>
+                        {/* New: attendance list download button */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(
+                                `${backendUrl}/api/admin/events/${event.slug}/attendance`,
+                                {
+                                  headers: { apiKey: API_KEY },
+                                }
+                              );
+                              if (!response.ok)
+                                throw new Error(
+                                  "Failed to generate attendance list"
+                                );
+
+                              const blob = await response.blob();
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = `${event.name}_attendance.xlsx`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              alert(
+                                "Failed to generate attendance list: " +
+                                  error.message
+                              );
+                            }
+                          }}
+                          className="bg-teal-600 text-white px-3 py-1 rounded"
+                        >
+                          Download Attendance
+                        </button>
+                        {/* New: Generate comprehensive report button */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(
+                                `${backendUrl}/api/admin/events/${event.slug}/report`,
+                                {
+                                  headers: { apiKey: API_KEY },
+                                }
+                              );
+                              if (!response.ok)
+                                throw new Error("Failed to generate report");
+
+                              const blob = await response.blob();
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = `${event.name}_report.xlsx`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              alert(
+                                "Failed to generate report: " + error.message
+                              );
+                            }
+                          }}
+                          className="bg-indigo-600 text-white px-3 py-1 rounded"
+                        >
+                          Generate Report
+                        </button>
+                      </>
+                    )}
                     <button
                       onClick={() => {
                         setSelectedEvent(event);
@@ -1268,7 +1613,10 @@ const AdminDashboard = () => {
                           document.body.removeChild(link);
                           URL.revokeObjectURL(url);
                         } catch (error) {
-                          alert("Failed to generate announcement image");
+                          alert(
+                            "Failed to generate announcement image: " +
+                              error.message
+                          );
                         }
                       }}
                       className="bg-cyan-600 text-white px-3 py-1 rounded"
@@ -1317,23 +1665,134 @@ const AdminDashboard = () => {
                 </p>
               </div>
             </div>
+
+            {/* Table Status Summary */}
+            {event.tableDetails && event.tableDetails.length > 0 && (
+              <div className="mb-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                <h4 className="text-sm font-semibold text-gray-300 mb-2">
+                  Table Status Summary
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">✅ Open Tables:</span>
+                    <span className="font-bold text-green-300">
+                      {
+                        event.tableDetails.filter(
+                          (table) => !table.is_marked_full
+                        ).length
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-red-400">🔒 Full Tables:</span>
+                    <span className="font-bold text-red-300">
+                      {
+                        event.tableDetails.filter(
+                          (table) => table.is_marked_full
+                        ).length
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">📊 Total Tables:</span>
+                    <span className="font-bold text-gray-300">
+                      {event.tableDetails.length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Tables List */}
             <div className="tables-list mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {event.tableDetails?.map((table) => (
                 <div
                   key={table.slug}
-                  className="table-item border p-4 rounded-lg"
+                  className={`table-item border p-4 rounded-lg relative transition-all duration-300 ${
+                    table.is_marked_full
+                      ? "border-red-500 bg-red-900/20 shadow-red-500/30 shadow-lg"
+                      : "border-green-500 bg-green-900/10 shadow-green-500/20 shadow-md"
+                  }`}
                 >
-                  <h3 className="font-bold text-yellow-500">
+                  {/* Full Status Indicator */}
+                  <div className="absolute top-2 right-2">
+                    {table.is_marked_full ? (
+                      <span className="flex items-center gap-1 text-xs font-bold text-red-400 bg-red-900/50 px-2 py-1 rounded-full border border-red-500">
+                        🔒 FULL
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-xs font-bold text-green-400 bg-green-900/50 px-2 py-1 rounded-full border border-green-500">
+                        ✅ OPEN
+                      </span>
+                    )}
+                  </div>
+
+                  <h3
+                    className={`font-bold mb-2 ${
+                      table.is_marked_full ? "text-red-400" : "text-yellow-500"
+                    }`}
+                  >
                     {table.game_name}
                   </h3>
                   <p className="text-sm">GM: {table.game_master}</p>
-                  <p className="text-sm">
+                  <p
+                    className={`text-sm ${
+                      table.is_marked_full ? "text-red-300" : "text-gray-300"
+                    }`}
+                  >
                     Applied Players: {table.total_joined_players}
                   </p>
-                  <p className="text-sm">Player Quota: {table.player_quota}</p>
+                  <p
+                    className={`text-sm ${
+                      table.is_marked_full ? "text-red-300" : "text-gray-300"
+                    }`}
+                  >
+                    Player Quota: {table.player_quota}
+                  </p>
                   <p className="text-sm">Language: {table.language}</p>
                   <p className="text-xs text-gray-500">ID: {table.slug}</p>
+
+                  {/* Seat Occupancy Progress Bar */}
+                  <div className="mt-3 mb-3">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span
+                        className={
+                          table.is_marked_full
+                            ? "text-red-300"
+                            : "text-gray-300"
+                        }
+                      >
+                        Seats Filled
+                      </span>
+                      <span
+                        className={
+                          table.is_marked_full
+                            ? "text-red-300"
+                            : "text-gray-300"
+                        }
+                      >
+                        {table.total_joined_players}/{table.player_quota}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          table.is_marked_full
+                            ? "bg-red-500"
+                            : table.total_joined_players >= table.player_quota
+                            ? "bg-amber-500"
+                            : "bg-green-500"
+                        }`}
+                        style={{
+                          width: `${Math.min(
+                            (table.total_joined_players / table.player_quota) *
+                              100,
+                            100
+                          )}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       onClick={() => {
@@ -1378,16 +1837,33 @@ const AdminDashboard = () => {
                           );
 
                           if (!response.ok)
-                            throw new Error("Failed to mark table as full");
-                          alert("Table marked as full successfully!");
+                            throw new Error("Failed to toggle table status");
+
+                          // Success message based on current status
+                          const action = table.is_marked_full
+                            ? "unmarked"
+                            : "marked";
+                          alert(`Table ${action} as full successfully!`);
+
+                          // Refresh the events to update the UI
+                          window.location.reload();
                         } catch (error) {
-                          console.error("Error marking table as full:", error);
-                          alert("Failed to mark table as full");
+                          console.error("Error toggling table status:", error);
+                          alert("Failed to toggle table status");
                         }
                       }}
-                      className="bg-amber-600 text-white px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0"
+                      className={`px-2 py-1 text-xs sm:text-sm rounded flex-grow sm:flex-grow-0 transition-colors ${
+                        table.is_marked_full
+                          ? "bg-gray-600 hover:bg-gray-700 text-white border border-gray-500"
+                          : "bg-amber-600 hover:bg-amber-700 text-white"
+                      }`}
+                      title={
+                        table.is_marked_full
+                          ? "Click to reopen table"
+                          : "Click to mark as full"
+                      }
                     >
-                      Full
+                      {table.is_marked_full ? "🔓 Reopen" : "🔒 Mark Full"}
                     </button>
                     <button
                       onClick={() => handleDeleteTable(table.slug)}
@@ -1759,9 +2235,86 @@ const AdminDashboard = () => {
                   required
                 />
               </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2">Event Type:</label>
+                <select
+                  value={newEvent.event_type}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, event_type: e.target.value })
+                  }
+                  className="border p-2 rounded w-full text-white bg-gray-700"
+                  required
+                >
+                  <option value="game">Game Event (Tables & RPG)</option>
+                  <option value="general">
+                    General Event (Club Registration)
+                  </option>
+                </select>
+              </div>
+              {newEvent.event_type === "general" && (
+                <div className="mb-4">
+                  <label className="block text-white mb-2">
+                    Clubs (one per line):
+                  </label>
+                  <div className="mb-2">
+                    <input
+                      type="text"
+                      value={clubInput}
+                      onChange={(e) => setClubInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          if (clubInput.trim()) {
+                            setNewEvent({
+                              ...newEvent,
+                              clubs: [...newEvent.clubs, clubInput.trim()],
+                            });
+                            setClubInput("");
+                          }
+                        }
+                      }}
+                      className="border p-2 rounded w-full text-white bg-gray-700"
+                      placeholder="Type club name and press Enter"
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {newEvent.clubs.map((club, index) => (
+                      <span
+                        key={index}
+                        className="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                      >
+                        {club}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setNewEvent({
+                              ...newEvent,
+                              clubs: newEvent.clubs.filter(
+                                (_, i) => i !== index
+                              ),
+                            })
+                          }
+                          className="hover:text-red-300"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  {newEvent.clubs.length === 0 && (
+                    <p className="text-gray-400 text-sm mt-2">
+                      Add at least one club for general events
+                    </p>
+                  )}
+                </div>
+              )}
               <button
                 type="submit"
                 className="bg-yellow-600 text-white px-4 py-2 rounded mt-2 w-full hover:bg-yellow-700"
+                disabled={
+                  newEvent.event_type === "general" &&
+                  newEvent.clubs.length === 0
+                }
               >
                 Create Event
               </button>
@@ -2399,6 +2952,646 @@ const AdminDashboard = () => {
                 Update Event
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* General Event Registrations Modal - Compact & Filterable */}
+      {isGeneralRegistrationsModalOpen && selectedGeneralEvent && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 overflow-y-auto p-4">
+          <div className="bg-black bg-opacity-95 rounded-lg w-full max-w-6xl relative max-h-[95vh] flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-gray-700">
+              <button
+                onClick={() => {
+                  setIsGeneralRegistrationsModalOpen(false);
+                  setSelectedGeneralEvent(null);
+                  setGeneralRegistrations([]);
+                  setRegistrationSearchTerm("");
+                  setRegistrationStatusFilter("all");
+                  setRegistrationClubFilter("all");
+                }}
+                className="absolute top-2 right-2 text-white hover:text-gray-300 text-2xl"
+              >
+                ×
+              </button>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl font-bold text-yellow-500">
+                  {selectedGeneralEvent.name}
+                </h2>
+                <button
+                  onClick={() => setIsAddRegistrationModalOpen(true)}
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-sm font-semibold"
+                >
+                  + Add Registration
+                </button>
+              </div>
+
+              {/* Statistics Bar */}
+              <div className="grid grid-cols-4 gap-2 text-center text-sm">
+                <div className="bg-gray-800/50 rounded p-2">
+                  <p className="text-gray-400 text-xs">Total</p>
+                  <p className="text-white font-bold">
+                    {generalRegistrations.length}
+                  </p>
+                </div>
+                <div className="bg-green-900/30 rounded p-2">
+                  <p className="text-green-400 text-xs">Approved</p>
+                  <p className="text-green-400 font-bold">
+                    {
+                      generalRegistrations.filter(
+                        (r) => r.status === "approved"
+                      ).length
+                    }
+                  </p>
+                </div>
+                <div className="bg-yellow-900/30 rounded p-2">
+                  <p className="text-yellow-400 text-xs">Pending</p>
+                  <p className="text-yellow-400 font-bold">
+                    {
+                      generalRegistrations.filter((r) => r.status === "pending")
+                        .length
+                    }
+                  </p>
+                </div>
+                <div className="bg-red-900/30 rounded p-2">
+                  <p className="text-red-400 text-xs">Rejected</p>
+                  <p className="text-red-400 font-bold">
+                    {
+                      generalRegistrations.filter(
+                        (r) => r.status === "rejected"
+                      ).length
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="p-4 border-b border-gray-700 space-y-3">
+              {/* Search Bar */}
+              <input
+                type="text"
+                placeholder="Search by name or student ID..."
+                value={registrationSearchTerm}
+                onChange={(e) => setRegistrationSearchTerm(e.target.value)}
+                className="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:border-yellow-500"
+              />
+
+              {/* Filter Dropdowns */}
+              <div className="grid grid-cols-2 gap-2">
+                <select
+                  value={registrationStatusFilter}
+                  onChange={(e) => setRegistrationStatusFilter(e.target.value)}
+                  className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:border-yellow-500"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+
+                <select
+                  value={registrationClubFilter}
+                  onChange={(e) => setRegistrationClubFilter(e.target.value)}
+                  className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:border-yellow-500"
+                >
+                  <option value="all">All Clubs</option>
+                  {selectedGeneralEvent.clubs?.map((club, index) => (
+                    <option key={index} value={club}>
+                      {club}
+                    </option>
+                  ))}
+                  <option value="not_registered">Not Registered</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Registrations Table */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {generalRegistrations.length === 0 ? (
+                <p className="text-gray-400 text-center py-8">
+                  No registrations yet for this event.
+                </p>
+              ) : (
+                (() => {
+                  // Apply filters
+                  const filtered = generalRegistrations.filter((reg) => {
+                    // Search filter
+                    const matchesSearch =
+                      registrationSearchTerm === "" ||
+                      reg.name
+                        .toLowerCase()
+                        .includes(registrationSearchTerm.toLowerCase()) ||
+                      reg.student_id.includes(registrationSearchTerm);
+
+                    // Status filter
+                    const matchesStatus =
+                      registrationStatusFilter === "all" ||
+                      reg.status === registrationStatusFilter;
+
+                    // Club filter
+                    const matchesClub =
+                      registrationClubFilter === "all" ||
+                      (registrationClubFilter === "not_registered"
+                        ? reg.clubs.includes("not_registered")
+                        : reg.clubs.includes(registrationClubFilter));
+
+                    return matchesSearch && matchesStatus && matchesClub;
+                  });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <p className="text-gray-400 text-center py-8">
+                        No registrations match your filters.
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <div className="space-y-2">
+                      {filtered.map((registration) => (
+                        <div
+                          key={registration.student_id}
+                          className={`border rounded p-3 flex items-center justify-between gap-3 ${
+                            registration.status === "approved"
+                              ? "border-green-600/50 bg-green-900/10"
+                              : registration.status === "rejected"
+                              ? "border-red-600/50 bg-red-900/10"
+                              : "border-yellow-600/50 bg-yellow-900/10"
+                          }`}
+                        >
+                          {/* Info Section - Compact */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3">
+                              {/* Status Indicator */}
+                              <div
+                                className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                  registration.status === "approved"
+                                    ? "bg-green-500"
+                                    : registration.status === "rejected"
+                                    ? "bg-red-500"
+                                    : "bg-yellow-500"
+                                }`}
+                              />
+
+                              {/* Name & ID */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-white font-semibold text-sm">
+                                    {registration.name}
+                                  </span>
+                                  <span className="text-gray-500 text-xs">
+                                    #{registration.student_id}
+                                  </span>
+                                  {/* Status Badge */}
+                                  <span
+                                    className={`text-xs px-2 py-0.5 rounded-full ${
+                                      registration.status === "approved"
+                                        ? "bg-green-600/30 text-green-400"
+                                        : registration.status === "rejected"
+                                        ? "bg-red-600/30 text-red-400"
+                                        : "bg-yellow-600/30 text-yellow-400"
+                                    }`}
+                                  >
+                                    {registration.status}
+                                  </span>
+                                </div>
+
+                                {/* Clubs - Inline */}
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {registration.clubs.map((club, index) => (
+                                    <span
+                                      key={index}
+                                      className={`text-xs px-1.5 py-0.5 rounded ${
+                                        club === "not_registered"
+                                          ? "bg-gray-700 text-gray-400 italic"
+                                          : "bg-purple-700/50 text-purple-300"
+                                      }`}
+                                    >
+                                      {club === "not_registered"
+                                        ? "No club"
+                                        : club}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Action Buttons - Compact */}
+                          <div className="flex gap-1 flex-shrink-0">
+                            {registration.status !== "approved" && (
+                              <button
+                                onClick={() =>
+                                  handleApproveGeneralRegistration(
+                                    registration.student_id
+                                  )
+                                }
+                                className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700"
+                                title="Approve"
+                              >
+                                ✓
+                              </button>
+                            )}
+                            {registration.status !== "rejected" && (
+                              <button
+                                onClick={() =>
+                                  handleRejectGeneralRegistration(
+                                    registration.student_id
+                                  )
+                                }
+                                className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
+                                title="Reject"
+                              >
+                                ✗
+                              </button>
+                            )}
+                            <button
+                              onClick={() =>
+                                handleDeleteGeneralRegistration(
+                                  registration.student_id
+                                )
+                              }
+                              className="bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600"
+                              title="Delete"
+                            >
+                              🗑
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()
+              )}
+            </div>
+
+            {/* Footer Info */}
+            <div className="p-3 border-t border-gray-700 text-xs text-gray-500 text-center">
+              Showing{" "}
+              {(() => {
+                const filtered = generalRegistrations.filter((reg) => {
+                  const matchesSearch =
+                    registrationSearchTerm === "" ||
+                    reg.name
+                      .toLowerCase()
+                      .includes(registrationSearchTerm.toLowerCase()) ||
+                    reg.student_id.includes(registrationSearchTerm);
+                  const matchesStatus =
+                    registrationStatusFilter === "all" ||
+                    reg.status === registrationStatusFilter;
+                  const matchesClub =
+                    registrationClubFilter === "all" ||
+                    (registrationClubFilter === "not_registered"
+                      ? reg.clubs.includes("not_registered")
+                      : reg.clubs.includes(registrationClubFilter));
+                  return matchesSearch && matchesStatus && matchesClub;
+                });
+                return filtered.length;
+              })()}{" "}
+              of {generalRegistrations.length} registrations
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Manual Registration Modal */}
+      {isAddRegistrationModalOpen && selectedGeneralEvent && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md relative">
+            <button
+              onClick={() => {
+                setIsAddRegistrationModalOpen(false);
+                setNewManualRegistration({
+                  name: "",
+                  student_id: "",
+                  contact: "",
+                  clubs: [],
+                });
+              }}
+              className="absolute top-2 right-2 text-white hover:text-gray-300 text-2xl"
+            >
+              ×
+            </button>
+
+            <h2 className="text-xl font-bold text-yellow-500 mb-4">
+              Add Manual Registration
+            </h2>
+
+            <div className="space-y-4">
+              {/* Name */}
+              <div>
+                <label className="block text-white mb-1 text-sm">Name *</label>
+                <input
+                  type="text"
+                  value={newManualRegistration.name}
+                  onChange={(e) =>
+                    setNewManualRegistration({
+                      ...newManualRegistration,
+                      name: e.target.value,
+                    })
+                  }
+                  className="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 focus:outline-none focus:border-yellow-500"
+                  placeholder="Enter full name"
+                />
+              </div>
+
+              {/* Student ID */}
+              <div>
+                <label className="block text-white mb-1 text-sm">
+                  Student ID (8 digits) *
+                </label>
+                <input
+                  type="text"
+                  value={newManualRegistration.student_id}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "").slice(0, 8);
+                    setNewManualRegistration({
+                      ...newManualRegistration,
+                      student_id: value,
+                    });
+                  }}
+                  className="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 focus:outline-none focus:border-yellow-500"
+                  placeholder="12345678"
+                  maxLength={8}
+                />
+              </div>
+
+              {/* Contact */}
+              <div>
+                <label className="block text-white mb-1 text-sm">
+                  Contact (optional)
+                </label>
+                <input
+                  type="text"
+                  value={newManualRegistration.contact}
+                  onChange={(e) =>
+                    setNewManualRegistration({
+                      ...newManualRegistration,
+                      contact: e.target.value,
+                    })
+                  }
+                  className="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 focus:outline-none focus:border-yellow-500"
+                  placeholder="Email or phone number"
+                />
+              </div>
+
+              {/* Clubs */}
+              <div>
+                <label className="block text-white mb-2 text-sm">Clubs *</label>
+                <div className="space-y-2 max-h-48 overflow-y-auto bg-gray-800/50 p-3 rounded border border-gray-700">
+                  {selectedGeneralEvent.clubs?.map((club, index) => (
+                    <label
+                      key={index}
+                      className="flex items-center gap-2 text-white hover:bg-gray-700/50 p-2 rounded cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={newManualRegistration.clubs.includes(club)}
+                        onChange={() => handleManualClubToggle(club)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">{club}</span>
+                    </label>
+                  ))}
+                  <label className="flex items-center gap-2 text-gray-400 hover:bg-gray-700/50 p-2 rounded cursor-pointer border-t border-gray-700 mt-2 pt-3">
+                    <input
+                      type="checkbox"
+                      checked={newManualRegistration.clubs.includes(
+                        "not_registered"
+                      )}
+                      onChange={() => handleManualClubToggle("not_registered")}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm italic">
+                      Not registered to any club
+                    </span>
+                  </label>
+                </div>
+                {newManualRegistration.clubs.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {newManualRegistration.clubs.map((club, index) => (
+                      <span
+                        key={index}
+                        className={`text-xs px-2 py-1 rounded ${
+                          club === "not_registered"
+                            ? "bg-gray-700 text-gray-300 italic"
+                            : "bg-purple-700 text-white"
+                        }`}
+                      >
+                        {club === "not_registered" ? "No club" : club}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-2 pt-2">
+                <button
+                  onClick={handleAddManualRegistration}
+                  className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-semibold"
+                >
+                  Add Registration
+                </button>
+                <button
+                  onClick={() => {
+                    setIsAddRegistrationModalOpen(false);
+                    setNewManualRegistration({
+                      name: "",
+                      student_id: "",
+                      contact: "",
+                      clubs: [],
+                    });
+                  }}
+                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analytics Modal - New */}
+      {isAnalyticsModalOpen && analyticsData && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 border-2 border-purple-600 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-purple-400">
+                  📊 Event Analytics Dashboard
+                </h2>
+                <button
+                  onClick={() => setIsAnalyticsModalOpen(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Summary Statistics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gray-800 p-4 rounded border border-purple-500">
+                  <div className="text-gray-400 text-sm mb-1">Total Events</div>
+                  <div className="text-3xl font-bold text-purple-400">
+                    {analyticsData.summary.total_events_reported}
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-4 rounded border border-blue-500">
+                  <div className="text-gray-400 text-sm mb-1">
+                    Total Registrations
+                  </div>
+                  <div className="text-3xl font-bold text-blue-400">
+                    {analyticsData.summary.total_registrations}
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-4 rounded border border-green-500">
+                  <div className="text-gray-400 text-sm mb-1">
+                    Total Approved
+                  </div>
+                  <div className="text-3xl font-bold text-green-400">
+                    {analyticsData.summary.total_approved}
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-4 rounded border border-yellow-500">
+                  <div className="text-gray-400 text-sm mb-1">
+                    Approval Rate
+                  </div>
+                  <div className="text-3xl font-bold text-yellow-400">
+                    {analyticsData.summary.overall_approval_rate}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Club Totals */}
+              {Object.keys(analyticsData.club_totals).length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-purple-400 mb-4">
+                    Club Participation (All Events)
+                  </h3>
+                  <div className="bg-gray-800 rounded p-4">
+                    <div className="space-y-2">
+                      {Object.entries(analyticsData.club_totals)
+                        .sort(([, a], [, b]) => b - a)
+                        .map(([club, count]) => (
+                          <div
+                            key={club}
+                            className="flex justify-between items-center border-b border-gray-700 pb-2"
+                          >
+                            <span className="text-gray-300">{club}</span>
+                            <div className="flex items-center gap-4">
+                              <div className="w-48 bg-gray-700 rounded h-6 overflow-hidden">
+                                <div
+                                  className="bg-purple-600 h-full"
+                                  style={{
+                                    width: `${
+                                      (count /
+                                        analyticsData.summary.total_approved) *
+                                      100
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <span className="text-purple-400 font-bold w-16 text-right">
+                                {count}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Individual Event Reports */}
+              <div>
+                <h3 className="text-xl font-bold text-purple-400 mb-4">
+                  Event Reports
+                </h3>
+                <div className="space-y-4">
+                  {analyticsData.event_reports.map((report) => (
+                    <div
+                      key={report.event_slug}
+                      className="bg-gray-800 rounded p-4 border border-gray-700"
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h4 className="text-lg font-bold text-yellow-400">
+                            {report.event_name}
+                          </h4>
+                          <p className="text-sm text-gray-400">
+                            {report.start_date} - {report.end_date}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-400">
+                            Approval Rate
+                          </div>
+                          <div className="text-lg font-bold text-green-400">
+                            {report.statistics.approval_rate}%
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2 text-sm">
+                        <div>
+                          <div className="text-gray-400">Total</div>
+                          <div className="text-white font-semibold">
+                            {report.statistics.total_registrations}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-400">Approved</div>
+                          <div className="text-green-400 font-semibold">
+                            {report.statistics.approved}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-400">Pending</div>
+                          <div className="text-yellow-400 font-semibold">
+                            {report.statistics.pending}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-400">Rejected</div>
+                          <div className="text-red-400 font-semibold">
+                            {report.statistics.rejected}
+                          </div>
+                        </div>
+                      </div>
+                      {Object.keys(report.club_distribution).length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-700">
+                          <div className="text-xs text-gray-400 mb-2">
+                            Clubs:
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {Object.entries(report.club_distribution).map(
+                              ([club, count]) => (
+                                <span
+                                  key={club}
+                                  className="bg-purple-900 text-purple-200 px-2 py-1 rounded text-xs"
+                                >
+                                  {club}: {count}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsAnalyticsModalOpen(false)}
+                className="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded font-semibold"
+              >
+                Close Analytics
+              </button>
+            </div>
           </div>
         </div>
       )}

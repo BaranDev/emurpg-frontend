@@ -1,38 +1,24 @@
-import React, { useEffect, useState, useRef } from "react";import TableList from "./TableList";
+import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import TableList from "./TableList";
+import GeneralEventRegistrationForm from "./GeneralEventRegistrationForm";
 import { config } from "../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
+
 const EventList = () => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  // Fallback for unsupported browsers
-  if (!window.fetch || !window.WebSocket) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gray-900"
-      >
-        <FaExclamationTriangle className="text-6xl text-yellow-500 mb-6" />
-        <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
-          Browser Not Supported
-        </h1>
-        <p className="text-lg text-gray-300 mb-4">
-          Please use a modern browser like Chrome, Firefox, or Edge for the best
-          experience.
-        </p>
-      </motion.div>
-    );
-  }
+  const [ws, setWs] = useState(null);
+  const wsConnected = useRef(false);
+  const wsConnectionAttempted = useRef(false);
+
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
       .then((res) => res.json())
       .then((data) => setEvents(data));
   }, []);
-
-  const [ws, setWs] = useState(null);
-  const wsConnected = useRef(false);
-  const wsConnectionAttempted = useRef(false);
 
   useEffect(() => {
     const connectWebSocket = () => {
@@ -81,7 +67,26 @@ const EventList = () => {
         wsConnectionAttempted.current = false;
       }
     };
-  }, []);
+  }, [ws]);
+
+  // Fallback for unsupported browsers
+  if (!window.fetch || !window.WebSocket) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gray-900"
+      >
+        <FaExclamationTriangle className="text-6xl text-yellow-500 mb-6" />
+        <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
+          {t("event_list_component.browser_not_supported")}
+        </h1>
+        <p className="text-lg text-gray-300 mb-4">
+          {t("event_list_component.use_modern_browser")}
+        </p>
+      </motion.div>
+    );
+  }
 
   if (events.length === 0) {
     return (
@@ -92,10 +97,12 @@ const EventList = () => {
       >
         <FaCalendar className="text-6xl text-yellow-500 mb-6" />
         <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
-          {selectedEvent ? selectedEvent.name : "EMURPG Events"}
+          {selectedEvent
+            ? selectedEvent.name
+            : t("event_list_component.emurpg_events")}
         </h1>
         <p className="text-xl text-gray-300 mb-6">
-          There are no ongoing events, stay tuned for our next events!
+          {t("event_list_component.no_ongoing_events")}
         </p>
         <div className="flex gap-4">
           <a
@@ -104,7 +111,7 @@ const EventList = () => {
             rel="noopener noreferrer"
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
-            Join WhatsApp
+            {t("event_list_component.join_whatsapp")}
           </a>
           <a
             href={config.DISCORD_LINK}
@@ -112,7 +119,7 @@ const EventList = () => {
             rel="noopener noreferrer"
             className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            Join Discord
+            {t("event_list_component.join_discord")}
           </a>
         </div>
       </motion.div>
@@ -132,7 +139,7 @@ const EventList = () => {
           onClick={() => setSelectedEvent(null)}
           className="mb-6 text-yellow-500 hover:text-yellow-400 flex items-center gap-2 text-lg"
         >
-          ← Back to Events
+          ← {t("event_list_component.back_to_events")}
         </motion.button>
       )}
 
@@ -141,7 +148,9 @@ const EventList = () => {
         animate={{ y: 0, opacity: 1 }}
         className="text-4xl md:text-6xl font-bold text-center text-yellow-500 mb-8 md:mb-12"
       >
-        {selectedEvent ? selectedEvent.name : "EMU RPG Events"}
+        {selectedEvent
+          ? selectedEvent.name
+          : t("event_list_component.emurpg_events")}
       </motion.h1>
 
       {!selectedEvent ? (
@@ -157,11 +166,13 @@ const EventList = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               onClick={() =>
-                event.total_tables > 0 ? setSelectedEvent(event) : null
+                event.total_tables > 0 || event.event_type === "general"
+                  ? setSelectedEvent(event)
+                  : null
               }
               className={`bg-gray-800/50 rounded-lg border-2 border-yellow-600/50 p-6 
                 ${
-                  event.total_tables > 0
+                  event.total_tables > 0 || event.event_type === "general"
                     ? "cursor-pointer hover:bg-gray-700/50 hover:border-yellow-500 transform hover:scale-[1.01] transition-all"
                     : "opacity-75"
                 }`}
@@ -171,17 +182,26 @@ const EventList = () => {
               </h2>
               <p className="text-gray-300 mb-4 text-lg">{event.description}</p>
               <div className="flex flex-wrap justify-between text-sm md:text-base gap-4">
-                <span
-                  className={`px-4 py-2 rounded-full ${
-                    event.available_tables > 0
-                      ? "bg-green-900/50 text-green-400"
-                      : "bg-red-900/50 text-red-400"
-                  }`}
-                >
-                  {event.available_tables > 0
-                    ? `${event.available_seats} total seats available`
-                    : "Event is under maintenance"}
-                </span>
+                {event.event_type === "general" ? (
+                  <span className="px-4 py-2 rounded-full bg-purple-900/50 text-purple-400 border border-purple-500">
+                    {t("event_list_component.general_event") ||
+                      "General Event - Registration Open"}
+                  </span>
+                ) : (
+                  <span
+                    className={`px-4 py-2 rounded-full ${
+                      event.available_tables > 0
+                        ? "bg-green-900/50 text-green-400"
+                        : "bg-red-900/50 text-red-400"
+                    }`}
+                  >
+                    {event.available_tables > 0
+                      ? `${event.available_seats} ${t(
+                          "event_list_component.seats_available"
+                        )}`
+                      : t("event_list_component.registrations_not_started")}
+                  </span>
+                )}
                 <span className="text-gray-400 flex items-center gap-2">
                   <FaCalendar />
                   {new Date(event.start_date).toLocaleDateString()}
@@ -191,7 +211,16 @@ const EventList = () => {
           ))}
         </motion.div>
       ) : (
-        <TableList eventSlug={selectedEvent.slug} />
+        <>
+          {selectedEvent.event_type === "general" ? (
+            <GeneralEventRegistrationForm
+              eventSlug={selectedEvent.slug}
+              clubs={selectedEvent.clubs || []}
+            />
+          ) : (
+            <TableList eventSlug={selectedEvent.slug} />
+          )}
+        </>
       )}
     </motion.div>
   );

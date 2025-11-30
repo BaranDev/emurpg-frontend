@@ -1,4 +1,5 @@
-export { default as AdminDashboard } from "./AdminDashboard";export { default as EventList } from "./EventList";
+export { default as AdminDashboard } from "./AdminDashboard";
+export { default as EventList } from "./EventList";
 export { default as EventsFooter } from "./EventsFooter";
 export { default as Navbar } from "./Navbar";
 export { default as Privacy } from "./Privacy";
@@ -19,3 +20,5 @@ export { default as FireButton } from "./FireButton";
 export { default as MainFooter } from "./MainFooter";
 export { default as GameGuideModal } from "./GameGuideModal";
 export { default as HomePageEventList } from "./HomePageEventList";
+export { default as LanguageSelector } from "./LanguageSelector";
+export { default as GeneralEventRegistrationForm } from "./GeneralEventRegistrationForm";

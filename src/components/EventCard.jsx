@@ -7,7 +7,7 @@ const EventCard = ({ title, date, description, icon: Icon = null }) => (
     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
     dragElastic={0}
     dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
-    drag={false} // Explicitly disable drag while keeping the passive event handling
+    drag={false}
     className="relative bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg p-8 border-2 border-yellow-600/30 
   shadow-lg transition-all duration-300 group backdrop-blur-sm z-10 w-full"
   >

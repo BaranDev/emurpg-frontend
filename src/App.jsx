@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import TableDetailPage from "./pages/TableDetailPage";
@@ -9,14 +9,33 @@ import Login from "./components/Login";
 import EventsPage from "./pages/EventsPage";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
+import { LanguageSelector } from "./components";
 
-function App() {
+// Inner component that has access to translation context
+function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
   useEffect(() => {
+    checkLanguageSelection();
     checkLoginStatus();
   }, []);
+
+  const checkLanguageSelection = () => {
+    const savedLanguage = localStorage.getItem("selectedLanguage");
+    if (!savedLanguage) {
+      setShowLanguageSelector(true);
+    }
+  };
+
+  const handleLanguageSelect = (language) => {
+    i18n.changeLanguage(language);
+    setShowLanguageSelector(false);
+  };
+
+  const handleLanguageSwitch = () => {
+    setShowLanguageSelector(true);
+  };
 
   const checkLoginStatus = () => {
     const loginData = localStorage.getItem("login");
@@ -34,8 +53,6 @@ function App() {
         localStorage.removeItem("apiKey");
       }
     }
-
-    setIsLoading(false);
   };
 
   const handleLogin = () => {
@@ -48,16 +65,21 @@ function App() {
     setIsLoggedIn(false);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <I18nextProvider i18n={i18n}>
+    <>
+      {showLanguageSelector && (
+        <LanguageSelector onLanguageSelect={handleLanguageSelect} />
+      )}
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/events" element={<EventsPage />} />
+          <Route
+            path="/"
+            element={<HomePage onLanguageSwitch={handleLanguageSwitch} />}
+          />
+          <Route
+            path="/events"
+            element={<EventsPage onLanguageSwitch={handleLanguageSwitch} />}
+          />
           <Route path="/table/:slug" element={<TableDetailPage />} />
           <Route
             path="/admin"
@@ -73,6 +95,15 @@ function App() {
           <Route path="/privacy" element={<Privacy />} />
         </Routes>
       </Router>
+    </>
+  );
+}
+
+// Main App component with I18nextProvider
+function App() {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <AppContent />
     </I18nextProvider>
   );
 }
