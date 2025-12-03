@@ -9,7 +9,14 @@ import {
   FaIdCard,
   FaPhoneAlt,
   FaShieldAlt,
-  FaDharmachakra,
+  FaClock,
+  FaUsers,
+  FaBookOpen,
+  FaPlayCircle,
+  FaGamepad,
+  FaChevronDown,
+  FaChevronUp,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -26,7 +33,7 @@ const Modal = ({ isOpen, children }) => (
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg p-6 max-w-md w-full relative shadow-[0_0_15px_rgba(202,138,4,0.15)]"
+          className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg p-6 max-w-md w-full relative shadow-[0_0_15px_rgba(202,138,4,0.15)] max-h-[90vh] overflow-y-auto"
         >
           {children}
         </motion.div>
@@ -43,11 +50,11 @@ Modal.propTypes = {
 const Input = ({ icon: Icon, ...props }) => (
   <div className="relative">
     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-      <Icon size={20} />
+      <Icon size={18} />
     </div>
     <input
       {...props}
-      className="shadow-inner appearance-none border-2 border-gray-600 rounded-lg w-full py-3 pl-12 pr-4 bg-gray-700/90 text-gray-100 leading-tight focus:outline-none focus:border-yellow-500 focus:shadow-[0_0_10px_rgba(202,138,4,0.2)] transition-all duration-300"
+      className="shadow-inner appearance-none border-2 border-gray-600 rounded-lg w-full py-3 pl-12 pr-4 bg-gray-700/90 text-gray-100 leading-tight focus:outline-none focus:border-yellow-500 focus:shadow-[0_0_10px_rgba(202,138,4,0.2)] transition-all duration-300 text-sm"
     />
   </div>
 );
@@ -56,13 +63,21 @@ Input.propTypes = {
   icon: PropTypes.elementType.isRequired,
 };
 
-const RegistrationForm = ({ tableSlug, tableId }) => {
+const RegistrationForm = ({
+  tableSlug,
+  tableId,
+  gameName,
+  playerQuota,
+  gameInfo,
+}) => {
   const [studentId, setStudentId] = useState("");
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [gameKnowledgeAccepted, setGameKnowledgeAccepted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ruleLanguage, setRuleLanguage] = useState("EN");
+  const [showGameDetails, setShowGameDetails] = useState(true);
   const backendUrl = config.backendUrl;
 
   const rules = {
@@ -92,6 +107,12 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
       alert("You must accept the EMURPG Event Rules and Privacy Policy.");
       return;
     }
+    if (!gameKnowledgeAccepted) {
+      alert(
+        "You must confirm that you understand the game you are applying for."
+      );
+      return;
+    }
 
     const response = await fetch(`${backendUrl}/api/register/${tableSlug}`, {
       method: "POST",
@@ -112,94 +133,234 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
     }
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="py-2 px-4 sm:px-6 lg:px-8 flex flex-col items-center relative select-none"
-    >
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(202,138,4,0.1),transparent_50%)]" />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.2, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"
-        />
-      </div>
+  // Format playtime
+  const formatPlaytime = (minutes) => {
+    if (!minutes) return "Not specified";
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  };
 
-      <div className="w-full max-w-md h-fit relative items-center ">
-        {/* Header Section */}
-        <div className="text-center mb-8 ">
-          <motion.div
-            animate={{
-              scale: [1.2, 1.4, 1.2],
-              rotate: [0, 360],
-            }}
-            style={{ transformOrigin: "center" }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            className="relative mx-auto"
+  return (
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Game Information Card */}
+      {gameInfo && (
+        <motion.div         
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg mb-6 overflow-hidden"
+        >
+          {/* Game Info Header */}
+          <button
+            onClick={() => setShowGameDetails(!showGameDetails)}
+            className="w-full flex items-center justify-between p-4 bg-yellow-600/20 hover:bg-yellow-600/30 transition-colors"
           >
-            <FaDharmachakra className="text-6xl text-yellow-500 mx-auto mb-4" />
-          </motion.div>
-          <h2 className="text-3xl font-bold text-yellow-500 mb-2 my-10">
+            <div className="flex items-center gap-3">
+              <FaGamepad className="text-yellow-500 text-xl" />
+              <span className="text-yellow-500 font-bold text-lg">
+                Game Information
+              </span>
+            </div>
+            {showGameDetails ? (
+              <FaChevronUp className="text-yellow-500" />
+            ) : (
+              <FaChevronDown className="text-yellow-500" />
+            )}
+          </button>
+
+          <AnimatePresence>
+            {showGameDetails && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="p-4 space-y-4">
+                  {/* Game Image */}
+                  {gameInfo.image_url && (
+                    <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-700">
+                      <img
+                        src={gameInfo.image_url}
+                        alt={gameName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+
+                  {/* Game Stats Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {/* Average Playtime */}
+                    <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600">
+                      <FaClock className="text-yellow-500 mx-auto mb-1 text-lg" />
+                      <p className="text-xs text-gray-400">Avg. Playtime</p>
+                      <p className="text-white font-semibold text-sm">
+                        {formatPlaytime(gameInfo.avg_play_time)}
+                      </p>
+                    </div>
+
+                    {/* Player Count */}
+                    <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600">
+                      <FaUsers className="text-yellow-500 mx-auto mb-1 text-lg" />
+                      <p className="text-xs text-gray-400">Players</p>
+                      <p className="text-white font-semibold text-sm">
+                        {gameInfo.min_players && gameInfo.max_players
+                          ? `${gameInfo.min_players}-${gameInfo.max_players}`
+                          : playerQuota || "N/A"}
+                      </p>
+                    </div>
+
+                    {/* Table Quota */}
+                    <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600 col-span-2 sm:col-span-1">
+                      <FaDiceD20 className="text-yellow-500 mx-auto mb-1 text-lg" />
+                      <p className="text-xs text-gray-400">Table Quota</p>
+                      <p className="text-white font-semibold text-sm">
+                        {playerQuota} seats
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Game Description */}
+                  {gameInfo.guide_text && (
+                    <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FaBookOpen className="text-yellow-500" />
+                        <h4 className="text-yellow-500 font-semibold text-sm">
+                          About This Game
+                        </h4>
+                      </div>
+                      <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                        {gameInfo.guide_text}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Tutorial Video Link */}
+                  {gameInfo.guide_video_url && (
+                    <a
+                      href={gameInfo.guide_video_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/50 rounded-lg p-3 transition-colors group"
+                    >
+                      <FaPlayCircle className="text-red-500 text-xl group-hover:scale-110 transition-transform" />
+                      <span className="text-red-400 font-semibold text-sm">
+                        Watch Tutorial Video
+                      </span>
+                    </a>
+                  )}
+
+                  {/* Important Notice */}
+                  <div className="bg-orange-900/20 border border-orange-500/50 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
+                      <p className="text-orange-300 text-xs leading-relaxed">
+                        Please review the game information above before
+                        registering. If you are unfamiliar with this game, we
+                        strongly recommend watching the tutorial video.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* No Game Info Warning */}
+      {!gameInfo && (
+        <div className="bg-gray-800/90 border-2 border-gray-600 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-3 text-gray-400">
+            <FaGamepad className="text-2xl" />
+            <div>
+              <p className="font-semibold">{gameName}</p>
+              <p className="text-sm">
+                Player Quota: {playerQuota} | Game details not available
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Registration Form */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="bg-gray-800/90 shadow-[0_0_25px_rgba(0,0,0,0.3)] rounded-lg p-4 sm:p-6 border-2 border-yellow-500/30 backdrop-blur-sm"
+      >
+        {/* Form Header */}
+        <div className="text-center mb-6">
+          <FaDiceD20 className="text-4xl text-yellow-500 mx-auto mb-2" />
+          <h2 className="text-xl font-bold text-yellow-500">
             Join the Adventure
           </h2>
-          <p className="text-gray-400">Your quest awaits, brave adventurer!</p>
+          <p className="text-gray-400 text-sm">
+            Your quest awaits, brave adventurer!
+          </p>
         </div>
 
-        {/* Main Form */}
-        <form
-          onSubmit={handleRegister}
-          className="bg-gray-800/90 shadow-[0_0_25px_rgba(0,0,0,0.3)] rounded-lg px-8 pt-8 pb-8 mb-4 border-2 border-yellow-500/30 backdrop-blur-sm relative overflow-hidden"
-        >
-          <div className="space-y-6">
-            <Input
-              icon={FaIdCard}
-              type="number"
-              maxLength={8}
-              placeholder="Student ID*"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              required
-            />
+        <form onSubmit={handleRegister} className="space-y-4">
+          <Input
+            icon={FaIdCard}
+            type="number"
+            maxLength={8}
+            placeholder="Student ID*"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            required
+          />
 
-            <Input
-              icon={FaUser}
-              type="text"
-              placeholder="Name/Surname*"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+          <Input
+            icon={FaUser}
+            type="text"
+            placeholder="Name/Surname*"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
 
-            <Input
-              icon={FaPhoneAlt}
-              type="number"
-              maxLength={15}
-              placeholder="Contact Number (OPTIONAL)"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-            />
+          <Input
+            icon={FaPhoneAlt}
+            type="number"
+            maxLength={15}
+            placeholder="Contact Number (OPTIONAL)"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+          />
 
-            {/* Terms Checkbox */}
-            <div className="flex items-start space-x-3 bg-gray-700/50 p-4 rounded-lg border border-gray-600">
-              <div className="flex-shrink-0 mt-1">
+          {/* Game Knowledge Checkbox */}
+          <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-blue-500 rounded border-gray-600 focus:ring-blue-500 focus:ring-offset-gray-800 mt-0.5 flex-shrink-0"
+                checked={gameKnowledgeAccepted}
+                onChange={() => setGameKnowledgeAccepted(!gameKnowledgeAccepted)}
+              />
+              <div className="text-sm">
+                <span className="text-blue-300 font-semibold">
+                  I confirm that I understand the game I am applying for.
+                </span>
+                <p className="text-gray-400 mt-1 text-xs leading-relaxed">
+                  {gameInfo?.guide_video_url
+                    ? "If I am not familiar with this game, I have watched the tutorial video provided above."
+                    : "If I am not familiar with this game, I will research how to play before the event."}
+                </p>
+              </div>
+            </label>
+          </div>
+
+          {/* Terms Checkbox */}
+          <div className="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <div className="flex-shrink-0 mt-0.5">
                 <FaShieldAlt className="text-yellow-500/50" />
               </div>
-              <label className="text-sm text-gray-300 leading-tight">
+              <div className="text-sm text-gray-300">
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-yellow-500 rounded border-gray-600 focus:ring-yellow-500 focus:ring-offset-gray-800 mr-2"
@@ -222,27 +383,40 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
                 >
                   Event Rules
                 </span>
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-4 px-6 rounded-lg 
-                         focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-800 
-                         transition duration-300 ease-in-out shadow-lg relative overflow-hidden group"
-              type="submit"
-            >
-              <span className="relative z-10 flex items-center justify-center">
-                <FaDiceD20 className="mr-2" />
-                Begin Your Quest
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-yellow-700 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
-            </motion.button>
+              </div>
+            </label>
           </div>
+
+          {/* Submit Button */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`w-full font-bold py-4 px-6 rounded-lg 
+                       focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-800 
+                       transition duration-300 ease-in-out shadow-lg relative overflow-hidden
+                       ${
+                         termsAccepted && gameKnowledgeAccepted
+                           ? "bg-yellow-600 hover:bg-yellow-700 text-white"
+                           : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                       }`}
+            type="submit"
+            disabled={!termsAccepted || !gameKnowledgeAccepted}
+          >
+            <span className="relative z-10 flex items-center justify-center">
+              <FaDiceD20 className="mr-2" />
+              Begin Your Quest
+            </span>
+          </motion.button>
+
+          {/* Validation Hints */}
+          {(!termsAccepted || !gameKnowledgeAccepted) && (
+            <p className="text-center text-gray-500 text-xs">
+              Please accept both checkboxes above to register
+            </p>
+          )}
         </form>
-      </div>
+      </motion.div>
+
       {/* Rules Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="flex flex-col">
@@ -255,11 +429,11 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN")}
-            className="w-40 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+            className="w-40 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-4"
           >
-            {ruleLanguage === "EN" ? "TR" : "EN"}
+            {ruleLanguage === "EN" ? "Turkce" : "English"}
           </motion.button>
-          <div className="text-gray-300 space-y-4">
+          <div className="text-gray-300 space-y-3">
             {rules[ruleLanguage].map((rule, index) => (
               <motion.div
                 key={index}
@@ -269,7 +443,7 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
                 className="flex items-start p-3 rounded-lg hover:bg-gray-700/50 transition-colors"
               >
                 <FaCheck className="text-yellow-500 mt-1 mr-3 flex-shrink-0" />
-                <span>{rule}</span>
+                <span className="text-sm">{rule}</span>
               </motion.div>
             ))}
           </div>
@@ -283,13 +457,25 @@ const RegistrationForm = ({ tableSlug, tableId }) => {
           </motion.button>
         </div>
       </Modal>
-    </motion.div>
+    </div>
   );
 };
 
 RegistrationForm.propTypes = {
   tableSlug: PropTypes.string,
-  tableId: PropTypes.number,
+  tableId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  gameName: PropTypes.string,
+  gameMaster: PropTypes.string,
+  playerQuota: PropTypes.number,
+  gameInfo: PropTypes.shape({
+    name: PropTypes.string,
+    avg_play_time: PropTypes.number,
+    min_players: PropTypes.number,
+    max_players: PropTypes.number,
+    image_url: PropTypes.string,
+    guide_text: PropTypes.string,
+    guide_video_url: PropTypes.string,
+  }),
 };
 
 export default RegistrationForm;

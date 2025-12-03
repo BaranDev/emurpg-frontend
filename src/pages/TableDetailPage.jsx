@@ -77,32 +77,38 @@ const TableDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen text-center bg-gray-900 text-gray-100 flex items-center justify-center bg-medieval-pattern relative select-none">
-      <div className="container w-full md:w-[50%] px-4 md:px-0 py-8 relative">
+    <div className="min-h-screen bg-gray-900 text-gray-100 bg-medieval-pattern relative select-none">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <button
-          className="absolute top-12 left-8 text-yellow-500 bg-gray-800 rounded-full p-0 hover:text-yellow-400 hover:opacity-50 transition duration-300 flex items-center gap-2"
+          className="fixed top-4 left-4 z-50 text-yellow-500 bg-gray-800 rounded-full p-0 hover:text-yellow-400 hover:opacity-50 transition duration-300 flex items-center gap-2"
           onClick={() => (window.location.href = "/events")}
         >
-          <FaArrowAltCircleLeft size={24} />
+          <FaArrowAltCircleLeft size={32} />
         </button>
-        <div className="bg-gray-800 rounded-lg border-4 border-yellow-600 shadow-2xl p-1">
-          <div className="flex justify-center">
-            <FaCaretLeft className="text-6xl py-2 text-yellow-500" />
-            <FaDiceD20 className="text-6xl py-2 text-yellow-500" />
-            <FaCaretRight className="text-6xl py-2 text-yellow-500" />
+
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="flex justify-center items-center gap-2 mb-4">
+            <FaCaretLeft className="text-4xl md:text-5xl text-yellow-500" />
+            <FaDiceD20 className="text-4xl md:text-5xl text-yellow-500" />
+            <FaCaretRight className="text-4xl md:text-5xl text-yellow-500" />
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-yellow-500 mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-yellow-500">
             {table.game_name}
           </h1>
-          <p className="text-[10px] text-gray-400">GM</p>
-          <h2 className="text-lg md:text-sm text-gray-300 m-0">
-            {table.game_master}
-          </h2>
-          <p className="text-base md:text-xs mb-2 my-0">
-            Player Quota: {table.player_quota}
-          </p>
-          <RegistrationForm tableSlug={table.slug} tableId={table.slug} />
+          <p className="text-sm text-gray-400 mt-1">Game Master</p>
+          <h2 className="text-lg text-gray-300">{table.game_master}</h2>
         </div>
+
+        {/* Registration Form with Game Info */}
+        <RegistrationForm
+          tableSlug={table.slug}
+          tableId={table.slug}
+          gameName={table.game_name}
+          gameMaster={table.game_master}
+          playerQuota={table.player_quota}
+          gameInfo={table.game_info}
+        />
       </div>
     </div>
   );
