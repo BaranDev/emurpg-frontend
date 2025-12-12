@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { FaDiceD20, FaBars, FaTimes, FaGithub, FaGlobe } from "react-icons/fa";
+import { FaBars, FaTimes, FaGithub, FaGlobe } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import emurpgLogo from "../assets/logo/emurpg_logo.png";
 
 const Navbar = ({
   buttons = [],
@@ -14,6 +15,12 @@ const Navbar = ({
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const currentLanguage = i18n.language;
+
+  const emuconButton = {
+    label: "EMUCON",
+    onClick: () => (window.location.href = "/emucon/rules"),
+    disabled: false,
+  };
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -42,15 +49,21 @@ const Navbar = ({
       key={button.label}
       disabled={button.isDisabled}
       onClick={button.onClick}
-      className={`px-3 py-2 rounded relative group ${
-        button.disabled ? "text-gray-400 cursor-not-allowed" : "text-white-400"
+      className={`px-4 py-2 rounded-lg relative group font-medium transition-all duration-300 ${
+        button.disabled
+          ? "text-gray-500 cursor-not-allowed opacity-50"
+          : "text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/20 backdrop-blur-sm"
       }`}
     >
-      {button.label}
+      <span className="relative z-10">{button.label}</span>
       {button.badge && (
-        <span className="absolute -top-2 -right-2 bg-gray-600 text-xs px-2 py-1 rounded-full text-white">
+        <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-[10px] px-2 py-0.5 rounded-full text-white font-bold shadow-lg border border-white/30 backdrop-blur-sm">
           {button.badge}
         </span>
+      )}
+      {/* Magical glow underline effect */}
+      {!button.disabled && (
+        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400/60 via-white/80 to-purple-400/60 group-hover:w-full transition-all duration-300 shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
       )}
     </button>
   );
@@ -61,42 +74,115 @@ const Navbar = ({
         <nav
           className={`${
             scrollEffectEnabled ? "fixed animate-slideDown" : "relative"
-          } top-0 left-0 right-0 bg-gray-800/50 backdrop-blur-[2px] border-b-2 border-yellow-600 z-50 transition-all duration-200`}
+          } top-0 left-0 right-0 z-50 transition-all duration-200`}
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 50%, rgba(15, 23, 42, 0.85) 100%)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+          }}
         >
+          {/* Cloud-like bottom edge */}
+          <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden">
+            <svg
+              className="absolute bottom-0 w-full h-full"
+              viewBox="0 0 1200 120"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0,120 Q200,80 400,100 T800,90 T1200,110 L1200,120 L0,120 Z"
+                fill="rgba(15, 23, 42, 0.9)"
+                opacity="0.6"
+              />
+              <path
+                d="M0,120 Q150,70 350,95 T750,85 T1200,105 L1200,120 L0,120 Z"
+                fill="rgba(15, 23, 42, 0.7)"
+                opacity="0.4"
+              />
+            </svg>
+          </div>
+
+          {/* Misty fog effect */}
+          <div className="absolute inset-0 opacity-30 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" />
+          </div>
+
           <div className="container mx-auto px-4">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex flex-col items-start">
-                <div className="flex items-center">
-                  <FaDiceD20 className="text-yellow-500 text-2xl" />
-                  <span className="ml-2 text-yellow-500 font-medieval text-lg">
+            <div className="flex justify-between items-center h-20">
+              {/* Logo Section - Redesigned */}
+              <div
+                className="flex items-center gap-3 group cursor-pointer"
+                onClick={() => (window.location.href = "/")}
+              >
+                {/* Moon Logo */}
+                <div className="relative">
+                  {/* Moon glow - soft white/blue */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-white/20 to-blue-200/30 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500" />
+
+                  {/* Moon phases glow rings */}
+                  <div className="absolute inset-0 rounded-full border border-white/20 group-hover:border-white/30 transition-all duration-300" />
+                  <div className="absolute inset-1 rounded-full border border-white/10" />
+
+                  {/* Moon surface */}
+                  <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-gradient-to-br from-slate-100/90 via-white/80 to-slate-200/90 p-1 shadow-[0_0_20px_rgba(255,255,255,0.3),inset_0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4),inset_0_0_25px_rgba(255,255,255,0.15)] transition-all duration-500">
+                    <img
+                      src={emurpgLogo}
+                      alt="EMURPG Logo"
+                      className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        filter: "drop-shadow(0 0 8px rgba(255,255,255,0.5))",
+                      }}
+                    />
+                  </div>
+
+                  {/* Moonlight rays */}
+                  <div className="absolute -inset-2 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
+                    {[...Array(8)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute top-1/2 left-1/2 w-0.5 h-4 bg-white/40 origin-bottom"
+                        style={{
+                          transform: `translate(-50%, -50%) rotate(${
+                            i * 45
+                          }deg) translateY(-8px)`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Club name with magical forest styling */}
+                <div className="flex flex-col">
+                  <span className="text-white/90 font-bold text-lg md:text-xl tracking-wide group-hover:text-white transition-colors drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
                     EMU RPG Club
                   </span>
-                </div>
-                <div className="flex items-center text-[10px] text-yellow-500 mt-1">
-                  {t("navbar.made_by")}
-                  <FaGithub className="ml-1 mr-1" />
-                  <a
-                    href="https://github.com/barandev"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:underline"
-                  >
-                    Barandev
-                  </a>
+                  <div className="flex items-center text-[10px] text-slate-400/70 mt-0.5">
+                    {t("navbar.made_by")}
+                    <FaGithub className="ml-1 mr-1 text-[9px]" />
+                    <a
+                      href="https://github.com/barandev"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-yellow-400 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Barandev
+                    </a>
+                  </div>
                 </div>
               </div>
 
               {/* Desktop menu */}
-              <div className="hidden md:flex items-center space-x-4">
-                {buttons.map(renderButton)}
+              <div className="hidden md:flex items-center space-x-3">
+                {[emuconButton, ...buttons].map(renderButton)}
                 {/* Language Switcher */}
                 <button
                   onClick={onLanguageSwitch}
-                  className="px-3 py-2 rounded relative group text-yellow-500 hover:text-yellow-400 flex items-center gap-2 border border-yellow-600/30 hover:border-yellow-500/50 transition-all"
+                  className="px-4 py-2 rounded-lg relative group text-white/80 hover:text-white flex items-center gap-2 border border-white/20 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
                   title={t("navbar.language")}
                 >
-                  <FaGlobe className="text-lg" />
-                  <span className="text-sm">
+                  <FaGlobe className="text-base group-hover:rotate-180 transition-transform duration-500" />
+                  <span className="text-sm font-medium">
                     {currentLanguage === "en"
                       ? t("navbar.english")
                       : t("navbar.turkish")}
@@ -108,7 +194,7 @@ const Navbar = ({
               <div className="md:hidden">
                 <button
                   onClick={() => setIsOpen(!isOpen)}
-                  className="text-gray-300 hover:text-yellow-500 focus:outline-none"
+                  className="text-white/70 hover:text-white focus:outline-none p-2 rounded-lg hover:bg-white/10 transition-all"
                 >
                   {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
                 </button>
@@ -117,22 +203,22 @@ const Navbar = ({
 
             {/* Mobile menu */}
             {isOpen && (
-              <div className="md:hidden border-t border-gray-700 animate-fadeIn">
-                <div className="px-2 pt-2 pb-3 space-y-1">
-                  {buttons.map((button) => (
+              <div className="md:hidden border-t border-white/10 bg-slate-900/95 backdrop-blur-md animate-fadeIn">
+                <div className="px-3 pt-3 pb-4 space-y-2">
+                  {[emuconButton, ...buttons].map((button) => (
                     <button
                       key={button.label}
                       disabled={button.disabled}
                       onClick={button.onClick}
-                      className={`block px-3 py-2 rounded w-full text-left relative ${
+                      className={`block px-4 py-2.5 rounded-lg w-full text-left relative font-medium transition-all duration-300 ${
                         button.disabled
-                          ? "text-gray-400 cursor-not-allowed"
-                          : "text-white-400"
+                          ? "text-gray-500 cursor-not-allowed opacity-50"
+                          : "text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/20"
                       }`}
                     >
                       {button.label}
                       {button.badge && (
-                        <span className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-600 text-xs px-2 py-1 rounded-full text-white">
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-[10px] px-2 py-0.5 rounded-full text-white font-bold shadow-lg border border-white/30">
                           {button.badge}
                         </span>
                       )}
@@ -141,7 +227,7 @@ const Navbar = ({
                   {/* Language Switcher for Mobile */}
                   <button
                     onClick={onLanguageSwitch}
-                    className="block px-3 py-2 rounded w-full text-left text-yellow-500 hover:text-yellow-400 flex items-center gap-2 border border-yellow-600/30 hover:border-yellow-500/50 transition-all"
+                    className="block px-4 py-2.5 rounded-lg w-full text-left text-white/80 hover:text-white flex items-center gap-2 border border-white/20 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
                   >
                     <FaGlobe className="text-lg" />
                     <span>

@@ -38,17 +38,17 @@ const EmuconRulesPage = () => {
     >
       {/* Header with Language Switcher */}
       <header className="sticky top-0 z-50 bg-gradient-to-b from-black/95 via-black/90 to-transparent backdrop-blur-md border-b border-amber-500/20">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
             {/* Back Button */}
             <motion.a
               href="/"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors group"
+              className="flex items-center gap-1.5 sm:gap-2 text-amber-400 hover:text-amber-300 transition-colors group shrink-0"
             >
-              <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium hidden sm:inline">
+              <FaArrowLeft className="text-sm sm:text-base group-hover:-translate-x-1 transition-transform" />
+              <span className="font-medium hidden sm:inline text-sm">
                 {language === "tr" ? "Ana Sayfa" : "Homepage"}
               </span>
             </motion.a>
@@ -57,12 +57,12 @@ const EmuconRulesPage = () => {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center"
+              className="text-center min-w-0 flex-1"
             >
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent tracking-wider">
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent tracking-wider truncate">
                 EMUCON 2025
               </h1>
-              <p className="text-xs text-amber-500/60 tracking-widest uppercase mt-0.5">
+              <p className="text-[10px] sm:text-xs text-amber-500/60 tracking-widest uppercase mt-0.5 truncate">
                 {language === "tr" ? "Etkinlik Kuralları" : "Event Rules"}
               </p>
             </motion.div>
@@ -72,14 +72,14 @@ const EmuconRulesPage = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={toggleLanguage}
-              className="flex items-center gap-2 px-4 py-2 rounded-full 
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full 
                          bg-gradient-to-r from-amber-500/10 to-amber-600/10
                          border border-amber-500/30 hover:border-amber-400/60
                          text-amber-400 hover:text-amber-300
-                         transition-all duration-300 group"
+                         transition-all duration-300 group shrink-0"
             >
-              <FaGlobe className="text-lg group-hover:rotate-180 transition-transform duration-500" />
-              <span className="font-semibold text-sm">
+              <FaGlobe className="text-base sm:text-lg group-hover:rotate-180 transition-transform duration-500" />
+              <span className="font-semibold text-xs sm:text-sm">
                 {language === "tr" ? "EN" : "TR"}
               </span>
             </motion.button>
@@ -88,35 +88,35 @@ const EmuconRulesPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
           {/* Event Banner */}
-          <div className="relative mb-12 p-8 rounded-2xl bg-gradient-to-br from-amber-500/10 via-transparent to-amber-600/5 border border-amber-500/20 overflow-hidden">
+          <div className="relative mb-6 sm:mb-12 p-4 sm:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-500/10 via-transparent to-amber-600/5 border border-amber-500/20 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-amber-500/5" />
-            <div className="absolute top-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-600/10 rounded-full blur-3xl" />
+            <div className="absolute top-0 left-0 w-20 sm:w-32 h-20 sm:h-32 bg-amber-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-0 w-28 sm:w-48 h-28 sm:h-48 bg-amber-600/10 rounded-full blur-3xl" />
 
             <div className="relative z-10 text-center">
-              <FaScroll className="text-5xl text-amber-400 mx-auto mb-4 opacity-80" />
-              <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-3">
+              <FaScroll className="text-3xl sm:text-5xl text-amber-400 mx-auto mb-3 sm:mb-4 opacity-80" />
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-amber-300 mb-2 sm:mb-3 leading-tight">
                 {language === "tr"
                   ? "Etkinlik Katılım Kuralları ve Sorumluluk Sözleşmesi"
                   : "Event Participation Rules and Liability Agreement"}
               </h2>
-              <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-400 mt-6">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-400 mt-4 sm:mt-6">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
                   <span className="text-amber-400">📅</span>
                   <span>
                     {language === "tr" ? "20 Aralık 2025" : "December 20, 2025"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-center">
                   <span className="text-amber-400">📍</span>
-                  <span>
+                  <span className="text-xs sm:text-sm">
                     {language === "tr"
                       ? "DAÜ Lala Mustafa Paşa Spor Sarayı"
                       : "EMU Lala Mustafa Pasha Sports Complex"}
@@ -140,15 +140,15 @@ const EmuconRulesPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-amber-500/10 bg-black/50 py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-amber-400/60 text-sm">
+      <footer className="border-t border-amber-500/10 bg-black/50 py-6 sm:py-8 mt-10 sm:mt-16">
+        <div className="container mx-auto px-3 sm:px-4 text-center">
+          <p className="text-amber-400/60 text-xs sm:text-sm">
             {language === "tr" ? "Fantastik Kurgu Kulübü" : "EMURPG Club"} •{" "}
             {language === "tr"
               ? "Doğu Akdeniz Üniversitesi"
               : "Eastern Mediterranean University"}
           </p>
-          <p className="text-gray-600 text-xs mt-2">
+          <p className="text-gray-600 text-[10px] sm:text-xs mt-1.5 sm:mt-2">
             {language === "tr" ? "Aralık 2025" : "December 2025"}
           </p>
         </div>
@@ -158,9 +158,9 @@ const EmuconRulesPage = () => {
 };
 
 const SectionHeading = ({ children }) => (
-  <h2 className="text-2xl font-bold text-amber-400 mt-12 mb-6 pb-3 border-b border-amber-500/20 flex items-center gap-3">
-    <span className="w-1.5 h-8 bg-gradient-to-b from-amber-400 to-amber-600 rounded-full" />
-    {children}
+  <h2 className="text-lg sm:text-2xl font-bold text-amber-400 mt-8 sm:mt-12 mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-amber-500/20 flex items-center gap-2 sm:gap-3">
+    <span className="w-1 sm:w-1.5 h-6 sm:h-8 bg-gradient-to-b from-amber-400 to-amber-600 rounded-full shrink-0" />
+    <span className="leading-tight">{children}</span>
   </h2>
 );
 
@@ -169,7 +169,9 @@ SectionHeading.propTypes = {
 };
 
 const Paragraph = ({ children }) => (
-  <p className="text-gray-300 leading-relaxed mb-4 text-[15px]">{children}</p>
+  <p className="text-gray-300 leading-relaxed mb-3 sm:mb-4 text-sm sm:text-[15px]">
+    {children}
+  </p>
 );
 
 Paragraph.propTypes = {
@@ -178,15 +180,15 @@ Paragraph.propTypes = {
 
 const TurkishContent = () => (
   <>
-    <div className="bg-gradient-to-r from-amber-500/10 to-transparent p-6 rounded-xl border-l-4 border-amber-500 mb-8">
-      <p className="text-amber-200 font-medium mb-2">
+    <div className="bg-gradient-to-r from-amber-500/10 to-transparent p-4 sm:p-6 rounded-lg sm:rounded-xl border-l-4 border-amber-500 mb-6 sm:mb-8">
+      <p className="text-amber-200 font-medium mb-1.5 sm:mb-2 text-sm sm:text-base">
         <strong>Düzenleyen:</strong> Doğu Akdeniz Üniversitesi Fantastik Kurgu
         Kulübü
       </p>
-      <p className="text-amber-200 font-medium mb-2">
+      <p className="text-amber-200 font-medium mb-1.5 sm:mb-2 text-sm sm:text-base">
         <strong>Etkinlik Tarihi:</strong> 20 Aralık 2025
       </p>
-      <p className="text-amber-200 font-medium">
+      <p className="text-amber-200 font-medium text-sm sm:text-base">
         <strong>Etkinlik Yeri:</strong>{" "}
         <a
           href="https://maps.app.goo.gl/bprQpkqkQTjHKkM57"
@@ -195,7 +197,7 @@ const TurkishContent = () => (
         >
           <span className="underline">DAÜ Lala Mustafa Paşa Spor Sarayı</span>
         </a>{" "}
-        <span className="text-gray-500 text-sm">(Google Maps)</span>
+        <span className="text-gray-500 text-xs sm:text-sm">(Google Maps)</span>
       </p>
     </div>
 
@@ -396,25 +398,31 @@ const TurkishContent = () => (
       Yapılacak değişiklikler, etkinlik öncesinde katılımcılara duyurulacaktır.
     </Paragraph>
 
-    <div className="mt-16 pt-8 border-t border-amber-500/20 text-center">
-      <p className="text-amber-400 font-bold text-lg">Fantastik Kurgu Kulübü</p>
-      <p className="text-gray-400">Doğu Akdeniz Üniversitesi</p>
-      <p className="text-gray-500 text-sm mt-2">Aralık 2025</p>
+    <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-amber-500/20 text-center">
+      <p className="text-amber-400 font-bold text-base sm:text-lg">
+        Fantastik Kurgu Kulübü
+      </p>
+      <p className="text-gray-400 text-sm sm:text-base">
+        Doğu Akdeniz Üniversitesi
+      </p>
+      <p className="text-gray-500 text-xs sm:text-sm mt-1.5 sm:mt-2">
+        Aralık 2025
+      </p>
     </div>
   </>
 );
 
 const EnglishContent = () => (
   <>
-    <div className="bg-gradient-to-r from-amber-500/10 to-transparent p-6 rounded-xl border-l-4 border-amber-500 mb-8">
-      <p className="text-amber-200 font-medium mb-2">
+    <div className="bg-gradient-to-r from-amber-500/10 to-transparent p-4 sm:p-6 rounded-lg sm:rounded-xl border-l-4 border-amber-500 mb-6 sm:mb-8">
+      <p className="text-amber-200 font-medium mb-1.5 sm:mb-2 text-sm sm:text-base">
         <strong>Organized by:</strong> Eastern Mediterranean University EMURPG
         Club
       </p>
-      <p className="text-amber-200 font-medium mb-2">
+      <p className="text-amber-200 font-medium mb-1.5 sm:mb-2 text-sm sm:text-base">
         <strong>Event Date:</strong> December 20, 2025
       </p>
-      <p className="text-amber-200 font-medium">
+      <p className="text-amber-200 font-medium text-sm sm:text-base">
         <strong>Event Venue:</strong>{" "}
         <a
           href="https://maps.app.goo.gl/bprQpkqkQTjHKkM57"
@@ -425,7 +433,7 @@ const EnglishContent = () => (
             EMU Lala Mustafa Pasha Sports Complex
           </span>
         </a>{" "}
-        <span className="text-gray-500 text-sm">(Google Maps)</span>
+        <span className="text-gray-500 text-xs sm:text-sm">(Google Maps)</span>
       </p>
     </div>
 
@@ -624,10 +632,16 @@ const EnglishContent = () => (
       agreement. Any changes will be announced to participants before the event.
     </Paragraph>
 
-    <div className="mt-16 pt-8 border-t border-amber-500/20 text-center">
-      <p className="text-amber-400 font-bold text-lg">EMURPG Club</p>
-      <p className="text-gray-400">Eastern Mediterranean University</p>
-      <p className="text-gray-500 text-sm mt-2">December 2025</p>
+    <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-amber-500/20 text-center">
+      <p className="text-amber-400 font-bold text-base sm:text-lg">
+        EMURPG Club
+      </p>
+      <p className="text-gray-400 text-sm sm:text-base">
+        Eastern Mediterranean University
+      </p>
+      <p className="text-gray-500 text-xs sm:text-sm mt-1.5 sm:mt-2">
+        December 2025
+      </p>
     </div>
   </>
 );
