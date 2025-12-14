@@ -9,6 +9,7 @@ const config = {
   LINKEDIN_LINK: "https://www.linkedin.com/company/emu-rpg-club/",
   FOOTER_TEXT: "© 2024 EMU RPG Club. All rights reserved.",
   FOOTER_ICON_SIZE: 18,
+  ENABLE_SCROLL_SNAP: false, // Toggle scroll snapping for EmuconHome
 };
 
 const rpgQuotes = [

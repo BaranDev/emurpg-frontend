@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import TableDetailPage from "./pages/TableDetailPage";
 import { I18nextProvider } from "react-i18next";
@@ -8,6 +8,8 @@ import AdminDashboard from "./components/AdminDashboard";
 import Login from "./components/Login";
 import EventsPage from "./pages/EventsPage";
 import EmuconRulesPage from "./pages/EmuconRulesPage";
+import EmuconHome from "./pages/Emucon/Home";
+import EmuconSponsors from "./pages/Emucon/Sponsors";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
 import { LanguageSelector } from "./components";
@@ -92,7 +94,8 @@ function AppContent() {
               )
             }
           />
-          <Route path="/emucon" element={<Navigate to="/emucon/rules" replace />} />
+          <Route path="/emucon" element={<EmuconHome />} />
+          <Route path="/emucon/sponsors" element={<EmuconSponsors />} />
           <Route path="/emucon/rules" element={<EmuconRulesPage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />

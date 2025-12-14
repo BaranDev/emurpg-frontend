@@ -1,6 +1,30 @@
-export default {  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        forest: {
+          dark: "#0d1f0d",
+          deep: "#1a2e1a",
+          medium: "#2d4a2d",
+          light: "#4a7c4a",
+          glow: "#6b9b6b",
+        },
+        gold: {
+          DEFAULT: "#c9a227",
+          light: "#e8d48b",
+          dark: "#8a6d1a",
+        },
+        cream: "#f5f2e8",
+        emucon: {
+          "text-primary": "#f0efe8",
+          "text-secondary": "#b8b5a8",
+          "text-muted": "#8a8778",
+        },
+      },
+      fontFamily: {
+        cinzel: ["Cinzel", "serif"],
+      },
       keyframes: {
         "flame-dance": {
           "0%, 100%": { transform: "scaleY(1) translateY(0)" },

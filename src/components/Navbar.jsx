@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaBars, FaTimes, FaGithub, FaGlobe } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import emurpgLogo from "../assets/logo/emurpg_logo.png";
+import emurpgLogo from "../assets/logo/LOGO_DARKGRAY.png";
 
 const Navbar = ({
   buttons = [],
@@ -18,7 +18,7 @@ const Navbar = ({
 
   const emuconButton = {
     label: "EMUCON",
-    onClick: () => (window.location.href = "/emucon/rules"),
+    onClick: () => (window.location.href = "/emucon/"),
     disabled: false,
   };
 

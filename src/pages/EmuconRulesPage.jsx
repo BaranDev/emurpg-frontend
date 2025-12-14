@@ -30,7 +30,7 @@ const EmuconRulesPage = () => {
 
   return (
     <div
-      className="min-h-screen text-gray-100"
+      className="min-h-screen text-gray-100 select-none"
       style={{
         backgroundColor: "#0a0a0a",
         backgroundImage: `url("${PATTERN_BG}")`,
@@ -42,7 +42,7 @@ const EmuconRulesPage = () => {
           <div className="flex items-center justify-between gap-2">
             {/* Back Button */}
             <motion.a
-              href="/"
+              href="/emucon"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-1.5 sm:gap-2 text-amber-400 hover:text-amber-300 transition-colors group shrink-0"

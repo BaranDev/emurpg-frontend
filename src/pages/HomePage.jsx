@@ -24,7 +24,7 @@ import {
 } from "../components";
 import ParallaxBackground from "../components/ParallaxBackground";
 import * as photos from "../assets/member_photos";
-import emurpgLogo from "../assets/logo/emurpg_logo.png";
+import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
 import { config, rpgQuotes } from "../config";
 
 const HomePage = ({ onLanguageSwitch }) => {
@@ -294,13 +294,13 @@ const HomePage = ({ onLanguageSwitch }) => {
                   image={photos.photo_mete}
                 />
                 <GameMasterCard
-                  name="Deha"
-                  title={t("homepage.gm_game_master")}
-                  description=""
+                  name="Deha Deniz Kurtoğlu"
+                  title={t("Design | General support")}
+                  description="But in the end, you lack the stomach. For the agony you'll bring upon yourself."
                   image={photos.photo_deha}
                 />
                 <GameMasterCard
-                  name="Mehmet"
+                  name="Mehmet Sevban Karaman"
                   title={t("homepage.gm_game_master")}
                   description="I regret nothing."
                   socials={{
