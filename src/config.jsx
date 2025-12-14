@@ -1,4 +1,5 @@
-const DEV = false;
+const DEV = import.meta.env.VITE_DEV === "true";
+console.log("Development Mode:", DEV);
 const backendUrl = DEV ? "http://localhost:8000" : "https://api.emurpg.com";
 
 const config = {
