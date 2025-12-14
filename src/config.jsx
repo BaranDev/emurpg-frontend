@@ -1,7 +1,7 @@
 const DEV = import.meta.env.VITE_DEV === "true";
-console.log("Development Mode:", DEV);
 const backendUrl = DEV ? "http://localhost:8000" : "https://api.emurpg.com";
-
+console.log("Development Mode:", DEV);
+console.log("Environment DEV flag value", import.meta.env.VITE_DEV);
 const config = {
   backendUrl: backendUrl,
   DISCORD_LINK: "https://discord.gg/QFynV24URr",
