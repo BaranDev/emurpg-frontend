@@ -24,6 +24,10 @@ const PATTERN_BG = `data:image/svg+xml,${encodeURIComponent(`
 const EmuconRulesPage = () => {
   const [language, setLanguage] = useState("tr");
 
+  useEffect(() => {
+    document.title = "EMURPG - EMUCON Rules";
+  }, []);
+
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === "tr" ? "en" : "tr"));
   };

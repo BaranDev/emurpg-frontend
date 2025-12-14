@@ -33,6 +33,7 @@ const HomePage = ({ onLanguageSwitch }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "EMURPG Club - Home";
     const loadTimer = setTimeout(() => setIsLoading(false), 1500);
 
     return () => {

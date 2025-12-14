@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   EmuconNavbar,
   EmuconDivider,
@@ -106,6 +107,10 @@ const tiers = [
 ];
 
 const EmuconSponsors = () => {
+  useEffect(() => {
+    document.title = "EMURPG - EMUCON Sponsors";
+  }, []);
+
   return (
     <div
       className="min-h-screen text-emucon-text-primary select-none"

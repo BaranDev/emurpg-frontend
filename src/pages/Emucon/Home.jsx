@@ -119,6 +119,10 @@ const EmuconHome = () => {
   const currentSectionRef = useRef(0);
   const scrollQueueRef = useRef([]);
 
+  useEffect(() => {
+    document.title = "EMURPG - EMUCON 2025";
+  }, []);
+
   // Find closest section based on scroll position
   const findClosestSection = useCallback((scrollTop) => {
     const sections = SECTION_IDS.map((id) => document.getElementById(id));

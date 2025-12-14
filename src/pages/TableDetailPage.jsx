@@ -12,6 +12,10 @@ const TableDetailPage = () => {
   const [ws, setWs] = useState(null);
   const wsConnected = useRef(false);
 
+  useEffect(() => {
+    document.title = "EMURPG - Table Details";
+  }, []);
+
   // Function to fetch the table data
   const fetchTableData = useCallback(() => {
     fetch(`${backendUrl}/api/table/${slug}`)
