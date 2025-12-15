@@ -66,8 +66,9 @@ const features = [
 ];
 
 const stats = [
-  { number: "26", label: "Student Clubs / Öğrenci Kulübü" },
-  { number: "9", label: "Hours of Activities / Saat Etkinlik" },
+  { number: "41", label: "Student Clubs / Öğrenci Kulübü" },
+  { number: "40", label: "Activities / Etkinlik" },
+  { number: "5", label: "Stage Performances / Sahne Performansı" },
   { number: "FREE", label: "Entry / Giriş Ücretsiz" },
 ];
 
@@ -295,11 +296,12 @@ const EmuconHome = () => {
               <h3 className="font-cinzel text-base md:text-xl lg:text-2xl text-cream mb-1 md:mb-4">
                 The Ultimate Campus Festival
               </h3>
-              <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:mb-4 leading-relaxed">
-                EMUCON is a one-day festival where 26 student clubs take over
-                the Sports Complex for nine hours of gaming tournaments, live
-                music, art exhibitions, food stalls, workshops, and everything
-                creative happening on campus—all in one place.
+              <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:md-4 leading-relaxed">
+                EMUCON is a one-day festival where 41 student clubs take over
+                the Sports Complex from 2:00 PM to 6:00 PM for gaming
+                tournaments, live music, art exhibitions, food stalls,
+                workshops, and everything creative happening on campus—all in
+                one place.
               </p>
               <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:mb-4 leading-relaxed">
                 This isn&apos;t your typical university event where you sit
@@ -326,10 +328,10 @@ const EmuconHome = () => {
                 Kampüsün En Büyük Festivali
               </h3>
               <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:mb-4 leading-relaxed">
-                EMUCON, 26 öğrenci kulübünün Spor Kompleksi&apos;ni ele
-                geçirdiği, dokuz saat boyunca oyun turnuvalarından canlı müziğe,
-                sanat sergilerinden yemek stantlarına kadar her şeyin tek bir
-                yerde toplandığı bir günlük festivaldir.
+                EMUCON, 41 öğrenci kulübünün Spor Kompleksi&apos;ni 14:00-18:00
+                arası ele geçirdiği, oyun turnuvalarından canlı müziğe, sanat
+                sergilerinden yemek stantlarına kadar her şeyin tek bir yerde
+                toplandığı bir günlük festivaldir.
               </p>
               <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:mb-4 leading-relaxed">
                 Bu sıradan bir üniversite etkinliği değil. EMUCON interaktif,
@@ -392,14 +394,15 @@ const EmuconHome = () => {
               </h3>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
                 No tickets. No registration. Just walk in whenever works for
-                you. The event runs from 1:00 PM to 10:00 PM, so there&apos;s
-                plenty of time.
+                you. The event runs from 2:00 PM to 6:00 PM, so there&apos;s
+                plenty to see and do.
               </p>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
-                Early afternoon is great for exploring without crowds. Late
-                afternoon into evening is when the energy peaks and the main
-                stage programming gets intense. If you can only come for part of
-                the day, aim for 5:00 PM onward.
+                The event kicks off at 2:00 PM with stage performances and club
+                activities. Mid-afternoon (3:00-4:00 PM) features more
+                performances and workshops. Late afternoon (4:00-6:00 PM) is
+                when the energy peaks with the final performances and
+                activities.
               </p>
               <p className="text-emucon-text-secondary text-sm md:text-base">
                 <strong className="text-cream">What to bring:</strong> Some cash
@@ -418,14 +421,13 @@ const EmuconHome = () => {
               </h3>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
                 Bilet yok. Kayıt yok. Sana uygun olan zaman gelmen yeterli.
-                Etkinlik 13:00&apos;ten 22:00&apos;ye kadar devam ediyor,
-                yeterince zaman var.
+                Etkinlik 14:00&apos;ten 18:00&apos;ye kadar devam ediyor.
               </p>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
-                Öğleden sonra erken saatler kalabalıksız keşif için ideal.
-                Akşama doğru enerji zirve yapıyor ve sahne programı
-                yoğunlaşıyor. Günün sadece bir kısmında gelebiliyorsan,
-                17:00&apos;den sonrasını hedefle.
+                Etkinlik 14:00&apos;te sahne performansları ve kulüp
+                aktiviteleri ile başlıyor. Öğleden sonra (15:00-16:00) daha
+                fazla performans ve atölye var. Akşama doğru (16:00-18:00)
+                enerji zirve yapıyor ve final performansları gerçekleşiyor.
               </p>
               <p className="text-emucon-text-secondary text-sm md:text-base">
                 <strong className="text-cream">Ne getirmeli:</strong> Yiyecek

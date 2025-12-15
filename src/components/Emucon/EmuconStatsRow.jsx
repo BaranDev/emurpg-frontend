@@ -8,7 +8,7 @@ const EmuconStatsRow = ({ stats, variant = "forest" }) => {
 
   return (
     <div
-      className={`relative flex justify-center gap-3 md:gap-6 lg:gap-12 flex-wrap my-6 md:my-10 lg:my-12 p-4 md:p-6 lg:p-10 rounded-xl border ${borderClass} overflow-hidden transition-all duration-300`}
+      className={`relative flex justify-center items-center gap-3 md:gap-6 lg:gap-12 flex-wrap my-6 md:my-10 lg:my-12 p-4 md:p-6 lg:p-10 rounded-xl border ${borderClass} overflow-hidden transition-all duration-300`}
       style={{
         background:
           "linear-gradient(160deg, rgba(26, 46, 26, 0.6), rgba(13, 31, 13, 0.8))",
@@ -40,11 +40,11 @@ const EmuconStatsRow = ({ stats, variant = "forest" }) => {
       {stats.map((stat, index) => (
         <div
           key={index}
-          className="relative text-center px-4 md:px-6 lg:px-8 py-3 md:py-4 group"
+          className="relative text-center w-full md:flex md:flex-1 md:flex-col md:w-auto px-4 md:px-6 lg:px-8 py-3 md:py-4 group"
         >
           {/* Stat card inner container */}
           <div
-            className="relative px-4 md:px-6 lg:px-8 py-3 md:py-4 rounded-lg transition-all duration-300 group-hover:scale-[1.02]"
+            className="relative w-full md:h-full md:flex-1 md:flex md:flex-col md:justify-center px-4 md:px-6 lg:px-8 py-3 md:py-4 rounded-lg transition-all duration-300 group-hover:scale-[1.02]"
             style={{
               background:
                 "linear-gradient(145deg, rgba(45, 74, 45, 0.3), rgba(26, 46, 26, 0.4))",
