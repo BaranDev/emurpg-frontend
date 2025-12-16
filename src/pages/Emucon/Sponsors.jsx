@@ -22,47 +22,47 @@ import {
 const benefits = [
   {
     icon: <CrownIcon className="text-forest-dark" size={20} />,
-    title: "Stage Presence",
+    title: "Stage Visibility",
     description:
-      "Logo placement, announcements, and dedicated sponsor moments during main stage programming throughout the day.",
+      "Logo placement during 5 stage performances (2:00–7:00 PM). Your brand gets announced, seen, and photographed repeatedly.",
   },
   {
     icon: <ShieldIcon className="text-forest-dark" size={20} />,
-    title: "Booth Activation",
+    title: "Direct Engagement",
     description:
-      "Set up an interactive booth, run product demos, collect leads, or create brand experiences visitors will remember.",
+      "Interactive booth during peak hours. Run demos, collect leads, distribute samples—5 hours of face-to-face brand building.",
   },
   {
     icon: <StarIcon className="text-forest-dark" size={20} />,
-    title: "Prize Partnerships",
+    title: "Social Amplification",
     description:
-      "Associate your brand with competition winners. Provide prizes that get photographed and shared across social media.",
+      "Pre-event campaigns, live coverage, post-event content. Your brand integrated into content that reaches thousands beyond attendees.",
   },
   {
     icon: <PhoneIcon className="text-forest-dark" size={20} />,
-    title: "Social Integration",
+    title: "Shareable Moments",
     description:
-      "Features in our pre-event campaigns, live event coverage, and post-event content across all platforms.",
+      "Every competition winner, every performance, every photo op includes your branding. Students share it—you get organic reach.",
   },
   {
     icon: <ArtIcon className="text-forest-dark" size={20} />,
-    title: "Creative Freedom",
+    title: "Custom Activations",
     description:
-      "Design custom activations that fit your brand. We'll help integrate them seamlessly into the festival experience.",
+      "Design experiences that fit your brand. We integrate them into the festival—you get authentic engagement, not forced marketing.",
   },
   {
     icon: <ScrollIcon className="text-forest-dark" size={20} />,
-    title: "Post-Event Report",
+    title: "Measurable Impact",
     description:
-      "Receive detailed metrics on reach, engagement, and brand visibility from the event and associated campaigns.",
+      "Post-event analytics: reach, engagement, social mentions, booth traffic. You'll know exactly what you got from your investment.",
   },
 ];
 
 const stats = [
-  { number: "26", label: "Participating Clubs" },
-  { number: "9", label: "Hours of Exposure" },
-  { number: "18-26", label: "Target Age Range" },
-  { number: "Multi", label: "Channel Campaigns" },
+  { number: "41", label: "Participating Clubs" },
+  { number: "5", label: "Hours of Exposure" },
+  { number: "40", label: "Activities" },
+  { number: "5", label: "Stage Performances" },
 ];
 
 const tiers = [
@@ -138,24 +138,16 @@ const EmuconSponsors = () => {
                 English
               </span>
               <h3 className="font-cinzel text-xl md:text-2xl text-cream mb-4">
-                Direct Access to Your Target Audience
+                41 Clubs. 5 Hours. Thousands of Students.
               </h3>
               <p className="text-emucon-text-secondary mb-4">
-                EMUCON puts your brand in front of 18-26 year old university
-                students who are digitally native, socially active, and at a
-                formative stage where brand preferences get established.
+                EMUCON delivers direct access to 18-26 year old university students—digitally active, socially engaged, and making brand decisions that stick.
               </p>
               <p className="text-emucon-text-secondary mb-4">
-                Unlike typical campus events, EMUCON runs for nine continuous
-                hours with constantly rotating visitors. This means sustained
-                visibility, not just a brief appearance. Your brand becomes part
-                of their experience—not just something they see, but something
-                they interact with.
+                Five continuous hours (2:00 PM–7:00 PM) means your brand isn't just seen—it's experienced. Students interact with your booth, see your logo on stage, hear your name during announcements, and share it on social media.
               </p>
               <p className="text-emucon-text-secondary">
-                Every activity is designed to be shareable. Gaming competitions,
-                photo corners, live performances—participants naturally create
-                content that extends your reach well beyond the event itself.
+                Every element is shareable: gaming tournaments, live performances, photo corners. Your visibility extends far beyond the event through organic social content.
               </p>
             </div>
 
@@ -167,23 +159,16 @@ const EmuconSponsors = () => {
                 Türkçe
               </span>
               <h3 className="font-cinzel text-xl md:text-2xl text-cream mb-4">
-                Hedef Kitlenize Doğrudan Erişim
+                41 Kulüp. 5 Saat. Binlerce Öğrenci.
               </h3>
               <p className="text-emucon-text-secondary mb-4">
-                EMUCON, markanızı dijital dünyada aktif, sosyal medyada etkin ve
-                marka tercihlerinin oluştuğu dönemdeki 18-26 yaş arası
-                üniversite öğrencilerinin karşısına çıkarır.
+                EMUCON, markanızı 18-26 yaş arası üniversite öğrencilerine ulaştırır—dijital dünyada aktif, sosyal medyada etkin, marka tercihlerini şimdi yapıyorlar.
               </p>
               <p className="text-emucon-text-secondary mb-4">
-                Tipik kampüs etkinliklerinin aksine, EMUCON sürekli değişen
-                ziyaretçilerle dokuz saat boyunca kesintisiz devam eder. Bu,
-                sadece kısa bir görünürlük değil, sürekli görünürlük demektir.
-                Markanız deneyimin bir parçası haline gelir.
+                Beş saat kesintisiz görünürlük (14:00–19:00). Markanız sadece görülmez, deneyimlenir. Öğrenciler standınızla etkileşime girer, logonuzu sahnede görür, adınızı anons edilen her yerde duyar ve sosyal medyada paylaşır.
               </p>
               <p className="text-emucon-text-secondary">
-                Her aktivite paylaşılabilir olacak şekilde tasarlandı. Oyun
-                yarışmaları, fotoğraf köşeleri, canlı performanslar—katılımcılar
-                doğal olarak etkinliğin çok ötesine uzanan içerikler üretir.
+                Her aktivite paylaşılabilir: oyun yarışmaları, canlı performanslar, fotoğraf köşeleri. Görünürlüğünüz organik sosyal içerikle etkinliğin çok ötesine uzanır.
               </p>
             </div>
           </EmuconContentCard>
