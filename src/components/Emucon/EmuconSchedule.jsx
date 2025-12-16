@@ -1,69 +1,132 @@
 import { ClockIcon, CalendarIcon, ScrollIcon } from "./EmuconIcons";
 
+// Helpers to compute duration from start/end times
+const parseTimeToMinutes = (t) => {
+  if (!t) return null;
+  const m = t.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (m) {
+    let hh = parseInt(m[1], 10);
+    const mm = parseInt(m[2], 10);
+    const ampm = m[3].toUpperCase();
+    if (ampm === "PM" && hh !== 12) hh += 12;
+    if (ampm === "AM" && hh === 12) hh = 0;
+    return hh * 60 + mm;
+  }
+  const m2 = t.match(/(\d{1,2}):(\d{2})/);
+  if (m2) return parseInt(m2[1], 10) * 60 + parseInt(m2[2], 10);
+  return null;
+};
+
+const getDurationText = (item) => {
+  if (item.duration) return item.duration;
+  if (item.start && item.end) {
+    const s = parseTimeToMinutes(item.start);
+    const e = parseTimeToMinutes(item.end);
+    if (s != null && e != null) {
+      let diff = e - s;
+      if (diff <= 0) diff += 24 * 60; // wrap midnight safety
+      return `${diff} min`;
+    }
+  }
+  return null;
+};
+
 const scheduleItems = [
   {
-    time: "2:00 PM",
+    start: "2:00 PM",
+    end: "2:05 PM",
+    event: "Opening / Doors Open",
+    eventTr: "Açılış / Kapılar Açılır",
+    type: "opening",
+  },
+  {
+    start: "2:05 PM",
+    end: "2:50 PM",
+    event: "Karma Kulüp Etkinliği",
+    eventTr: "Mixed Club Activities",
+    type: "activity",
+  },
+  {
+    start: "2:50 PM",
+    end: "3:02 PM",
     event: "Halk Dansları Kulübü",
     eventTr: "Folk Dance Club",
     duration: "12 min",
     type: "performance",
   },
   {
-    time: "2:15 PM",
-    event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    start: "3:02 PM",
+    end: "3:30 PM",
+    event: "Karma Kulüp Etkinliği",
+    eventTr: "Mixed Club Activities",
     type: "activity",
   },
   {
-    time: "3:00 PM",
-    event: "EMU Crows Dance Group",
-    eventTr: "EMU Crows Dans Grubu",
-    duration: "3 min",
-    type: "performance",
-  },
-  {
-    time: "3:05 PM",
-    event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
-    type: "activity",
-  },
-  {
-    time: "3:50 PM",
-    event: "Music Club Competition",
-    eventTr: "Müzik Kulübü Yarışması",
-    duration: "55 min",
-    type: "performance",
-  },
-  {
-    time: "4:50 PM",
-    event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
-    type: "activity",
-  },
-  {
-    time: "5:15 PM",
+    start: "3:30 PM",
+    end: "3:40 PM",
     event: "International Performing Arts",
     eventTr: "Uluslararası Sahne Sanatları",
     duration: "10 min",
     type: "performance",
   },
   {
-    time: "5:30 PM",
-    event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    start: "3:40 PM",
+    end: "4:10 PM",
+    event: "Karma Kulüp Etkinliği",
+    eventTr: "Mixed Club Activities",
     type: "activity",
   },
   {
-    time: "5:45 PM",
+    start: "4:10 PM",
+    end: "4:40 PM",
+    event: "Stand Time",
+    eventTr: "Stand Süresi",
+    type: "stand",
+    duration: "30 min",
+  },
+  {
+    start: "4:40 PM",
+    end: "5:35 PM",
+    event: "Müzik Kulübü Yarışması",
+    eventTr: "Music Club Competition",
+    duration: "55 min",
+    type: "performance",
+  },
+  {
+    start: "5:35 PM",
+    end: "6:00 PM",
+    event: "Karma Kulüp Etkinliği",
+    eventTr: "Mixed Club Activities",
+    type: "activity",
+  },
+  {
+    start: "6:00 PM",
+    end: "6:03 PM",
+    event: "EMU Crows Dance Group",
+    eventTr: "EMU Crows Dans Grubu",
+    duration: "3 min",
+    type: "performance",
+  },
+  {
+    start: "6:03 PM",
+    end: "6:13 PM",
     event: "DAÜ Dans Topluluğu",
     eventTr: "DAU Dance Community",
     duration: "10 min",
     type: "performance",
   },
   {
-    time: "6:00 PM",
-    event: "Event Closes",
-    eventTr: "Etkinlik Kapanışı",
+    start: "6:13 PM",
+    end: "6:50 PM",
+    event: "Karma Kulüp Etkinliği",
+    eventTr: "Mixed Club Activities",
+    type: "activity",
+  },
+  {
+    start: "6:50 PM",
+    end: "7:00 PM",
+    event: "Event Close & Thanks",
+    eventTr: "Etkinlik Kapanışı & Teşekkür",
     type: "closing",
   },
 ];
@@ -133,7 +196,7 @@ const EmuconSchedule = () => {
         />
 
         {/* Schedule items */}
-        <div className="flex flex-wrap justify-center gap-3 md:gap-4 lg:gap-5">
+        <div className="flex flex-wrap justify-center gap-3 md:gap-4 lg:gap-5 ">
           {scheduleItems.map((item, index) => (
             <div
               key={index}
@@ -181,7 +244,9 @@ const EmuconSchedule = () => {
                   className="text-gold-light/80 group-hover:text-gold-light transition-colors"
                 />
                 <span className="text-gold-light font-semibold text-sm md:text-base">
-                  {item.time}
+                  {item.start && item.end
+                    ? `${item.start} - ${item.end}`
+                    : item.time}
                 </span>
               </div>
 
@@ -199,12 +264,17 @@ const EmuconSchedule = () => {
                 {item.eventTr}
               </span>
 
-              {/* Duration badge */}
-              {item.duration && (
-                <span className="text-[10px] text-gold-light/70 mt-1 font-medium">
-                  {item.duration}
-                </span>
-              )}
+              {/* Duration / Total time */}
+              {(() => {
+                const displayDuration = getDurationText(item);
+                return (
+                  displayDuration && (
+                    <span className="text-[10px] text-gold-light/70 mt-1 font-medium">
+                      {displayDuration}
+                    </span>
+                  )
+                );
+              })()}
 
               {/* Dot connector */}
               <div className="hidden lg:block absolute -bottom-2.5 left-1/2 transform -translate-x-1/2">

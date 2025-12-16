@@ -298,7 +298,7 @@ const EmuconHome = () => {
               </h3>
               <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:md-4 leading-relaxed">
                 EMUCON is a one-day festival where 41 student clubs take over
-                the Sports Complex from 2:00 PM to 6:00 PM for gaming
+                the Sports Complex from 2:00 PM to 7:00 PM for gaming
                 tournaments, live music, art exhibitions, food stalls,
                 workshops, and everything creative happening on campus—all in
                 one place.
@@ -394,13 +394,13 @@ const EmuconHome = () => {
               </h3>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
                 No tickets. No registration. Just walk in whenever works for
-                you. The event runs from 2:00 PM to 6:00 PM, so there&apos;s
+                you. The event runs from 2:00 PM to 7:00 PM, so there&apos;s
                 plenty to see and do.
               </p>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
                 The event kicks off at 2:00 PM with stage performances and club
                 activities. Mid-afternoon (3:00-4:00 PM) features more
-                performances and workshops. Late afternoon (4:00-6:00 PM) is
+                performances and workshops. Late afternoon (4:00-7:00 PM) is
                 when the energy peaks with the final performances and
                 activities.
               </p>
@@ -421,12 +421,12 @@ const EmuconHome = () => {
               </h3>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
                 Bilet yok. Kayıt yok. Sana uygun olan zaman gelmen yeterli.
-                Etkinlik 14:00&apos;ten 18:00&apos;ye kadar devam ediyor.
+                Etkinlik 14:00&apos;ten 19:00&apos;ye kadar devam ediyor.
               </p>
               <p className="text-emucon-text-secondary mb-2 md:mb-4 text-sm md:text-base">
                 Etkinlik 14:00&apos;te sahne performansları ve kulüp
                 aktiviteleri ile başlıyor. Öğleden sonra (15:00-16:00) daha
-                fazla performans ve atölye var. Akşama doğru (16:00-18:00)
+                fazla performans ve atölye var. Akşama doğru (16:00-19:00)
                 enerji zirve yapıyor ve final performansları gerçekleşiyor.
               </p>
               <p className="text-emucon-text-secondary text-sm md:text-base">
