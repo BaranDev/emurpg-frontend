@@ -38,7 +38,8 @@ const SponsorHero = () => {
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-gold-light mb-6 md:mb-8 font-light max-w-[700px] mx-auto">
-          5 hours. 41 clubs. Thousands of students. Direct access to Gen Z when they're most engaged.
+          5 hours. 41 clubs. Thousands of students. Direct access to Gen Z when
+          they're most engaged.
         </p>
 
         {/* CTA */}

@@ -141,13 +141,20 @@ const EmuconSponsors = () => {
                 41 Clubs. 5 Hours. Thousands of Students.
               </h3>
               <p className="text-emucon-text-secondary mb-4">
-                EMUCON delivers direct access to 18-26 year old university students—digitally active, socially engaged, and making brand decisions that stick.
+                EMUCON delivers direct access to 18-26 year old university
+                students—digitally active, socially engaged, and making brand
+                decisions that stick.
               </p>
               <p className="text-emucon-text-secondary mb-4">
-                Five continuous hours (2:00 PM–7:00 PM) means your brand isn't just seen—it's experienced. Students interact with your booth, see your logo on stage, hear your name during announcements, and share it on social media.
+                Five continuous hours (2:00 PM–7:00 PM) means your brand isn't
+                just seen—it's experienced. Students interact with your booth,
+                see your logo on stage, hear your name during announcements, and
+                share it on social media.
               </p>
               <p className="text-emucon-text-secondary">
-                Every element is shareable: gaming tournaments, live performances, photo corners. Your visibility extends far beyond the event through organic social content.
+                Every element is shareable: gaming tournaments, live
+                performances, photo corners. Your visibility extends far beyond
+                the event through organic social content.
               </p>
             </div>
 
@@ -162,13 +169,20 @@ const EmuconSponsors = () => {
                 41 Kulüp. 5 Saat. Binlerce Öğrenci.
               </h3>
               <p className="text-emucon-text-secondary mb-4">
-                EMUCON, markanızı 18-26 yaş arası üniversite öğrencilerine ulaştırır—dijital dünyada aktif, sosyal medyada etkin, marka tercihlerini şimdi yapıyorlar.
+                EMUCON, markanızı 18-26 yaş arası üniversite öğrencilerine
+                ulaştırır—dijital dünyada aktif, sosyal medyada etkin, marka
+                tercihlerini şimdi yapıyorlar.
               </p>
               <p className="text-emucon-text-secondary mb-4">
-                Beş saat kesintisiz görünürlük (14:00–19:00). Markanız sadece görülmez, deneyimlenir. Öğrenciler standınızla etkileşime girer, logonuzu sahnede görür, adınızı anons edilen her yerde duyar ve sosyal medyada paylaşır.
+                Beş saat kesintisiz görünürlük (14:00–19:00). Markanız sadece
+                görülmez, deneyimlenir. Öğrenciler standınızla etkileşime girer,
+                logonuzu sahnede görür, adınızı anons edilen her yerde duyar ve
+                sosyal medyada paylaşır.
               </p>
               <p className="text-emucon-text-secondary">
-                Her aktivite paylaşılabilir: oyun yarışmaları, canlı performanslar, fotoğraf köşeleri. Görünürlüğünüz organik sosyal içerikle etkinliğin çok ötesine uzanır.
+                Her aktivite paylaşılabilir: oyun yarışmaları, canlı
+                performanslar, fotoğraf köşeleri. Görünürlüğünüz organik sosyal
+                içerikle etkinliğin çok ötesine uzanır.
               </p>
             </div>
           </EmuconContentCard>
