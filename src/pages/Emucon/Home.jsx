@@ -300,7 +300,7 @@ const EmuconHome = () => {
                 EMUCON is a one-day festival where 41 student clubs take over
                 the Sports Complex from 2:00 PM to 7:00 PM for gaming
                 tournaments, live music, art exhibitions, food stalls,
-                workshops, and everything creative happening on campus—all in
+                workshops, and everything creative happening on campus, all in
                 one place.
               </p>
               <p className="text-emucon-text-secondary text-xs md:text-base mb-1 md:mb-4 leading-relaxed">
@@ -311,7 +311,7 @@ const EmuconHome = () => {
                 free and open to everyone.
               </p>
               <p className="text-emucon-text-secondary text-xs md:text-base leading-relaxed">
-                Our goal is to make this an annual tradition—a festival that
+                Our goal is to make this an annual tradition, a festival that
                 celebrates student creativity and brings together the entire
                 campus community.
               </p>
@@ -340,7 +340,7 @@ const EmuconHome = () => {
                 ücretsiz ve herkese açık.
               </p>
               <p className="text-emucon-text-secondary text-xs md:text-base leading-relaxed">
-                Amacımız bunu yıllık bir gelenek haline getirmek—öğrenci
+                Amacımız bunu yıllık bir gelenek haline getirmek, öğrenci
                 yaratıcılığını kutlayan ve tüm kampüs topluluğunu bir araya
                 getiren bir festival.
               </p>

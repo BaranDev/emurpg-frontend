@@ -144,7 +144,7 @@ const EmuconContactGrid = () => {
         </div>
         <p className="text-emucon-text-secondary text-sm md:text-base leading-relaxed">
           For sponsorship inquiries, partnership opportunities, or general
-          questions—reach out!
+          questions, reach out!
         </p>
         <p className="text-emucon-text-muted text-sm mt-2 italic">
           Sponsorluk, ortaklık veya genel sorular için iletişime geçin!

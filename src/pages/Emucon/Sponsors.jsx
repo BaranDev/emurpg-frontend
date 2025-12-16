@@ -30,7 +30,7 @@ const benefits = [
     icon: <ShieldIcon className="text-forest-dark" size={20} />,
     title: "Direct Engagement",
     description:
-      "Interactive booth during peak hours. Run demos, collect leads, distribute samples—5 hours of face-to-face brand building.",
+      "Interactive booth during peak hours. Run demos, collect leads, distribute samples, 5 hours of face-to-face brand building.",
   },
   {
     icon: <StarIcon className="text-forest-dark" size={20} />,
@@ -42,13 +42,13 @@ const benefits = [
     icon: <PhoneIcon className="text-forest-dark" size={20} />,
     title: "Shareable Moments",
     description:
-      "Every competition winner, every performance, every photo op includes your branding. Students share it—you get organic reach.",
+      "Every competition winner, every performance, every photo op includes your branding. Students share it, you get organic reach.",
   },
   {
     icon: <ArtIcon className="text-forest-dark" size={20} />,
     title: "Custom Activations",
     description:
-      "Design experiences that fit your brand. We integrate them into the festival—you get authentic engagement, not forced marketing.",
+      "Design experiences that fit your brand. We integrate them into the festival, you get authentic engagement, not forced marketing.",
   },
   {
     icon: <ScrollIcon className="text-forest-dark" size={20} />,
@@ -59,10 +59,17 @@ const benefits = [
 ];
 
 const stats = [
-  { number: "41", label: "Participating Clubs" },
-  { number: "5", label: "Hours of Exposure" },
-  { number: "40", label: "Activities" },
-  { number: "5", label: "Stage Performances" },
+  { number: "41+", label: "Student Clubs" },
+  { number: "5", label: "Hours Exposure" },
+  { number: "40+", label: "Activities" },
+  { number: "1000+", label: "Expected Attendees" },
+];
+
+const businessMetrics = [
+  { number: "18-26", label: "Target Age Range" },
+  { number: "80%", label: "Social Media Active" },
+  { number: "60%", label: "Follow Brands Online" },
+  { number: "Multi-Channel", label: "Campaign Reach" },
 ];
 
 const tiers = [
@@ -76,7 +83,6 @@ const tiers = [
       "Logo on all event materials",
       "Social media feature posts",
       "Dedicated announcement slots",
-      "VIP area access",
       "Post-event analytics report",
     ],
   },
@@ -138,23 +144,36 @@ const EmuconSponsors = () => {
                 English
               </span>
               <h3 className="font-cinzel text-xl md:text-2xl text-cream mb-4">
-                41 Clubs. 5 Hours. Thousands of Students.
+                The Numbers That Matter
               </h3>
               <p className="text-emucon-text-secondary mb-4">
-                EMUCON delivers direct access to 18-26 year old university
-                students—digitally active, socially engaged, and making brand
-                decisions that stick.
+                <strong className="text-gold-light">1,000+ attendees</strong>{" "}
+                from 41+ student clubs. Five continuous hours of brand exposure
+                during peak engagement windows (2:00 PM–7:00 PM). This isn’t
+                passive advertising, it's active participation.
               </p>
               <p className="text-emucon-text-secondary mb-4">
-                Five continuous hours (2:00 PM–7:00 PM) means your brand isn't
-                just seen—it's experienced. Students interact with your booth,
-                see your logo on stage, hear your name during announcements, and
-                share it on social media.
+                <strong className="text-gold-light">
+                  80% of attendees are active on social media.
+                </strong>{" "}
+                They post, they tag, they share. Your booth activation becomes
+                content. Your logo on stage becomes a story. Every interaction
+                multiplies your reach beyond the physical event.
+              </p>
+              <p className="text-emucon-text-secondary mb-4">
+                <strong className="text-gold-light">
+                  Cost per impression: significantly lower than traditional
+                  campus advertising.
+                </strong>{" "}
+                One sponsorship gets you stage visibility, booth space, social
+                mentions, and organic content creation, all in a single,
+                concentrated day.
               </p>
               <p className="text-emucon-text-secondary">
-                Every element is shareable: gaming tournaments, live
-                performances, photo corners. Your visibility extends far beyond
-                the event through organic social content.
+                <strong className="text-gold-light">Measurable ROI.</strong>{" "}
+                Post-event analytics include booth traffic, social media reach,
+                content impressions, and lead collection data. You’ll know
+                exactly what you paid for.
               </p>
             </div>
 
@@ -166,29 +185,47 @@ const EmuconSponsors = () => {
                 Türkçe
               </span>
               <h3 className="font-cinzel text-xl md:text-2xl text-cream mb-4">
-                41 Kulüp. 5 Saat. Binlerce Öğrenci.
+                Önemli Olan Rakamlar
               </h3>
               <p className="text-emucon-text-secondary mb-4">
-                EMUCON, markanızı 18-26 yaş arası üniversite öğrencilerine
-                ulaştırır—dijital dünyada aktif, sosyal medyada etkin, marka
-                tercihlerini şimdi yapıyorlar.
+                <strong className="text-gold-light">1.000+ katılımcı</strong>{" "}
+                41+ öğrenci kulübünden. Beş saat kesintisiz marka görünürlüğü
+                (14:00–19:00). Bu pasif reklam değil, aktif katılım.
               </p>
               <p className="text-emucon-text-secondary mb-4">
-                Beş saat kesintisiz görünürlük (14:00–19:00). Markanız sadece
-                görülmez, deneyimlenir. Öğrenciler standınızla etkileşime girer,
-                logonuzu sahnede görür, adınızı anons edilen her yerde duyar ve
-                sosyal medyada paylaşır.
+                <strong className="text-gold-light">
+                  Katılımcıların %80’i sosyal medyada aktif.
+                </strong>{" "}
+                Paylaşıyorlar, etiketliyorlar. Stand aktivasyonunuz içerik
+                haline geliyor. Sahnedeki logonuz hikaye oluyor. Her etkileşim,
+                erişiminizi fiziksel etkinliğin ötesine taşıyor.
+              </p>
+              <p className="text-emucon-text-secondary mb-4">
+                <strong className="text-gold-light">
+                  Gösterim başına maliyet: geleneksel kampüs reklamlarından çok
+                  daha düşük.
+                </strong>{" "}
+                Tek sponsorluk ile sahne görünürlüğü, stand alanı, sosyal medya
+                sözler ve organik içerik oluşturma, hepsi tek bir yoğun günde.
               </p>
               <p className="text-emucon-text-secondary">
-                Her aktivite paylaşılabilir: oyun yarışmaları, canlı
-                performanslar, fotoğraf köşeleri. Görünürlüğünüz organik sosyal
-                içerikle etkinliğin çok ötesine uzanır.
+                <strong className="text-gold-light">
+                  Ölçülebilir yatırım getirisi.
+                </strong>{" "}
+                Etkinlik sonrası analitik: stand trafiği, sosyal medya erişimi,
+                içerik gösterimleri, potansiyel müşteri verileri. Ne için ödeme
+                yaptığınızı tam olarak bileceksiniz.
               </p>
             </div>
           </EmuconContentCard>
 
           {/* Stats */}
           <EmuconStatsRow stats={stats} variant="gold" />
+
+          {/* Business Metrics - Second Row */}
+          <div className="mt-6">
+            <EmuconStatsRow stats={businessMetrics} variant="gold" />
+          </div>
         </section>
 
         <EmuconDivider variant="gold" />
