@@ -14,6 +14,8 @@ import {
   Cpu,
   FlaskConical,
   Calendar,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 // Helpers to compute duration from start/end times
@@ -772,7 +774,14 @@ const ScheduleCard = ({
                     <span className="text-[10px] text-stone-400 font-mono">
                       {item.time}
                     </span>
-                    <CategoryBadge type="scheduled" lang={lang} />
+                    <div className="flex items-center gap-1">
+                      <CategoryBadge type="scheduled" lang={lang} />
+                      {isExpanded ? (
+                        <ChevronUp size={12} className="text-stone-400" />
+                      ) : (
+                        <ChevronDown size={12} className="text-stone-400" />
+                      )}
+                    </div>
                   </div>
                 </div>
                 {isExpanded && (
@@ -815,7 +824,14 @@ const ScheduleCard = ({
                         {lang === "tr" ? item.activity : item.activityEn}
                       </p>
                     </div>
-                    <CategoryBadge type="stand" lang={lang} />
+                    <div className="flex items-center gap-1">
+                      <CategoryBadge type="stand" lang={lang} />
+                      {isExpanded ? (
+                        <ChevronUp size={12} className="text-stone-400" />
+                      ) : (
+                        <ChevronDown size={12} className="text-stone-400" />
+                      )}
+                    </div>
                   </div>
                   {isExpanded && (
                     <div className="mt-2 p-3 rounded bg-white/10 border border-white/20">
@@ -859,7 +875,14 @@ const ScheduleCard = ({
                         </p>
                       )}
                     </div>
-                    <CategoryBadge type="continuous" lang={lang} />
+                    <div className="flex items-center gap-1">
+                      <CategoryBadge type="continuous" lang={lang} />
+                      {isExpanded ? (
+                        <ChevronUp size={12} className="text-stone-400" />
+                      ) : (
+                        <ChevronDown size={12} className="text-stone-400" />
+                      )}
+                    </div>
                   </div>
                   {isExpanded && (
                     <div className="mt-2 p-3 rounded bg-white/10 border border-white/20">
