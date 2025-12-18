@@ -1,4 +1,5 @@
 import { LeafIcon } from "./EmuconIcons";
+import PropTypes from "prop-types";
 
 const CornerOrnament = ({ position, isGold }) => {
   const borderColor = isGold
@@ -92,6 +93,22 @@ const EmuconContentCard = ({
       <div className="relative z-10">{children}</div>
     </div>
   );
+};
+
+EmuconContentCard.propTypes = {
+  children: PropTypes.node.isRequired,
+  goldBorder: PropTypes.bool,
+  className: PropTypes.string,
+};
+
+CornerOrnament.propTypes = {
+  position: PropTypes.oneOf([
+    "top-left",
+    "top-right",
+    "bottom-left",
+    "bottom-right",
+  ]).isRequired,
+  isGold: PropTypes.bool.isRequired,
 };
 
 export default EmuconContentCard;

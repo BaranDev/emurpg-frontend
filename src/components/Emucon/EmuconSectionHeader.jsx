@@ -1,4 +1,5 @@
 import { LeafIcon } from "./EmuconIcons";
+import PropTypes from "prop-types";
 
 const EmuconSectionHeader = ({ title }) => {
   return (
@@ -29,5 +30,7 @@ const EmuconSectionHeader = ({ title }) => {
     </div>
   );
 };
-
+EmuconSectionHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+};
 export default EmuconSectionHeader;

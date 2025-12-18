@@ -1,4 +1,5 @@
-import React, { Component } from "react";import { FaDiscord, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { Component } from "react";
+import { FaDiscord, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { config } from "../config";
 import SocialIcon from "./SocialIcon";
 

@@ -12,6 +12,9 @@ const resources = {
 // Get saved language or default to English
 const getInitialLanguage = () => {
   const savedLanguage = localStorage.getItem("selectedLanguage");
+  if (!savedLanguage) {
+    localStorage.setItem("selectedLanguage", "en");
+  }
   return savedLanguage || "en";
 };
 
@@ -25,7 +28,7 @@ i18n.use(initReactI18next).init({
 });
 
 // Save language changes to localStorage
-i18n.on('languageChanged', (lng) => {
+i18n.on("languageChanged", (lng) => {
   localStorage.setItem("selectedLanguage", lng);
 });
 

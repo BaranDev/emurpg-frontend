@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 
 const ParallaxBackground = () => {
   const owlRef = useRef(null);
@@ -280,6 +281,27 @@ const ParallaxBackground = () => {
       <ellipse cx="90" cy="110" rx="4" ry="6" fill="#CBD5E1" opacity="0.5" />
     </svg>
   );
+
+  OwlSVG.propTypes = {
+    innerRef: PropTypes.object.isRequired,
+    className: PropTypes.string,
+  };
+  ScrollSVG.propTypes = {
+    innerRef: PropTypes.object.isRequired,
+    className: PropTypes.string,
+  };
+  ShieldSVG.propTypes = {
+    innerRef: PropTypes.object.isRequired,
+    className: PropTypes.string,
+  };
+  TreeSVG.propTypes = {
+    innerRef: PropTypes.object.isRequired,
+    className: PropTypes.string,
+  };
+  MoonSVG.propTypes = {
+    innerRef: PropTypes.object.isRequired,
+    className: PropTypes.string,
+  };
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">

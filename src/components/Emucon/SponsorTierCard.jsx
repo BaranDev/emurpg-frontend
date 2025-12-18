@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 const tierStyles = {
   gold: {
     borderColor: "border-gold",
@@ -61,4 +62,10 @@ const SponsorTierCard = ({ tier, name, subtitle, features }) => {
   );
 };
 
+SponsorTierCard.propTypes = {
+  tier: PropTypes.oneOf(["gold", "silver", "bronze"]).isRequired,
+  name: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  features: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
 export default SponsorTierCard;

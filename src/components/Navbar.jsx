@@ -16,6 +16,14 @@ const Navbar = ({
 
   const currentLanguage = i18n.language;
 
+  // Toggle language handler
+  const handleLanguageToggle = () => {
+    const nextLanguage = currentLanguage === "en" ? "tr" : "en";
+    if (onLanguageSwitch) {
+      onLanguageSwitch(nextLanguage);
+    }
+  };
+
   const emuconButton = {
     label: "EMUCON",
     onClick: () => (window.location.href = "/emucon/"),
@@ -177,7 +185,7 @@ const Navbar = ({
                 {[emuconButton, ...buttons].map(renderButton)}
                 {/* Language Switcher */}
                 <button
-                  onClick={onLanguageSwitch}
+                  onClick={handleLanguageToggle}
                   className="px-4 py-2 rounded-lg relative group text-white/80 hover:text-white flex items-center gap-2 border border-white/20 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
                   title={t("navbar.language")}
                 >
@@ -226,7 +234,7 @@ const Navbar = ({
                   ))}
                   {/* Language Switcher for Mobile */}
                   <button
-                    onClick={onLanguageSwitch}
+                    onClick={handleLanguageToggle}
                     className="block px-4 py-2.5 rounded-lg w-full text-left text-white/80 hover:text-white flex items-center gap-2 border border-white/20 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
                   >
                     <FaGlobe className="text-lg" />

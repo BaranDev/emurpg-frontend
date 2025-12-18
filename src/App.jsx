@@ -12,32 +12,19 @@ import EmuconHome from "./pages/Emucon/Home";
 import EmuconSponsors from "./pages/Emucon/Sponsors";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
-import { LanguageSelector } from "./components";
 
 // Inner component that has access to translation context
 function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-
+  console.log(
+    "Hello my curious friend! If you are seeing this, you must be interested in how this app works. Feel free to reach out to me on cevdetbaranoral@gmail.com if you want to help me on EMURPG's apps."
+  );
   useEffect(() => {
-    checkLanguageSelection();
     checkLoginStatus();
   }, []);
 
-  const checkLanguageSelection = () => {
-    const savedLanguage = localStorage.getItem("selectedLanguage");
-    if (!savedLanguage) {
-      setShowLanguageSelector(true);
-    }
-  };
-
-  const handleLanguageSelect = (language) => {
+  const handleLanguageSwitch = (language) => {
     i18n.changeLanguage(language);
-    setShowLanguageSelector(false);
-  };
-
-  const handleLanguageSwitch = () => {
-    setShowLanguageSelector(true);
   };
 
   const checkLoginStatus = () => {
@@ -70,9 +57,6 @@ function AppContent() {
 
   return (
     <>
-      {showLanguageSelector && (
-        <LanguageSelector onLanguageSelect={handleLanguageSelect} />
-      )}
       <Router>
         <Routes>
           <Route

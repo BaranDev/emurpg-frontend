@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import PropTypes from "prop-types";
 
 const NewsCard = ({ title, date, excerpt }) => (
   <motion.div
@@ -17,4 +18,9 @@ const NewsCard = ({ title, date, excerpt }) => (
   </motion.div>
 );
 
+NewsCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  excerpt: PropTypes.string.isRequired,
+};
 export default NewsCard;

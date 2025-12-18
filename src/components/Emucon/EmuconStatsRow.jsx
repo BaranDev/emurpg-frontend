@@ -1,4 +1,5 @@
 import { ShieldIcon, StarIcon } from "./EmuconIcons";
+import PropTypes from "prop-types";
 
 const EmuconStatsRow = ({ stats, variant = "forest" }) => {
   const isGold = variant === "gold";
@@ -95,4 +96,14 @@ const EmuconStatsRow = ({ stats, variant = "forest" }) => {
   );
 };
 
+EmuconStatsRow.propTypes = {
+  stats: PropTypes.arrayOf(
+    PropTypes.shape({
+      number: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  variant: PropTypes.oneOf(["forest", "gold"]),
+};
 export default EmuconStatsRow;

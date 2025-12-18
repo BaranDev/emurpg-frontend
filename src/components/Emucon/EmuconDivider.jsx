@@ -1,4 +1,5 @@
 import { LeafIcon, ShieldIcon } from "./EmuconIcons";
+import PropTypes from "prop-types";
 
 const EmuconDivider = ({ variant = "forest" }) => {
   const isGold = variant === "gold";
@@ -48,5 +49,7 @@ const EmuconDivider = ({ variant = "forest" }) => {
     </div>
   );
 };
-
+EmuconDivider.propTypes = {
+  variant: PropTypes.oneOf(["forest", "gold"]),
+};
 export default EmuconDivider;

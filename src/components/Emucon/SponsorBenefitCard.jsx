@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const SponsorBenefitCard = ({ icon, title, description }) => {
   return (
     <div
@@ -23,4 +25,9 @@ const SponsorBenefitCard = ({ icon, title, description }) => {
   );
 };
 
+SponsorBenefitCard.propTypes = {
+  icon: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+};
 export default SponsorBenefitCard;

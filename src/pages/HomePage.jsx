@@ -126,15 +126,27 @@ const HomePage = ({ onLanguageSwitch }) => {
               >
                 {t("homepage.hero_title")}
               </motion.h1>
+              <div className="flex flex-col items-center">
+                <motion.p
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="text-xl md:text-2xl mb-8 text-slate-200 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                >
+                  {t("homepage.hero_subtitle")}
+                </motion.p>
 
-              <motion.p
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="text-xl md:text-2xl mb-8 text-slate-200 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
-              >
-                {t("homepage.hero_subtitle")}
-              </motion.p>
-
+                {/* EMUCON Button - Huge, between logo and register button */}
+                <motion.button
+                  initial={{ scale: 0.7, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 0.2 }}
+                  onClick={() => (window.location.href = "/emucon")}
+                  className="my-8 px-12 py-6 rounded-2xl bg-gradient-to-br from-yellow-500 via-yellow-600 to-amber-700 text-4xl md:text-5xl font-extrabold text-gray-900 shadow-2xl border-4 border-yellow-400 hover:scale-105 hover:shadow-yellow-400/40 transition-all duration-300 tracking-widest uppercase"
+                  style={{ letterSpacing: "0.15em" }}
+                >
+                  EMUCON
+                </motion.button>
+              </div>
               <FireButton
                 onClick={handleJoinButton_events}
                 text={t("homepage.register_events")}

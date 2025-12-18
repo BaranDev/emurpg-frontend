@@ -150,7 +150,7 @@ const EmuconSponsors = () => {
                 <strong className="text-gold-light">1,000+ attendees</strong>{" "}
                 from 41+ student clubs. Five continuous hours of brand exposure
                 during peak engagement windows (2:00 PM–7:00 PM). This isn’t
-                passive advertising, it's active participation.
+                passive advertising, it&apos;s active participation.
               </p>
               <p className="text-emucon-text-secondary mb-4">
                 <strong className="text-gold-light">

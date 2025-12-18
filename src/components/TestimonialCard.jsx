@@ -9,7 +9,7 @@ const TestimonialCard = ({ quote, author }) => (
   >
     <FaQuoteLeft className="text-3xl text-yellow-500/20 absolute top-4 left-4" />
     <blockquote className="text-gray-300 text-lg italic mt-6 mb-4">
-      "{quote}"
+      &quot;{quote}&quot;
     </blockquote>
     <p className="text-yellow-500 text-right">- {author}</p>
   </motion.div>

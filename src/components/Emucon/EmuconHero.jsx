@@ -78,7 +78,7 @@ const EmuconHero = () => {
               <ClockIcon size={18} className="text-gold-light" />
             </div>
             <span className="text-base md:text-lg text-cream font-medium">
-              2:00 PM – 7:00 PM
+              2:00 PM – 8:00 PM
             </span>
           </div>
         </div>

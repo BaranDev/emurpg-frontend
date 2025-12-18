@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const EmuconFeatureCard = ({
   icon: Icon,
   title,
@@ -89,5 +91,10 @@ const EmuconFeatureCard = ({
     </div>
   );
 };
-
+EmuconFeatureCard.propTypes = {
+  icon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.node]).isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  descriptionTr: PropTypes.string,
+};
 export default EmuconFeatureCard;

@@ -8,6 +8,7 @@ import {
   ShieldIcon,
   UpArrowIcon,
 } from "./EmuconIcons";
+import PropTypes from "prop-types";
 
 const EmuconFooter = ({
   logoVariant = "lightgray",
@@ -160,7 +161,7 @@ const EmuconFooter = ({
         <div className="relative pt-6 border-t border-forest-medium/30">
           <div className="flex items-center justify-center gap-2 text-emucon-text-muted/50 text-xs">
             <TreeIcon size={12} className="text-forest-light/30" />
-            <span>Where Adventures Begin</span>
+            <span>Where Campus Culture Comes Alive</span>
             <TreeIcon size={12} className="text-forest-light/30" />
           </div>
         </div>
@@ -179,7 +180,7 @@ const EmuconFooter = ({
                 } else {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
-              } catch (e) {
+              } catch {
                 // Fallback
                 if (container && typeof container.scrollTop !== "undefined") {
                   container.scrollTop = 0;
@@ -207,5 +208,8 @@ const EmuconFooter = ({
     </footer>
   );
 };
-
+EmuconFooter.propTypes = {
+  logoVariant: PropTypes.oneOf(["lightgray", "yellow"]),
+  scrollContainer: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+};
 export default EmuconFooter;

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 // Medieval/Fantasy themed SVG icons for EMUCON
 
 // Base wrapper for consistent styling
@@ -219,6 +220,112 @@ export const UpArrowIcon = ({ className = "", size = 24 }) => (
     <path d="M12 4l-6 6h4v6h4v-6h4l-6-6z" />
   </IconWrapper>
 );
+
+MoonIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+UpArrowIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+StarIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+LeafIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+TreeIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+ScrollIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+CrownIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+ShieldIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+SwordIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+EmailIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+PhoneIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+CameraIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+WorkshopIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+CalendarIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+ClockIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+FoodIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+ArtIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+MusicIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+GamepadIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+LocationIcon.propTypes = {
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
+
+IconWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  size: PropTypes.number,
+};
 
 export default {
   GamepadIcon,
