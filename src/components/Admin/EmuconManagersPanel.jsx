@@ -220,7 +220,7 @@ const EmuconManagersPanel = () => {
     if (language === "tr") {
       return `Merhaba ${clubName} Yonetim Kurulu Uyesi,
 
-EMUCON etkinlik yonetim sistemine hosgeldiniz! Bu sistem, etkinlik sirasinda kulubunuzun programini kolayca yonetmenizi saglar.
+EMUCON etkinlik yonetim sistemine hosgeldiniz! Bu sistem, etkinlik sirasinda kulubunuzun programini kolayca yonetmenizi ve yönetim panelini kullanmanizi saglar.
 
 HESABINIZI OLUSTURMAK ICIN:
 
@@ -233,15 +233,19 @@ HESABINIZI OLUSTURMAK ICIN:
 DAVETIYE KODUNUZ: ${inviteCode}
 
 HESABINIZLA NELER YAPABILIRSINIZ:
-- Kulubunuzun etkinlik saatlerini ve aciklamalarini guncelleyebilirsiniz
+- Etkinlik bilgilerini guncelleyebilir ve duzenleyebilirsiniz
+- Etkinlik saatlerini ve aciklamalarini degistirebilirsiniz
 - Program degisikliklerinde katilimcilari aninda bilgilendirebilirsiniz
-- Etkinliklerinizi duzenleyebilir veya yeniden zamanlayabilirsiniz
+- Yeni etkinlikler ekleyebilir veya mevcut olanları silebilirsiniz
+- Katilimci bilgilerini ve kayıt durumlarini gorebilirsiniz
+- Yonetim paneliniz uzerinden tum bu isleri yapabilirsiniz
 
 NEDEN BU SISTEMI KULLANIYORUZ:
 EMUCON boyunca program degisiklikleri kacinilmaz olabilir. Bu sistem sayesinde:
 - Degisiklikleri hizlica yapabilir ve herkesin guncel programi gormesini saglayabilirsiniz
 - Katilimcilar hangi etkinligin nerede ve ne zaman oldugunu anlık takip edebilir
 - Kulubunuzun standinda neler oldugunu herkes kolayca gorebilir
+- Degisiklikleri aninda yayinlayip katilimcilari bilgilendirebilirsiniz
 
 Sorulariniz icin bizimle iletisime gecebilirsiniz.
 
@@ -249,7 +253,7 @@ EMURPG Ekibi`;
     } else {
       return `Hey ${clubName}'s Board Member,
 
-Welcome to the EMUCON event management system! This system allows you to easily manage your club's schedule during the event.
+Welcome to the EMUCON event management system! This system allows you to easily manage your club's schedule and access your management dashboard during the event.
 
 TO CREATE YOUR ACCOUNT:
 
@@ -262,15 +266,19 @@ TO CREATE YOUR ACCOUNT:
 YOUR INVITATION CODE: ${inviteCode}
 
 WHAT YOU CAN DO WITH YOUR ACCOUNT:
-- Update your club's event times and descriptions
-- Instantly notify participants about schedule changes
-- Edit or reschedule your events
+- Update and manage event details and descriptions
+- Modify event times and schedules as needed
+- Add new events or delete existing ones
+- Instantly notify participants about any schedule changes
+- View participant information and registration status
+- Manage everything through your dedicated control panel
 
 WHY WE USE THIS SYSTEM:
 Schedule changes during EMUCON are sometimes unavoidable. With this system:
 - You can make changes quickly and ensure everyone sees the updated schedule
 - Participants can track which event is where and when in real-time
 - Everyone can easily see what's happening at your club's booth
+- You can instantly broadcast changes to keep participants informed
 
 Feel free to contact us if you have any questions.
 
