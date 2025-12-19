@@ -218,37 +218,40 @@ const EmuconManagersPanel = () => {
     }
 
     if (language === "tr") {
-      return `Merhaba ${clubName} Yonetim Kurulu Uyesi,
+      return `Merhaba ${clubName} Yönetim Kurulu Üyesi,
 
-EMUCON etkinlik yonetim sistemine hosgeldiniz! Bu sistem, etkinlik sirasinda kulubunuzun programini kolayca yonetmenizi ve yönetim panelini kullanmanizi saglar.
+EMUCON etkinlik yönetim sistemine hoşgeldiniz! Bu sistem, etkinlik sırasında kulübünüzün programını kolayca yönetmenizi ve yönetim panelini kullanmanızı sağlar.
 
-HESABINIZI OLUSTURMAK ICIN:
+HESABINIZI OLUŞTURMAK İÇİN:
 
-1. Tarayicinizda https://emurpg.com/admin adresine gidin
-2. Sayfanin ortasındaki "Invite Code" butonuna tiklayin
-3. Invitation Codenizi(Davetiye Kodu) oradaki kutucuğa girin 
-4. Kulubunuz icin yeni bir sifre belirleyin
-5. Hesabiniz aktif olacak ve giris yapabileceksiniz
+1. Tarayıcınızda https://emurpg.com/admin adresine gidin
+2. Sayfanın ortasındaki "Invite Code" butonuna tıklayın
+3. Davetiye Kodunuzu oradaki kutucuğa girin 
+4. Kulübünüz için yeni bir şifre belirleyin
+5. Hesabınız aktif olacak ve giriş yapabileceksiniz
+6. Sonraki girişlerinizde kullanıcı adınızı(aşağıda bulunuyor) ve belirlediğiniz şifreyi kullanabilirsiniz
 
-KULLANICI ADINIZ (sonraki girişleri için): ${manager.clubId}
-DAVETIYE KODUNUZ: ${inviteCode}
+KULLANICI ADINIZ (sonraki girişler için): ${manager.clubId}
+DAVETİYE KODUNUZ: ${inviteCode}
 
-HESABINIZLA NELER YAPABILIRSINIZ:
-- Etkinlik bilgilerini guncelleyebilir ve duzenleyebilirsiniz
-- Etkinlik saatlerini ve aciklamalarini degistirebilirsiniz
-- Program degisikliklerinde katilimcilari aninda bilgilendirebilirsiniz
+HESABINIZLA NELER YAPABİLİRSİNİZ:
+- Etkinlik bilgilerini güncelleyebilir ve düzenleyebilirsiniz
+- Etkinlik saatlerini ve açıklamalarını değiştirebilirsiniz
+- Program değişikliklerinde katılımcıları anında bilgilendirebilirsiniz
 - Yeni etkinlikler ekleyebilir veya mevcut olanları silebilirsiniz
-- Katilimci bilgilerini ve kayıt durumlarini gorebilirsiniz
-- Yonetim paneliniz uzerinden tum bu isleri yapabilirsiniz
+- Katılımcı bilgilerini ve kayıt durumlarını görebilirsiniz
+- Yönetim paneliniz üzerinden tüm bu işleri yapabilirsiniz
 
-NEDEN BU SISTEMI KULLANIYORUZ:
-EMUCON boyunca program degisiklikleri kacinilmaz olabilir. Bu sistem sayesinde:
-- Degisiklikleri hizlica yapabilir ve herkesin guncel programi gormesini saglayabilirsiniz
-- Katilimcilar hangi etkinligin nerede ve ne zaman oldugunu anlık takip edebilir
-- Kulubunuzun standinda neler oldugunu herkes kolayca gorebilir
-- Degisiklikleri aninda yayinlayip katilimcilari bilgilendirebilirsiniz
+NEDEN BU SİSTEMİ KULLANIYORUZ:
+EMUCON boyunca program değişiklikleri kaçınılmaz olabilir. Bu sistem sayesinde:
+- Değişiklikleri hızlıca yapabilir ve herkesin güncel programı görmesini sağlayabilirsiniz
+- Katılımcılar hangi etkinliğin nerede ve ne zaman olduğunu anlık takip edebilir
+- Canlı section'da etkinliğin gerçek zamanlı güncellenmelerini görebilir
+- Kulübünüzün standında neler olduğunu herkes kolayca görebilir
+- Değişiklikleri anında yayınlayıp katılımcıları bilgilendirebilirsiniz
+- Katılımcılar live bölümünde tüm kulüplerin güncel programını takip edebilir
 
-Sorulariniz icin bizimle iletisime gecebilirsiniz.
+Sorularınız için bizimle iletişime geçebilirsiniz.
 
 EMURPG Ekibi`;
     } else {
@@ -263,7 +266,9 @@ TO CREATE YOUR ACCOUNT:
 3. Enter your invitation code in the provided box
 4. Set a new password for your club
 5. Your account will be activated and you can log in
+6. For future logins, use your username(provided below) and the password you set
 
+YOUR USERNAME (for future logins): ${manager.clubId}
 YOUR INVITATION CODE: ${inviteCode}
 
 WHAT YOU CAN DO WITH YOUR ACCOUNT:
@@ -278,8 +283,10 @@ WHY WE USE THIS SYSTEM:
 Schedule changes during EMUCON are sometimes unavoidable. With this system:
 - You can make changes quickly and ensure everyone sees the updated schedule
 - Participants can track which event is where and when in real-time
+- Our live section shows real-time updates of all club events and schedules
 - Everyone can easily see what's happening at your club's booth
 - You can instantly broadcast changes to keep participants informed
+- Participants can follow all clubs' current programs through the live section
 
 Feel free to contact us if you have any questions.
 
