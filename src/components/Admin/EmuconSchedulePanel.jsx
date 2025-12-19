@@ -337,105 +337,108 @@ const EmuconSchedulePanel = () => {
             {/* Time markers - Top */}
             <div className="relative mb-2">
               <div className="flex justify-between text-xs font-medium text-gray-400">
-              {[
-                "09:00",
-                "10:00",
-                "11:00",
-                "12:00",
-                "13:00",
-                "14:00",
-                "15:00",
-                "16:00",
-                "17:00",
-                "18:00",
-                "19:00",
-                "20:00",
-                "21:00",
-              ].map((time) => (
-                <span key={time} className="flex flex-col items-center">
-                  {time}
-                </span>
-              ))}
+                {[
+                  "09:00",
+                  "10:00",
+                  "11:00",
+                  "12:00",
+                  "13:00",
+                  "14:00",
+                  "15:00",
+                  "16:00",
+                  "17:00",
+                  "18:00",
+                  "19:00",
+                  "20:00",
+                  "21:00",
+                ].map((time) => (
+                  <span key={time} className="flex flex-col items-center">
+                    {time}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Timeline bar with grid */}
-          <div className="relative h-24 bg-gray-900/50 rounded-lg border border-gray-700">
-            {/* Hour grid lines */}
-            <div className="absolute inset-0 flex">
-              {Array.from({ length: 13 }, (_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 border-r border-gray-700/30 last:border-r-0"
-                />
-              ))}
-            </div>
-            {/* Period blocks */}
-            <div className="absolute inset-0">
-              {periods.map((period) => {
-                const left = getTimePosition(period.startTime);
-                const width = getTimeWidth(period.startTime, period.endTime);
-                const duration = getDuration(period.startTime, period.endTime);
-                const typeColor =
-                  PERIOD_TYPE_COLORS[period.type] ||
-                  PERIOD_TYPE_COLORS.activity;
-
-                return (
+            {/* Timeline bar with grid */}
+            <div className="relative h-24 bg-gray-900/50 rounded-lg border border-gray-700">
+              {/* Hour grid lines */}
+              <div className="absolute inset-0 flex">
+                {Array.from({ length: 13 }, (_, i) => (
                   <div
-                    key={period.id}
-                    className={`absolute top-2 bottom-2 rounded-lg cursor-pointer transition-all hover:scale-105 hover:z-10 hover:shadow-lg group ${typeColor
-                      .replace("text-", "bg-")
-                      .replace("/20", "/50")} border-2`}
-                    style={{
-                      left: `${left}%`,
-                      width: `${Math.max(width, 2)}%`,
-                    }}
-                    onClick={() => handleEditPeriod(period)}
-                    title={`${period.name}: ${period.startTime} - ${period.endTime} (${duration})`}
-                  >
-                    <div className="h-full flex flex-col items-center justify-center overflow-hidden px-2">
-                      <span className="text-xs font-bold text-white truncate">
-                        {width > 6 ? period.name : ""}
-                      </span>
-                      {width > 8 && (
-                        <span className="text-[10px] text-white/80 mt-0.5">
-                          {duration}
-                        </span>
-                      )}
-                    </div>
-                    {/* Edit indicator on hover */}
-                    <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Edit3 className="w-3 h-3 text-white" />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                    key={i}
+                    className="flex-1 border-r border-gray-700/30 last:border-r-0"
+                  />
+                ))}
+              </div>
+              {/* Period blocks */}
+              <div className="absolute inset-0">
+                {periods.map((period) => {
+                  const left = getTimePosition(period.startTime);
+                  const width = getTimeWidth(period.startTime, period.endTime);
+                  const duration = getDuration(
+                    period.startTime,
+                    period.endTime
+                  );
+                  const typeColor =
+                    PERIOD_TYPE_COLORS[period.type] ||
+                    PERIOD_TYPE_COLORS.activity;
 
-          {/* Time markers - Bottom */}
-          <div className="relative mt-2">
-            <div className="flex justify-between text-xs text-gray-500">
-              {[
-                "09:00",
-                "10:00",
-                "11:00",
-                "12:00",
-                "13:00",
-                "14:00",
-                "15:00",
-                "16:00",
-                "17:00",
-                "18:00",
-                "19:00",
-                "20:00",
-                "21:00",
-              ].map((time) => (
-                <span key={time}>{time}</span>
-              ))}
+                  return (
+                    <div
+                      key={period.id}
+                      className={`absolute top-2 bottom-2 rounded-lg cursor-pointer transition-all hover:scale-105 hover:z-10 hover:shadow-lg group ${typeColor
+                        .replace("text-", "bg-")
+                        .replace("/20", "/50")} border-2`}
+                      style={{
+                        left: `${left}%`,
+                        width: `${Math.max(width, 2)}%`,
+                      }}
+                      onClick={() => handleEditPeriod(period)}
+                      title={`${period.name}: ${period.startTime} - ${period.endTime} (${duration})`}
+                    >
+                      <div className="h-full flex flex-col items-center justify-center overflow-hidden px-2">
+                        <span className="text-xs font-bold text-white truncate">
+                          {width > 6 ? period.name : ""}
+                        </span>
+                        {width > 8 && (
+                          <span className="text-[10px] text-white/80 mt-0.5">
+                            {duration}
+                          </span>
+                        )}
+                      </div>
+                      {/* Edit indicator on hover */}
+                      <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Edit3 className="w-3 h-3 text-white" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Time markers - Bottom */}
+            <div className="relative mt-2">
+              <div className="flex justify-between text-xs text-gray-500">
+                {[
+                  "09:00",
+                  "10:00",
+                  "11:00",
+                  "12:00",
+                  "13:00",
+                  "14:00",
+                  "15:00",
+                  "16:00",
+                  "17:00",
+                  "18:00",
+                  "19:00",
+                  "20:00",
+                  "21:00",
+                ].map((time) => (
+                  <span key={time}>{time}</span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
         {/* Legend */}
@@ -443,11 +446,15 @@ const EmuconSchedulePanel = () => {
           {Object.entries(PERIOD_TYPE_LABELS).map(([type, label]) => (
             <div key={type} className="flex items-center gap-1.5 sm:gap-2">
               <div
-                className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded ${PERIOD_TYPE_COLORS[type]
+                className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded ${PERIOD_TYPE_COLORS[
+                  type
+                ]
                   ?.replace("text-", "bg-")
                   .replace("/20", "/60")}`}
               />
-              <span className="text-[10px] sm:text-xs text-gray-400">{label}</span>
+              <span className="text-[10px] sm:text-xs text-gray-400">
+                {label}
+              </span>
             </div>
           ))}
         </div>
@@ -456,7 +463,9 @@ const EmuconSchedulePanel = () => {
       {/* Periods List */}
       <div className="bg-gray-800/50 border border-gray-700 rounded-xl overflow-hidden">
         <div className="p-3 sm:p-4 border-b border-gray-700">
-          <h3 className="text-base sm:text-lg font-semibold text-white">All Periods</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-white">
+            All Periods
+          </h3>
         </div>
 
         <div className="divide-y divide-gray-700/50">
@@ -475,7 +484,9 @@ const EmuconSchedulePanel = () => {
                   {PERIOD_TYPE_LABELS[period.type] || period.type}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-medium text-white truncate">{period.name}</p>
+                  <p className="font-medium text-white truncate">
+                    {period.name}
+                  </p>
                   <p className="text-sm text-gray-400">
                     {period.startTime} - {period.endTime}
                   </p>
@@ -493,7 +504,9 @@ const EmuconSchedulePanel = () => {
                 {period.isEditable !== false && (
                   <span className="text-xs text-emerald-400 flex items-center gap-1">
                     <Play className="w-3 h-3" />
-                    <span className="hidden sm:inline">Manager schedulable</span>
+                    <span className="hidden sm:inline">
+                      Manager schedulable
+                    </span>
                     <span className="sm:hidden">Open</span>
                   </span>
                 )}

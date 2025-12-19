@@ -425,7 +425,11 @@ EMURPG Team`;
                       </span>
                     </div>
                     <p className="text-[10px] sm:text-sm text-gray-400 truncate">
-                      {manager.clubNameTr} <span className="hidden sm:inline">-</span> <span className="text-gray-500 font-mono">ID: {manager.clubId}</span>
+                      {manager.clubNameTr}{" "}
+                      <span className="hidden sm:inline">-</span>{" "}
+                      <span className="text-gray-500 font-mono">
+                        ID: {manager.clubId}
+                      </span>
                     </p>
                     {manager.username && (
                       <span className="text-[10px] sm:text-xs text-gray-500">
@@ -477,7 +481,8 @@ EMURPG Team`;
                     </code>
                     {manager.inviteExpires && (
                       <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-gray-500">
-                        Exp: {new Date(manager.inviteExpires).toLocaleDateString()}
+                        Exp:{" "}
+                        {new Date(manager.inviteExpires).toLocaleDateString()}
                       </p>
                     )}
                   </div>
