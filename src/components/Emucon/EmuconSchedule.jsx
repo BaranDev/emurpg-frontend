@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { ClockIcon, CalendarIcon, ScrollIcon } from "./EmuconIcons";
 import {
@@ -16,7 +16,10 @@ import {
   Calendar,
   ChevronDown,
   ChevronUp,
+  Loader2,
+  RefreshCw,
 } from "lucide-react";
+import { config } from "../../config";
 
 // Helpers to compute duration from start/end times
 const parseTimeToMinutes = (t) => {
@@ -49,105 +52,153 @@ const getDurationText = (item) => {
   return null;
 };
 
-const scheduleItems = [
+// Fallback schedule items (used when API is unavailable)
+const FALLBACK_SCHEDULE_ITEMS = [
   {
     start: "2:00 PM",
     end: "2:20 PM",
     event: "Opening / Doors Open",
-    eventTr: "Açılış / Kapılar Açılır",
+    eventTr: "Acilis / Kapilar Acilir",
     type: "opening",
   },
   {
     start: "2:20 PM",
     end: "3:00 PM",
     event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    eventTr: "Karma Kulup Etkinligi",
     type: "activity",
   },
   {
     start: "3:00 PM",
     end: "3:15 PM",
     event: "Folk Dance Club",
-    eventTr: "Halk Dansları Kulübü",
-    duration: "12 min",
+    eventTr: "Halk Danslari Kulubu",
+    duration: "15 min",
     type: "performance",
   },
   {
     start: "3:15 PM",
     end: "4:00 PM",
     event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    eventTr: "Karma Kulup Etkinligi",
     type: "activity",
   },
   {
     start: "4:00 PM",
     end: "4:15 PM",
     event: "International Performing Arts",
-    eventTr: "Uluslararası Sahne Sanatları",
-    duration: "10 min",
+    eventTr: "Uluslararasi Sahne Sanatlari",
+    duration: "15 min",
     type: "performance",
   },
   {
     start: "4:15 PM",
     end: "5:00 PM",
     event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    eventTr: "Karma Kulup Etkinligi",
     type: "activity",
   },
   {
     start: "5:00 PM",
-    end: "5:25 PM",
+    end: "5:30 PM",
     event: "Stand Time",
-    eventTr: "Stand Süresi",
+    eventTr: "Stand Suresi",
     type: "stand",
     duration: "30 min",
   },
   {
-    start: "5:25 PM",
-    end: "6:15 PM",
-    event: "Music Club Competition",
-    eventTr: "Müzik Kulübü Yarışması",
-    duration: "55 min",
+    start: "5:30 PM",
+    end: "5:35 PM",
+    event: "EMU Crows Dance Group Part 1",
+    eventTr: "EMU Crows Dans Grubu Bolum 1",
+    duration: "5 min",
     type: "performance",
   },
   {
-    start: "6:15 PM",
-    end: "7:00 PM",
+    start: "5:35 PM",
+    end: "6:20 PM",
+    event: "Music Club Competition",
+    eventTr: "Muzik Kulubu Yarismasi",
+    duration: "45 min",
+    type: "performance",
+  },
+  {
+    start: "6:20 PM",
+    end: "7:10 PM",
     event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    eventTr: "Karma Kulup Etkinligi",
     type: "activity",
   },
   {
-    start: "7:00 PM",
+    start: "7:10 PM",
     end: "7:15 PM",
-    event: "EMU Crows Dance Group",
-    eventTr: "EMU Crows Dans Grubu",
-    duration: "3 min",
+    event: "EMU Crows Dance Group Part 2",
+    eventTr: "EMU Crows Dans Grubu Bolum 2",
+    duration: "5 min",
     type: "performance",
   },
   {
     start: "7:15 PM",
-    end: "7:30 PM",
-    event: "DAU Dance Community",
-    eventTr: "DAÜ Dans Topluluğu",
+    end: "7:25 PM",
+    event: "EMU Dance Community",
+    eventTr: "DAU Dans Toplulugu",
     duration: "10 min",
     type: "performance",
   },
   {
-    start: "7:30 PM",
+    start: "7:25 PM",
     end: "8:10 PM",
     event: "Mixed Club Activities",
-    eventTr: "Karma Kulüp Etkinliği",
+    eventTr: "Karma Kulup Etkinligi",
     type: "activity",
   },
   {
     start: "8:10 PM",
     end: "8:15 PM",
     event: "Event Close & Thanks",
-    eventTr: "Etkinlik Kapanışı & Teşekkür",
+    eventTr: "Etkinlik Kapanisi & Tesekkur",
     type: "closing",
   },
 ];
+
+// Fallback detailed schedule (used when API is unavailable)
+const FALLBACK_DETAILED_SCHEDULE = {
+  entertainment: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+  diversity: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+  healthAndLifestyle: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+  folkAndSocial: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+  art: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+  technology: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+  science: {
+    scheduled: [],
+    continuous: [],
+    standTime: [],
+  },
+};
 
 // Detailed schedule by corner/time
 const detailedSchedule = {
@@ -926,6 +977,8 @@ const DetailedScheduleModal = ({
   showDetailedSchedule,
   setShowDetailedSchedule,
   detailedSchedule,
+  onRefresh,
+  isRefreshing,
 }) => {
   const [lang, setLang] = useState("tr");
   const [expandedEvent, setExpandedEvent] = useState(null);
@@ -965,6 +1018,21 @@ const DetailedScheduleModal = ({
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher lang={lang} setLang={setLang} />
+              <button
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                className="relative w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/10 z-20 overflow-visible disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Refresh"
+                title={lang === "tr" ? "Yenile" : "Refresh"}
+              >
+                <RefreshCw
+                  size={16}
+                  strokeWidth={2.5}
+                  className={`text-amber-400 hover:text-amber-300 pointer-events-none flex-shrink-0 ${
+                    isRefreshing ? "animate-spin" : ""
+                  }`}
+                />
+              </button>
               <button
                 onClick={() => setShowDetailedSchedule(false)}
                 className="relative w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/10 z-20 overflow-visible"
@@ -1149,10 +1217,142 @@ DetailedScheduleModal.propTypes = {
   showDetailedSchedule: PropTypes.bool.isRequired,
   setShowDetailedSchedule: PropTypes.func.isRequired,
   detailedSchedule: PropTypes.object.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+  isRefreshing: PropTypes.bool,
 };
 
 const EmuconSchedule = () => {
   const [showDetailedSchedule, setShowDetailedSchedule] = useState(false);
+  const [scheduleItems, setScheduleItems] = useState(FALLBACK_SCHEDULE_ITEMS);
+  const [dynamicDetailedSchedule, setDynamicDetailedSchedule] =
+    useState(detailedSchedule);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const backendUrl = config.backendUrl;
+
+  // Fetch main schedule items from API
+  const fetchMainSchedule = useCallback(async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/emucon/schedule/main`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.scheduleItems && data.scheduleItems.length > 0) {
+          setScheduleItems(data.scheduleItems);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch main schedule, using fallback:", error);
+    }
+  }, [backendUrl]);
+
+  // Fetch detailed schedule from API
+  const fetchDetailedSchedule = useCallback(async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/emucon/schedule`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.schedule) {
+          // Transform API response to match component structure
+          const transformedSchedule = {};
+
+          // Map corner types to component keys
+          const cornerMapping = {
+            entertainment: "entertainment",
+            awareness: "diversity", // diversity in UI
+            healthAndLifestyle: "healthAndLifestyle",
+            folkAndSocial: "folkAndSocial",
+            art: "art",
+            technology: "technology",
+            science: "science",
+          };
+
+          // Initialize with fallback structure
+          Object.keys(cornerMapping).forEach((key) => {
+            transformedSchedule[cornerMapping[key]] = {
+              scheduled: [],
+              continuous: [],
+              standTime: [],
+            };
+          });
+
+          // Process API data - data.schedule is an object, not an array
+          for (const [cornerKey, cornerData] of Object.entries(data.schedule)) {
+            const mappedKey = cornerMapping[cornerKey] || cornerKey;
+
+            if (transformedSchedule[mappedKey]) {
+              // The API already provides scheduled, continuous, standTime arrays
+              if (cornerData.scheduled) {
+                transformedSchedule[mappedKey].scheduled =
+                  cornerData.scheduled.map((event) => ({
+                    time:
+                      event.time || `${event.startTime}-${event.endTime}` || "",
+                    club: event.clubNameTr || "",
+                    clubEn: event.clubNameEn || "",
+                    activity: event.nameTr || "",
+                    activityEn: event.nameEn || "",
+                  }));
+              }
+
+              if (cornerData.continuous) {
+                transformedSchedule[mappedKey].continuous =
+                  cornerData.continuous.map((event) => ({
+                    club: event.clubNameTr || "",
+                    clubEn: event.clubNameEn || "",
+                    activity: event.nameTr || "",
+                    activityEn: event.nameEn || "",
+                  }));
+              }
+
+              if (cornerData.standTime) {
+                transformedSchedule[mappedKey].standTime =
+                  cornerData.standTime.map((event) => ({
+                    club: event.clubNameTr || "",
+                    clubEn: event.clubNameEn || "",
+                    activity: event.nameTr || "",
+                    activityEn: event.nameEn || "",
+                  }));
+              }
+            }
+          }
+
+          // Only update if we have meaningful data
+          const hasData = Object.values(transformedSchedule).some(
+            (corner) =>
+              corner.scheduled.length > 0 ||
+              corner.continuous.length > 0 ||
+              corner.standTime.length > 0
+          );
+
+          if (hasData) {
+            setDynamicDetailedSchedule(transformedSchedule);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Failed to fetch detailed schedule, using fallback:",
+        error
+      );
+    }
+  }, [backendUrl]);
+
+  // Handle refresh button click
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await Promise.all([fetchMainSchedule(), fetchDetailedSchedule()]);
+    setIsRefreshing(false);
+  }, [fetchMainSchedule, fetchDetailedSchedule]);
+
+  // Fetch data on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      await Promise.all([fetchMainSchedule(), fetchDetailedSchedule()]);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [fetchMainSchedule, fetchDetailedSchedule]);
 
   // Hide navbar and prevent scroll when modal is open
   useEffect(() => {
@@ -1405,7 +1605,9 @@ const EmuconSchedule = () => {
       <DetailedScheduleModal
         showDetailedSchedule={showDetailedSchedule}
         setShowDetailedSchedule={setShowDetailedSchedule}
-        detailedSchedule={detailedSchedule}
+        detailedSchedule={dynamicDetailedSchedule}
+        onRefresh={handleRefresh}
+        isRefreshing={isRefreshing}
       />
     </>
   );

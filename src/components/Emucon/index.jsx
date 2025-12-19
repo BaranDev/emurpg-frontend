@@ -16,6 +16,9 @@ export { default as EmuconFeatureCard } from "./EmuconFeatureCard";
 export { default as EmuconSchedule } from "./EmuconSchedule";
 export { default as EmuconContactGrid } from "./EmuconContactGrid";
 
+// Live event components
+export { default as LiveCornerCarousel } from "./LiveCornerCarousel";
+
 // Sponsor page components
 export { default as SponsorHero } from "./SponsorHero";
 export { default as SponsorBenefitCard } from "./SponsorBenefitCard";

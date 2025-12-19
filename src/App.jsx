@@ -5,20 +5,28 @@ import TableDetailPage from "./pages/TableDetailPage";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import AdminDashboard from "./components/AdminDashboard";
-import Login from "./components/Login";
+import { AdminLogin, AdminMain } from "./components/Admin";
+import { EmuconManagerDashboard } from "./components/Admin/Emucon";
 import EventsPage from "./pages/EventsPage";
 import EmuconRulesPage from "./pages/EmuconRulesPage";
 import EmuconHome from "./pages/Emucon/Home";
 import EmuconSponsors from "./pages/Emucon/Sponsors";
+import EmuconRegister from "./pages/Emucon/Register";
+import EmuconLive from "./pages/Emucon/Live";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
 
 // Inner component that has access to translation context
 function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [adminType, setAdminType] = useState(null); // 'emurpg' or 'emucon_manager'
+  const [managerData, setManagerData] = useState(null);
+  const [useNewAdmin, setUseNewAdmin] = useState(true); // Toggle for new vs legacy admin
+
   console.log(
     "Hello my curious friend! If you are seeing this, you must be interested in how this app works. Feel free to reach out to me on cevdetbaranoral@gmail.com if you want to help me on EMURPG's apps."
   );
+
   useEffect(() => {
     checkLoginStatus();
   }, []);
@@ -29,14 +37,22 @@ function AppContent() {
 
   const checkLoginStatus = () => {
     const loginData = localStorage.getItem("login");
-    const apiKeyData = localStorage.getItem("apiKey");
 
-    if (loginData && apiKeyData) {
-      const { expirationTime } = JSON.parse(loginData);
+    if (loginData) {
+      const {
+        expirationTime,
+        adminType: storedAdminType,
+        clubId,
+        clubName,
+      } = JSON.parse(loginData);
       const currentTime = new Date().getTime();
 
       if (currentTime < expirationTime) {
         setIsLoggedIn(true);
+        setAdminType(storedAdminType || "emurpg");
+        if (storedAdminType === "emucon_manager") {
+          setManagerData({ clubId, clubName });
+        }
       } else {
         // Session expired, clear localStorage
         localStorage.removeItem("login");
@@ -45,14 +61,56 @@ function AppContent() {
     }
   };
 
-  const handleLogin = () => {
+  const handleLogin = (result) => {
     setIsLoggedIn(true);
+    setAdminType(result?.adminType || "emurpg");
+  };
+
+  const handleEmuconManagerLogin = (result) => {
+    setIsLoggedIn(true);
+    setAdminType("emucon_manager");
+    setManagerData({
+      clubId: result.clubId,
+      clubName: result.clubName,
+    });
   };
 
   const handleLogout = () => {
     localStorage.removeItem("login");
     localStorage.removeItem("apiKey");
     setIsLoggedIn(false);
+    setAdminType(null);
+    setManagerData(null);
+  };
+
+  // Render appropriate admin dashboard based on admin type
+  const renderAdminPage = () => {
+    if (!isLoggedIn) {
+      return (
+        <AdminLogin
+          onLogin={handleLogin}
+          onEmuconManagerLogin={handleEmuconManagerLogin}
+        />
+      );
+    }
+
+    if (adminType === "emucon_manager" && managerData) {
+      return (
+        <EmuconManagerDashboard
+          clubId={managerData.clubId}
+          clubName={managerData.clubName}
+          onLogout={handleLogout}
+        />
+      );
+    }
+
+    // Use new AdminMain with sidebar navigation
+    if (useNewAdmin) {
+      return <AdminMain onLogout={handleLogout} />;
+    }
+
+    // Legacy AdminDashboard (fallback)
+    return <AdminDashboard onLogout={handleLogout} />;
   };
 
   return (
@@ -68,19 +126,12 @@ function AppContent() {
             element={<EventsPage onLanguageSwitch={handleLanguageSwitch} />}
           />
           <Route path="/table/:slug" element={<TableDetailPage />} />
-          <Route
-            path="/admin"
-            element={
-              isLoggedIn ? (
-                <AdminDashboard onLogout={handleLogout} />
-              ) : (
-                <Login onLogin={handleLogin} />
-              )
-            }
-          />
+          <Route path="/admin" element={renderAdminPage()} />
           <Route path="/emucon" element={<EmuconHome />} />
+          <Route path="/emucon/live" element={<EmuconLive />} />
           <Route path="/emucon/sponsors" element={<EmuconSponsors />} />
           <Route path="/emucon/rules" element={<EmuconRulesPage />} />
+          <Route path="/emucon/register/:token" element={<EmuconRegister />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

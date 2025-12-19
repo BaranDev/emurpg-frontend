@@ -52,6 +52,12 @@ A fast development build tool.
 - **User-Friendly Forms**: Forms for creating and updating game tables and player information, with validation to ensure data integrity.
 - **Sortable Tables**: Organized and sortable tables for displaying game table and player data, making it easy to find and manage information.
 - **Social Media Integration**: Links to social media platforms like Discord, WhatsApp, Instagram, and LinkedIn for community engagement.
+- **EMUCON Event Management**: Full support for EMUCON (EMU Club Convention) event management including:
+  - Multiple themed corners (Entertainment, Awareness, Health & Lifestyle, Folk & Social, Art, Technology, Science)
+  - Club and activity scheduling with detailed event information
+  - Time-slot based scheduling and continuous activities
+  - Real-time event registration with shareable tokens
+  - Admin dashboard for managing EMUCON events, clubs, and schedules
 
 ### User Interface & Experience
 
@@ -101,6 +107,31 @@ By focusing on these elements, the front-end aims to deliver a user-friendly and
         - **Method**: `PUT`
         - **Security**: Requires API key validation and CORS policies.
 
+#### EMUCON Pages & Components
+- **EmuconPage** (`/emucon`)
+    - **Description**: Main EMUCON event page displaying corners, clubs, and schedule information.
+    - **Endpoint**: `/api/emucon/corners` (GET)
+    - **Security**: Public access, no authentication required.
+
+- **EmuconSchedulePage** (`/emucon/schedule`)
+    - **Description**: Displays the EMUCON event schedule with time slots and activities.
+    - **Endpoint**: `/api/emucon/schedule` (GET)
+    - **Security**: Public access, no authentication required.
+
+- **EmuconRegisterPage** (`/emucon/register/:code`)
+    - **Description**: Event registration page with shareable token links for player registration.
+    - **Endpoint**: `/api/emucon/events/{code}` (GET), `/api/emucon/register` (POST)
+    - **Security**: Token-based validation, public access with invitation code.
+
+- **EmuconAdminPanel** (`/emucon/admin`)
+    - **Description**: Admin dashboard for managing EMUCON events, clubs, and schedules.
+    - **Endpoints**:
+        - `/api/admin/emucon/corners` (GET, POST, PUT, DELETE)
+        - `/api/admin/emucon/clubs` (GET, POST, PUT, DELETE)
+        - `/api/admin/emucon/events` (GET, POST, PUT, DELETE)
+        - `/api/admin/emucon/schedule` (GET, PUT)
+    - **Security**: Requires API key validation and admin authentication.
+
 #### Footer
 - **Description**: Contains links to social media and other relevant information.
 
@@ -120,11 +151,38 @@ By focusing on these elements, the front-end aims to deliver a user-friendly and
 ### Deployment
 - **Cloud Platform**: Deployed on Heroku with continuous integration and deployment pipelines, ensuring smooth updates and maintenance.
 
+### EMUCON Features
+
+The frontend now includes comprehensive EMUCON (EMU Club Convention) event management:
+
+#### Pages & Routes
+- `/emucon` - Main EMUCON info page with corners and clubs directory
+- `/emucon/schedule` - Full event schedule with time slots and activities
+- `/emucon/register/:code` - Event registration with token-based access (medieval green theme)
+- `/emucon/admin` - Admin panel for managing events, clubs, and schedules
+
+#### Components
+- **EmuconPage**: Displays all corners (7 themed areas) with clubs and their activities
+- **EmuconSchedulePage**: Interactive schedule with time-slot based layout
+- **EmuconRegisterPage**: Beautiful registration form with shareable token links
+- **EmuconAdminPanel**: Full admin dashboard for EMUCON management
+- **EmuconAdminClubs**: Manage clubs and their event schedules
+- **EmuconSchedulePanel**: Edit time periods and create activity slots
+- **EmuconStaff**: View and assign staff to activities
+
+#### Data Management
+- Bilingual (English/Turkish) support for all EMUCON content
+- Real-time updates for event availability and participant counts
+- Shareable registration links via unique tokens
+- Admin controls for creating, updating, and managing events
+
 ### Future Enhancements
 - **Enhanced Admin Dashboard**: Adding more analytics and reporting features to the admin dashboard for better event management and decision-making.
 - **Event Notifications**: Implementing a notification system to alert users about upcoming events and important updates.
 - **User Profiles**: Allowing users to create and manage their profiles, including their game history and achievements.
 - **Integration with University Systems**: Integrating with university systems for user authentication and event management.
+- **Advanced EMUCON Analytics**: Participant tracking, attendance analytics, and event success metrics.
+- **Mobile App**: Native mobile applications for easier event access and registration.
 - `You can commit your suggestions here!`
 ### Installation & Setup
 1. Clone the repository.

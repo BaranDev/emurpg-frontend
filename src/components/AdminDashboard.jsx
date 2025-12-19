@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import { config } from "../config";
+import { getApiKey, getAuthHeaders, clearSession } from "../utils/auth";
 import { FaArrowRightFromBracket as LogoutIcon } from "react-icons/fa6";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ onLogout }) => {
   const [events, setEvents] = useState([]);
   const [tables, setTables] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -48,7 +50,6 @@ const AdminDashboard = () => {
   });
   const [isGeneratingTable, setIsGeneratingTable] = useState(false);
   const backendUrl = config.backendUrl; //http://localhost:8000 or https://api.emurpg.com
-  const API_KEY = localStorage.getItem("apiKey");
   const [ws, setWs] = useState(null); // WebSocket state to manage connection
   const wsConnected = useRef(false); // Ref to track WebSocket connection status
   const wsConnectionAttempted = useRef(false);
@@ -107,6 +108,9 @@ const AdminDashboard = () => {
   const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
+
+  // Get API key using utility (handles JSON parsing)
+  const API_KEY = getApiKey();
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -3597,6 +3601,10 @@ const AdminDashboard = () => {
       )}
     </div>
   );
+};
+
+AdminDashboard.propTypes = {
+  onLogout: PropTypes.func,
 };
 
 export default AdminDashboard;
