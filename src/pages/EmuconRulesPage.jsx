@@ -271,6 +271,17 @@ const TurkishContent = () => (
       sorumludur. Kulüpler, etkinlik sonunda alanlarını temiz bırakmak ve tüm
       malzemelerini kaldırmakla yükümlüdür.
     </Paragraph>
+    <Paragraph>
+      Kulüpler, tanıtım ve reklam faaliyetlerini yalnızca kendi standları
+      dahilinde gerçekleştirebilir. Stand alanı dışına reklam materyali, afiş,
+      broşür veya tanıtım malzemesi taşınması, dağıtılması veya asılması
+      yasaktır. Diğer standlara veya etkinlik alanının farklı bölümlerine
+      giderek sözlü tanıtım yapmak, broşür dağıtmak veya herhangi bir şekilde
+      reklam faaliyeti yürütmek kesinlikle yasaktır. Katılımcılar, etkinlik
+      alanında dolaşırken diğer kulüplerin reklam yapmasına veya ürün satmaya
+      çalışmasına maruz kalmamalıdır. Tüm tanıtım ve reklam faaliyetleri,
+      kulübün tahsis edilmiş stand sınırları içerisinde kalmalıdır.
+    </Paragraph>
 
     <SectionHeading>4. SAĞLIK VE GÜVENLİK</SectionHeading>
     <Paragraph>
@@ -505,6 +516,18 @@ const EnglishContent = () => (
       they use, fire hazards, and all security measures within their area. Clubs
       are obligated to leave their areas clean and remove all materials at the
       conclusion of the event.
+    </Paragraph>
+    <Paragraph>
+      Clubs may conduct promotional and advertising activities exclusively
+      within their designated booth areas. Carrying, distributing, or posting
+      advertising materials, posters, brochures, or promotional items outside
+      the booth area is prohibited. Approaching other booths or different
+      sections of the event area to conduct verbal promotions, distribute
+      brochures, or engage in any form of advertising activity is strictly
+      forbidden. Participants should not be subjected to solicitation or sales
+      attempts from other clubs while moving around the event area. All
+      promotional and advertising activities must remain within the boundaries
+      of the club&apos;s allocated booth.
     </Paragraph>
 
     <SectionHeading>4. HEALTH AND SAFETY</SectionHeading>
