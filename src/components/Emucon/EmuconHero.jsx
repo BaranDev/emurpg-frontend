@@ -1,14 +1,14 @@
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Radio, Calendar } from "lucide-react";
 import logoWhite from "../../assets/logo/LOGO_WHITE.png";
 import forestDownArrow from "../../assets/images/forest-down-arrow.png";
 import { CalendarIcon, ClockIcon, LocationIcon } from "./EmuconIcons";
 
-const EmuconHero = () => {
-  const handleScrollToSchedule = () => {
-    const scheduleSection = document.getElementById("emucon-section-schedule");
-    if (scheduleSection) {
-      scheduleSection.scrollIntoView({ behavior: "smooth", block: "start" });
+const EmuconHero = ({ onViewSchedule }) => {
+  const handleViewSchedule = () => {
+    if (onViewSchedule) {
+      onViewSchedule();
     }
   };
 
@@ -139,7 +139,7 @@ const EmuconHero = () => {
               LIVE NOW
             </Link>
             <button
-              onClick={handleScrollToSchedule}
+              onClick={handleViewSchedule}
               className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 text-cream font-semibold rounded border border-gold-light uppercase tracking-wider text-xs md:text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(201,162,39,0.4)]"
               style={{
                 background: "linear-gradient(135deg, #c9a227, #a88420)",
@@ -171,6 +171,10 @@ const EmuconHero = () => {
       </section>
     </>
   );
+};
+
+EmuconHero.propTypes = {
+  onViewSchedule: PropTypes.func,
 };
 
 export default EmuconHero;

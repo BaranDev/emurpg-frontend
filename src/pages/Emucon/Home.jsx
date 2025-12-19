@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { config } from "../../config";
 import { Link } from "react-router-dom";
 import { Radio } from "lucide-react";
@@ -121,6 +121,7 @@ const EmuconHome = () => {
   const isScrollingRef = useRef(false);
   const currentSectionRef = useRef(0);
   const scrollQueueRef = useRef([]);
+  const [showDetailedSchedule, setShowDetailedSchedule] = useState(false);
 
   useEffect(() => {
     document.title = "EMURPG - EMUCON 2025";
@@ -279,7 +280,7 @@ const EmuconHome = () => {
           id="emucon-section-hero"
           className="min-h-screen flex flex-col select-none"
         >
-          <EmuconHero />
+          <EmuconHero onViewSchedule={() => setShowDetailedSchedule(true)} />
         </section>
 
         {/* Live Events Button - Links to full live display */}
@@ -459,7 +460,10 @@ const EmuconHome = () => {
           className="min-h-[60vh] md:min-h-screen flex flex-col justify-center py-8 md:py-16 lg:py-20 px-5 max-w-[1200px] mx-auto select-none"
         >
           <EmuconSectionHeader title="Schedule Overview" />
-          <EmuconSchedule />
+          <EmuconSchedule
+            externalShowDetailedSchedule={showDetailedSchedule}
+            setExternalShowDetailedSchedule={setShowDetailedSchedule}
+          />
         </section>
 
         {/* Contact Section */}

@@ -1221,8 +1221,20 @@ DetailedScheduleModal.propTypes = {
   isRefreshing: PropTypes.bool,
 };
 
-const EmuconSchedule = () => {
-  const [showDetailedSchedule, setShowDetailedSchedule] = useState(false);
+const EmuconSchedule = ({
+  externalShowDetailedSchedule,
+  setExternalShowDetailedSchedule,
+}) => {
+  const [internalShowDetailedSchedule, setInternalShowDetailedSchedule] =
+    useState(false);
+
+  // Use external state if provided, otherwise use internal state
+  const showDetailedSchedule =
+    externalShowDetailedSchedule !== undefined
+      ? externalShowDetailedSchedule
+      : internalShowDetailedSchedule;
+  const setShowDetailedSchedule =
+    setExternalShowDetailedSchedule || setInternalShowDetailedSchedule;
   const [scheduleItems, setScheduleItems] = useState(FALLBACK_SCHEDULE_ITEMS);
   const [dynamicDetailedSchedule, setDynamicDetailedSchedule] =
     useState(detailedSchedule);
@@ -1611,6 +1623,11 @@ const EmuconSchedule = () => {
       />
     </>
   );
+};
+
+EmuconSchedule.propTypes = {
+  externalShowDetailedSchedule: PropTypes.bool,
+  setExternalShowDetailedSchedule: PropTypes.func,
 };
 
 export default EmuconSchedule;

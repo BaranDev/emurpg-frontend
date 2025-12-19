@@ -230,6 +230,7 @@ HESABINIZI OLUSTURMAK ICIN:
 4. Kulubunuz icin yeni bir sifre belirleyin
 5. Hesabiniz aktif olacak ve giris yapabileceksiniz
 
+KULLANICI ADINIZ (sonraki girişleri için): ${manager.clubId}
 DAVETIYE KODUNUZ: ${inviteCode}
 
 HESABINIZLA NELER YAPABILIRSINIZ:
@@ -450,6 +451,16 @@ EMURPG Team`;
                 <div className="flex flex-wrap items-center gap-1 sm:gap-2 justify-end pl-9 sm:pl-0">
                   {manager.status === "pending" && (
                     <>
+                      <AdminButton
+                        size="sm"
+                        variant="ghost"
+                        icon={MessageSquare}
+                        onClick={() => openMessageModal(manager)}
+                        className="text-xs"
+                      >
+                        <span className="hidden sm:inline">Copy Message</span>
+                        <span className="sm:hidden">Msg</span>
+                      </AdminButton>
                       <AdminButton
                         size="sm"
                         variant="ghost"
