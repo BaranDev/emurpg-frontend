@@ -134,18 +134,6 @@ const HomePage = ({ onLanguageSwitch }) => {
                 >
                   {t("homepage.hero_subtitle")}
                 </motion.p>
-
-                {/* EMUCON Button - Huge, between logo and register button */}
-                <motion.button
-                  initial={{ scale: 0.7, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  onClick={() => (window.location.href = "/emucon")}
-                  className="my-8 px-12 py-6 rounded-2xl bg-gradient-to-br from-yellow-500 via-yellow-600 to-amber-700 text-4xl md:text-5xl font-extrabold text-gray-900 shadow-2xl border-4 border-yellow-400 hover:scale-105 hover:shadow-yellow-400/40 transition-all duration-300 tracking-widest uppercase"
-                  style={{ letterSpacing: "0.15em" }}
-                >
-                  EMUCON
-                </motion.button>
               </div>
               <FireButton
                 onClick={handleJoinButton_events}
@@ -194,6 +182,62 @@ const HomePage = ({ onLanguageSwitch }) => {
                 </svg>
               </button>
             </motion.div>
+          </section>
+
+          {/* EMUCON'25 MEMORIES Section */}
+          <section className="py-24 bg-gradient-to-b from-gray-900/80 via-yellow-900/20 to-gray-900/80">
+            <div className="container mx-auto px-4">
+              <SectionTitle icon={FaScroll}>
+                {t("homepage.emucon_memories_title")}
+              </SectionTitle>
+              <div className="max-w-4xl mx-auto text-center">
+                <p className="text-xl text-gray-300 mb-8">
+                  {t("homepage.emucon_memories_text")}
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-gray-800/60 rounded-xl p-4 border border-yellow-500/30">
+                    <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2">
+                      42+
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                      {t("homepage.emucon_stat_clubs")}
+                    </div>
+                  </div>
+                  <div className="bg-gray-800/60 rounded-xl p-4 border border-yellow-500/30">
+                    <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2">
+                      40+
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                      {t("homepage.emucon_stat_activities")}
+                    </div>
+                  </div>
+                  <div className="bg-gray-800/60 rounded-xl p-4 border border-yellow-500/30">
+                    <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2">
+                      5
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                      {t("homepage.emucon_stat_performances")}
+                    </div>
+                  </div>
+                  <div className="bg-gray-800/60 rounded-xl p-4 border border-yellow-500/30">
+                    <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2">
+                      1000+
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                      {t("homepage.emucon_stat_visitors")}
+                    </div>
+                  </div>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => (window.location.href = "/emucon")}
+                  className="px-8 py-4 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-600 text-xl font-bold text-gray-900 shadow-lg hover:shadow-yellow-500/30 transition-all duration-300"
+                >
+                  {t("homepage.emucon_see_memories")}
+                </motion.button>
+              </div>
+            </div>
           </section>
 
           {/* About Section */}

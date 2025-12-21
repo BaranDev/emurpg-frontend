@@ -8,6 +8,8 @@ import GameGuideModal from "./GameGuideModal";
 const TableList = ({ eventSlug }) => {
   const { t } = useTranslation();
   const [tables, setTables] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const backendUrl = config.backendUrl;
   const [ws, setWs] = useState(null);
   const wsConnected = useRef(false);
@@ -18,55 +20,72 @@ const TableList = ({ eventSlug }) => {
   useEffect(() => {
     const fetchTables = () => {
       fetch(`${config.backendUrl}/api/events/${eventSlug}/tables`)
-        .then((res) => res.json())
-        .then((data) => setTables(data));
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch tables");
+          return res.json();
+        })
+        .then((data) => {
+          setTables(data);
+          setError(null);
+        })
+        .catch((err) => {
+          console.log("Failed to fetch tables:", err.message);
+          setError(err.message);
+          setTables([]);
+        })
+        .finally(() => setLoading(false));
     };
 
     const fetchGames = async () => {
       try {
         const response = await fetch(`${config.backendUrl}/api/games`);
+        if (!response.ok) return;
         const data = await response.json();
-        // Games data is fetched but not currently used in the component
         console.log("Games loaded:", data);
-      } catch (error) {
-        console.error("Error fetching games:", error);
+      } catch (err) {
+        console.log("Error fetching games:", err.message);
       }
     };
 
     const connectWebSocket = () => {
-      const socket = new WebSocket(`${backendUrl}/ws/updates`);
+      try {
+        const socket = new WebSocket(`${backendUrl}/ws/updates`);
 
-      socket.onopen = () => {
-        console.log("WebSocket connected");
-        wsConnected.current = true;
-      };
+        socket.onopen = () => {
+          console.log("WebSocket connected");
+          wsConnected.current = true;
+        };
 
-      socket.onmessage = (event) => {
-        console.log("Received message from WebSocket", event.data);
-        if (wsConnected.current) {
-          fetchTables();
-        }
-      };
+        socket.onmessage = (event) => {
+          console.log("Received message from WebSocket", event.data);
+          if (wsConnected.current) {
+            fetchTables();
+          }
+        };
 
-      socket.onclose = () => {
-        console.log("WebSocket disconnected");
-        wsConnected.current = false;
-      };
+        socket.onclose = () => {
+          console.log("WebSocket disconnected");
+          wsConnected.current = false;
+        };
 
-      socket.onerror = (error) => {
-        console.log("WebSocket error:", error);
-        wsConnected.current = false;
-      };
+        socket.onerror = () => {
+          console.log("WebSocket error - backend may be offline");
+          wsConnected.current = false;
+        };
 
-      return socket;
+        return socket;
+      } catch (e) {
+        console.log("WebSocket connection failed:", e);
+        return null;
+      }
     };
 
     fetchTables();
     fetchGames();
 
-    if (!wsConnectionAttempted.current) {
+    if (!wsConnectionAttempted.current && !error) {
       const socket = connectWebSocket();
-      setWs(socket);
+      if (socket) setWs(socket);
       wsConnectionAttempted.current = true;
     }
 
@@ -75,7 +94,7 @@ const TableList = ({ eventSlug }) => {
         ws.close();
       }
     };
-  }, [eventSlug, backendUrl, ws]);
+  }, [eventSlug, backendUrl, ws, error]);
 
   useEffect(() => {
     const fetchGameDetails = async (gameId) => {
@@ -103,7 +122,17 @@ const TableList = ({ eventSlug }) => {
     });
   }, [tables, gameDetails]);
 
-  if (tables.length === 0) {
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
+        <p className="text-lg text-yellow-500">Loading tables...</p>
+      </div>
+    );
+  }
+
+  // Error or empty state
+  if (error || tables.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
         <p className="text-lg text-gray-300 mb-4">

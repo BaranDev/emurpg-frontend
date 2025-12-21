@@ -68,7 +68,14 @@
     "gm_dungeon_master": "Dungeon Master | Activity Manager | Software Developer",
     "gm_master_cards": "Master of Cards",
     "gm_game_master": "Game Master",
-    "gm_instructor": "Dungeon Master | Instructor | Content Creator"
+    "gm_instructor": "Dungeon Master | Instructor | Content Creator",
+    "emucon_memories_title": "EMUCON'25 MEMORIES",
+    "emucon_memories_text": "Thank you to everyone who made EMUCON 2025 unforgettable! Organized by EMURPG Club (Fantasy Fiction Club).",
+    "emucon_stat_clubs": "Student Clubs",
+    "emucon_stat_activities": "Activities",
+    "emucon_stat_performances": "Stage Shows",
+    "emucon_stat_visitors": "Visitors",
+    "emucon_see_memories": "See EMUCON'25 Memories"
   },
   "registration": {
     "join_event": "Join the Event",

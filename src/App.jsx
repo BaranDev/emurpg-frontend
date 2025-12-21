@@ -9,10 +9,7 @@ import { AdminLogin, AdminMain } from "./components/Admin";
 import { EmuconManagerDashboard } from "./components/Admin/Emucon";
 import EventsPage from "./pages/EventsPage";
 import EmuconRulesPage from "./pages/EmuconRulesPage";
-import EmuconHome from "./pages/Emucon/Home";
-import EmuconSponsors from "./pages/Emucon/Sponsors";
-import EmuconRegister from "./pages/Emucon/Register";
-import EmuconLive from "./pages/Emucon/Live";
+import EmuconThankYou from "./pages/Emucon/ThankYou";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
 
@@ -127,11 +124,11 @@ function AppContent() {
           />
           <Route path="/table/:slug" element={<TableDetailPage />} />
           <Route path="/admin" element={renderAdminPage()} />
-          <Route path="/emucon" element={<EmuconHome />} />
-          <Route path="/emucon/live" element={<EmuconLive />} />
-          <Route path="/emucon/sponsors" element={<EmuconSponsors />} />
+          <Route path="/emucon" element={<EmuconThankYou />} />
+          <Route path="/emucon/live" element={<EmuconThankYou />} />
+          <Route path="/emucon/sponsors" element={<EmuconThankYou />} />
           <Route path="/emucon/rules" element={<EmuconRulesPage />} />
-          <Route path="/emucon/register/:token" element={<EmuconRegister />} />
+          <Route path="/emucon/register/:token" element={<EmuconThankYou />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

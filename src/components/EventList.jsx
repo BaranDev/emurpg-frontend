@@ -11,52 +11,76 @@ const EventList = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [ws, setWs] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const wsConnected = useRef(false);
   const wsConnectionAttempted = useRef(false);
 
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
-      .then((res) => res.json())
-      .then((data) => setEvents(data));
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch events");
+        return res.json();
+      })
+      .then((data) => {
+        setEvents(data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.log("Failed to fetch events:", err.message);
+        setError(err.message);
+        setEvents([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
+    // Skip WebSocket connection if backend is down (error state)
+    if (error) return;
+
     const connectWebSocket = () => {
-      const socket = new WebSocket(`${config.backendUrl}/ws/updates`);
+      try {
+        const socket = new WebSocket(`${config.backendUrl}/ws/updates`);
 
-      socket.onopen = () => {
-        console.log("Events WebSocket connected");
-        wsConnected.current = true;
-      };
+        socket.onopen = () => {
+          console.log("Events WebSocket connected");
+          wsConnected.current = true;
+        };
 
-      socket.onmessage = () => {
-        if (wsConnected.current) {
-          // Fetch updated events
-          fetch(`${config.backendUrl}/api/events`)
-            .then((res) => res.json())
-            .then((data) => setEvents(data));
-        }
-      };
+        socket.onmessage = () => {
+          if (wsConnected.current) {
+            // Fetch updated events
+            fetch(`${config.backendUrl}/api/events`)
+              .then((res) => res.json())
+              .then((data) => setEvents(data))
+              .catch(() => {});
+          }
+        };
 
-      socket.onclose = () => {
-        console.log("Events WebSocket disconnected");
-        wsConnected.current = false;
-        setTimeout(() => {
-          if (!wsConnected.current) connectWebSocket();
-        }, 3000);
-      };
+        socket.onclose = () => {
+          console.log("Events WebSocket disconnected");
+          wsConnected.current = false;
+          // Only retry if we had a successful connection before
+          setTimeout(() => {
+            if (!wsConnected.current && !error) connectWebSocket();
+          }, 5000);
+        };
 
-      socket.onerror = (error) => {
-        console.log("Events WebSocket error:", error);
-        wsConnected.current = false;
-      };
+        socket.onerror = () => {
+          console.log("Events WebSocket error - backend may be offline");
+          wsConnected.current = false;
+        };
 
-      return socket;
+        return socket;
+      } catch (e) {
+        console.log("WebSocket connection failed:", e);
+        return null;
+      }
     };
 
     if (!wsConnectionAttempted.current) {
       const socket = connectWebSocket();
-      setWs(socket);
+      if (socket) setWs(socket);
       wsConnectionAttempted.current = true;
     }
 
@@ -67,7 +91,7 @@ const EventList = () => {
         wsConnectionAttempted.current = false;
       }
     };
-  }, [ws]);
+  }, [ws, error]);
 
   // Fallback for unsupported browsers
   if (!window.fetch || !window.WebSocket) {
@@ -88,7 +112,20 @@ const EventList = () => {
     );
   }
 
-  if (events.length === 0) {
+  // Loading state
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center min-h-[400px] p-6 text-center"
+      >
+        <div className="text-yellow-500 text-xl">Loading events...</div>
+      </motion.div>
+    );
+  }
+
+  if (error || events.length === 0) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
