@@ -65,11 +65,12 @@ const EmuconThankYou = () => {
 
             <p className="text-emucon-text-secondary text-sm md:text-base mb-10 max-w-2xl mx-auto">
               Organized by{" "}
-              <strong className="text-gold-light">EMURPG Club</strong> (Fantasy
-              Fiction Club)
+              <strong className="text-gold-light">EMURPG Club</strong>
               <br />
-              <strong className="text-gold-light">EMU RPG Kulübü</strong>{" "}
-              (Fantastik Kurgu Kulübü) tarafından düzenlenmiştir.
+              <strong className="text-gold-light">
+                Fantastik Kurgu Kulübü
+              </strong>{" "}
+              tarafından düzenlenmiştir.
             </p>
 
             {/* Stats row */}
