@@ -33,13 +33,13 @@ const SponsorHero = () => {
           className="font-cinzel text-3xl md:text-5xl lg:text-6xl font-bold text-cream mb-4 tracking-wide"
           style={{ textShadow: "0 4px 20px rgba(0,0,0,0.5)" }}
         >
-          Partner with EMUCON 2025
+          Partner with EMUCON 2026
         </h1>
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-gold-light mb-6 md:mb-8 font-light max-w-[700px] mx-auto">
-          5 hours. 41 clubs. Thousands of students. Direct access to Gen Z when
-          they&#39;re most engaged.
+          EMUCON 2025: 600+ attendees, 42 clubs, massive success. Join us for
+          2026!
         </p>
 
         {/* CTA */}

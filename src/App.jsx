@@ -10,6 +10,7 @@ import { EmuconManagerDashboard } from "./components/Admin/Emucon";
 import EventsPage from "./pages/EventsPage";
 import EmuconRulesPage from "./pages/EmuconRulesPage";
 import EmuconThankYou from "./pages/Emucon/ThankYou";
+import EmuconSponsors from "./pages/Emucon/Sponsors";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
 
@@ -126,7 +127,7 @@ function AppContent() {
           <Route path="/admin" element={renderAdminPage()} />
           <Route path="/emucon" element={<EmuconThankYou />} />
           <Route path="/emucon/live" element={<EmuconThankYou />} />
-          <Route path="/emucon/sponsors" element={<EmuconThankYou />} />
+          <Route path="/emucon/sponsors" element={<EmuconSponsors />} />
           <Route path="/emucon/rules" element={<EmuconRulesPage />} />
           <Route path="/emucon/register/:token" element={<EmuconThankYou />} />
           <Route path="/privacy" element={<Privacy />} />

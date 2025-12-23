@@ -1429,7 +1429,7 @@ const EmuconSchedule = ({
             <div className="w-px h-10 bg-forest-light/30"></div>
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-bold text-gold-light">
-                40+
+                50+
               </div>
               <div className="text-xs text-cream/80">Events / Etkinlik</div>
             </div>

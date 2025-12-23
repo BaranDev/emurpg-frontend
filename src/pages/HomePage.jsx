@@ -221,7 +221,7 @@ const HomePage = ({ onLanguageSwitch }) => {
                   </div>
                   <div className="bg-gray-800/60 rounded-xl p-4 border border-yellow-500/30">
                     <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2">
-                      1000+
+                      600+
                     </div>
                     <div className="text-gray-400 text-sm">
                       {t("homepage.emucon_stat_visitors")}

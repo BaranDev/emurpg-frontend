@@ -59,10 +59,11 @@ const benefits = [
 ];
 
 const stats = [
-  { number: "41+", label: "Student Clubs" },
+  { number: "42+", label: "Student Clubs (2025)" },
   { number: "5", label: "Hours Exposure" },
-  { number: "40+", label: "Activities" },
-  { number: "1000+", label: "Expected Attendees" },
+  { number: "50+", label: "Activities (2025)" },
+  { number: "600+", label: "Attendees (2025)" },
+  { number: "200K+", label: "Social Media Views (2025)" },
 ];
 
 const businessMetrics = [
@@ -114,7 +115,8 @@ const tiers = [
 
 const EmuconSponsors = () => {
   useEffect(() => {
-    document.title = "EMURPG - EMUCON Sponsors";
+    document.title = "EMURPG - EMUCON 2026 Sponsors";
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -265,11 +267,12 @@ const EmuconSponsors = () => {
           </div>
 
           <p className="text-center text-emucon-text-muted mt-8 italic">
-            Custom packages available. Let&apos;s discuss what works best for
-            your brand.
+            Custom packages available for EMUCON 2026. Let&apos;s discuss what
+            works best for your brand.
             <br />
             <span className="text-emucon-text-secondary">
-              Özel paketler mevcuttur. Markanız için en uygun olanı konuşalım.
+              EMUCON 2026 için özel paketler mevcuttur. Markanız için en uygun
+              olanı konuşalım.
             </span>
           </p>
         </section>

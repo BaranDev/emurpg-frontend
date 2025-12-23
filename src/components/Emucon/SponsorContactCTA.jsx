@@ -27,19 +27,21 @@ const SponsorContactCTA = () => {
     >
       {/* Title */}
       <h3 className="font-cinzel text-2xl md:text-3xl text-emucon-text-primary mb-5">
-        Ready to Partner?
+        Ready to Partner for EMUCON 2026?
       </h3>
 
       {/* Description - English */}
       <p className="text-emucon-text-secondary mb-4 max-w-[600px] mx-auto">
-        Reach out to discuss sponsorship opportunities, custom packages, or any
-        questions about EMUCON 2025.
+        EMUCON 2025 was a huge success with 600+ attendees! Join us in making
+        EMUCON 2026 even bigger. Reach out to discuss sponsorship opportunities
+        and custom packages.
       </p>
 
       {/* Description - Turkish */}
       <p className="text-emucon-text-muted mb-8">
-        Sponsorluk fırsatları, özel paketler veya EMUCON 2025 hakkında
-        sorularınız için bizimle iletişime geçin.
+        EMUCON 2025, 600+ katılımcı ile büyük bir başarı oldu! EMUCON 2026'yı
+        daha da büyük yapmak için bize katılın. Sponsorluk fırsatları ve özel
+        paketler için bizimle iletişime geçin.
       </p>
 
       {/* Contact info */}

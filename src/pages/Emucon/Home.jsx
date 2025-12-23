@@ -69,7 +69,7 @@ const features = [
 
 const stats = [
   { number: "42+", label: "Student Clubs / Öğrenci Kulübü" },
-  { number: "40+", label: "Activities / Etkinlik" },
+  { number: "50+", label: "Activities / Etkinlik" },
   { number: "5", label: "Stage Performances / Sahne Performansı" },
   { number: "FREE", label: "Entry / Giriş Ücretsiz" },
 ];

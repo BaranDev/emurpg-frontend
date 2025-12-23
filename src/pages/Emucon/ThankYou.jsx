@@ -1,6 +1,15 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Heart, Camera, Users, Star, Home, Mail } from "lucide-react";
+import {
+  Heart,
+  Camera,
+  Users,
+  Star,
+  Home,
+  Mail,
+  Handshake,
+  ArrowRight,
+} from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
 import {
   EmuconNavbar,
@@ -12,9 +21,10 @@ import {
 
 const stats = [
   { number: "42+", label: "Student Clubs / Öğrenci Kulübü" },
-  { number: "40+", label: "Activities / Etkinlik" },
+  { number: "50+", label: "Activities / Etkinlik" },
   { number: "5", label: "Stage Performances / Sahne Performansları" },
   { number: "600+", label: "Visitors / Ziyaretçi" },
+  { number: "200K+", label: "Social Media Views / Sosyal Medya Görüntüleme" },
 ];
 
 const EmuconThankYou = () => {
@@ -199,14 +209,135 @@ const EmuconThankYou = () => {
           </div>
         </section>
 
+        {/* Sponsor section for next event */}
+        <section className="py-16 px-4 max-w-4xl mx-auto">
+          <EmuconSectionHeader title="Help Us Make EMUCON 2026 / EMUCON 2026'yı Birlikte Yapalım" />
+
+          <div className="mt-8">
+            <EmuconContentCard>
+              <div className="text-center">
+                <div className="mb-6">
+                  <Handshake className="w-16 h-16 md:w-20 md:h-20 mx-auto text-gold-light" />
+                </div>
+
+                <h3 className="font-cinzel text-2xl md:text-3xl text-cream mb-4">
+                  Become a Sponsor
+                </h3>
+                <p className="text-emucon-text-secondary text-base md:text-lg mb-3 max-w-2xl mx-auto">
+                  EMUCON 2025 was amazing thanks to our sponsors and supporters.
+                  Join us in making EMUCON 2026 even bigger!
+                </p>
+                <p className="text-emucon-text-secondary text-base md:text-lg mb-8 max-w-2xl mx-auto">
+                  EMUCON 2025, sponsorlarımız ve destekçilerimiz sayesinde
+                  harikaydı. EMUCON 2026&apos;yı daha da büyük yapmak için bize
+                  katılın!
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Link
+                    to="/emucon/sponsors"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gold-dark to-gold hover:from-gold hover:to-gold-light text-forest-dark font-cinzel font-bold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105"
+                  >
+                    <span>
+                      Sponsorship Opportunities / Sponsorluk Fırsatları
+                    </span>
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-forest-medium/30">
+                  <p className="text-emucon-text-muted text-sm md:text-base">
+                    Contact us at{" "}
+                    <a
+                      href="mailto:emufrpclub@gmail.com"
+                      className="text-gold-light hover:text-gold transition-colors underline"
+                    >
+                      emufrpclub@gmail.com
+                    </a>{" "}
+                    for sponsorship inquiries.
+                    <br />
+                    Sponsorluk sorularınız için{" "}
+                    <a
+                      href="mailto:emufrpclub@gmail.com"
+                      className="text-gold-light hover:text-gold transition-colors underline"
+                    >
+                      emufrpclub@gmail.com
+                    </a>{" "}
+                    adresinden bize ulaşın.
+                  </p>
+                </div>
+              </div>
+            </EmuconContentCard>
+          </div>
+        </section>
+
         {/* Follow us section */}
         <section className="py-16 px-4 max-w-4xl mx-auto text-center">
           <EmuconSectionHeader title="Stay Connected / Takipte Kal" />
 
-          <p className="text-emucon-text-secondary text-lg mb-8 mt-6">
+          <p className="text-emucon-text-secondary text-lg mb-4 mt-6">
             Follow us for updates on EMUCON 2026 and more!
             <br />
             EMUCON 2026 ve daha fazlası için bizi takip edin!
+          </p>
+
+          <p className="text-emucon-text-muted text-base mb-8">
+            Check out our highlights on Instagram with{" "}
+            <a
+              href="https://www.instagram.com/explore/tags/emucon/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-light hover:text-gold transition-colors font-semibold"
+            >
+              #emucon
+            </a>{" "}
+            <a
+              href="https://www.instagram.com/explore/tags/emucon25/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-light hover:text-gold transition-colors font-semibold"
+            >
+              #emucon25
+            </a>{" "}
+            <a
+              href="https://www.instagram.com/explore/tags/emucon2025/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-light hover:text-gold transition-colors font-semibold"
+            >
+              #emucon2025
+            </a>
+            <br />
+            200K+ views and counting!
+            <br />
+            Instagram&apos;da öne çıkanlarımızı{" "}
+            <a
+              href="https://www.instagram.com/explore/tags/emucon/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-light hover:text-gold transition-colors font-semibold"
+            >
+              #emucon
+            </a>{" "}
+            <a
+              href="https://www.instagram.com/explore/tags/emucon25/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-light hover:text-gold transition-colors font-semibold"
+            >
+              #emucon25
+            </a>{" "}
+            <a
+              href="https://www.instagram.com/explore/tags/emucon2025/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-light hover:text-gold transition-colors font-semibold"
+            >
+              #emucon2025
+            </a>{" "}
+            ile görün!
+            <br />
+            200K+ görüntüleme ve artıyor!
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
