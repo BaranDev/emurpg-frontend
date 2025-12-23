@@ -14,7 +14,7 @@ const stats = [
   { number: "42+", label: "Student Clubs / Öğrenci Kulübü" },
   { number: "40+", label: "Activities / Etkinlik" },
   { number: "5", label: "Stage Performances / Sahne Performansları" },
-  { number: "1000+", label: "Visitors / Ziyaretçi" },
+  { number: "600+", label: "Visitors / Ziyaretçi" },
 ];
 
 const EmuconThankYou = () => {
