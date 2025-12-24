@@ -11,8 +11,11 @@ import EventsPage from "./pages/EventsPage";
 import EmuconRulesPage from "./pages/EmuconRulesPage";
 import EmuconThankYou from "./pages/Emucon/ThankYou";
 import EmuconSponsors from "./pages/Emucon/Sponsors";
+import CharrollerLandingPage from "./pages/CharrollerLandingPage";
+import CharrollerPage from "./pages/CharrollerPage";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
+import { GlobalAudioProvider } from "./contexts/GlobalAudioContext";
 
 // Inner component that has access to translation context
 function AppContent() {
@@ -130,6 +133,17 @@ function AppContent() {
           <Route path="/emucon/sponsors" element={<EmuconSponsors />} />
           <Route path="/emucon/rules" element={<EmuconRulesPage />} />
           <Route path="/emucon/register/:token" element={<EmuconThankYou />} />
+          {/* Charroller routes wrapped with GlobalAudioProvider for persistent music */}
+          <Route path="/charroller" element={
+            <GlobalAudioProvider>
+              <CharrollerLandingPage onLanguageSwitch={handleLanguageSwitch} />
+            </GlobalAudioProvider>
+          } />
+          <Route path="/charroller/manager" element={
+            <GlobalAudioProvider>
+              <CharrollerPage onLanguageSwitch={handleLanguageSwitch} />
+            </GlobalAudioProvider>
+          } />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

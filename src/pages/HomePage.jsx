@@ -84,9 +84,8 @@ const HomePage = ({ onLanguageSwitch }) => {
           },
           {
             label: t("navbar.character_roller"),
-            disabled: true,
-            badge: t("events_page.soon_badge"),
-            onClick: () => {},
+            disabled: false,
+            onClick: () => (window.location.href = "/charroller"),
           },
         ]}
       />
