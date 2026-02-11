@@ -82,10 +82,16 @@ const DiceRoller = ({
   rollName = "Roll", 
   onRoll,
   criticalMin = 1,
-  criticalMax = 20
+  criticalMax = 20,
+  hasAdvantage = false,
+  hasDisadvantage = false
 }) => {
   const [isRolling, setIsRolling] = useState(false);
   const [result, setResult] = useState(null);
+
+  // Determine effective advantage state (disadvantage cancels advantage)
+  const effectiveAdvantage = hasAdvantage && !hasDisadvantage;
+  const effectiveDisadvantage = hasDisadvantage && !hasAdvantage;
 
   const handleRoll = useCallback(() => {
     setIsRolling(true);
@@ -93,7 +99,28 @@ const DiceRoller = ({
     
     // Animate for 800ms then show result
     setTimeout(() => {
-      const rollResult = rollDice(notation);
+      let rollResult;
+      
+      // If advantage/disadvantage on a d20 roll, roll twice
+      if ((effectiveAdvantage || effectiveDisadvantage) && notation.includes("d20")) {
+        const roll1 = rollDice(notation);
+        const roll2 = rollDice(notation);
+        
+        if (effectiveAdvantage) {
+          // Take higher roll
+          rollResult = roll1.rolls[0] >= roll2.rolls[0] ? roll1 : roll2;
+          rollResult.advantageRolls = [roll1.rolls[0], roll2.rolls[0]];
+          rollResult.usedAdvantage = true;
+        } else {
+          // Take lower roll
+          rollResult = roll1.rolls[0] <= roll2.rolls[0] ? roll1 : roll2;
+          rollResult.disadvantageRolls = [roll1.rolls[0], roll2.rolls[0]];
+          rollResult.usedDisadvantage = true;
+        }
+      } else {
+        rollResult = rollDice(notation);
+      }
+      
       setResult(rollResult);
       setIsRolling(false);
       
@@ -101,7 +128,7 @@ const DiceRoller = ({
         onRoll(rollResult);
       }
     }, 800);
-  }, [notation, onRoll]);
+  }, [notation, onRoll, effectiveAdvantage, effectiveDisadvantage]);
 
   const getCriticalClass = () => {
     if (!result) return "";
@@ -204,10 +231,24 @@ const DiceRoller = ({
           )}
         </div>
         
+        {/* Advantage/Disadvantage indicator */}
+        {(hasAdvantage || hasDisadvantage) && (
+          <div className={`text-xs font-medium ${hasAdvantage && !hasDisadvantage ? "text-green-400" : "text-red-400"}`}>
+            {hasAdvantage && !hasDisadvantage ? "Advantage" : 
+             hasDisadvantage && !hasAdvantage ? "Disadvantage" : "Normal"}
+          </div>
+        )}
+        
         {/* Roll breakdown */}
         {result && !isRolling && (
           <div className="text-xs text-silver-dark">
-            {result.rolls.join(" + ")}
+            {result.advantageRolls ? (
+              <span>({result.advantageRolls.join(", ")}) → {result.rolls[0]}</span>
+            ) : result.disadvantageRolls ? (
+              <span>({result.disadvantageRolls.join(", ")}) → {result.rolls[0]}</span>
+            ) : (
+              result.rolls.join(" + ")
+            )}
             {result.modifier !== 0 && (
               <span>{result.modifier > 0 ? " + " : " - "}{Math.abs(result.modifier)}</span>
             )}
@@ -235,7 +276,9 @@ DiceRoller.propTypes = {
   rollName: PropTypes.string,
   onRoll: PropTypes.func,
   criticalMin: PropTypes.number,
-  criticalMax: PropTypes.number
+  criticalMax: PropTypes.number,
+  hasAdvantage: PropTypes.bool,
+  hasDisadvantage: PropTypes.bool
 };
 
 export { parseDice, rollDice };

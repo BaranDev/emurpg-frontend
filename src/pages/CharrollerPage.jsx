@@ -299,43 +299,33 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const handleApplyLevelUpChoices = async (selections) => {
     if (!levelUpChoices) return;
     
-    const { originalCharacter, target_level } = levelUpChoices;
+    const { originalCharacter } = levelUpChoices;
     
     try {
-      let choiceDescription = `Level up to level ${target_level}.`;
-      for (const [key, value] of Object.entries(selections)) {
-        if (value) choiceDescription += ` ${key}: ${value}.`;
-      }
-      
       const response = await fetch(
-        `${config.backendUrl}/api/charroller/edit`,
+        `${config.backendUrl}/api/charroller/levelup/apply`,
         {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({
-            character_data: {
-              ...originalCharacter,
-              ...levelUpChoices.partial_update,
-              subclass: selections.subclass || originalCharacter.subclass,
-            },
-            edit_description: choiceDescription,
+            character_data: originalCharacter,
+            choices: selections,
             system: originalCharacter.system || selectedSystem,
           }),
         }
       );
       
-      if (!response.ok) throw new Error("Failed to apply level-up choices");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Failed to apply level-up");
+      }
       
       const updatedData = await response.json();
-      
-      if (updatedData.requires_choices) {
-        setLevelUpChoices({ ...updatedData, originalCharacter });
-        return;
-      }
       
       setSelectedCharacter(updatedData);
       setLevelUpChoices(null);
       
+      // Save to localStorage
       const chars = JSON.parse(localStorage.getItem("emurpg_characters") || "[]");
       const idx = chars.findIndex(c => c.id === updatedData.id);
       if (idx >= 0) {
@@ -350,12 +340,43 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   };
 
   // ===============================
-  // Level Up Shortcut
+  // Level Up - Uses dedicated endpoint
   // ===============================
-  const handleLevelUp = () => {
+  const handleLevelUp = async () => {
     if (!selectedCharacter) return;
-    const currentLevel = selectedCharacter.level || 1;
-    handleEditWithAI(`Level up to level ${currentLevel + 1}`, selectedCharacter);
+    setError(null);
+    
+    try {
+      // Call the levelup endpoint to get preview
+      const response = await fetch(
+        `${config.backendUrl}/api/charroller/levelup`,
+        {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            character_data: selectedCharacter,
+            system: selectedCharacter.system || selectedSystem,
+          }),
+        }
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `Error: ${response.status}`);
+      }
+      
+      const levelUpData = await response.json();
+      
+      if (!levelUpData.success) {
+        throw new Error(levelUpData.error || "Failed to get level-up options");
+      }
+      
+      // Show the LevelUpChoices modal with the preview
+      setLevelUpChoices({ ...levelUpData, originalCharacter: selectedCharacter });
+      
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -392,8 +413,8 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           >
             {!sidebarCollapsed && (
               <h2 className="font-cinzel text-tavern-parchment text-lg flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Characters
+                <Scroll className="w-5 h-5" />
+                Character Roster
               </h2>
             )}
             <button
@@ -435,8 +456,8 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                 </button>
               </div>
 
-              {/* Character List */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              {/* Character Roster List */}
+              <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
                 {characters.length === 0 ? (
                   <div className="text-center py-8 text-tavern-parchmentDark text-sm">
                     <Scroll className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -449,7 +470,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                       key={char.id}
                       onClick={() => handleSelectCharacter(char)}
                       className={`
-                        w-full text-left p-2 rounded-lg transition-all
+                        w-full text-left p-2 rounded-lg transition-all group
                         ${selectedCharacter?.id === char.id 
                           ? "ring-2 ring-tavern-candle" 
                           : "hover:bg-tavern-wood/30"
@@ -458,28 +479,61 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                       style={{
                         background: selectedCharacter?.id === char.id 
                           ? "rgba(139, 69, 19, 0.4)" 
-                          : "rgba(61, 40, 23, 0.5)",
-                        border: "1px solid rgba(139, 69, 19, 0.3)"
+                          : "rgba(61, 40, 23, 0.4)",
+                        border: "1px solid rgba(139, 69, 19, 0.25)"
                       }}
                     >
                       <div className="flex items-center gap-2">
                         {/* Mini portrait */}
                         <div 
-                          className="w-10 h-10 rounded-lg bg-cover bg-center flex-shrink-0"
+                          className="w-9 h-9 rounded-lg bg-cover bg-center flex-shrink-0"
                           style={{
                             backgroundImage: char.portrait_url ? `url(${char.portrait_url})` : undefined,
                             background: !char.portrait_url ? "rgba(139, 69, 19, 0.3)" : undefined
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="font-cinzel text-tavern-parchment truncate text-sm">
+                          <p className="font-cinzel text-tavern-parchment truncate text-sm leading-tight">
                             {char.character_name || "Unknown"}
                           </p>
-                          <p className="text-xs text-tavern-parchmentDark truncate">
+                          <p className="text-xs text-tavern-parchmentDark truncate leading-tight">
+                            {char.race ? `${char.race} ` : ""}
                             {char.class || char.occupation || "Adventurer"}
-                            {char.level ? ` • Lv ${char.level}` : ""}
                           </p>
                         </div>
+                        {/* Level badge */}
+                        {char.level && (
+                          <span 
+                            className="px-1.5 py-0.5 rounded text-xs font-bold flex-shrink-0"
+                            style={{ 
+                              background: "rgba(139, 69, 19, 0.5)", 
+                              color: "#d4a574"
+                            }}
+                          >
+                            {char.level}
+                          </span>
+                        )}
+                      </div>
+                      {/* System indicator */}
+                      <div className="mt-1 flex items-center gap-1">
+                        <span 
+                          className="text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider"
+                          style={{ 
+                            background: "rgba(74, 158, 255, 0.15)", 
+                            color: "#7cb3ff"
+                          }}
+                        >
+                          {char.system === "dnd5e" ? "D&D 5e" : 
+                           char.system === "pathfinder2e" ? "PF2e" :
+                           char.system === "coc" ? "CoC" :
+                           char.system === "fate" ? "Fate" :
+                           char.system || "Unknown"}
+                        </span>
+                        {char.play_count > 0 && (
+                          <span className="text-[10px] text-tavern-parchmentDark">
+                            {char.play_count} sessions
+                          </span>
+                        )}
                       </div>
                     </button>
                   ))

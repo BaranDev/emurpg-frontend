@@ -20,16 +20,18 @@ const MusicPlayer = ({
     togglePlay, 
     toggleMute, 
     setVolume,
-    startAutoPlay 
+    startAutoPlay,
+    stopAudio
   } = useGlobalAudio();
 
-  // Collapsed state - persisted to localStorage
+  // Collapsed state - persisted to localStorage, defaults to collapsed
   const [isCollapsed, setIsCollapsed] = useState(() => {
     try {
       const saved = localStorage.getItem("emurpg_music_collapsed");
-      return saved === "true";
+      // Default to collapsed (true) if no saved preference
+      return saved === null ? true : saved === "true";
     } catch {
-      return false;
+      return true;
     }
   });
 
@@ -40,17 +42,17 @@ const MusicPlayer = ({
       bgCollapsed: "rgba(61, 40, 23, 0.9)",
       border: "rgba(139, 69, 19, 0.6)",
       accent: "#ffaa33",
-      accentLight: "rgba(255, 170, 51, 0.3)",
+      slider: "#8b4513",
       text: "#d4a574",
       iconColor: "#ffffff",
       shadow: "rgba(139,69,19,0.4)"
     },
     arcane: {
-      bg: "rgba(30, 58, 95, 0.95)",
-      bgCollapsed: "rgba(30, 58, 95, 0.9)",
+      bg: "rgba(15, 30, 50, 0.95)",
+      bgCollapsed: "rgba(15, 30, 50, 0.9)",
       border: "rgba(74, 158, 255, 0.4)",
       accent: "#4a9eff",
-      accentLight: "rgba(74, 158, 255, 0.3)",
+      slider: "#1e3a5f",
       text: "#94a3b8",
       iconColor: "#ffffff",
       shadow: "rgba(74,158,255,0.3)"
@@ -58,6 +60,14 @@ const MusicPlayer = ({
   };
 
   const currentTheme = themeConfig[theme] || themeConfig.tavern;
+
+  // Stop music when component unmounts (leaving charroller)
+  useEffect(() => {
+    return () => {
+      // Clean up: stop audio when unmounting
+      stopAudio();
+    };
+  }, [stopAudio]);
 
   // Handle autoplay on mount
   useEffect(() => {

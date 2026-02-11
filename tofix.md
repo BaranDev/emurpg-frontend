@@ -1,7 +1,4 @@
-1. conditions are not understandable and not working, should display how it effects the character
-2. level up button doesn't work, it must give user selections
-3. settings still don't open
-4. refine the prompt given by the user in describe character section so the LLM will create a good character with everything full
-5. music must stop if user leaves /charroller/*  
-6. when imported, the portrait, if exists, must come from r2 storage
-7. 
+1. we need a better visual for the character sheet, it should be more like a book, with pages, and it should be scrollable, conditions are not understandable and not working, should display how it effects the character, on the character sheet, we need to add a button to export the character sheet as a PDF, have our club logo in the pdf as well, also character image can be expanded to see better, user should be able to ALL the details about their character, everything in the corresponding system, e.g. alignment in D&D, background in Pathfinder, etc.
+2. on the sidebar we want the name "character roster" where we group the characters, also in compact manner, have some more info about the character there
+3. level up button works correctly, but it needs more detailed selections (e.g. ability score improvements specific skill selection, feats must come from dnd api instead of being random etc.)
+4. now the music doesn't start correctly in the charroller pages, when the "src\pages\HomePage.jsx" is loading, stop the music there, and start it in the charroller pages

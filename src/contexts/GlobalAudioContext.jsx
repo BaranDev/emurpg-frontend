@@ -137,6 +137,14 @@ export const GlobalAudioProvider = ({ children, audioSrc = "/src/assets/sound/ta
     }
   };
 
+  const stopAudio = () => {
+    const audio = audioRef.current;
+    if (!audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  };
+
   const value = {
     isPlaying,
     volume,
@@ -145,7 +153,8 @@ export const GlobalAudioProvider = ({ children, audioSrc = "/src/assets/sound/ta
     togglePlay,
     toggleMute,
     setVolume: setVolumeLevel,
-    startAutoPlay
+    startAutoPlay,
+    stopAudio
   };
 
   return (

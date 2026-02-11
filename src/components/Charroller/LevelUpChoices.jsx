@@ -31,7 +31,8 @@ const LevelUpChoices = ({
     }
   };
 
-  const allChoicesMade = choices?.every(choice => 
+  // If no choices, always ready to apply. If choices exist, check all are made.
+  const allChoicesMade = !choices?.length || choices.every(choice => 
     selections[choice.type] !== undefined
   );
 

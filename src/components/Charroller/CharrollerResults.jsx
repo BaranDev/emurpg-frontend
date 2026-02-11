@@ -87,33 +87,44 @@ const CharrollerResults = ({
     notes: ""
   });
 
-  // Load trackers from localStorage on mount
+  const [trackersInitialized, setTrackersInitialized] = useState(false);
+
+  // Reset initialization flag when character changes
   useEffect(() => {
-    if (characterData?.id) {
-      const chars = getCharacters();
-      const saved = chars.find(c => c.id === characterData.id);
-      if (saved?.trackers) {
-        setTrackers(prev => ({ ...prev, ...saved.trackers }));
-      } else {
-        // Initialize from character data
-        initializeTrackers();
-      }
-    }
+    setTrackersInitialized(false);
   }, [characterData?.id]);
 
-  // Save trackers to localStorage when they change
+  // Load trackers from localStorage on mount or when character changes
   useEffect(() => {
-    if (characterData?.id) {
-      const chars = getCharacters();
-      const charIndex = chars.findIndex(c => c.id === characterData.id);
+    if (characterData?.id && !trackersInitialized) {
+      // Always fetch fresh from localStorage
+      const storedChars = JSON.parse(localStorage.getItem("emurpg_characters") || "[]");
+      const saved = storedChars.find(c => c.id === characterData.id);
+      
+      if (saved?.trackers) {
+        // Load existing trackers (preserves notes and other data)
+        setTrackers(saved.trackers);
+      } else {
+        // Initialize from character data only if no saved trackers
+        initializeTrackersFromData();
+      }
+      setTrackersInitialized(true);
+    }
+  }, [characterData?.id, trackersInitialized]);
+
+  // Save trackers to localStorage when they change (but only after initialization)
+  useEffect(() => {
+    if (characterData?.id && trackersInitialized) {
+      const storedChars = JSON.parse(localStorage.getItem("emurpg_characters") || "[]");
+      const charIndex = storedChars.findIndex(c => c.id === characterData.id);
       if (charIndex >= 0) {
-        chars[charIndex].trackers = trackers;
-        localStorage.setItem("charroller_characters", JSON.stringify(chars));
+        storedChars[charIndex].trackers = trackers;
+        localStorage.setItem("emurpg_characters", JSON.stringify(storedChars));
       }
     }
-  }, [trackers, characterData?.id]);
+  }, [trackers, characterData?.id, trackersInitialized]);
 
-  const initializeTrackers = () => {
+  const initializeTrackersFromData = () => {
     const system = characterData?.system || "dnd5e";
     const hp = characterData?.max_hp || characterData?.hit_points || 10;
     const sanity = characterData?.sanity || 50;
@@ -229,16 +240,111 @@ const CharrollerResults = ({
     coc: ["Dying", "Unconscious", "Major Wound", "Temporary Insanity", "Indefinite Insanity"],
     fate: ["Aspect (Scene)", "Boost", "Compelled"]
   };
-  // D&D 5e condition effects on rolls
+  // D&D 5e condition effects with full descriptions
   const conditionEffects = {
-    "Blinded": { attacks: "disadvantage", abilityChecks: ["perception"] },
-    "Frightened": { attacks: "disadvantage", abilityChecks: "all" },
-    "Invisible": { attacks: "advantage" },
-    "Paralyzed": { saves: ["str", "dex"], autoFail: true },
-    "Poisoned": { attacks: "disadvantage", abilityChecks: "all" },
-    "Prone": { attacks: "disadvantage" },
-    "Restrained": { attacks: "disadvantage", saves: ["dex"] },
-    "Stunned": { saves: ["str", "dex"], autoFail: true }
+    "Blinded": { 
+      effect: "Disadvantage on attack rolls. Attacks against you have advantage.",
+      attacks: "disadvantage", 
+      abilityChecks: ["perception"] 
+    },
+    "Charmed": { 
+      effect: "Cannot attack the charmer. Charmer has advantage on social checks.",
+      social: "disadvantage"
+    },
+    "Deafened": { 
+      effect: "Cannot hear. Auto-fail hearing-based checks.",
+      abilityChecks: ["perception"] 
+    },
+    "Exhaustion": { 
+      effect: "Cumulative penalties. Level 1: Disadvantage on ability checks.",
+      abilityChecks: "all"
+    },
+    "Frightened": { 
+      effect: "Disadvantage on ability checks and attacks while source is visible.",
+      attacks: "disadvantage", 
+      abilityChecks: "all" 
+    },
+    "Grappled": { 
+      effect: "Speed is 0. Cannot benefit from bonuses to speed.",
+      movement: "zero"
+    },
+    "Incapacitated": { 
+      effect: "Cannot take actions or reactions.",
+      actions: "none"
+    },
+    "Invisible": { 
+      effect: "Advantage on attack rolls. Attacks against you have disadvantage.",
+      attacks: "advantage" 
+    },
+    "Paralyzed": { 
+      effect: "Incapacitated, auto-fail STR/DEX saves. Attacks have advantage, crits within 5ft.",
+      saves: ["str", "dex"], 
+      autoFail: true 
+    },
+    "Petrified": { 
+      effect: "Transformed to stone. Weight x10, incapacitated, unaware.",
+      autoFail: true
+    },
+    "Poisoned": { 
+      effect: "Disadvantage on attack rolls and ability checks.",
+      attacks: "disadvantage", 
+      abilityChecks: "all" 
+    },
+    "Prone": { 
+      effect: "Disadvantage on attacks. Melee attacks have advantage, ranged have disadvantage.",
+      attacks: "disadvantage" 
+    },
+    "Restrained": { 
+      effect: "Speed 0, disadvantage on attacks and DEX saves. Attacks have advantage.",
+      attacks: "disadvantage", 
+      saves: ["dex"] 
+    },
+    "Stunned": { 
+      effect: "Incapacitated, auto-fail STR/DEX saves. Attacks have advantage.",
+      saves: ["str", "dex"], 
+      autoFail: true 
+    },
+    "Unconscious": { 
+      effect: "Incapacitated, prone, auto-fail STR/DEX saves. Attacks are crits within 5ft.",
+      autoFail: true
+    }
+  };
+
+  // Get effect description for a condition
+  const getConditionEffect = (conditionName) => {
+    const effect = conditionEffects[conditionName];
+    return effect?.effect || "No specific roll effects.";
+  };
+
+  // Calculate advantage/disadvantage based on active conditions and roll category
+  const getConditionModifiers = (rollCategory) => {
+    if (system !== "dnd5e") return { hasAdvantage: false, hasDisadvantage: false };
+    
+    let hasAdvantage = false;
+    let hasDisadvantage = false;
+    
+    for (const cond of trackers.conditions) {
+      const effect = conditionEffects[cond];
+      if (!effect) continue;
+      
+      // Check for attack roll effects
+      if (rollCategory === "attack") {
+        if (effect.attacks === "advantage") hasAdvantage = true;
+        if (effect.attacks === "disadvantage") hasDisadvantage = true;
+      }
+      
+      // Check for ability check effects
+      if (rollCategory === "ability" || rollCategory === "skill") {
+        if (effect.abilityChecks === "all") hasDisadvantage = true;
+      }
+    }
+    
+    // Advantage and disadvantage cancel out
+    if (hasAdvantage && hasDisadvantage) {
+      return { hasAdvantage: false, hasDisadvantage: false };
+    }
+    
+    return { hasAdvantage, hasDisadvantage };
   };
 
   return (
@@ -328,6 +434,76 @@ const CharrollerResults = ({
             <div className="mt-2 text-xs" style={{ color: themeColors.textDark }}>
               System: {characterData.system_name || characterData.system}
             </div>
+            
+            {/* Expanded Character Details for D&D 5e */}
+            {(system === "dnd5e" || system === "pathfinder2e") && (
+              <div className="mt-3 pt-3 border-t" style={{ borderColor: themeColors.cardBorder }}>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                  {characterData.alignment && (
+                    <div>
+                      <span style={{ color: themeColors.textDark }}>Alignment: </span>
+                      <span style={{ color: themeColors.text }}>{characterData.alignment}</span>
+                    </div>
+                  )}
+                  {characterData.background && (
+                    <div>
+                      <span style={{ color: themeColors.textDark }}>Background: </span>
+                      <span style={{ color: themeColors.text }}>{characterData.background}</span>
+                    </div>
+                  )}
+                  {characterData.ability_scores && Object.keys(characterData.ability_scores).length > 0 && (
+                    <div className="col-span-2 md:col-span-3 flex flex-wrap gap-2 mt-1">
+                      {Object.entries(characterData.ability_scores).map(([key, val]) => (
+                        <span 
+                          key={key}
+                          className="px-2 py-1 rounded text-xs"
+                          style={{ background: themeColors.cardBorder, color: themeColors.text }}
+                        >
+                          <strong>{key.toUpperCase()}</strong>: {val}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {characterData.backstory && (
+                  <div className="mt-2 text-sm" style={{ color: themeColors.textDark }}>
+                    <em>"{characterData.backstory}"</em>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Fate-specific details */}
+            {system === "fate" && (
+              <div className="mt-3 pt-3 border-t text-sm" style={{ borderColor: themeColors.cardBorder }}>
+                {characterData.trouble && (
+                  <div className="mb-1">
+                    <span style={{ color: themeColors.textDark }}>Trouble: </span>
+                    <span style={{ color: themeColors.accent }}>{characterData.trouble}</span>
+                  </div>
+                )}
+                {characterData.aspects && characterData.aspects.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {characterData.aspects.map((aspect, i) => (
+                      <span 
+                        key={i}
+                        className="px-2 py-0.5 rounded text-xs"
+                        style={{ background: themeColors.cardBorder, color: themeColors.text }}
+                      >
+                        {aspect}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* CoC-specific details */}
+            {system === "coc" && characterData.backstory && (
+              <div className="mt-3 pt-3 border-t text-sm" style={{ borderColor: themeColors.cardBorder, color: themeColors.textDark }}>
+                <em>"{characterData.backstory}"</em>
+              </div>
+            )}
           </div>
           
           {/* Action buttons */}
@@ -772,18 +948,28 @@ const CharrollerResults = ({
             {/* Conditions (all systems) */}
             <div>
               <span className="text-sm text-silver-light block mb-2">Active Conditions</span>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-2">
                 {trackers.conditions.map((cond, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setTrackers(prev => ({
-                      ...prev,
-                      conditions: prev.conditions.filter((_, idx) => idx !== i)
-                    }))}
-                    className="px-2 py-1 rounded bg-orange-500/20 text-orange-300 text-xs hover:bg-red-500/30"
-                  >
-                    {cond} &times;
-                  </button>
+                  <div key={i} className="group relative">
+                    <button
+                      onClick={() => setTrackers(prev => ({
+                        ...prev,
+                        conditions: prev.conditions.filter((_, idx) => idx !== i)
+                      }))}
+                      title={getConditionEffect(cond)}
+                      className="px-3 py-1.5 rounded-lg bg-orange-500/20 text-orange-300 text-xs 
+                                 hover:bg-red-500/30 border border-orange-500/30 transition-colors"
+                    >
+                      {cond} &times;
+                    </button>
+                    {/* Tooltip on hover */}
+                    <div className="absolute bottom-full left-0 mb-2 w-48 p-2 rounded-lg bg-slate-900 
+                                    border border-slate-700 text-xs text-slate-300 opacity-0 
+                                    group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+                      <strong className="text-orange-300">{cond}</strong>
+                      <p className="mt-1">{getConditionEffect(cond)}</p>
+                    </div>
+                  </div>
                 ))}
                 <select
                   onChange={(e) => {
@@ -803,6 +989,21 @@ const CharrollerResults = ({
                   ))}
                 </select>
               </div>
+              {/* Show active effects summary for D&D 5e */}
+              {system === "dnd5e" && trackers.conditions.length > 0 && (
+                <div className="p-2 rounded bg-red-500/10 border border-red-500/20 text-xs">
+                  <span className="text-red-300 font-medium">Active Effects:</span>
+                  <ul className="mt-1 space-y-0.5 text-slate-400">
+                    {trackers.conditions.map((cond, i) => {
+                      const effect = conditionEffects[cond];
+                      if (effect?.effect) {
+                        return <li key={i}><span className="text-orange-300">{cond}:</span> {effect.effect}</li>;
+                      }
+                      return null;
+                    })}
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* Notes */}
@@ -897,16 +1098,21 @@ const CharrollerResults = ({
               
               {expandedCategory === category && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-3 p-3">
-                  {groupedRolls[category].map((roll, i) => (
-                    <DiceRoller
-                      key={i}
-                      notation={roll.dice}
-                      rollName={roll.roll_name}
-                      onRoll={(result) => handleRoll(result, roll.roll_name)}
-                      criticalMin={characterData.critical_min}
-                      criticalMax={characterData.critical_max}
-                    />
-                  ))}
+                  {groupedRolls[category].map((roll, i) => {
+                    const modifiers = getConditionModifiers(roll.category || category);
+                    return (
+                      <DiceRoller
+                        key={i}
+                        notation={roll.dice}
+                        rollName={roll.roll_name}
+                        onRoll={(result) => handleRoll(result, roll.roll_name)}
+                        criticalMin={characterData.critical_min}
+                        criticalMax={characterData.critical_max}
+                        hasAdvantage={modifiers.hasAdvantage}
+                        hasDisadvantage={modifiers.hasDisadvantage}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -916,14 +1122,19 @@ const CharrollerResults = ({
       {/* Quick rolls if no categories */}
       {Object.keys(groupedRolls).length === 0 && characterData.roll_list?.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {characterData.roll_list.map((roll, i) => (
-            <DiceRoller
-              key={i}
-              notation={roll.dice}
-              rollName={roll.roll_name}
-              onRoll={(result) => handleRoll(result, roll.roll_name)}
-            />
-          ))}
+          {characterData.roll_list.map((roll, i) => {
+            const modifiers = getConditionModifiers(roll.category || "other");
+            return (
+              <DiceRoller
+                key={i}
+                notation={roll.dice}
+                rollName={roll.roll_name}
+                onRoll={(result) => handleRoll(result, roll.roll_name)}
+                hasAdvantage={modifiers.hasAdvantage}
+                hasDisadvantage={modifiers.hasDisadvantage}
+              />
+            );
+          })}
         </div>
       )}
 
