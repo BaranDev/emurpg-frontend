@@ -5,7 +5,12 @@ import logoWhite from "../../assets/logo/LOGO_WHITE.png";
 import forestDownArrow from "../../assets/images/forest-down-arrow.png";
 import { CalendarIcon, ClockIcon, LocationIcon } from "./EmuconIcons";
 
-const EmuconHero = ({ onViewSchedule }) => {
+const EmuconHero = ({
+  onViewSchedule,
+  livePath = "/emucon/live",
+  rulesPath = "/emucon/rules",
+  sponsorsPath = "/emucon/sponsors",
+}) => {
   const handleViewSchedule = () => {
     if (onViewSchedule) {
       onViewSchedule();
@@ -126,7 +131,7 @@ const EmuconHero = ({ onViewSchedule }) => {
           {/* CTA Buttons */}
           <div className="flex gap-3 md:gap-4 justify-center flex-wrap">
             <Link
-              to="/emucon/live"
+              to={livePath}
               className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 text-white font-bold rounded border-2 border-red-500 uppercase tracking-wider text-xs md:text-sm transition-all duration-300 hover:-translate-y-0.5 animate-pulse"
               style={{
                 background: "linear-gradient(135deg, #dc2626, #b91c1c)",
@@ -149,7 +154,7 @@ const EmuconHero = ({ onViewSchedule }) => {
               View Schedule
             </button>
             <Link
-              to="/emucon/rules"
+              to={rulesPath}
               className="inline-block px-6 md:px-8 py-3 md:py-4 text-cream font-semibold rounded border border-forest-glow uppercase tracking-wider text-xs md:text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(107,155,107,0.4)]"
               style={{
                 background: "linear-gradient(135deg, #2d4a2d, #4a7c4a)",
@@ -158,7 +163,7 @@ const EmuconHero = ({ onViewSchedule }) => {
               Event Rules
             </Link>
             <Link
-              to="/emucon/sponsors"
+              to={sponsorsPath}
               className="inline-block px-6 md:px-8 py-3 md:py-4 text-cream font-semibold rounded border border-gold-light uppercase tracking-wider text-xs md:text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(201,162,39,0.4)]"
               style={{
                 background: "linear-gradient(135deg, #c9a227, #a88420)",

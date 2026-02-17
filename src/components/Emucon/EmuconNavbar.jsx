@@ -8,6 +8,7 @@ const EmuconNavbar = ({
   showBack = false,
   scrollThreshold = 300,
   scrollContainer = null,
+  backPath = "/emucon",
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -68,7 +69,7 @@ const EmuconNavbar = ({
         <div className="relative z-10">
           {showBack && (
             <Link
-              to="/emucon"
+              to={backPath}
               className="flex items-center gap-2 text-emucon-text-secondary hover:text-gold-light transition-colors duration-300 text-sm"
             >
               ← <span className="hidden md:inline">Back</span>

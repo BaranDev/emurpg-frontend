@@ -93,7 +93,7 @@ const SECTION_IDS = [
 const smoothScrollTo = (
   container,
   targetY,
-  duration = SCROLL_ANIMATION_SPEED
+  duration = SCROLL_ANIMATION_SPEED,
 ) => {
   const startY = container.scrollTop;
   const distance = targetY - startY;
@@ -158,7 +158,7 @@ const EmuconHome = () => {
     const direction = scrollQueueRef.current.shift();
     const nextSection = Math.max(
       0,
-      Math.min(SECTION_IDS.length - 1, currentSectionRef.current + direction)
+      Math.min(SECTION_IDS.length - 1, currentSectionRef.current + direction),
     );
     if (nextSection !== currentSectionRef.current) {
       const targetElement = document.getElementById(SECTION_IDS[nextSection]);
@@ -187,7 +187,7 @@ const EmuconHome = () => {
       scrollQueueRef.current.push(direction);
       processScrollQueue();
     },
-    [processScrollQueue]
+    [processScrollQueue],
   );
 
   // Handle touch events for mobile
@@ -211,7 +211,7 @@ const EmuconHome = () => {
       scrollQueueRef.current.push(direction);
       processScrollQueue();
     },
-    [processScrollQueue]
+    [processScrollQueue],
   );
 
   // Home has a large hero; on wide screens the document height can shift after
@@ -282,20 +282,6 @@ const EmuconHome = () => {
         >
           <EmuconHero onViewSchedule={() => setShowDetailedSchedule(true)} />
         </section>
-
-        {/* Live Events Button - Links to full live display */}
-        <div className="flex justify-center py-6 md:py-10">
-          <Link
-            to="/emucon/live"
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 via-red-500 to-red-600 hover:from-red-500 hover:via-red-400 hover:to-red-500 text-white font-cinzel font-bold text-lg md:text-xl rounded-xl shadow-lg shadow-red-900/50 hover:shadow-red-800/70 transition-all duration-300 transform hover:scale-105 border border-red-400/30"
-          >
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-red-400/20 via-transparent to-red-400/20 animate-pulse" />
-            <Radio className="w-6 h-6 animate-pulse" />
-            <span className="relative z-10">Live Now / Canli</span>
-            <div className="w-3 h-3 bg-white rounded-full animate-ping absolute -top-1 -right-1" />
-            <div className="w-3 h-3 bg-red-300 rounded-full absolute -top-1 -right-1" />
-          </Link>
-        </div>
 
         {/* What is EMUCON Section */}
         <section

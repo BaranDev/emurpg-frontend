@@ -9,6 +9,7 @@ import {
   Mail,
   Handshake,
   ArrowRight,
+  Radio,
 } from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
 import {
@@ -359,6 +360,22 @@ const EmuconThankYou = () => {
               <span>emufrpclub@gmail.com</span>
             </a>
           </div>
+        </section>
+
+        {/* Demo link */}
+        <section className="py-8 px-4 max-w-4xl mx-auto text-center">
+          <Link
+            to="/demo/emucon"
+            className="inline-flex items-center gap-2 text-emucon-text-secondary hover:text-gold-light transition-colors text-sm md:text-base group"
+          >
+            <Radio className="w-4 h-4 text-red-400 group-hover:animate-pulse" />
+            <span>
+              Curious how the live tracking UI worked during the event?{" "}
+              <span className="underline font-semibold text-gold-light/80 group-hover:text-gold-light">
+                See the demo →
+              </span>
+            </span>
+          </Link>
         </section>
 
         {/* Footer */}

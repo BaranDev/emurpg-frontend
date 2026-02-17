@@ -11,8 +11,13 @@ import EventsPage from "./pages/EventsPage";
 import EmuconRulesPage from "./pages/EmuconRulesPage";
 import EmuconThankYou from "./pages/Emucon/ThankYou";
 import EmuconSponsors from "./pages/Emucon/Sponsors";
+import CharrollerLandingPage from "./pages/CharrollerLandingPage";
+import CharrollerPage from "./pages/CharrollerPage";
 import NotFound from "./components/NotFound";
 import Privacy from "./components/Privacy";
+import { GlobalAudioProvider } from "./contexts/GlobalAudioContext";
+import EmuconDemoLive from "./pages/Emucon/DemoLive";
+import EmuconDemoHome from "./pages/Emucon/DemoHome";
 
 // Inner component that has access to translation context
 function AppContent() {
@@ -22,7 +27,7 @@ function AppContent() {
   const [useNewAdmin, setUseNewAdmin] = useState(true); // Toggle for new vs legacy admin
 
   console.log(
-    "Hello my curious friend! If you are seeing this, you must be interested in how this app works. Feel free to reach out to me on cevdetbaranoral@gmail.com if you want to help me on EMURPG's apps."
+    "Hello my curious friend! If you are seeing this, you must be interested in how this app works. Feel free to reach out to me on cevdetbaranoral@gmail.com if you want to help me on EMURPG's apps.",
   );
 
   useEffect(() => {
@@ -130,6 +135,27 @@ function AppContent() {
           <Route path="/emucon/sponsors" element={<EmuconSponsors />} />
           <Route path="/emucon/rules" element={<EmuconRulesPage />} />
           <Route path="/emucon/register/:token" element={<EmuconThankYou />} />
+          {/* Charroller routes wrapped with GlobalAudioProvider for persistent music */}
+          <Route
+            path="/charroller"
+            element={
+              <GlobalAudioProvider>
+                <CharrollerLandingPage
+                  onLanguageSwitch={handleLanguageSwitch}
+                />
+              </GlobalAudioProvider>
+            }
+          />
+          <Route
+            path="/charroller/manager"
+            element={
+              <GlobalAudioProvider>
+                <CharrollerPage onLanguageSwitch={handleLanguageSwitch} />
+              </GlobalAudioProvider>
+            }
+          />
+          <Route path="/demo/emucon" element={<EmuconDemoHome />} />
+          <Route path="/demo/emucon/live" element={<EmuconDemoLive />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

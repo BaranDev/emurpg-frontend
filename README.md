@@ -176,6 +176,61 @@ The frontend now includes comprehensive EMUCON (EMU Club Convention) event manag
 - Shareable registration links via unique tokens
 - Admin controls for creating, updating, and managing events
 
+### Charroller - AI-Powered Character Sheet Companion
+
+The Charroller system is a comprehensive tool for tabletop roleplaying game players. It allows users to create characters using AI, upload existing character sheet PDFs, and manage their character collection with system-specific gameplay trackers.
+
+#### Pages & Routes
+- `/charroller` - Landing page with blue magical forest theme, feature showcase, and autoplay ambient music
+- `/charroller/manager` - Character manager with warm tavern theme, character cards, and create actions
+
+#### Key Features
+- **AI Character Generation**: Describe your character in plain text and get a complete roll list with all skills, attacks, and saves
+- **PDF Upload**: Upload existing character sheet PDFs (D&D 5e, Pathfinder 2e, Call of Cthulhu, Fate) and extract all rolls automatically
+- **Multi-System Support**: Full support for D&D 5e, Pathfinder 2e, Call of Cthulhu, and Fate Core
+- **Instant Dice Rolling**: Click any skill or attack to roll with proper modifiers and critical detection
+- **Character Collection**: Save unlimited characters to browser localStorage with portraits and metadata
+- **Export/Import**: Export characters as JSON for backup or sharing
+- **Rate Limiting**: 4 free character creations per day (admin bypass available)
+- **BETA Status**: Clearly marked as beta throughout the UI
+
+#### Themed User Experience
+- **Landing Page**: Blue magical forest theme with parallax background (moon, stars, fireflies, trees, dice, scrolls)
+- **Character Manager**: Warm tavern theme with candlelight effects and cozy atmosphere
+- **Ambient Music**: Autoplay on landing, persistent across navigation with play/pause/mute controls
+
+#### System-Specific Gameplay Trackers
+When playing a character, users have access to system-appropriate trackers:
+
+| System | Trackers Available |
+|--------|-------------------|
+| **D&D 5e** | HP + Temp HP, Death Saves (3 success/3 fail), Conditions |
+| **Pathfinder 2e** | HP, Focus Points, Hero Points (max 3), Conditions |
+| **Call of Cthulhu** | Sanity, Luck, Magic Points, HP, Wounds |
+| **Fate** | Fate Points (refresh), Physical/Mental Stress boxes, Consequences (mild/moderate/severe) |
+
+All trackers persist to localStorage and update in real-time.
+
+#### Components
+- **CharrollerLandingPage**: Hero section with CTAs, feature cards, how-it-works, and testimonial
+- **CharrollerPage**: Main container handling manager/create views with theme switching
+- **CharrollerManager**: Character grid with usage tracking, settings panel, and create buttons
+- **CharrollerResults**: Gameplay view with roll categories, history, and system-specific trackers
+- **CharrollerSystemSelector**: TTRPG system selection with icons and descriptions
+- **CharrollerUpload**: Drag-and-drop PDF upload with validation
+- **CharrollerDescribe**: AI character description input with example prompts
+- **CharrollerBackground**: Blue magical forest parallax with SVG elements
+- **TavernBackground**: Warm candlelight tavern with floating dust particles
+- **MusicPlayer**: Ambient music with autoplay, theme support, and FontAwesome icons
+- **CharacterCard**: Character display with portrait, system badge, and play/delete actions
+- **SettingsPanel**: Admin code entry, sound controls, portrait toggle, data export/import
+- **DiceRoller**: 3D CSS animated dice with critical success/fail effects
+
+#### Internationalization
+Full i18n support with translations in:
+- English (`en.json` - `charroller.*` keys)
+- Turkish (`tr.json` - `charroller.*` keys)
+
 ### Future Enhancements
 - **Enhanced Admin Dashboard**: Adding more analytics and reporting features to the admin dashboard for better event management and decision-making.
 - **Event Notifications**: Implementing a notification system to alert users about upcoming events and important updates.
