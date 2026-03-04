@@ -131,7 +131,7 @@ const CharrollerResults = ({
       const charIndex = chars.findIndex((c) => c.id === characterData.id);
       if (charIndex >= 0) {
         chars[charIndex].trackers = trackers;
-        localStorage.setItem("charroller_characters", JSON.stringify(chars));
+        localStorage.setItem("emurpg_characters", JSON.stringify(chars));
       }
     }
   }, [trackers, characterData?.id]);
@@ -445,7 +445,11 @@ const CharrollerResults = ({
                 onClick={onLevelUp}
                 disabled={isLevelingUp}
                 className={`p-2 rounded-lg transition-colors ${isLevelingUp ? "opacity-50 cursor-not-allowed" : "hover:brightness-125"}`}
-                style={{ color: themeColors.accent }}
+                style={{
+                  color: themeColors.accent,
+                  background: themeColors.accentLight,
+                  border: `1px solid ${themeColors.cardBorder}`,
+                }}
                 title="Level Up"
               >
                 {isLevelingUp ? (

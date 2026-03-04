@@ -502,7 +502,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                       <div className="flex items-center gap-2">
                         {/* Mini portrait */}
                         <div
-                          className="w-10 h-10 rounded-lg bg-cover bg-center flex-shrink-0"
+                          className="w-14 h-14 rounded-lg bg-cover bg-center flex-shrink-0"
                           style={{
                             backgroundImage: char.portrait_url
                               ? `url(${char.portrait_url})`
