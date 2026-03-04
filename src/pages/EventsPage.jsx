@@ -40,8 +40,7 @@ const EventsPage = ({ onLanguageSwitch }) => {
             },
             {
               label: t("events_page.character_roller"),
-              badge: t("events_page.soon_badge"),
-              disabled: true,
+              onClick: () => (window.location.href = "/charroller"),
             },
           ]}
           scrollEffectEnabled={false}
