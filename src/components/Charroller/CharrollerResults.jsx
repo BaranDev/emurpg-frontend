@@ -22,6 +22,7 @@ import {
   Trash2,
   ArrowLeft,
   Loader2,
+  Settings,
 } from "lucide-react";
 import DiceRoller from "./DiceRoller";
 import { getCharacters } from "../../utils/characterStorage";
@@ -48,6 +49,11 @@ const CharrollerResults = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const [editDescription, setEditDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+
+  // NEW STATE
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSectionSettings, setShowSectionSettings] = useState(false);
+  const [editingSection, setEditingSection] = useState(null);
 
   // Theme colors
   const themeColors =
@@ -108,6 +114,11 @@ const CharrollerResults = ({
     // Conditions (generic)
     conditions: [],
     notes: "",
+
+    // Custom Overrides
+    abilityOverrides: {},
+    acOverride: null,
+    speedOverride: null,
   });
 
   // Load trackers from localStorage on mount
@@ -154,6 +165,9 @@ const CharrollerResults = ({
       maxFocusPoints: characterData?.max_focus_points || 1,
       fatePoints: characterData?.refresh || 3,
       maxRefresh: characterData?.refresh || 3,
+      abilityOverrides: {},
+      acOverride: null,
+      speedOverride: null,
     }));
   };
 
@@ -321,853 +335,954 @@ const CharrollerResults = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* Character Header */}
-      <div
-        className="p-6 rounded-xl mb-6"
-        style={{
-          background: themeColors.cardBg,
-          border: `1px solid ${themeColors.cardBorder}`,
-        }}
-      >
-        <div className="flex items-start gap-4">
-          {/* Portrait with loading animation */}
-          {characterData.portrait_url ? (
-            <img
-              src={characterData.portrait_url}
-              alt={characterData.character_name}
-              className="w-20 h-20 rounded-xl object-cover flex-shrink-0 animate-fade-in"
-              style={{ animation: "fadeIn 0.5s ease-out" }}
-            />
-          ) : isGeneratingPortrait ? (
-            <div
-              className="w-20 h-20 rounded-xl flex-shrink-0 overflow-hidden relative"
-              style={{ background: "rgba(74, 158, 255, 0.2)" }}
-            >
-              {/* Shimmer animation */}
+    <div className="w-full max-w-[1200px] mx-auto text-silver-light font-sans relative">
+      <style>{`
+        .dnd-panel {
+          background: linear-gradient(135deg, rgba(61, 40, 23, 0.95), rgba(42, 26, 15, 0.95));
+          border: 1px solid rgba(139, 69, 19, 0.4);
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .dnd-accent { color: #ffaa33; }
+        .dnd-border-accent { border-color: rgba(255, 170, 51, 0.5); }
+        .dnd-bg-accent { background: #ffaa33; }
+        .dnd-input {
+          background: rgba(0,0,0,0.3);
+          border: 1px solid rgba(139, 69, 19, 0.3);
+          color: white;
+        }
+        .dnd-input:focus {
+          outline: none;
+          border-color: #ffaa33;
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .shimmer-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg, 
+            transparent 0%, 
+            rgba(255, 170, 51, 0.1) 30%, 
+            rgba(255, 170, 51, 0.2) 50%, 
+            rgba(255, 170, 51, 0.1) 70%, 
+            transparent 100%
+          );
+          animation: shimmer 2s infinite;
+        }
+      `}</style>
+
+      {/* HEADER SECTION */}
+      <div className="dnd-panel rounded-xl mb-4 p-4 flex flex-col md:flex-row gap-6 relative">
+        {/* Left: Portrait & Context */}
+        <div className="flex gap-4 items-start w-full md:w-1/2">
+          {/* Portrait Container */}
+          <div className="relative w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
+            {characterData.portrait_url ? (
               <div
-                className="absolute inset-0"
+                className="w-full h-full rounded-lg bg-cover bg-center border-2 dnd-border-accent shadow-[0_0_15px_rgba(255,170,51,0.2)] animate-fade-in"
                 style={{
-                  background:
-                    "linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0.3) 50%, transparent 100%)",
-                  animation: "shimmer 1.5s infinite",
+                  backgroundImage: `url(${characterData.portrait_url})`,
                 }}
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div
-                  className="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full"
-                  style={{ animation: "spin 1s linear infinite" }}
-                />
-                <span className="text-[10px] text-blue-300 mt-1">
-                  Generating...
-                </span>
+            ) : isGeneratingPortrait ? (
+              <div className="w-full h-full rounded-lg bg-[#1a110a] border-2 dnd-border-accent flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="shimmer-overlay" />
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className="w-10 h-10 border-2 border-tavern-accent border-t-transparent rounded-full animate-spin shadow-[0_0_10px_rgba(255,170,51,0.3)]" />
+                  <span className="text-[10px] font-cinzel text-tavern-accent animate-pulse tracking-tighter uppercase">
+                    Channeling Image...
+                  </span>
+                </div>
               </div>
-              {/* CSS animations */}
-              <style>{`
-                @keyframes shimmer {
-                  0% { transform: translateX(-100%); }
-                  100% { transform: translateX(100%); }
-                }
-                @keyframes fadeIn {
-                  from { opacity: 0; transform: scale(0.9); }
-                  to { opacity: 1; transform: scale(1); }
-                }
-                @keyframes spin {
-                  from { transform: rotate(0deg); }
-                  to { transform: rotate(360deg); }
-                }
-              `}</style>
-            </div>
-          ) : (
-            <div
-              className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "rgba(74, 158, 255, 0.2)" }}
-            >
-              <User className="w-8 h-8 text-arcane-glow" />
-            </div>
-          )}
-          <div className="flex-1">
-            <h2 className="text-2xl font-cinzel text-white mb-1">
+            ) : (
+              <div className="w-full h-full rounded-lg bg-red-900/20 border-2 border-red-900/50 flex items-center justify-center">
+                <User className="w-12 h-12 text-red-900/50" />
+              </div>
+            )}
+
+            {/* Level Badge Overlay */}
+            {characterData.level && (
+              <div className="absolute -bottom-3 -right-3 w-10 h-10 dnd-bg-accent rounded-full flex items-center justify-center border-2 border-[#1a110a] shadow-lg font-bold text-lg text-white font-cinzel">
+                {characterData.level}
+              </div>
+            )}
+          </div>
+
+          {/* Character Identity */}
+          <div className="flex-1 mt-1">
+            <h1 className="text-3xl font-cinzel text-white drop-shadow-md mb-1 uppercase tracking-wider dnd-accent">
               {characterData.character_name || "Unknown Hero"}
-            </h2>
-            <div className="flex flex-wrap gap-3 text-sm text-silver-light">
+            </h1>
+
+            <div className="flex flex-col gap-1 text-sm text-tavern-parchmentDark">
+              {characterData.race && <span>{characterData.race}</span>}
               {characterData.class && (
                 <span>
-                  Class: <strong>{characterData.class}</strong>
-                </span>
-              )}
-              {characterData.level && (
-                <span>
-                  Level: <strong>{characterData.level}</strong>
-                </span>
-              )}
-              {characterData.race && (
-                <span>
-                  Race: <strong>{characterData.race}</strong>
+                  {characterData.class} {characterData.level}
                 </span>
               )}
               {characterData.occupation && (
-                <span>
-                  Occupation: <strong>{characterData.occupation}</strong>
-                </span>
+                <span>{characterData.occupation}</span>
               )}
               {characterData.high_concept && (
-                <span>
-                  Concept: <strong>{characterData.high_concept}</strong>
-                </span>
+                <span>{characterData.high_concept}</span>
               )}
             </div>
-            <div
-              className="mt-2 text-xs"
-              style={{ color: themeColors.textDark }}
-            >
-              System: {characterData.system_name || characterData.system}
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border border-gray-600 hover:bg-white/5 transition-colors"
+                style={{ color: "#a1a1aa" }}
+              >
+                Inspiration
+              </button>
+              <button className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded dnd-bg-accent text-white hover:brightness-110 transition-all shadow-lg">
+                Initiative
+              </button>
+              <button
+                onClick={exportCharacter}
+                className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border border-gray-600 hover:bg-white/5 transition-colors"
+                title="Export"
+              >
+                <Download className="w-3.5 h-3.5 inline mr-1" /> Export
+              </button>
+              {onDelete && (
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border border-red-900/50 !bg-red-900/20 text-red-500 hover:!bg-red-900/50 transition-colors shadow-lg"
+                  title="Delete Character"
+                >
+                  <Trash2 className="w-3.5 h-3.5 inline mr-1" /> Delete
+                </button>
+              )}
+              {onEditWithAI && (
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border border-purple-500/50 text-purple-300 hover:bg-purple-500/10 transition-colors"
+                  title="Edit with AI"
+                >
+                  <Sparkles className="w-3.5 h-3.5 inline mr-1" /> Edit
+                </button>
+              )}
             </div>
           </div>
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-1">
-            {/* Back button */}
-            {onNewCharacter && (
-              <button
-                onClick={onNewCharacter}
-                className="p-2 rounded-lg transition-colors"
-                style={{ color: themeColors.text }}
-                title="Back to Characters"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Level Up button */}
-            {onLevelUp && characterData.system === "dnd5e" && (
-              <button
-                onClick={onLevelUp}
-                disabled={isLevelingUp}
-                className={`p-2 rounded-lg transition-colors ${isLevelingUp ? "opacity-50 cursor-not-allowed" : "hover:brightness-125"}`}
-                style={{
-                  color: themeColors.accent,
-                  background: themeColors.accentLight,
-                  border: `1px solid ${themeColors.cardBorder}`,
-                }}
-                title="Level Up"
-              >
-                {isLevelingUp ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <ChevronUp className="w-5 h-5" />
-                )}
-              </button>
-            )}
-
-            {/* Edit with AI */}
-            {onEditWithAI && (
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="p-2 rounded-lg transition-colors hover:brightness-125"
-                style={{ color: themeColors.accent }}
-                title="Edit with AI"
-              >
-                <Sparkles className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Export */}
-            <button
-              onClick={exportCharacter}
-              className="p-2 rounded-lg transition-colors"
-              style={{ color: themeColors.text }}
-              title="Export Character"
-            >
-              <Download className="w-5 h-5" />
-            </button>
-
-            {/* Delete */}
-            {onDelete && (
-              <button
-                onClick={onDelete}
-                className="p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                title="Delete Character"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-            )}
-          </div>
         </div>
-      </div>
 
-      {/* AI Edit Modal */}
-      {showEditModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.8)" }}
-        >
-          <div
-            className="w-full max-w-lg p-6 rounded-xl"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(30, 58, 95, 0.95), rgba(26, 45, 74, 0.98))",
-              border: "1px solid rgba(74, 158, 255, 0.4)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-cinzel text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-arcane-glow" />
-                Edit with AI
+        {/* Right: HP Block */}
+        <div className="w-full md:w-1/2 flex justify-end">
+          <div className="dnd-panel rounded-lg p-4 w-full max-w-sm flex flex-col justify-between border-t-4 dnd-border-accent">
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
+                HIT POINTS
               </h3>
               <button
-                onClick={() => setShowEditModal(false)}
-                className="p-1 text-silver-light hover:text-white"
+                onClick={() => {
+                  setEditingSection("hp");
+                  setShowSectionSettings(true);
+                }}
+                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
               >
-                <X className="w-5 h-5" />
+                <Settings className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-sm text-silver-light mb-4">
-              Describe the changes you want to make to your character. The AI
-              will update stats, abilities, and other attributes while{" "}
-              <strong>preserving your portrait</strong>.
-            </p>
-
-            <textarea
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              placeholder="Example: Change my class to Paladin and adjust stats for a holy warrior. Add healing spells and increase Charisma."
-              className="w-full h-32 p-3 rounded-lg bg-slate-800 border border-slate-600 text-white 
-                         placeholder-gray-500 resize-none focus:outline-none focus:border-arcane-glow"
-            />
-
-            <div className="flex justify-end gap-3 mt-4">
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 rounded-lg text-silver-light hover:bg-white/10 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={async () => {
-                  if (!editDescription.trim() || !onEditWithAI) return;
-                  setIsEditing(true);
-                  try {
-                    await onEditWithAI(editDescription, characterData);
-                    setShowEditModal(false);
-                    setEditDescription("");
-                  } catch (err) {
-                    console.error("Edit failed:", err);
-                  } finally {
-                    setIsEditing(false);
+            <div className="flex items-end gap-4">
+              {/* HP Numbers */}
+              <div className="flex-1 border-b-2 border-green-500 pb-1 flex items-baseline justify-center gap-2">
+                <input
+                  type="number"
+                  value={trackers.currentHP}
+                  onChange={(e) =>
+                    updateTracker("currentHP", parseInt(e.target.value) || 0)
                   }
-                }}
-                disabled={!editDescription.trim() || isEditing}
-                className="px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all
-                           disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: "linear-gradient(135deg, #4a9eff, #2d5a87)",
-                  color: "white",
-                }}
-              >
-                {isEditing ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Updating...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    Apply Changes
-                  </>
-                )}
+                  className="bg-transparent text-3xl font-bold text-white w-16 text-right focus:outline-none"
+                />
+                <span className="text-gray-500 text-xl">/</span>
+                <input
+                  type="number"
+                  value={trackers.maxHP}
+                  onChange={(e) =>
+                    updateTracker("maxHP", parseInt(e.target.value) || 0)
+                  }
+                  className="bg-transparent text-3xl font-bold text-white w-16 text-left focus:outline-none"
+                />
+              </div>
+
+              {/* Temp HP */}
+              <div className="w-16 border-b-2 border-gray-600 pb-1 flex flex-col items-center">
+                <input
+                  type="number"
+                  value={trackers.tempHP}
+                  onChange={(e) =>
+                    updateTracker("tempHP", parseInt(e.target.value) || 0)
+                  }
+                  className="bg-transparent text-2xl font-bold text-gray-300 w-full text-center focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between text-xs text-gray-500 uppercase mt-1 px-4">
+              <span>Current</span>
+              <span>Max</span>
+              <span>Temp</span>
+            </div>
+
+            {/* HP Actions */}
+            <div className="flex gap-2 mt-4">
+              <div className="flex gap-1 flex-1">
+                <button
+                  onClick={() =>
+                    adjustValue(
+                      "currentHP",
+                      -1,
+                      0,
+                      trackers.maxHP + trackers.tempHP,
+                    )
+                  }
+                  className="w-8 h-8 rounded bg-red-900/50 text-red-400 hover:bg-red-800 flex items-center justify-center transition-colors"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() =>
+                    adjustValue(
+                      "currentHP",
+                      1,
+                      0,
+                      trackers.maxHP + trackers.tempHP,
+                    )
+                  }
+                  className="w-8 h-8 rounded bg-green-900/50 text-green-400 hover:bg-green-800 flex items-center justify-center transition-colors border border-green-900/50"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              <button className="flex-1 py-1 px-2 rounded bg-[#2a2a2a] text-xs font-bold uppercase tracking-wider text-gray-300 hover:bg-gray-700 transition-colors border border-gray-600">
+                Short Rest
+              </button>
+              <button className="flex-1 py-1 px-2 rounded bg-[#2a2a2a] text-xs font-bold uppercase tracking-wider text-gray-300 hover:bg-gray-700 transition-colors border border-gray-600">
+                Long Rest
               </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* System-Specific Trackers */}
-      <div className="mb-6">
-        <button
-          onClick={() => setShowTrackers(!showTrackers)}
-          className="w-full flex items-center justify-between p-3 rounded-lg mb-3
-                     text-silver-light hover:bg-arcane-medium/30 transition-colors"
-          style={{ background: "rgba(30, 58, 95, 0.4)" }}
-        >
-          <span className="font-medium flex items-center gap-2">
-            <Zap className="w-5 h-5" />
-            Gameplay Trackers
-          </span>
-          {showTrackers ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </button>
-
-        {showTrackers && (
-          <div
-            className="p-4 rounded-xl space-y-6"
-            style={{
-              background: "rgba(30, 58, 95, 0.3)",
-              border: "1px solid rgba(74, 158, 255, 0.2)",
+      {/* ABILITIES ROW */}
+      <div className="dnd-panel rounded-xl mb-4 p-4">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
+            ABILITIES
+          </h3>
+          <button
+            onClick={() => {
+              setEditingSection("abilities");
+              setShowSectionSettings(true);
             }}
+            className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
           >
-            {/* D&D 5e / Pathfinder Trackers */}
-            {(system === "dnd5e" || system === "pathfinder2e") && (
-              <>
-                {/* HP Tracker */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Heart className="w-5 h-5 text-red-400" />
-                    <span className="text-silver-light">HP:</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() =>
-                        adjustValue(
-                          "currentHP",
-                          -1,
-                          0,
-                          trackers.maxHP + trackers.tempHP,
-                        )
-                      }
-                      className="w-8 h-8 rounded bg-red-500/20 text-red-300 hover:bg-red-500/40"
-                    >
-                      <Minus className="w-4 h-4 mx-auto" />
-                    </button>
-                    <input
-                      type="number"
-                      value={trackers.currentHP}
-                      onChange={(e) =>
-                        updateTracker(
-                          "currentHP",
-                          parseInt(e.target.value) || 0,
-                        )
-                      }
-                      className="w-16 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                    />
-                    <span className="text-silver-dark">/</span>
-                    <input
-                      type="number"
-                      value={trackers.maxHP}
-                      onChange={(e) =>
-                        updateTracker("maxHP", parseInt(e.target.value) || 0)
-                      }
-                      className="w-16 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                    />
-                    <button
-                      onClick={() =>
-                        adjustValue(
-                          "currentHP",
-                          1,
-                          0,
-                          trackers.maxHP + trackers.tempHP,
-                        )
-                      }
-                      className="w-8 h-8 rounded bg-green-500/20 text-green-300 hover:bg-green-500/40"
-                    >
-                      <Plus className="w-4 h-4 mx-auto" />
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-silver-dark">Temp:</span>
-                    <input
-                      type="number"
-                      value={trackers.tempHP}
-                      onChange={(e) =>
-                        updateTracker("tempHP", parseInt(e.target.value) || 0)
-                      }
-                      className="w-12 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white text-sm"
-                    />
-                  </div>
-                </div>
-
-                {/* Death Saves (D&D) */}
-                {system === "dnd5e" && (
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Skull className="w-5 h-5 text-gray-400" />
-                      <span className="text-silver-light">Death Saves:</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-green-400">Success:</span>
-                      {[0, 1, 2].map((i) => (
-                        <button
-                          key={`succ-${i}`}
-                          onClick={() =>
-                            updateTracker(
-                              "deathSaveSuccess",
-                              i < trackers.deathSaveSuccess ? i : i + 1,
-                            )
-                          }
-                          className={`w-6 h-6 rounded-full border-2 ${
-                            i < trackers.deathSaveSuccess
-                              ? "bg-green-500 border-green-400"
-                              : "border-green-400/50"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-red-400">Fail:</span>
-                      {[0, 1, 2].map((i) => (
-                        <button
-                          key={`fail-${i}`}
-                          onClick={() =>
-                            updateTracker(
-                              "deathSaveFail",
-                              i < trackers.deathSaveFail ? i : i + 1,
-                            )
-                          }
-                          className={`w-6 h-6 rounded-full border-2 ${
-                            i < trackers.deathSaveFail
-                              ? "bg-red-500 border-red-400"
-                              : "border-red-400/50"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <button
-                      onClick={() => {
-                        updateTracker("deathSaveSuccess", 0);
-                        updateTracker("deathSaveFail", 0);
-                      }}
-                      className="text-xs text-silver-dark hover:text-white"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Pathfinder 2e specific */}
-                {system === "pathfinder2e" && (
-                  <div className="flex flex-wrap items-center gap-6">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-purple-400" />
-                      <span className="text-silver-light">Focus:</span>
-                      <input
-                        type="number"
-                        value={trackers.focusPoints}
-                        onChange={(e) =>
-                          updateTracker(
-                            "focusPoints",
-                            parseInt(e.target.value) || 0,
-                          )
-                        }
-                        className="w-12 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                      />
-                      <span className="text-silver-dark">/</span>
-                      <span className="text-silver-light">
-                        {trackers.maxFocusPoints}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-5 h-5 text-yellow-400" />
-                      <span className="text-silver-light">Hero Points:</span>
-                      {[0, 1, 2].map((i) => (
-                        <button
-                          key={`hero-${i}`}
-                          onClick={() =>
-                            updateTracker(
-                              "heroPoints",
-                              i < trackers.heroPoints ? i : i + 1,
-                            )
-                          }
-                          className={`w-6 h-6 rounded border-2 ${
-                            i < trackers.heroPoints
-                              ? "bg-yellow-500 border-yellow-400"
-                              : "border-yellow-400/50"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Call of Cthulhu Trackers */}
-            {system === "coc" && (
-              <>
-                <div className="flex flex-wrap items-center gap-6">
-                  <div className="flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-purple-400" />
-                    <span className="text-silver-light">Sanity:</span>
-                    <input
-                      type="number"
-                      value={trackers.currentSanity}
-                      onChange={(e) =>
-                        updateTracker(
-                          "currentSanity",
-                          parseInt(e.target.value) || 0,
-                        )
-                      }
-                      className="w-16 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                    />
-                    <span className="text-silver-dark">/</span>
-                    <span className="text-silver-light">
-                      {trackers.maxSanity}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-green-400" />
-                    <span className="text-silver-light">Luck:</span>
-                    <input
-                      type="number"
-                      value={trackers.currentLuck}
-                      onChange={(e) =>
-                        updateTracker(
-                          "currentLuck",
-                          parseInt(e.target.value) || 0,
-                        )
-                      }
-                      className="w-16 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-blue-400" />
-                    <span className="text-silver-light">MP:</span>
-                    <input
-                      type="number"
-                      value={trackers.currentMP}
-                      onChange={(e) =>
-                        updateTracker(
-                          "currentMP",
-                          parseInt(e.target.value) || 0,
-                        )
-                      }
-                      className="w-16 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                    />
-                    <span className="text-silver-dark">/</span>
-                    <span className="text-silver-light">{trackers.maxMP}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-red-400" />
-                  <span className="text-silver-light">HP:</span>
-                  <input
-                    type="number"
-                    value={trackers.currentHP}
-                    onChange={(e) =>
-                      updateTracker("currentHP", parseInt(e.target.value) || 0)
-                    }
-                    className="w-16 text-center bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white"
-                  />
-                  <span className="text-silver-dark">/</span>
-                  <span className="text-silver-light">{trackers.maxHP}</span>
-                </div>
-              </>
-            )}
-
-            {/* Fate Trackers */}
-            {system === "fate" && (
-              <>
-                <div className="flex items-center gap-4">
-                  <Star className="w-5 h-5 text-yellow-400" />
-                  <span className="text-silver-light">Fate Points:</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => adjustValue("fatePoints", -1, 0)}
-                      className="w-8 h-8 rounded bg-red-500/20 text-red-300 hover:bg-red-500/40"
-                    >
-                      <Minus className="w-4 h-4 mx-auto" />
-                    </button>
-                    <span className="w-12 text-center text-xl font-bold text-white">
-                      {trackers.fatePoints}
-                    </span>
-                    <button
-                      onClick={() => adjustValue("fatePoints", 1)}
-                      className="w-8 h-8 rounded bg-green-500/20 text-green-300 hover:bg-green-500/40"
-                    >
-                      <Plus className="w-4 h-4 mx-auto" />
-                    </button>
-                  </div>
-                  <span className="text-xs text-silver-dark">
-                    (Refresh: {trackers.maxRefresh})
-                  </span>
-                </div>
-
-                {/* Stress Boxes */}
-                <div className="flex flex-wrap gap-6">
-                  <div>
-                    <span className="text-sm text-silver-light block mb-2">
-                      Physical Stress
-                    </span>
-                    <div className="flex gap-2">
-                      {trackers.physicalStress.map((checked, i) => (
-                        <button
-                          key={`phys-${i}`}
-                          onClick={() => toggleStress("physicalStress", i)}
-                          className={`w-8 h-8 rounded border-2 flex items-center justify-center text-xs font-bold ${
-                            checked
-                              ? "bg-red-500 border-red-400 text-white"
-                              : "border-slate-500 text-slate-400"
-                          }`}
-                        >
-                          {i + 1}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-silver-light block mb-2">
-                      Mental Stress
-                    </span>
-                    <div className="flex gap-2">
-                      {trackers.mentalStress.map((checked, i) => (
-                        <button
-                          key={`ment-${i}`}
-                          onClick={() => toggleStress("mentalStress", i)}
-                          className={`w-8 h-8 rounded border-2 flex items-center justify-center text-xs font-bold ${
-                            checked
-                              ? "bg-purple-500 border-purple-400 text-white"
-                              : "border-slate-500 text-slate-400"
-                          }`}
-                        >
-                          {i + 1}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Consequences */}
-                <div className="space-y-2">
-                  <span className="text-sm text-silver-light block">
-                    Consequences
-                  </span>
-                  {["mild", "moderate", "severe"].map((level) => (
-                    <div key={level} className="flex items-center gap-2">
-                      <span className="text-xs text-silver-dark w-20 capitalize">
-                        {level} (-
-                        {level === "mild" ? 2 : level === "moderate" ? 4 : 6}):
-                      </span>
-                      <input
-                        type="text"
-                        value={trackers.consequences[level]}
-                        onChange={(e) =>
-                          setTrackers((prev) => ({
-                            ...prev,
-                            consequences: {
-                              ...prev.consequences,
-                              [level]: e.target.value,
-                            },
-                          }))
-                        }
-                        placeholder="Empty"
-                        className="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white text-sm"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Conditions (all systems) */}
-            <div>
-              <span className="text-sm text-silver-light block mb-2">
-                Active Conditions
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {trackers.conditions.map((cond, i) => (
-                  <button
-                    key={i}
-                    onClick={() =>
-                      setTrackers((prev) => ({
-                        ...prev,
-                        conditions: prev.conditions.filter(
-                          (_, idx) => idx !== i,
-                        ),
-                      }))
-                    }
-                    className="px-2 py-1 rounded bg-orange-500/20 text-orange-300 text-xs hover:bg-red-500/30"
-                  >
-                    {cond} &times;
-                  </button>
-                ))}
-                <select
-                  onChange={(e) => {
-                    if (
-                      e.target.value &&
-                      !trackers.conditions.includes(e.target.value)
-                    ) {
-                      setTrackers((prev) => ({
-                        ...prev,
-                        conditions: [...prev.conditions, e.target.value],
-                      }));
-                    }
-                    e.target.value = "";
-                  }}
-                  className="px-2 py-1 rounded bg-slate-800 border border-slate-600 text-silver-light text-xs"
-                >
-                  <option value="">+ Add Condition</option>
-                  {(conditionOptions[system] || conditionOptions.dnd5e).map(
-                    (cond) => (
-                      <option key={cond} value={cond}>
-                        {cond}
-                      </option>
-                    ),
-                  )}
-                </select>
-              </div>
-            </div>
-
-            {/* Notes */}
-            <div>
-              <span className="text-sm text-silver-light block mb-2">
-                Session Notes
-              </span>
-              <textarea
-                value={trackers.notes}
-                onChange={(e) => updateTracker("notes", e.target.value)}
-                placeholder="Quick notes for the session..."
-                className="w-full h-20 bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white text-sm resize-none"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Roll History Toggle */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-cinzel text-silver-light flex items-center gap-2">
-          <Scroll className="w-5 h-5" />
-          Character Rolls
-        </h3>
-        <button
-          onClick={() => setShowHistory(!showHistory)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-silver-light
-                     hover:bg-arcane-medium/30 transition-colors"
-        >
-          <History className="w-4 h-4" />
-          History ({rollHistory.length})
-        </button>
-      </div>
-
-      {/* Roll History Panel */}
-      {showHistory && rollHistory.length > 0 && (
-        <div
-          className="p-4 rounded-xl mb-4 max-h-48 overflow-y-auto"
-          style={{
-            background: "rgba(30, 58, 95, 0.4)",
-            border: "1px solid rgba(74, 158, 255, 0.2)",
-          }}
-        >
-          {rollHistory.map((roll, i) => (
-            <div
-              key={i}
-              className="flex justify-between items-center py-2 border-b border-arcane-medium/20 last:border-0"
-            >
-              <span className="text-silver-light">{roll.rollName}</span>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-silver-dark">
-                  {roll.rolls.join("+")}
-                  {roll.modifier !== 0 &&
-                    (roll.modifier > 0 ? `+${roll.modifier}` : roll.modifier)}
-                </span>
-                <span
-                  className={`font-bold ${
-                    roll.isCriticalSuccess
-                      ? "text-yellow-400"
-                      : roll.isCriticalFail
-                        ? "text-red-500"
-                        : "text-white"
-                  }`}
-                >
-                  {roll.total}
-                </span>
-                <span className="text-xs text-silver-dark">
-                  {roll.timestamp}
-                </span>
-              </div>
-            </div>
-          ))}
+            <Settings className="w-4 h-4" />
+          </button>
         </div>
-      )}
 
-      {/* Roll Categories */}
-      <div className="space-y-4">
-        {categoryOrder
-          .filter((cat) => groupedRolls[cat]?.length > 0)
-          .map((category) => (
-            <div key={category}>
-              <button
-                onClick={() =>
-                  setExpandedCategory(
-                    expandedCategory === category ? null : category,
-                  )
-                }
-                className="w-full flex items-center justify-between p-3 rounded-lg
-                           text-silver-light hover:bg-arcane-medium/30 transition-colors"
-                style={{ background: "rgba(30, 58, 95, 0.3)" }}
+        <div className="flex flex-wrap md:flex-nowrap gap-2 justify-between">
+          {[
+            "Strength",
+            "Dexterity",
+            "Constitution",
+            "Intelligence",
+            "Wisdom",
+            "Charisma",
+          ].map((stat) => {
+            // Find rolls for this stat to show modifiers
+            const abilityRoll = (groupedRolls["ability"] || []).find((r) =>
+              r.roll_name.toLowerCase().includes(stat.toLowerCase()),
+            );
+            const saveRoll = (groupedRolls["save"] || []).find((r) =>
+              r.roll_name.toLowerCase().includes(stat.toLowerCase()),
+            );
+
+            // Extract modifier
+            const extractMod = (rollStr) => {
+              if (!rollStr) return "+0";
+              const match = rollStr.match(/([+-]\d+)/);
+              return match ? match[1] : "+0";
+            };
+
+            const baseAbMod = abilityRoll ? extractMod(abilityRoll.dice) : "+0";
+            const baseSvMod = saveRoll ? extractMod(saveRoll.dice) : "+0";
+
+            const abMod =
+              trackers.abilityOverrides?.[stat]?.ability || baseAbMod;
+            const svMod = trackers.abilityOverrides?.[stat]?.save || baseSvMod;
+
+            return (
+              <div
+                key={stat}
+                className="flex-1 min-w-[100px] flex flex-col items-center border-r border-[#3a2f26] last:border-0 relative"
               >
-                <span className="font-medium">
-                  {categoryLabels[category] || category} (
-                  {groupedRolls[category].length})
-                </span>
-                {expandedCategory === category ? (
-                  <ChevronUp className="w-5 h-5" />
-                ) : (
-                  <ChevronDown className="w-5 h-5" />
-                )}
-              </button>
-
-              {expandedCategory === category && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-3 p-3">
-                  {groupedRolls[category].map((roll, i) => (
-                    <DiceRoller
-                      key={i}
-                      notation={roll.dice}
-                      rollName={roll.roll_name}
-                      onRoll={(result) => handleRoll(result, roll.roll_name)}
-                      criticalMin={characterData.critical_min}
-                      criticalMax={characterData.critical_max}
-                    />
-                  ))}
+                <span className="text-xs text-gray-400 mb-1">{stat}</span>
+                <div className="bg-[#1a1511] border border-[#3a2f26] rounded-md px-4 py-2 flex flex-col items-center shadow-inner relative z-10">
+                  <span className="font-cinzel text-2xl text-white font-bold">
+                    {abMod}
+                  </span>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <button
+                      onClick={() =>
+                        abilityRoll &&
+                        handleRoll(
+                          {
+                            rolls: [10],
+                            total: 10 + parseInt(abMod),
+                            modifier: parseInt(abMod),
+                          },
+                          abilityRoll.roll_name,
+                        )
+                      }
+                      className="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider flex flex-col items-center gap-1"
+                    >
+                      <div className="w-6 h-6 border border-gray-600 rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-gray-300">
+                        {abMod}
+                      </div>
+                      Ability
+                    </button>
+                    <button
+                      onClick={() =>
+                        saveRoll &&
+                        handleRoll(
+                          {
+                            rolls: [10],
+                            total: 10 + parseInt(svMod),
+                            modifier: parseInt(svMod),
+                          },
+                          saveRoll.roll_name,
+                        )
+                      }
+                      className="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider flex flex-col items-center gap-1"
+                    >
+                      <div className="w-6 h-6 border dnd-border-accent rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-gray-300 ring-1 ring-red-900/50">
+                        {svMod}
+                      </div>
+                      Save
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Quick rolls if no categories */}
-      {Object.keys(groupedRolls).length === 0 &&
-        characterData.roll_list?.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {characterData.roll_list.map((roll, i) => (
-              <DiceRoller
-                key={i}
-                notation={roll.dice}
-                rollName={roll.roll_name}
-                onRoll={(result) => handleRoll(result, roll.roll_name)}
-              />
+      {/* MAIN 3-COLUMN LAYOUT */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        {/* LEFT COLUMN: Skills (3 cols) */}
+        <div className="md:col-span-3 dnd-panel rounded-xl p-4 h-fit">
+          <div className="flex justify-between items-center mb-4 border-b border-[#3a2f26] pb-2">
+            <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
+              SKILLS
+            </h3>
+            <button
+              onClick={() => {
+                setEditingSection("skills");
+                setShowSectionSettings(true);
+              }}
+              className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-[2px]">
+            {(groupedRolls["skill"] || []).map((roll, i) => {
+              // Extract mod
+              const match = roll.dice.match(/([+-]\d+)/);
+              const mod = match ? match[1] : "+0";
+              const isProf = parseInt(mod) > 2; // rough approx for UI design
+              const displayMod =
+                parseInt(mod) >= 0 ? `+${parseInt(mod)}` : `${parseInt(mod)}`;
+
+              return (
+                <button
+                  key={i}
+                  onClick={() =>
+                    handleRoll(
+                      {
+                        rolls: [10],
+                        total: 10 + parseInt(mod),
+                        modifier: parseInt(mod),
+                      },
+                      roll.roll_name,
+                    )
+                  }
+                  className="w-full flex items-center justify-between py-1.5 px-2 hover:bg-white/5 rounded group text-left"
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-3 h-3 rounded-full border border-gray-500 ${isProf ? "bg-tavern-accent border-tavern-accent" : "bg-transparent"}`}
+                    />
+                    <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">
+                      {roll.roll_name}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-600 font-bold uppercase w-6 text-right">
+                      {roll.roll_name.substring(0, 3)}
+                    </span>
+                    <span
+                      className={`text-sm font-bold w-6 text-center rounded bg-[#1a1511] border border-[#3a2f26] ${isProf ? "text-tavern-accent" : "text-gray-400"}`}
+                    >
+                      {displayMod}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+
+            {/* Fallback if no skills */}
+            {(!groupedRolls["skill"] || groupedRolls["skill"].length === 0) && (
+              <p className="text-gray-500 text-sm italic text-center py-4">
+                No specific skills parsed.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* CENTER COLUMN: Tabs Content (6 cols) */}
+        <div className="md:col-span-6 dnd-panel rounded-xl p-0 h-fit overflow-hidden">
+          {/* Tabs */}
+          <div className="flex border-b border-[#3a2f26] bg-[#1a1511] overflow-x-auto no-scrollbar">
+            {[
+              "COMBAT",
+              "SPELLS",
+              "INVENTORY",
+              "FEATURES & TRAITS",
+              "NOTES",
+              "ABOUT",
+            ].map((tab, i) => (
+              <button
+                key={tab}
+                onClick={() => setExpandedCategory(tab.toLowerCase())}
+                className={`py-3 px-4 font-cinzel text-xs font-bold tracking-widest whitespace-nowrap transition-colors
+                  ${
+                    (expandedCategory || "combat") === tab.toLowerCase()
+                      ? "text-[#e5e5e5] border-b-2 dnd-border-accent bg-white/5"
+                      : "text-gray-500 hover:text-gray-300"
+                  }`}
+              >
+                {tab}
+              </button>
             ))}
           </div>
-        )}
 
-      {/* Actions */}
-      <div className="mt-8 flex flex-wrap justify-center gap-4">
-        <button
-          onClick={exportCharacter}
-          className="px-6 py-3 rounded-lg text-silver-light font-medium
-                     transition-all hover:-translate-y-0.5 flex items-center gap-2"
-          style={{
-            background: "rgba(30, 58, 95, 0.5)",
-            border: "1px solid rgba(74, 158, 255, 0.3)",
-          }}
-        >
-          <Download className="w-4 h-4" />
-          Export Character
-        </button>
-        <button
-          onClick={onNewCharacter}
-          className="px-6 py-3 rounded-lg text-silver-light font-medium
-                     transition-all hover:-translate-y-0.5"
-          style={{
-            background: "rgba(30, 58, 95, 0.5)",
-            border: "1px solid rgba(74, 158, 255, 0.3)",
-          }}
-        >
-          Process Another Character
-        </button>
+          {/* Tab Content */}
+          <div className="p-4 min-h-[400px]">
+            {/* Show rolls based on active tab */}
+            {((expandedCategory || "combat") === "combat" ||
+              (expandedCategory || "combat") === "spells") && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="relative w-1/2">
+                    <input
+                      type="text"
+                      placeholder={`Search ${expandedCategory || "Combat"}...`}
+                      className="dnd-input w-full rounded pl-8 pr-2 py-1 text-sm"
+                    />
+                  </div>
+                  <button className="text-xs dnd-accent uppercase tracking-wider font-bold flex items-center gap-1 hover:brightness-125">
+                    <Plus className="w-3 h-3" /> Add New
+                  </button>
+                </div>
+
+                {/* Roll list matching tab */}
+                <div className="space-y-2">
+                  {categoryOrder
+                    .filter((cat) =>
+                      (expandedCategory || "combat") === "combat"
+                        ? ["attack", "damage", "combat", "ability"].includes(
+                            cat,
+                          )
+                        : ["spell", "sanity", "other"].includes(cat),
+                    )
+                    .map(
+                      (cat) =>
+                        groupedRolls[cat] &&
+                        groupedRolls[cat].length > 0 && (
+                          <div key={cat} className="mb-4">
+                            <div className="bg-[#1a1511] border border-[#3a2f26] rounded-t px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider flex justify-between">
+                              <span>{categoryLabels[cat]}</span>
+                            </div>
+                            <div className="border border-t-0 border-[#3a2f26] rounded-b">
+                              {groupedRolls[cat].map((roll, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex items-center justify-between p-2 border-b border-[#3a2f26] last:border-0 hover:bg-white/5 transition-colors"
+                                >
+                                  <span
+                                    className="text-sm font-bold text-gray-300 w-1/3 truncate"
+                                    title={roll.roll_name}
+                                  >
+                                    {roll.roll_name}
+                                  </span>
+                                  <div className="flex-1 flex justify-center">
+                                    <DiceRoller
+                                      notation={roll.dice}
+                                      rollName={roll.roll_name}
+                                      onRoll={(result) =>
+                                        handleRoll(result, roll.roll_name)
+                                      }
+                                      criticalMin={characterData.critical_min}
+                                      criticalMax={characterData.critical_max}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ),
+                    )}
+
+                  {/* History inside the tab area for convenience */}
+                  {showHistory && rollHistory.length > 0 && (
+                    <div className="mt-6 border-t border-[#3a2f26] pt-4">
+                      <h4 className="font-cinzel text-xs text-gray-500 font-bold mb-2">
+                        RECENT ROLLS
+                      </h4>
+                      <div className="max-h-48 overflow-y-auto space-y-1 pr-2">
+                        {rollHistory.map((roll, i) => (
+                          <div
+                            key={i}
+                            className="flex justify-between items-center py-1.5 px-2 bg-[#1a1511] rounded border border-[#3a2f26]"
+                          >
+                            <span className="text-xs text-gray-300 truncate w-1/2">
+                              {roll.rollName}
+                            </span>
+                            <div className="flex items-center gap-3">
+                              <span
+                                className={`font-bold text-sm ${roll.isCriticalSuccess ? "text-yellow-400" : roll.isCriticalFail ? "text-red-500" : "text-white"}`}
+                              >
+                                {roll.total}
+                              </span>
+                              <span className="text-[10px] text-gray-500">
+                                {roll.timestamp}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {(expandedCategory === "notes" ||
+              expandedCategory === "features & traits") && (
+              <div>
+                <textarea
+                  value={trackers.notes}
+                  onChange={(e) => updateTracker("notes", e.target.value)}
+                  placeholder={`Write your ${expandedCategory.toLowerCase()} here...`}
+                  className="dnd-input w-full h-[300px] rounded p-3 resize-none font-serif text-sm leading-relaxed"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Defenses, Senses, etc. (3 cols) */}
+        <div className="md:col-span-3 space-y-4">
+          {/* AC / Speed block styling from screenshot */}
+          <div className="dnd-panel rounded-xl p-4 flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
+                AC/SPEED
+              </h3>
+              <button
+                onClick={() => {
+                  setEditingSection("ac_speed");
+                  setShowSectionSettings(true);
+                }}
+                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between py-2 border-b border-[#3a2f26]">
+              <span className="text-sm text-gray-400 font-bold tracking-wider">
+                ARMOR CLASS
+              </span>
+              <div className="w-10 h-10 border border-gray-500 rounded flex items-center justify-center font-bold text-lg bg-[#1a1511] relative shield-shape">
+                {trackers.acOverride !== null ? trackers.acOverride : 10}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm text-gray-400 font-bold tracking-wider">
+                SPEED (ft)
+              </span>
+              <div className="w-10 h-10 border border-gray-500 rounded flex items-center justify-center font-bold text-lg bg-[#1a1511]">
+                {trackers.speedOverride !== null ? trackers.speedOverride : 30}
+              </div>
+            </div>
+          </div>
+
+          <div className="dnd-panel rounded-xl p-4">
+            <div className="flex justify-between items-center border-b border-[#3a2f26] pb-2 mb-2">
+              <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
+                DEFENSES
+              </h3>
+              <button
+                onClick={() => {
+                  setEditingSection("defenses");
+                  setShowSectionSettings(true);
+                }}
+                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-400 italic">No defenses</p>
+          </div>
+
+          <div className="dnd-panel rounded-xl p-4">
+            <div className="flex justify-between items-center border-b border-[#3a2f26] pb-2 mb-2">
+              <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
+                CONDITIONS
+              </h3>
+              <button
+                onClick={() => {
+                  setEditingSection("conditions");
+                  setShowSectionSettings(true);
+                }}
+                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+            {trackers.conditions.length === 0 ? (
+              <p className="text-sm text-gray-400 italic">No Conditions</p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {trackers.conditions.map((cond, i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 rounded bg-red-900/30 text-red-400 border border-red-900/50 text-xs flex items-center gap-1"
+                  >
+                    {cond}
+                    <button
+                      onClick={() =>
+                        setTrackers((prev) => ({
+                          ...prev,
+                          conditions: prev.conditions.filter(
+                            (_, idx) => idx !== i,
+                          ),
+                        }))
+                      }
+                      className="hover:text-white"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <select
+              onChange={(e) => {
+                if (
+                  e.target.value &&
+                  !trackers.conditions.includes(e.target.value)
+                ) {
+                  setTrackers((prev) => ({
+                    ...prev,
+                    conditions: [...prev.conditions, e.target.value],
+                  }));
+                }
+                e.target.value = "";
+              }}
+              className="mt-3 w-full dnd-input text-xs py-1 rounded px-2"
+            >
+              <option value="">+ Add Condition</option>
+              {(conditionOptions[system] || conditionOptions.dnd5e).map(
+                (cond) => (
+                  <option key={cond} value={cond}>
+                    {cond}
+                  </option>
+                ),
+              )}
+            </select>
+          </div>
+
+          {/* Section Settings Modal */}
+          {showSectionSettings && (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <div className="dnd-panel w-full max-w-md p-6 rounded-xl border border-[#dc2626]/30 shadow-2xl">
+                <div className="flex items-center justify-between mb-4 border-b border-[#3a2f26] pb-2">
+                  <h3 className="text-lg font-cinzel text-white flex items-center gap-2 uppercase">
+                    <Settings className="w-5 h-5 text-gray-400" /> CUSTOMIZE{" "}
+                    {editingSection?.replace("_", " ")}
+                  </h3>
+                  <button
+                    onClick={() => setShowSectionSettings(false)}
+                    className="!bg-transparent !p-1 !text-gray-400 hover:!text-white rounded-full"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-4 py-2">
+                  {editingSection === "hp" && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1 uppercase font-bold tracking-wider">
+                          Max HP Override
+                        </label>
+                        <input
+                          type="number"
+                          value={trackers.maxHP}
+                          onChange={(e) =>
+                            updateTracker(
+                              "maxHP",
+                              parseInt(e.target.value) || 0,
+                            )
+                          }
+                          className="w-full dnd-input p-2 rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1 uppercase font-bold tracking-wider">
+                          Current HP
+                        </label>
+                        <input
+                          type="number"
+                          value={trackers.currentHP}
+                          onChange={(e) =>
+                            updateTracker(
+                              "currentHP",
+                              parseInt(e.target.value) || 0,
+                            )
+                          }
+                          className="w-full dnd-input p-2 rounded"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {editingSection === "abilities" && (
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-2 no-scrollbar">
+                      {[
+                        "Strength",
+                        "Dexterity",
+                        "Constitution",
+                        "Intelligence",
+                        "Wisdom",
+                        "Charisma",
+                      ].map((stat) => (
+                        <div
+                          key={stat}
+                          className="flex items-center justify-between bg-black/20 p-2 rounded border border-[#3a2f26]"
+                        >
+                          <span className="text-sm text-gray-300 w-1/3">
+                            {stat}
+                          </span>
+                          <div className="flex gap-2 w-2/3">
+                            <input
+                              type="text"
+                              placeholder="Abil (e.g. +3)"
+                              value={
+                                trackers.abilityOverrides?.[stat]?.ability || ""
+                              }
+                              onChange={(e) => {
+                                const newOverrides = {
+                                  ...(trackers.abilityOverrides || {}),
+                                };
+                                if (!newOverrides[stat])
+                                  newOverrides[stat] = {};
+                                newOverrides[stat].ability = e.target.value;
+                                updateTracker("abilityOverrides", newOverrides);
+                              }}
+                              className="w-1/2 dnd-input p-1 text-center text-sm rounded bg-black/40"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Save (e.g. +5)"
+                              value={
+                                trackers.abilityOverrides?.[stat]?.save || ""
+                              }
+                              onChange={(e) => {
+                                const newOverrides = {
+                                  ...(trackers.abilityOverrides || {}),
+                                };
+                                if (!newOverrides[stat])
+                                  newOverrides[stat] = {};
+                                newOverrides[stat].save = e.target.value;
+                                updateTracker("abilityOverrides", newOverrides);
+                              }}
+                              className="w-1/2 dnd-input p-1 text-center text-sm rounded bg-black/40"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {editingSection === "ac_speed" && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1 uppercase font-bold tracking-wider">
+                          AC Override
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="10"
+                          value={trackers.acOverride || ""}
+                          onChange={(e) =>
+                            updateTracker(
+                              "acOverride",
+                              e.target.value ? parseInt(e.target.value) : null,
+                            )
+                          }
+                          className="w-full dnd-input p-2 rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1 uppercase font-bold tracking-wider">
+                          Speed Override
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="30"
+                          value={trackers.speedOverride || ""}
+                          onChange={(e) =>
+                            updateTracker(
+                              "speedOverride",
+                              e.target.value ? parseInt(e.target.value) : null,
+                            )
+                          }
+                          className="w-full dnd-input p-2 rounded"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {["skills", "defenses", "conditions"].includes(
+                    editingSection,
+                  ) && (
+                    <p className="text-sm text-gray-400 italic text-center py-4">
+                      Settings for this section are managed automatically or via
+                      the main view.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex justify-end mt-4">
+                  <button
+                    onClick={() => setShowSectionSettings(false)}
+                    className="px-6 py-2 rounded-lg font-bold bg-[#1a1511] text-gray-300 hover:text-white border border-[#3a2f26] hover:bg-white/5 transition-colors"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Delete Confirmation Modal */}
+          {showDeleteModal && (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <div className="dnd-panel w-full max-w-sm p-6 rounded-xl border border-red-900/50 shadow-2xl">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-red-900/20 border border-red-900/50 flex items-center justify-center mb-4">
+                    <Trash2 className="w-8 h-8 text-red-500" />
+                  </div>
+                  <h3 className="text-xl font-cinzel text-white mb-2">
+                    Delete Character?
+                  </h3>
+                  <p className="text-sm text-gray-400 mb-6">
+                    Are you sure you want to delete{" "}
+                    <strong className="text-white">
+                      {characterData.character_name || "this character"}
+                    </strong>
+                    ? This action cannot be undone.
+                  </p>
+                  <div className="flex gap-3 w-full">
+                    <button
+                      onClick={() => setShowDeleteModal(false)}
+                      className="flex-1 py-2 rounded-lg font-bold !bg-[#1a1511] text-gray-300 hover:text-white border border-[#3a2f26] hover:!bg-white/5 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDeleteModal(false);
+                        if (onDelete) onDelete(characterData.id);
+                      }}
+                      className="flex-1 py-2 rounded-lg font-bold !bg-red-900/80 text-white hover:!bg-red-600 transition-colors shadow-lg"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* AI Edit Modal code stays hidden here */}
+          {showEditModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <div className="dnd-panel w-full max-w-lg p-6 rounded-xl border border-purple-500/30">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-cinzel text-white flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-400" /> Edit with
+                    AI
+                  </h3>
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="p-1 text-gray-400 hover:text-white"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-sm text-gray-400 mb-4">
+                  Describe the changes you want to make...
+                </p>
+                <textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  className="w-full h-32 p-3 rounded-lg dnd-input text-white resize-none"
+                />
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 rounded-lg text-gray-400 hover:bg-white/10"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (!editDescription.trim() || !onEditWithAI) return;
+                      setIsEditing(true);
+                      try {
+                        await onEditWithAI(editDescription, characterData);
+                        setShowEditModal(false);
+                        setEditDescription("");
+                      } finally {
+                        setIsEditing(false);
+                      }
+                    }}
+                    disabled={!editDescription.trim() || isEditing}
+                    className="px-4 py-2 rounded-lg font-bold flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-50"
+                  >
+                    {isEditing ? "Updating..." : "Apply Changes"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

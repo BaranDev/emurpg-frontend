@@ -16,6 +16,7 @@ import { config } from "../config";
 import { Upload, Sparkles, Users, X, Scroll, Settings } from "lucide-react";
 import {
   saveCharacter,
+  updateCharacter,
   getSettings,
   getCharacters,
   deleteCharacter,
@@ -42,7 +43,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const [selectedSystem, setSelectedSystem] = useState("dnd5e");
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGeneratingPortrait, setIsGeneratingPortrait] = useState(false);
+  const [generatingId, setGeneratingId] = useState(null);
   const [error, setError] = useState(null);
 
   // Settings & extras
@@ -159,23 +160,35 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
 
       // Generate portrait async
       if (settings.portraitGenerationEnabled) {
-        setIsGeneratingPortrait(true);
-        generatePortrait(data).then((portraitUrl) => {
+        console.log(
+          "[PORTRAIT] portraitGenerationEnabled=true, starting async portrait for id:",
+          savedChar.id,
+        );
+        setGeneratingId(savedChar.id);
+        generatePortrait(data, savedChar.id).then((portraitUrl) => {
+          console.log(
+            "[PORTRAIT] generatePortrait resolved. URL:",
+            portraitUrl,
+          );
           if (portraitUrl) {
-            const updatedChar = { ...newChar, portrait_url: portraitUrl };
-            setSelectedCharacter(updatedChar);
-            const chars = JSON.parse(
-              localStorage.getItem("emurpg_characters") || "[]",
+            updateCharacter(savedChar.id, { portrait_url: portraitUrl });
+            setSelectedCharacter((prev) =>
+              prev?.id === savedChar.id
+                ? { ...prev, portrait_url: portraitUrl }
+                : prev,
             );
-            const idx = chars.findIndex((c) => c.id === savedChar.id);
-            if (idx >= 0) {
-              chars[idx].portrait_url = portraitUrl;
-              localStorage.setItem("emurpg_characters", JSON.stringify(chars));
-            }
             setRefreshKey((k) => k + 1);
+          } else {
+            console.warn(
+              "[PORTRAIT] Portrait URL was null/undefined - no image to show",
+            );
           }
-          setIsGeneratingPortrait(false);
+          setGeneratingId(null);
         });
+      } else {
+        console.log(
+          "[PORTRAIT] portraitGenerationEnabled=false, skipping portrait generation",
+        );
       }
     } catch (err) {
       setError(err.message);
@@ -222,23 +235,35 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setIsLoading(false);
 
       if (settings.portraitGenerationEnabled) {
-        setIsGeneratingPortrait(true);
-        generatePortrait(data).then((portraitUrl) => {
+        console.log(
+          "[PORTRAIT] portraitGenerationEnabled=true, starting async portrait for id:",
+          savedChar.id,
+        );
+        setGeneratingId(savedChar.id);
+        generatePortrait(data, savedChar.id).then((portraitUrl) => {
+          console.log(
+            "[PORTRAIT] generatePortrait resolved. URL:",
+            portraitUrl,
+          );
           if (portraitUrl) {
-            const updatedChar = { ...newChar, portrait_url: portraitUrl };
-            setSelectedCharacter(updatedChar);
-            const chars = JSON.parse(
-              localStorage.getItem("emurpg_characters") || "[]",
+            updateCharacter(savedChar.id, { portrait_url: portraitUrl });
+            setSelectedCharacter((prev) =>
+              prev?.id === savedChar.id
+                ? { ...prev, portrait_url: portraitUrl }
+                : prev,
             );
-            const idx = chars.findIndex((c) => c.id === savedChar.id);
-            if (idx >= 0) {
-              chars[idx].portrait_url = portraitUrl;
-              localStorage.setItem("emurpg_characters", JSON.stringify(chars));
-            }
             setRefreshKey((k) => k + 1);
+          } else {
+            console.warn(
+              "[PORTRAIT] Portrait URL was null/undefined - no image to show",
+            );
           }
-          setIsGeneratingPortrait(false);
+          setGeneratingId(null);
         });
+      } else {
+        console.log(
+          "[PORTRAIT] portraitGenerationEnabled=false, skipping portrait generation",
+        );
       }
     } catch (err) {
       setError(err.message);
@@ -246,7 +271,19 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
     }
   };
 
-  const generatePortrait = async (charData) => {
+  const generatePortrait = async (charData, characterId) => {
+    console.log(
+      "[PORTRAIT] Starting portrait generation for character_id:",
+      characterId,
+    );
+    console.log(
+      "[PORTRAIT] Backend URL:",
+      `${config.backendUrl}/api/charroller/portrait`,
+    );
+    console.log("[PORTRAIT] Payload:", {
+      character_data: { ...charData, system: selectedSystem },
+      character_id: characterId || null,
+    });
     try {
       const response = await fetch(
         `${config.backendUrl}/api/charroller/portrait`,
@@ -255,14 +292,28 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           headers: getHeaders(),
           body: JSON.stringify({
             character_data: { ...charData, system: selectedSystem },
-            character_id: null,
+            character_id: characterId || null,
           }),
         },
       );
+      console.log(
+        "[PORTRAIT] Response status:",
+        response.status,
+        response.statusText,
+      );
       const data = await response.json();
+      console.log("[PORTRAIT] Response data:", data);
+      if (data.portrait_url) {
+        console.log("[PORTRAIT] Success! Portrait URL:", data.portrait_url);
+      } else {
+        console.warn(
+          "[PORTRAIT] No portrait_url in response. Full response:",
+          data,
+        );
+      }
       return data.portrait_url || null;
     } catch (err) {
-      console.error("Portrait generation failed:", err);
+      console.error("[PORTRAIT] EXCEPTION during portrait fetch:", err);
       return null;
     }
   };
@@ -484,42 +535,67 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                       key={char.id}
                       onClick={() => handleSelectCharacter(char)}
                       className={`
-                        w-full text-left p-2 rounded-lg transition-all
+                        w-full text-left p-2 rounded-lg transition-all relative overflow-hidden group
                         ${
                           selectedCharacter?.id === char.id
-                            ? "ring-2 ring-tavern-candle"
-                            : "hover:bg-tavern-wood/30"
+                            ? "ring-2 ring-tavern-candle scale-[1.02]"
+                            : "hover:ring-1 hover:ring-tavern-candle/50 hover:scale-[1.01]"
                         }
                       `}
                       style={{
                         background:
                           selectedCharacter?.id === char.id
-                            ? "rgba(139, 69, 19, 0.4)"
-                            : "rgba(61, 40, 23, 0.5)",
-                        border: "1px solid rgba(139, 69, 19, 0.3)",
+                            ? "rgba(20, 15, 10, 0.9)"
+                            : "rgba(30, 20, 15, 0.8)",
+                        border: "1px solid rgba(139, 69, 19, 0.2)",
                       }}
                     >
-                      <div className="flex items-center gap-2">
-                        {/* Mini portrait */}
+                      {/* Background Portrait blur */}
+                      {char.portrait_url && (
                         <div
-                          className="w-14 h-14 rounded-lg bg-cover bg-center flex-shrink-0"
+                          className="absolute inset-0 opacity-10 blur-sm mix-blend-overlay transition-opacity group-hover:opacity-20"
                           style={{
-                            backgroundImage: char.portrait_url
-                              ? `url(${char.portrait_url})`
-                              : undefined,
-                            background: !char.portrait_url
-                              ? "rgba(139, 69, 19, 0.3)"
-                              : undefined,
+                            backgroundImage: `url(${char.portrait_url})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
                           }}
                         />
+                      )}
+
+                      <div className="flex items-center gap-3 relative z-10">
+                        {/* Main portrait */}
+                        <div
+                          className={`w-16 h-16 rounded-md flex-shrink-0 border border-tavern-wood shadow-lg relative overflow-hidden ${
+                            generatingId === char.id ? "animate-pulse" : ""
+                          }`}
+                          style={{
+                            backgroundColor: "rgba(139, 69, 19, 0.3)",
+                          }}
+                        >
+                          {char.portrait_url && (
+                            <img
+                              src={char.portrait_url}
+                              alt={char.character_name || "Portrait"}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                          )}
+                          {generatingId === char.id && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tavern-accent/30 to-transparent animate-[shimmer_1.5s_infinite]" />
+                          )}
+                        </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-cinzel text-tavern-parchment truncate text-sm">
+                          <p className="font-cinzel text-tavern-parchment truncate text-base drop-shadow-md">
                             {char.character_name || "Unknown"}
                           </p>
-                          <p className="text-xs text-tavern-parchmentDark truncate">
+                          <p className="text-xs text-tavern-parchmentDark truncate mt-0.5">
                             {char.class || char.occupation || "Adventurer"}
                             {char.level ? ` • Lv ${char.level}` : ""}
                           </p>
+                          {char.system && (
+                            <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded bg-red-900/40 text-red-200 border border-red-900/50 uppercase">
+                              {char.system === "dnd5e" ? "D&D 5E" : char.system}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </button>
@@ -626,7 +702,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                 <CharrollerResults
                   characterData={selectedCharacter}
                   onNewCharacter={handleDeselectCharacter}
-                  isGeneratingPortrait={isGeneratingPortrait}
+                  isGeneratingPortrait={generatingId === selectedCharacter.id}
                   onEditWithAI={handleEditWithAI}
                   onLevelUp={handleLevelUp}
                   isLevelingUp={isLevelingUp}
@@ -636,44 +712,56 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
               </div>
             )}
 
-            {/* Empty State */}
+            {/* Empty State / Creation Hub */}
             {!selectedCharacter && !isCreating && (
-              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fadeIn">
+              <div className="flex flex-col items-center justify-center min-h-[75vh] text-center animate-fadeIn relative">
+                {/* Decorative background circle */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none" />
+
                 <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
-                  style={{ background: "rgba(139, 69, 19, 0.2)" }}
+                  className="w-28 h-28 rounded-full flex items-center justify-center mb-8 shadow-2xl relative z-10"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(61, 40, 23, 0.8), rgba(42, 26, 15, 0.9))",
+                    border: "2px solid rgba(139, 69, 19, 0.5)",
+                  }}
                 >
-                  <Scroll className="w-12 h-12 text-tavern-parchmentDark" />
+                  <Scroll className="w-14 h-14 text-red-500/80 drop-shadow-lg" />
                 </div>
-                <h2 className="text-2xl font-cinzel text-tavern-parchment mb-2">
+
+                <h2 className="text-4xl font-cinzel text-white mb-3 tracking-wide drop-shadow-md relative z-10">
                   {t("charroller.manager_title")}
                 </h2>
-                <p className="text-tavern-parchmentDark mb-6 max-w-md">
+
+                <p className="text-tavern-parchmentDark mb-10 max-w-lg text-lg relative z-10">
                   {t("charroller.no_characters_desc")}
                 </p>
-                <div className="flex gap-4">
+
+                <div className="flex flex-col sm:flex-row gap-5 relative z-10">
                   <button
                     onClick={() => handleStartCreate("upload")}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium
-                               text-white transition-all hover:brightness-110"
+                    className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg
+                               text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-red-900/20 hover:shadow-xl"
                     style={{
-                      background: "linear-gradient(135deg, #8b4513, #654321)",
-                      border: "2px solid rgba(139, 69, 19, 0.6)",
+                      background:
+                        "linear-gradient(135deg, rgba(139, 69, 19, 0.6), rgba(101, 50, 14, 0.6))",
+                      border: "1px solid rgba(139, 69, 19, 0.5)",
                     }}
                   >
-                    <Upload className="w-5 h-5" />
+                    <Upload className="w-6 h-6" />
                     {t("charroller.upload_sheet")}
                   </button>
                   <button
                     onClick={() => handleStartCreate("describe")}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium
-                               text-white transition-all hover:brightness-110"
+                    className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg
+                               text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-red-900/20 hover:shadow-xl"
                     style={{
-                      background: "linear-gradient(135deg, #8b4513, #654321)",
-                      border: "2px solid rgba(139, 69, 19, 0.6)",
+                      background:
+                        "linear-gradient(135deg, rgba(139, 69, 19, 0.6), rgba(101, 50, 14, 0.6))",
+                      border: "1px solid rgba(139, 69, 19, 0.5)",
                     }}
                   >
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-6 h-6" />
                     {t("charroller.create_with_ai")}
                   </button>
                 </div>
