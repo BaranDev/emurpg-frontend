@@ -21,6 +21,7 @@ import {
   Send,
   Trash2,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 import DiceRoller from "./DiceRoller";
 import { getCharacters } from "../../utils/characterStorage";
@@ -36,6 +37,7 @@ const CharrollerResults = ({
   isGeneratingPortrait = false,
   onEditWithAI,
   onLevelUp,
+  isLevelingUp = false,
   onDelete,
   theme = "arcane", // "tavern" | "arcane"
 }) => {
@@ -441,11 +443,16 @@ const CharrollerResults = ({
             {onLevelUp && characterData.system === "dnd5e" && (
               <button
                 onClick={onLevelUp}
-                className="p-2 rounded-lg transition-colors hover:brightness-125"
+                disabled={isLevelingUp}
+                className={`p-2 rounded-lg transition-colors ${isLevelingUp ? "opacity-50 cursor-not-allowed" : "hover:brightness-125"}`}
                 style={{ color: themeColors.accent }}
                 title="Level Up"
               >
-                <ChevronUp className="w-5 h-5" />
+                {isLevelingUp ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <ChevronUp className="w-5 h-5" />
+                )}
               </button>
             )}
 
@@ -1196,6 +1203,7 @@ CharrollerResults.propTypes = {
   isGeneratingPortrait: PropTypes.bool,
   onEditWithAI: PropTypes.func,
   onLevelUp: PropTypes.func,
+  isLevelingUp: PropTypes.bool,
   onDelete: PropTypes.func,
   theme: PropTypes.oneOf(["tavern", "arcane"]),
 };

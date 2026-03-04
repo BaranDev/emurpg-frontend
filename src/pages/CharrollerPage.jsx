@@ -49,6 +49,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const [settings, setSettings] = useState(getSettings);
   const [showSettings, setShowSettings] = useState(false);
   const [levelUpChoices, setLevelUpChoices] = useState(null);
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -368,13 +369,21 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   // ===============================
   // Level Up Shortcut
   // ===============================
-  const handleLevelUp = () => {
+  const handleLevelUp = async () => {
     if (!selectedCharacter) return;
-    const currentLevel = selectedCharacter.level || 1;
-    handleEditWithAI(
-      `Level up to level ${currentLevel + 1}`,
-      selectedCharacter,
-    );
+    setIsLevelingUp(true);
+    setError(null);
+    try {
+      const currentLevel = selectedCharacter.level || 1;
+      await handleEditWithAI(
+        `Level up to level ${currentLevel + 1}`,
+        selectedCharacter,
+      );
+    } catch (err) {
+      setError(err.message || "Level-up failed. Please try again.");
+    } finally {
+      setIsLevelingUp(false);
+    }
   };
 
   return (
@@ -620,6 +629,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                   isGeneratingPortrait={isGeneratingPortrait}
                   onEditWithAI={handleEditWithAI}
                   onLevelUp={handleLevelUp}
+                  isLevelingUp={isLevelingUp}
                   onDelete={() => handleDeleteCharacter(selectedCharacter.id)}
                   theme="tavern"
                 />

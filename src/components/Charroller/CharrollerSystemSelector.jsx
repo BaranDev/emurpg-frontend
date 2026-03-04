@@ -84,7 +84,7 @@ const CharrollerSystemSelector = ({ selectedSystem, onSystemChange }) => {
               >
                 <Icon 
                   className="w-6 h-6" 
-                  style={{ color: isSelected ? system.color : "#c0c0c0" }}
+                  style={{ color: isSelected ? system.color : "#8b9cc0" }}
                 />
               </div>
               
