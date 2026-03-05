@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { 
-  Plus, Upload, Settings, Users, Scroll, FileText, Sparkles,
-  AlertCircle
+import {
+  Plus,
+  Upload,
+  Settings,
+  Users,
+  Scroll,
+  FileText,
+  Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import CharacterCard from "./CharacterCard";
-import MusicPlayer from "./MusicPlayer";
+import TavernPlayer from "./TavernPlayer";
 import SettingsPanel from "./SettingsPanel";
-import { 
-  getCharacters, deleteCharacter, getSettings, markAsPlayed 
+import {
+  getCharacters,
+  deleteCharacter,
+  getSettings,
+  markAsPlayed,
 } from "../../utils/characterStorage";
 import { config } from "../../config";
 
@@ -17,11 +26,7 @@ import { config } from "../../config";
  * CharrollerManager - Main character management section
  * Displays saved characters and provides create/import actions
  */
-const CharrollerManager = ({ 
-  onCreateNew, 
-  onPlayCharacter,
-  onRefresh 
-}) => {
+const CharrollerManager = ({ onCreateNew, onPlayCharacter, onRefresh }) => {
   const { t } = useTranslation();
   const [characters, setCharacters] = useState([]);
   const [settings, setSettings] = useState(getSettings);
@@ -46,10 +51,13 @@ const CharrollerManager = ({
       if (settings.adminCode) {
         headers["x-admin-code"] = settings.adminCode;
       }
-      
-      const response = await fetch(`${config.backendUrl}/api/charroller/usage`, {
-        headers
-      });
+
+      const response = await fetch(
+        `${config.backendUrl}/api/charroller/usage`,
+        {
+          headers,
+        },
+      );
       const data = await response.json();
       setUsage(data);
     } catch (error) {
@@ -115,19 +123,23 @@ const CharrollerManager = ({
 
         {/* Usage info */}
         {usage && !usage.is_admin && usage.remaining !== "unlimited" && (
-          <div 
+          <div
             className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3 rounded-lg mb-8"
             style={{
-              background: usage.remaining <= 1 
-                ? "rgba(220, 38, 38, 0.15)" 
-                : "rgba(30, 58, 95, 0.5)",
-              border: usage.remaining <= 1 
-                ? "1px solid rgba(220, 38, 38, 0.4)"
-                : "1px solid rgba(74, 158, 255, 0.3)",
+              background:
+                usage.remaining <= 1
+                  ? "rgba(220, 38, 38, 0.15)"
+                  : "rgba(30, 58, 95, 0.5)",
+              border:
+                usage.remaining <= 1
+                  ? "1px solid rgba(220, 38, 38, 0.4)"
+                  : "1px solid rgba(74, 158, 255, 0.3)",
             }}
           >
             <div className="flex items-center gap-3">
-              <AlertCircle className={`w-5 h-5 ${usage.remaining <= 1 ? "text-red-400" : "text-blue-400"}`} />
+              <AlertCircle
+                className={`w-5 h-5 ${usage.remaining <= 1 ? "text-red-400" : "text-blue-400"}`}
+              />
               <span className="text-sm md:text-base text-slate-200">
                 {usage.remaining} {t("charroller.remaining_today")}
               </span>
@@ -152,7 +164,7 @@ const CharrollerManager = ({
             style={{
               background: "linear-gradient(135deg, #1e3a5f, #2d5a87)",
               border: "1px solid rgba(74, 158, 255, 0.3)",
-              boxShadow: "0 4px 15px rgba(74, 158, 255, 0.2)"
+              boxShadow: "0 4px 15px rgba(74, 158, 255, 0.2)",
             }}
           >
             <Upload className="w-5 h-5 text-blue-300 group-hover:scale-110 transition-transform" />
@@ -166,7 +178,7 @@ const CharrollerManager = ({
             style={{
               background: "linear-gradient(135deg, #4c1d95, #6d28d9)",
               border: "1px solid rgba(167, 139, 250, 0.3)",
-              boxShadow: "0 4px 15px rgba(147, 51, 234, 0.2)"
+              boxShadow: "0 4px 15px rgba(147, 51, 234, 0.2)",
             }}
           >
             <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -183,23 +195,27 @@ const CharrollerManager = ({
                 <Scroll className="w-5 h-5 text-blue-400" />
                 {t("charroller.your_characters")} ({characters.length})
               </h3>
-              
+
               <div className="flex gap-1 p-1 rounded-lg bg-slate-800/50 border border-slate-700/30">
                 <button
                   onClick={() => setViewMode("grid")}
                   className={`px-3 py-1.5 rounded-md text-sm transition-all font-medium
-                    ${viewMode === "grid" 
-                      ? "bg-blue-600 text-white shadow-sm" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                    ${
+                      viewMode === "grid"
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                    }`}
                 >
                   Grid
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
                   className={`px-3 py-1.5 rounded-md text-sm transition-all font-medium
-                    ${viewMode === "list" 
-                      ? "bg-blue-600 text-white shadow-sm" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                    ${
+                      viewMode === "list"
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                    }`}
                 >
                   List
                 </button>
@@ -207,11 +223,13 @@ const CharrollerManager = ({
             </div>
 
             {/* Character grid/list */}
-            <div className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                : "space-y-4"
-            }>
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  : "space-y-4"
+              }
+            >
               {characters.map((character) => (
                 <CharacterCard
                   key={character.id}
@@ -225,15 +243,15 @@ const CharrollerManager = ({
           </>
         ) : (
           // Empty state
-          <div 
+          <div
             className="text-center py-20 px-6 rounded-2xl relative overflow-hidden"
             style={{
               background: "rgba(30, 58, 95, 0.3)",
-              border: "2px dashed rgba(74, 158, 255, 0.3)"
+              border: "2px dashed rgba(74, 158, 255, 0.3)",
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-950/20 pointer-events-none" />
-            
+
             <FileText className="w-20 h-20 mx-auto text-slate-500 mb-6" />
             <h3 className="font-cinzel text-2xl text-white mb-3">
               {t("charroller.no_characters")}
@@ -247,7 +265,7 @@ const CharrollerManager = ({
                        text-white transition-all hover:-translate-y-1 hover:shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #4c1d95, #6d28d9)",
-                boxShadow: "0 0 20px rgba(147, 51, 234, 0.3)"
+                boxShadow: "0 0 20px rgba(147, 51, 234, 0.3)",
               }}
             >
               <Plus className="w-6 h-6" />

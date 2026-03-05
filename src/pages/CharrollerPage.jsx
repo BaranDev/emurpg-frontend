@@ -7,7 +7,7 @@ import {
   CharrollerDescribe,
   CharrollerResults,
   CharrollerNavbar,
-  MusicPlayer,
+  TavernPlayer,
   TavernBackground,
   LevelUpChoices,
   SettingsPanel,
@@ -772,7 +772,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
 
         {/* Music Player */}
         <div className="fixed bottom-4 right-4 z-30">
-          <MusicPlayer theme="tavern" autoPlay />
+          <TavernPlayer theme="tavern" autoPlay />
         </div>
       </div>
 

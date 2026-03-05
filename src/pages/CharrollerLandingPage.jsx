@@ -17,7 +17,7 @@ import {
   CharrollerBackground,
   CharrollerFooter,
   CharrollerNavbar,
-  MusicPlayer,
+  TavernPlayer,
 } from "../components";
 import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
 
@@ -45,7 +45,7 @@ const CharrollerLandingPage = ({ onLanguageSwitch }) => {
 
         {/* Music Player (autoplay, fixed position) */}
         <div className="fixed bottom-6 right-6 z-50">
-          <MusicPlayer autoPlay={true} theme="arcane" />
+          <TavernPlayer autoPlay={true} theme="arcane" />
         </div>
 
         {/* Content wrapper with z-index */}

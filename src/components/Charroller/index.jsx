@@ -14,7 +14,8 @@ export { default as CharrollerNavbar } from "./CharrollerNavbar";
 export { default as CharrollerBackground } from "./CharrollerBackground";
 export { default as TavernBackground } from "./TavernBackground";
 export { default as CharacterCard } from "./CharacterCard";
-export { default as MusicPlayer } from "./MusicPlayer";
+export { default as TavernPlayer } from "./TavernPlayer";
+export { default as MusicPlayer } from "./TavernPlayer"; // alias for backward compat
 export { default as SettingsPanel } from "./SettingsPanel";
 export { default as DiceRoller, parseDice, rollDice } from "./DiceRoller";
 export { default as LevelUpChoices } from "./LevelUpChoices";
