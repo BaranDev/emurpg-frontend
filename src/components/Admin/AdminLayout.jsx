@@ -357,7 +357,8 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
               </button>
               <ChevronRight className="w-3 h-3" />
               <span className="text-yellow-500">
-                {menuItems.find((m) => m.id === activePanel)?.label || activePanel}
+                {menuItems.find((m) => m.id === activePanel)?.label ||
+                  activePanel}
               </span>
             </nav>
           )}

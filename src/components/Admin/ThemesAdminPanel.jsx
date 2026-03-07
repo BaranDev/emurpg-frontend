@@ -15,6 +15,9 @@ import {
   Users,
   Clock,
   AlertCircle,
+  Upload,
+  Image as ImageIcon,
+  XCircle,
 } from "lucide-react";
 
 const ThemesAdminPanel = () => {
@@ -29,10 +32,13 @@ const ThemesAdminPanel = () => {
   const [form, setForm] = useState({
     name: "",
     background_styles: "",
+    background_image_url: "",
     card_styles: "",
     hover_animations: "",
     button_styles: "",
   });
+
+  const [isUploading, setIsUploading] = useState(false);
 
   const [copied, setCopied] = useState(false);
 
@@ -73,12 +79,14 @@ const ThemesAdminPanel = () => {
     setForm({
       name: "",
       background_styles: "",
+      background_image_url: "",
       card_styles: "",
       hover_animations: "",
       button_styles: "",
     });
     setIsEditMode(false);
     setSelectedThemeId(null);
+    setIsUploading(false);
   };
 
   const handleOpenCreate = () => {
@@ -90,6 +98,7 @@ const ThemesAdminPanel = () => {
     setForm({
       name: theme.name,
       background_styles: theme.background_styles || "",
+      background_image_url: theme.background_image_url || "",
       card_styles: theme.card_styles,
       hover_animations: theme.hover_animations,
       button_styles: theme.button_styles,
@@ -99,8 +108,106 @@ const ThemesAdminPanel = () => {
     setIsModalOpen(true);
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image is too large. Maximum size is 10MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${backendUrl}/api/admin/themes/upload`, {
+        method: "POST",
+        headers: { apiKey },
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setForm((prev) => ({ ...prev, background_image_url: data.url }));
+      } else {
+        const data = await res.json();
+        alert(`Upload failed: ${data.detail || "Unknown error"}`);
+      }
+    } catch (err) {
+      alert(`Error uploading: ${err.message}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = () => {
+    setForm((prev) => ({ ...prev, background_image_url: "" }));
+  };
+
+  const cleanClasses = (str) => {
+    if (!str) return "";
+    // Guardrail: Remove classes that alter dimensions or layout flow
+    const blockedPatterns = [
+      "w-",
+      "h-",
+      "min-w-",
+      "max-w-",
+      "min-h-",
+      "max-h-",
+      "flex",
+      "grid",
+      "block",
+      "inline",
+      "hidden",
+      "absolute",
+      "relative",
+      "fixed",
+      "sticky",
+      "top-",
+      "left-",
+      "right-",
+      "bottom-",
+      "inset-",
+      "p-",
+      "px-",
+      "py-",
+      "pt-",
+      "pb-",
+      "m-",
+      "mx-",
+      "my-",
+      "mt-",
+      "mb-",
+      "translate-",
+      "scale-",
+      "columns-",
+      "float-",
+      "clear-",
+    ];
+
+    // Looks for specific prefixes or standalone words
+    // Correctly handles the '!' (important) prefix and uses \s|^ for boundaries
+    const regex = new RegExp(
+      `(?:^|\\s)!?(${blockedPatterns.join("|")})\\S*`,
+      "gi",
+    );
+    return str.replace(regex, "").trim();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Enforce guardrail on all theme fields
+    const cleanedForm = {
+      ...form,
+      card_styles: cleanClasses(form.card_styles),
+      hover_animations: cleanClasses(form.hover_animations),
+      button_styles: cleanClasses(form.button_styles),
+      background_styles: cleanClasses(form.background_styles),
+    };
+
     try {
       const url = isEditMode
         ? `${backendUrl}/api/admin/themes/${selectedThemeId}`
@@ -113,7 +220,7 @@ const ThemesAdminPanel = () => {
           "Content-Type": "application/json",
           apiKey,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(cleanedForm),
       });
 
       if (res.ok) {
@@ -130,8 +237,8 @@ const ThemesAdminPanel = () => {
   };
 
   const handleDelete = (theme) => {
-    if (theme.is_default) {
-      alert("Cannot delete a default theme.");
+    if (theme.id === "default") {
+      alert("Cannot delete the master default theme.");
       return;
     }
     setConfirmDialog({
@@ -145,7 +252,7 @@ const ThemesAdminPanel = () => {
             {
               method: "DELETE",
               headers: { apiKey },
-            }
+            },
           );
           if (res.ok) {
             fetchThemes();
@@ -162,15 +269,27 @@ const ThemesAdminPanel = () => {
   };
 
   const copyPrompt = () => {
-    const prompt = `I want to create a cohesive visually stunning TailwindCSS theme for a card component. Give me exactly four strings of Tailwind classes: 
-1) background_styles (overall theme background color, e.g. bg-gray-900).
-2) card_styles (card structure, borders, shadows, text colors).
-3) hover_animations (transformations like hover:scale-105, transitions, hover shadows).
-4) button_styles (background, hover state, text color, rounded status). 
+    const prompt = `I want to create a visually stunning TailwindCSS theme for a card component. 
 
-IMPORTANT RULES: 
-- DO NOT use arbitrary values unnecessarily.
-- Output ONLY a valid raw JSON object with keys "background_styles", "card_styles", "hover_animations", "button_styles". No markdown formatting!`;
+Please provide exactly five snippets. For each snippet, provide a brief label and then the content inside a markdown code block so I can easily copy them.
+
+Provide them in this EXACT order:
+1) Theme Name (a creative name for this theme).
+2) Card Styles (Tailwind classes for the card structure, borders, shadows, text colors).
+3) Background Styles (Tailwind classes for the overall page background, e.g. bg-gray-900 or gradients).
+4) Hover Animations (Tailwind classes for transformations like hover:scale-105).
+5) Button Styles (Tailwind classes for the button background, hover states, rounded status).
+
+IMPORTANT RULES:
+- Use clear, descriptive Tailwind classes.
+- DO NOT use any width, height, or sizing classes (e.g., NO w-*, h-*, min-*, max-*).
+- DO NOT use margin or padding that could change the card's overall footprint.
+- Output ONLY the classes or name. DO NOT include JSON keys, quotes, or colons inside the code blocks.
+- Present each field like this:
+   Field Name
+   \`\`\`
+   content here
+   \`\`\``;
     navigator.clipboard.writeText(prompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -213,14 +332,23 @@ IMPORTANT RULES:
         {themes.map((theme) => (
           <div
             key={theme.id}
-            className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
+            className={`shadow-lg !flex !flex-col h-full min-h-[400px] overflow-hidden relative ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
           >
-            <div className="w-full h-32 overflow-hidden bg-gray-700 relative">
+            {theme.background_image_url && (
+              <div className="absolute inset-0 z-0">
+                <img
+                  src={theme.background_image_url}
+                  alt=""
+                  className="w-full h-full object-cover opacity-60"
+                />
+              </div>
+            )}
+            <div className="w-full h-32 overflow-hidden bg-gray-700/50 relative z-10">
               <div className="absolute inset-0 flex items-center justify-center opacity-30">
                 <Palette className="w-12 h-12" />
               </div>
             </div>
-            <div className="p-6 flex-grow flex flex-col justify-between">
+            <div className="p-6 flex-grow flex flex-col justify-between relative z-10">
               <div>
                 <div className="flex justify-between items-start mb-2">
                   <h3
@@ -266,7 +394,7 @@ IMPORTANT RULES:
                   >
                     Edit
                   </AdminButton>
-                  {!theme.is_default && (
+                  {theme.id !== "default" && (
                     <AdminButton
                       onClick={() => handleDelete(theme)}
                       variant="danger"
@@ -291,7 +419,7 @@ IMPORTANT RULES:
           setIsModalOpen(false);
           resetForm();
         }}
-        size="4xl"
+        size="xl"
       >
         <div className="flex flex-col xl:flex-row gap-6">
           {/* Form Content */}
@@ -368,6 +496,69 @@ IMPORTANT RULES:
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Background Image
+                </label>
+                {!config.ENABLE_R2 && (
+                  <div className="mb-3 p-3 bg-amber-900/20 border border-amber-500/50 rounded-lg flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                    <p className="text-xs text-amber-200/80">
+                      Image uploads are temporarily disabled. You can still customize colors and animations.
+                    </p>
+                  </div>
+                )}
+                <div className="flex items-center gap-4">
+                  {form.background_image_url ? (
+                    <div className="relative group">
+                      <img
+                        src={form.background_image_url}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover rounded-lg border border-gray-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XCircle className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label 
+                      className={`flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed rounded-lg transition-colors ${
+                        !config.ENABLE_R2 
+                          ? "border-gray-700 bg-gray-800/50 cursor-not-allowed" 
+                          : "border-gray-600 cursor-pointer hover:border-yellow-500"
+                      }`}
+                    >
+                      <div className="flex flex-col items-center justify-center pt-2">
+                        {isUploading ? (
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+                        ) : (
+                          <>
+                            <Upload className={`w-6 h-6 ${!config.ENABLE_R2 ? "text-gray-600" : "text-gray-400"}`} />
+                            <span className="text-[10px] text-gray-500 mt-1 uppercase">
+                              {config.ENABLE_R2 ? "Upload" : "Fixed"}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={isUploading || !config.ENABLE_R2}
+                      />
+                    </label>
+                  )}
+                  <div className="text-xs text-gray-500 italic max-w-[200px]">
+                    Optimized to WebP automatically. Recommended: dark or subtle patterns.
+                  </div>
+                </div>
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Hover Animations (Tailwind Classes)
                 </label>
@@ -423,18 +614,29 @@ IMPORTANT RULES:
               Live Preview
             </h4>
             <div
-              className={`shadow-lg flex flex-col h-[400px] overflow-hidden ${form.background_styles || "bg-gray-800"} ${form.card_styles} ${form.hover_animations}`}
+              className={`shadow-lg !flex !flex-col h-[400px] overflow-hidden relative ${form.background_styles || "bg-gray-800"} ${form.card_styles} ${form.hover_animations}`}
             >
-              <div className="w-full h-32 overflow-hidden bg-gray-700 relative">
+              {form.background_image_url && (
+                <div className="absolute inset-0 z-0">
+                  <img
+                    src={form.background_image_url}
+                    alt=""
+                    className="w-full h-full object-cover opacity-60"
+                  />
+                </div>
+              )}
+              <div className="w-full h-32 overflow-hidden bg-gray-700/50 relative z-10">
                 <div className="absolute inset-0 flex items-center justify-center opacity-30">
                   <Palette className="w-12 h-12" />
                 </div>
               </div>
-              <div className="p-6 flex-grow flex flex-col justify-between">
+              <div className="p-6 flex-grow flex flex-col justify-between relative z-10">
                 <div>
                   <h3
                     className={`text-xl font-bold text-center font-medieval ${
-                      !form.card_styles.includes("text-") ? "text-yellow-500" : ""
+                      !form.card_styles.includes("text-")
+                        ? "text-yellow-500"
+                        : ""
                     }`}
                   >
                     {form.name || "Theme Name Preview"}
@@ -468,9 +670,7 @@ IMPORTANT RULES:
         title={confirmDialog.title}
         message={confirmDialog.message}
         onConfirm={confirmDialog.onConfirm}
-        onCancel={() =>
-          setConfirmDialog({ ...confirmDialog, open: false })
-        }
+        onCancel={() => setConfirmDialog({ ...confirmDialog, open: false })}
       />
     </div>
   );

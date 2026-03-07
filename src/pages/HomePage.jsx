@@ -56,7 +56,7 @@ const HomePage = ({ onLanguageSwitch }) => {
         setTeamMembers(data);
         localStorage.setItem(
           CACHE_KEY,
-          JSON.stringify({ data, fetched_at: Date.now() })
+          JSON.stringify({ data, fetched_at: Date.now() }),
         );
       } catch {
         // silently fail - cached data or empty list is fine
@@ -92,7 +92,7 @@ const HomePage = ({ onLanguageSwitch }) => {
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" }
+      { rootMargin: "200px" },
     );
     observer.observe(node);
     return () => observer.disconnect();

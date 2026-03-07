@@ -71,7 +71,7 @@ const TeamMembersPanel = () => {
 
       const data = await response.json();
       const sorted = [...data].sort(
-        (a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)
+        (a, b) => (a.display_order ?? 0) - (b.display_order ?? 0),
       );
       setMembers(sorted);
     } catch (error) {
@@ -133,7 +133,7 @@ const TeamMembersPanel = () => {
           method: "PUT",
           headers: { apiKey },
           body: buildFormData(),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to update team member");
@@ -162,7 +162,7 @@ const TeamMembersPanel = () => {
             {
               method: "DELETE",
               headers: { apiKey },
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to delete team member");
@@ -214,7 +214,7 @@ const TeamMembersPanel = () => {
               display_order: m.display_order,
             })),
           }),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to reorder team members");
@@ -294,14 +294,27 @@ const TeamMembersPanel = () => {
         <label className="block text-sm font-medium text-gray-300 mb-1">
           Photo
         </label>
-        <div className="relative group cursor-pointer">
+        {!config.ENABLE_R2 && (
+          <div className="mb-2 p-3 bg-amber-900/20 border border-amber-500/50 rounded-lg flex items-center gap-3 w-full max-w-md">
+            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+            <p className="text-xs text-amber-200/80">
+              Photo uploads are temporarily disabled. Team profiles will use repository assets where available.
+            </p>
+          </div>
+        )}
+        <div className={`relative group ${!config.ENABLE_R2 ? "cursor-not-allowed" : "cursor-pointer"}`}>
           <input
             type="file"
             accept="image/*"
             onChange={handlePhotoChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            disabled={!config.ENABLE_R2}
+            className={`absolute inset-0 w-full h-full opacity-0 z-10 ${!config.ENABLE_R2 ? "cursor-not-allowed" : "cursor-pointer"}`}
           />
-          <div className="w-[120px] h-[120px] rounded-full border-2 border-amber-600/50 overflow-hidden bg-gray-800 flex items-center justify-center group-hover:border-amber-400 transition-colors">
+          <div className={`w-[120px] h-[120px] rounded-full border-2 overflow-hidden bg-gray-800 flex items-center justify-center transition-colors ${
+            !config.ENABLE_R2 
+              ? "border-gray-700" 
+              : "border-amber-600/50 group-hover:border-amber-400"
+          }`}>
             {photoPreview ? (
               <img
                 src={photoPreview}
@@ -311,13 +324,15 @@ const TeamMembersPanel = () => {
             ) : (
               <div className="flex flex-col items-center text-gray-500">
                 <Upload className="w-6 h-6 mb-1" />
-                <span className="text-xs">Upload</span>
+                <span className="text-xs">{config.ENABLE_R2 ? "Upload" : "Fixed"}</span>
               </div>
             )}
           </div>
-          <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-            <Upload className="w-6 h-6 text-white" />
-          </div>
+          {config.ENABLE_R2 && (
+            <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+              <Upload className="w-6 h-6 text-white" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -330,9 +345,7 @@ const TeamMembersPanel = () => {
           <input
             type="text"
             value={formData.name}
-            onChange={(e) =>
-              setFormData({ ...formData, name: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Full name"
             className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
             required
@@ -457,7 +470,11 @@ const TeamMembersPanel = () => {
             />
           </div>
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              className="w-4 h-4 text-indigo-400 shrink-0"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
             </svg>
             <input

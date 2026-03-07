@@ -247,8 +247,18 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
   return (
     <div
       key={table.slug}
-      className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
+      className={`shadow-lg !flex !flex-col h-full min-h-[420px] overflow-hidden relative ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
     >
+      {theme.background_image_url && config.ENABLE_R2 && (
+        <div className="absolute inset-0 z-0">
+          <img
+            src={theme.background_image_url}
+            alt=""
+            className="w-full h-full object-cover opacity-60"
+          />
+        </div>
+      )}
+      <div className="flex flex-col h-full relative z-10">
       {(gameData?.image_url || table.game_image) && (
         <div className="w-full h-32 overflow-hidden">
           <img
@@ -335,6 +345,7 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
           >
             {t("table_list.game_info")}
           </button>
+        </div>
         </div>
       </div>
     </div>
