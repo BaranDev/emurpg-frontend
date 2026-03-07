@@ -217,7 +217,6 @@ GlobalAudioProvider.propTypes = {
   audioSrc: PropTypes.string,
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useGlobalAudio = () => {
   const context = useContext(AudioContext);
   if (!context) {

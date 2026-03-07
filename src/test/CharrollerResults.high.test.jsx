@@ -11,8 +11,8 @@
  *   3c. Saving Throw buttons  - must roll actual d20, not hardcoded 10
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CharrollerResults from "../components/Charroller/CharrollerResults";
 import { makeDnd5eCharacter, seedLocalStorage } from "./fixtures/charroller";
@@ -89,8 +89,9 @@ describe("Initiative button", () => {
     renderCharroller();
     const btn = screen.getByRole("button", { name: /initiative/i });
     await user.click(btn);
-    // The result should appear somewhere in the document
-    expect(screen.getByText(/21/)).toBeInTheDocument();
+    // Initiative click opens history; assert roll total there to avoid matching clock text.
+    const history = await screen.findByTestId("roll-history");
+    expect(within(history).getByText("21")).toBeInTheDocument();
   });
 
   it("adds the initiative roll to roll history", async () => {

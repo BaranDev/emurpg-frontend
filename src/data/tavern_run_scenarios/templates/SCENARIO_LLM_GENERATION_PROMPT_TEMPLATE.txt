@@ -1,0 +1,166 @@
+TAVERN RUN SCENARIO GENERATION PROMPT TEMPLATE (STANDALONE)
+
+Purpose:
+Generate a complete Tavern Run scenario JSON that can be dropped into:
+src/data/tavern_run_scenarios/
+and auto-loaded by scenarioLoader.js.
+
+How to use:
+1) Replace all {{placeholders}} below.
+2) Paste this whole file into an LLM chat.
+3) Ask the model to return ONLY valid JSON (no markdown).
+4) Save the output as {{SCENARIO_ID}}.json in src/data/tavern_run_scenarios/.
+
+--------------------------------------------------
+PROMPT TO SEND TO THE LLM
+--------------------------------------------------
+You are writing content for the EMURPG frontend Tavern Run minigame.
+Return ONLY a valid JSON object. Do not wrap in markdown. Do not add explanations.
+
+Scenario goals:
+- Scenario id: {{SCENARIO_ID}} (kebab-case)
+- Scenario name: {{SCENARIO_NAME}}
+- Premise: {{PREMISE}}
+- Main character: {{MAIN_CHARACTER}}
+- Tone: {{TONE}} (funny + grounded + tabletop chaos)
+- Mood: {{MOOD}} (chaotic | heroic | cursed | bittersweet)
+- Thumbnail URL: {{THUMBNAIL_URL}}
+- Color accent: {{ACCENT_COLOR}} (amber, blue, green, etc.)
+
+JSON schema (must match exactly):
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "thumbnail": "string",
+  "theme": { "accent": "string", "mood": "string" },
+  "startingState": {
+    "renown": number,
+    "supplies": number,
+    "danger": number,
+    "streak": number,
+    "tags": ["string"]
+  },
+  "acts": {
+    "hook": [Scene],
+    "complication": [Scene],
+    "opportunity": [Scene],
+    "crisis": [Scene]
+  },
+  "endings": [Ending]
+}
+
+Scene schema:
+{
+  "id": "string",
+  "title": "string",
+  "text": "string",
+  "requirements": {
+    "requiredTags": ["string"],
+    "excludedTags": ["string"]
+  },
+  "choices": [Choice, Choice, ...]
+}
+
+Choice schema:
+{
+  "id": "string",
+  "label": "string",
+  "hint": "string",
+  "rollTable": {
+    "critFail": Result,
+    "fail": Result,
+    "mixed": Result,
+    "success": Result,
+    "crit": Result
+  }
+}
+
+Result schema:
+{
+  "text": "string",
+  "statChanges": {
+    "renown": number,
+    "supplies": number,
+    "danger": number,
+    "streak": number
+  },
+  "addTags": ["string"],
+  "removeTags": ["string"]
+}
+
+Ending schema:
+{
+  "id": "string",
+  "family": "legendary|heroic|chaotic|cursed|pathetic",
+  "title": "string",
+  "text": "string",
+  "requirements": {
+    "requiredTags": ["string"],
+    "excludedTags": ["string"],
+    "minRenown": number|null,
+    "maxRenown": number|null,
+    "minSupplies": number|null,
+    "maxSupplies": number|null,
+    "minDanger": number|null,
+    "minStreak": number|null
+  }
+}
+
+Hard constraints:
+- Output must be valid JSON.
+- Use ONLY these stat keys: renown, supplies, danger, streak.
+- Use ONLY these tags:
+  heroic, greedy, chaotic, cursed, charming, reckless, lucky, wounded, legendary, popular.
+- Every scene must include requirements + at least 2 choices.
+- Every choice must include all 5 roll bands: critFail, fail, mixed, success, crit.
+- Every roll band result must include all 4 fields:
+  text, statChanges, addTags, removeTags.
+- Keep scene and choice ids unique and kebab-case.
+- Keep each result text to 1-2 sentences.
+- Keep each ending text to 1-3 sentences.
+- Include one fallback ending with minimal requirements.
+
+Content structure requirements:
+- hook scenes: 4
+- complication scenes: 6
+- opportunity scenes: 6
+- crisis scenes: 6
+- endings: 25 total
+- Endings must be distributed 5 per family:
+  legendary, heroic, chaotic, cursed, pathetic.
+
+Design guidance:
+- The run should feel like a fast mini-game, not a novel.
+- Use punchy scene text and funny consequences.
+- Critical fail should be memorable and comedic.
+- Critical success should feel powerful and rewarding.
+- Mix good and bad stat pressure so endings vary naturally.
+- Keep requirements readable and practical.
+
+Preferred startingState defaults (unless premise requires otherwise):
+{
+  "renown": 0,
+  "supplies": 2,
+  "danger": 1,
+  "streak": 0,
+  "tags": ["wounded"]
+}
+
+Output rules:
+- Return only the final JSON object.
+- No comments.
+- No trailing commas.
+- No markdown fences.
+
+--------------------------------------------------
+QUICK FILL EXAMPLE
+--------------------------------------------------
+{{SCENARIO_ID}} = moon-cheese-heist
+{{SCENARIO_NAME}} = The Moon Cheese Heist
+{{PREMISE}} = A disgraced knight steals sacred moon cheese and must escape underground catacombs.
+{{MAIN_CHARACTER}} = Sir Bramble, raccoon knight
+{{TONE}} = absurd fantasy caper with grounded consequences
+{{MOOD}} = chaotic
+{{THUMBNAIL_URL}} = https://r2.emurpg.com/tavern-run/moon-cheese-heist.webp
+{{ACCENT_COLOR}} = moonlit blue

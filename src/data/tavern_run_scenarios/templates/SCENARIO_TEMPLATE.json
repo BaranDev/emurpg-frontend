@@ -1,0 +1,189 @@
+{
+  "id": "replace-with-kebab-case-id",
+  "name": "Replace With Scenario Name",
+  "description": "Short pitch shown in scenario select menu.",
+  "thumbnail": "https://r2.emurpg.com/tavern-run/replace-with-thumbnail.webp",
+  "theme": {
+    "accent": "amber",
+    "mood": "chaotic"
+  },
+  "startingState": {
+    "renown": 0,
+    "supplies": 2,
+    "danger": 1,
+    "streak": 0,
+    "tags": ["wounded"]
+  },
+  "acts": {
+    "hook": [
+      {
+        "id": "hook-scene-1",
+        "title": "Hook Scene Title",
+        "text": "1-2 sentence setup for the first moment.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "hook-choice-1",
+            "label": "Choice label shown on button",
+            "hint": "Optional flavor hint",
+            "rollTable": {
+              "critFail": {
+                "text": "Funny bad outcome text.",
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Bad outcome text.",
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Mixed outcome text.",
+                "statChanges": {},
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Good outcome text.",
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Big win outcome text.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1
+                },
+                "addTags": ["lucky"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "hook-choice-2",
+            "label": "Second choice label",
+            "hint": "Optional flavor hint",
+            "rollTable": {
+              "critFail": {
+                "text": "Outcome",
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Outcome",
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Outcome",
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Outcome",
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Outcome",
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": ["legendary"],
+                "removeTags": ["wounded"]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "complication": [
+      {
+        "id": "complication-scene-1",
+        "title": "Complication Scene Title",
+        "text": "Something goes wrong.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": []
+      }
+    ],
+    "opportunity": [
+      {
+        "id": "opportunity-scene-1",
+        "title": "Opportunity Scene Title",
+        "text": "Something tempting appears.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": []
+      }
+    ],
+    "crisis": [
+      {
+        "id": "crisis-scene-1",
+        "title": "Crisis Scene Title",
+        "text": "Final challenge before ending.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": []
+      }
+    ]
+  },
+  "endings": [
+    {
+      "id": "legendary-ending-1",
+      "family": "legendary",
+      "title": "Ending Title",
+      "text": "1-3 sentence ending text.",
+      "requirements": {
+        "requiredTags": ["legendary"],
+        "excludedTags": [],
+        "minRenown": 3,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "fallback-ending",
+      "family": "pathetic",
+      "title": "Not Again...",
+      "text": "Fallback ending used when nothing else strongly matches.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,3399 @@
+{
+  "id": "express-kebab-for-the-lich-king",
+  "name": "Express Kebab for the Lich King",
+  "description": "Goblin courier Pip delivers a royal kebab through chaotic streets. Can you beat the clock or taste bad reviews forever?!",
+  "thumbnail": "https://r2.emurpg.com/tavern-run/express-kebab-for-the-lich-king.webp",
+  "theme": {
+    "accent": "emerald",
+    "mood": "chaotic"
+  },
+  "startingState": {
+    "renown": 0,
+    "supplies": 2,
+    "danger": 1,
+    "streak": 0,
+    "tags": ["wounded"]
+  },
+  "acts": {
+    "hook": [
+      {
+        "id": "hook-cold-kebab-quest",
+        "title": "Cold Kebab, Hot Deadline",
+        "text": "You are Pip Pockets, goblin courier, and your boss just handed you a royal kebab order for the Lich King. It is already getting cold and somehow humming ominously.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "hook-cold-kebab-quest-sprint",
+            "label": "Sprint through the fish market",
+            "hint": "Fast path, strong smells, unknown puddles.",
+            "rollTable": {
+              "critFail": {
+                "text": "Sprint through the fish market goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Sprint through the fish market mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Sprint through the fish market kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Sprint through the fish market works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Sprint through the fish market becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["popular", "heroic"],
+                "removeTags": ["cursed"]
+              }
+            }
+          },
+          {
+            "id": "hook-cold-kebab-quest-bargain-cart",
+            "label": "Borrow a cabbage cart",
+            "hint": "Style points matter in delivery.",
+            "rollTable": {
+              "critFail": {
+                "text": "Borrow a cabbage cart goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Borrow a cabbage cart mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Borrow a cabbage cart kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Borrow a cabbage cart works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["popular"],
+                "removeTags": ["reckless"]
+              },
+              "crit": {
+                "text": "Borrow a cabbage cart becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-fork-oath",
+        "title": "The Sacred Fork Oath",
+        "text": "At the tavern door, Chef Auntie makes you swear on the Sacred Fork to deliver with dignity. You are wearing two different boots and zero dignity.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "hook-fork-oath-solemn-vow",
+            "label": "Make a solemn vow",
+            "hint": "Try sounding trustworthy for once.",
+            "rollTable": {
+              "critFail": {
+                "text": "Make a solemn vow goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Make a solemn vow mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Make a solemn vow kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Make a solemn vow works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Make a solemn vow becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["legendary"],
+                "removeTags": ["cursed"]
+              }
+            }
+          },
+          {
+            "id": "hook-fork-oath-finger-guns",
+            "label": "Do finger guns and promise vibes",
+            "hint": "Confidence is basically paperwork.",
+            "rollTable": {
+              "critFail": {
+                "text": "Do finger guns and promise vibes goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Do finger guns and promise vibes mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Do finger guns and promise vibes kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Do finger guns and promise vibes works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Do finger guns and promise vibes becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming", "legendary"],
+                "removeTags": ["greedy"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-unpaid-tab-ambush",
+        "title": "Unpaid Tab Ambush",
+        "text": "Three bards block the alley and claim you still owe them for improvised percussion damages. They are holding a lute like it is legal evidence.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "hook-unpaid-tab-ambush-debate-law",
+            "label": "Debate tavern law",
+            "hint": "Use fake legal terms with confidence.",
+            "rollTable": {
+              "critFail": {
+                "text": "Debate tavern law goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Debate tavern law mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Debate tavern law kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Debate tavern law works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Debate tavern law becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "hook-unpaid-tab-ambush-pay-in-pickles",
+            "label": "Offer payment in pickles",
+            "hint": "A risky but delicious currency.",
+            "rollTable": {
+              "critFail": {
+                "text": "Offer payment in pickles goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Offer payment in pickles mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Offer payment in pickles kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Offer payment in pickles works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["lucky"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Offer payment in pickles becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["popular"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-mysterious-passenger",
+        "title": "Mysterious Passenger",
+        "text": "A tiny skeleton in a raincoat jumps into your delivery satchel and says, 'No questions, drive.' You do not have a cart, but the energy is convincing.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "hook-mysterious-passenger-accept",
+            "label": "Accept the tiny passenger",
+            "hint": "What is one more bad decision today?",
+            "rollTable": {
+              "critFail": {
+                "text": "Accept the tiny passenger goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Accept the tiny passenger mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Accept the tiny passenger kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": ["wounded"]
+              },
+              "success": {
+                "text": "Accept the tiny passenger works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Accept the tiny passenger becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "heroic"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "hook-mysterious-passenger-negotiate-fare",
+            "label": "Negotiate a passenger fee",
+            "hint": "Business before panic.",
+            "rollTable": {
+              "critFail": {
+                "text": "Negotiate a passenger fee goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Negotiate a passenger fee mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Negotiate a passenger fee kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Negotiate a passenger fee works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["charming"],
+                "removeTags": ["reckless"]
+              },
+              "crit": {
+                "text": "Negotiate a passenger fee becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": ["greedy"]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "complication": [
+      {
+        "id": "complication-bridge-toll",
+        "title": "Bridge Toll in Interpretive Dance",
+        "text": "The bridge keeper now accepts only interpretive dance as toll payment due to a budget crisis in coin handling.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "complication-bridge-toll-dance",
+            "label": "Perform heroic dance toll",
+            "hint": "Hips save lives.",
+            "rollTable": {
+              "critFail": {
+                "text": "Perform heroic dance toll goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Perform heroic dance toll mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Perform heroic dance toll kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Perform heroic dance toll works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Perform heroic dance toll becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "complication-bridge-toll-bluff-membership",
+            "label": "Claim bridge premium membership",
+            "hint": "Say 'platinum tier' often.",
+            "rollTable": {
+              "critFail": {
+                "text": "Claim bridge premium membership goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Claim bridge premium membership mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Claim bridge premium membership kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Claim bridge premium membership works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": ["cursed"]
+              },
+              "crit": {
+                "text": "Claim bridge premium membership becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming"],
+                "removeTags": ["wounded"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "complication-rival-courier",
+        "title": "Rival Courier on Roller Skates",
+        "text": "Your rival, Donna the Halfling, zooms past on enchanted roller skates with a smug wave and a louder bell.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": ["heroic"]
+        },
+        "choices": [
+          {
+            "id": "complication-rival-courier-race",
+            "label": "Challenge Donna to a race",
+            "hint": "Winner keeps bragging rights forever.",
+            "rollTable": {
+              "critFail": {
+                "text": "Challenge Donna to a race goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Challenge Donna to a race mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Challenge Donna to a race kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Challenge Donna to a race works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Challenge Donna to a race becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "legendary"],
+                "removeTags": ["reckless"]
+              }
+            }
+          },
+          {
+            "id": "complication-rival-courier-sabotage-bell",
+            "label": "Sabotage her bell with jam",
+            "hint": "Sticky tactics, clean getaway.",
+            "rollTable": {
+              "critFail": {
+                "text": "Sabotage her bell with jam goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Sabotage her bell with jam mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Sabotage her bell with jam kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Sabotage her bell with jam works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["reckless"]
+              },
+              "crit": {
+                "text": "Sabotage her bell with jam becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": ["wounded"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "complication-rain-of-frogs",
+        "title": "Rain of Frogs",
+        "text": "The wizard district weather machine malfunctions and now frogs are falling from the sky at medium speed.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "complication-rain-of-frogs-umbrella",
+            "label": "Use a tavern tray as umbrella",
+            "hint": "You have confidence and cookware.",
+            "rollTable": {
+              "critFail": {
+                "text": "Use a tavern tray as umbrella goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Use a tavern tray as umbrella mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Use a tavern tray as umbrella kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Use a tavern tray as umbrella works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Use a tavern tray as umbrella becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": ["wounded"]
+              }
+            }
+          },
+          {
+            "id": "complication-rain-of-frogs-juggle",
+            "label": "Juggle the frogs for tips",
+            "hint": "Turn chaos into side income.",
+            "rollTable": {
+              "critFail": {
+                "text": "Juggle the frogs for tips goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Juggle the frogs for tips mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Juggle the frogs for tips kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Juggle the frogs for tips works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Juggle the frogs for tips becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "heroic"],
+                "removeTags": ["cursed"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "complication-health-inspector",
+        "title": "Arcane Health Inspector",
+        "text": "A grim inspector in emerald robes scans your kebab with a crystal and gasps dramatically at the sauce aura.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "complication-health-inspector-bribe-snack",
+            "label": "Bribe with complimentary fries",
+            "hint": "A warm potato can change policy.",
+            "rollTable": {
+              "critFail": {
+                "text": "Bribe with complimentary fries goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Bribe with complimentary fries mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Bribe with complimentary fries kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Bribe with complimentary fries works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["cursed"]
+              },
+              "crit": {
+                "text": "Bribe with complimentary fries becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["legendary"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "complication-health-inspector-show-cert",
+            "label": "Present forged hygiene certificate",
+            "hint": "The ink is still wet.",
+            "rollTable": {
+              "critFail": {
+                "text": "Present forged hygiene certificate goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Present forged hygiene certificate mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Present forged hygiene certificate kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Present forged hygiene certificate works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Present forged hygiene certificate becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "legendary"],
+                "removeTags": ["reckless"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "complication-possessed-signpost",
+        "title": "Possessed Signpost",
+        "text": "A crossroads signpost starts giving contradictory directions in three accents and one pirate voice.",
+        "requirements": {
+          "requiredTags": ["chaotic"],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "complication-possessed-signpost-trust-pirate",
+            "label": "Follow the pirate voice",
+            "hint": "Pirates seem directionally honest.",
+            "rollTable": {
+              "critFail": {
+                "text": "Follow the pirate voice goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Follow the pirate voice mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Follow the pirate voice kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Follow the pirate voice works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["charming"],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Follow the pirate voice becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["legendary", "popular"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "complication-possessed-signpost-spin-and-pick",
+            "label": "Spin in place and pick a path",
+            "hint": "Ancient goblin navigation technique.",
+            "rollTable": {
+              "critFail": {
+                "text": "Spin in place and pick a path goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Spin in place and pick a path mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Spin in place and pick a path kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": ["wounded"]
+              },
+              "success": {
+                "text": "Spin in place and pick a path works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["lucky"],
+                "removeTags": ["cursed"]
+              },
+              "crit": {
+                "text": "Spin in place and pick a path becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["cursed"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "complication-lute-riot",
+        "title": "Lute Riot",
+        "text": "A protest band occupies the square with twelve lutes and one very emotional tambourine solo.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "complication-lute-riot-crowd-surf",
+            "label": "Crowd-surf through the protest",
+            "hint": "Safety is optional, speed is mandatory.",
+            "rollTable": {
+              "critFail": {
+                "text": "Crowd-surf through the protest goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Crowd-surf through the protest mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Crowd-surf through the protest kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Crowd-surf through the protest works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Crowd-surf through the protest becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["greedy"]
+              }
+            }
+          },
+          {
+            "id": "complication-lute-riot-join-chorus",
+            "label": "Join the chorus for safe passage",
+            "hint": "Hit one note and commit.",
+            "rollTable": {
+              "critFail": {
+                "text": "Join the chorus for safe passage goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Join the chorus for safe passage mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Join the chorus for safe passage kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Join the chorus for safe passage works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Join the chorus for safe passage becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "opportunity": [
+      {
+        "id": "opportunity-bonus-order",
+        "title": "Bonus Order Window",
+        "text": "A noble yells from a balcony and offers bonus coin if you deliver a side dish to the same castle before sunset.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "opportunity-bonus-order-take-bonus",
+            "label": "Accept the bonus order",
+            "hint": "More work, more glory, same knees.",
+            "rollTable": {
+              "critFail": {
+                "text": "Accept the bonus order goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Accept the bonus order mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Accept the bonus order kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Accept the bonus order works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Accept the bonus order becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming", "lucky"],
+                "removeTags": ["cursed"]
+              }
+            }
+          },
+          {
+            "id": "opportunity-bonus-order-decline-focus",
+            "label": "Refuse and focus on main kebab",
+            "hint": "Discipline can be funny too.",
+            "rollTable": {
+              "critFail": {
+                "text": "Refuse and focus on main kebab goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Refuse and focus on main kebab mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Refuse and focus on main kebab kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Refuse and focus on main kebab works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["reckless"]
+              },
+              "crit": {
+                "text": "Refuse and focus on main kebab becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": ["wounded"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "opportunity-shortcut-sewer",
+        "title": "Suspicious Shortcut",
+        "text": "A sewer grate marked 'definitely not cursed' offers a direct route to the necropolis district.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "opportunity-shortcut-sewer-take-sewer",
+            "label": "Take the sewer shortcut",
+            "hint": "Smell is temporary, speed is eternal.",
+            "rollTable": {
+              "critFail": {
+                "text": "Take the sewer shortcut goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Take the sewer shortcut mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Take the sewer shortcut kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Take the sewer shortcut works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Take the sewer shortcut becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": ["cursed"]
+              }
+            }
+          },
+          {
+            "id": "opportunity-shortcut-sewer-surface-route",
+            "label": "Stay on the main road",
+            "hint": "Boring path, fewer rats.",
+            "rollTable": {
+              "critFail": {
+                "text": "Stay on the main road goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Stay on the main road mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Stay on the main road kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Stay on the main road works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Stay on the main road becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["popular", "heroic"],
+                "removeTags": ["greedy"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "opportunity-fan-club",
+        "title": "Unexpected Fan Club",
+        "text": "Street kids recognize you from last week's lamp-post incident and ask for an autograph plus tactical advice.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "opportunity-fan-club-sign-posters",
+            "label": "Sign posters and inspire them",
+            "hint": "PR can happen anywhere.",
+            "rollTable": {
+              "critFail": {
+                "text": "Sign posters and inspire them goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Sign posters and inspire them mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Sign posters and inspire them kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Sign posters and inspire them works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Sign posters and inspire them becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming", "lucky"],
+                "removeTags": ["reckless"]
+              }
+            }
+          },
+          {
+            "id": "opportunity-fan-club-delegate-scout",
+            "label": "Recruit them as scouts",
+            "hint": "Tiny informants, huge value.",
+            "rollTable": {
+              "critFail": {
+                "text": "Recruit them as scouts goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Recruit them as scouts mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Recruit them as scouts kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Recruit them as scouts works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["cursed"]
+              },
+              "crit": {
+                "text": "Recruit them as scouts becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["popular"],
+                "removeTags": ["reckless"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "opportunity-blacksmith-help",
+        "title": "Blacksmith Favor",
+        "text": "The blacksmith remembers you returning her runaway anvil and offers one emergency gear upgrade.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": ["greedy"]
+        },
+        "choices": [
+          {
+            "id": "opportunity-blacksmith-help-reinforce-boots",
+            "label": "Reinforce your boots",
+            "hint": "Foot armor for delivery legends.",
+            "rollTable": {
+              "critFail": {
+                "text": "Reinforce your boots goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Reinforce your boots mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Reinforce your boots kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Reinforce your boots works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["lucky"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Reinforce your boots becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["legendary", "popular"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "opportunity-blacksmith-help-heat-box",
+            "label": "Insulate the kebab box",
+            "hint": "Warm food wins hearts and wars.",
+            "rollTable": {
+              "critFail": {
+                "text": "Insulate the kebab box goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Insulate the kebab box mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Insulate the kebab box kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Insulate the kebab box works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Insulate the kebab box becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["greedy"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "opportunity-holy-sauce-shrine",
+        "title": "Shrine of Holy Sauce",
+        "text": "A roadside shrine bubbles with glowing sauce and a sign reads, 'One dab for destiny, two for consequences.'",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "opportunity-holy-sauce-shrine-one-dab",
+            "label": "Take one sacred dab",
+            "hint": "Respect the label this time.",
+            "rollTable": {
+              "critFail": {
+                "text": "Take one sacred dab goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Take one sacred dab mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Take one sacred dab kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Take one sacred dab works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Take one sacred dab becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "opportunity-holy-sauce-shrine-double-dab",
+            "label": "Take two sacred dabs",
+            "hint": "Ignore warning labels heroically.",
+            "rollTable": {
+              "critFail": {
+                "text": "Take two sacred dabs goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Take two sacred dabs mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Take two sacred dabs kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Take two sacred dabs works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["legendary"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Take two sacred dabs becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["legendary", "popular"],
+                "removeTags": ["greedy"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "opportunity-crowd-fund",
+        "title": "Crowd Funded Heroics",
+        "text": "Citizens start placing bets on whether you arrive alive, and the betting pool gets oddly patriotic.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "opportunity-crowd-fund-play-hero",
+            "label": "Promise a dramatic finish",
+            "hint": "Deliver lines like a stage actor.",
+            "rollTable": {
+              "critFail": {
+                "text": "Promise a dramatic finish goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Promise a dramatic finish mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Promise a dramatic finish kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["chaotic"],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Promise a dramatic finish works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["reckless"]
+              },
+              "crit": {
+                "text": "Promise a dramatic finish becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "opportunity-crowd-fund-hustle-odds",
+            "label": "Manipulate betting odds quietly",
+            "hint": "Commerce with plausible deniability.",
+            "rollTable": {
+              "critFail": {
+                "text": "Manipulate betting odds quietly goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Manipulate betting odds quietly mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Manipulate betting odds quietly kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Manipulate betting odds quietly works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Manipulate betting odds quietly becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "heroic"],
+                "removeTags": ["greedy"]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "crisis": [
+      {
+        "id": "crisis-castle-gate",
+        "title": "Castle Gate Standoff",
+        "text": "At the necropolis gate, skeletal guards demand a delivery code, a blood signature, and a poem about punctuality.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "crisis-castle-gate-recite-poem",
+            "label": "Recite a poem with confidence",
+            "hint": "Rhyme now, survive later.",
+            "rollTable": {
+              "critFail": {
+                "text": "Recite a poem with confidence goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Recite a poem with confidence mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Recite a poem with confidence kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Recite a poem with confidence works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Recite a poem with confidence becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "crisis-castle-gate-forge-code",
+            "label": "Forge the delivery code",
+            "hint": "If you write fast, it looks official.",
+            "rollTable": {
+              "critFail": {
+                "text": "Forge the delivery code goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Forge the delivery code mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Forge the delivery code kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Forge the delivery code works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Forge the delivery code becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["legendary", "heroic"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "crisis-kebab-temperature",
+        "title": "Temperature Check",
+        "text": "The Lich King's butler inserts a silver thermometer and narrows his eyes at your kebab's thermal destiny.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "crisis-kebab-temperature-reheat-magic",
+            "label": "Reheat with emergency spark rune",
+            "hint": "Controlled fire is still fire.",
+            "rollTable": {
+              "critFail": {
+                "text": "Reheat with emergency spark rune goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Reheat with emergency spark rune mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Reheat with emergency spark rune kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["chaotic"],
+                "removeTags": ["wounded"]
+              },
+              "success": {
+                "text": "Reheat with emergency spark rune works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Reheat with emergency spark rune becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": ["reckless"]
+              }
+            }
+          },
+          {
+            "id": "crisis-kebab-temperature-sell-as-cold",
+            "label": "Market it as artisanal cold kebab",
+            "hint": "Branding defeats physics.",
+            "rollTable": {
+              "critFail": {
+                "text": "Market it as artisanal cold kebab goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Market it as artisanal cold kebab mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Market it as artisanal cold kebab kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Market it as artisanal cold kebab works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Market it as artisanal cold kebab becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": ["cursed"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "crisis-passenger-reveal",
+        "title": "Passenger Reveal",
+        "text": "The tiny skeleton leaps out and reveals he is the Lich King's nephew who ran away from etiquette lessons.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "crisis-passenger-reveal-cover-for-nephew",
+            "label": "Cover for the runaway nephew",
+            "hint": "Family drama pays in favors.",
+            "rollTable": {
+              "critFail": {
+                "text": "Cover for the runaway nephew goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Cover for the runaway nephew mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Cover for the runaway nephew kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["greedy"],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Cover for the runaway nephew works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["reckless"]
+              },
+              "crit": {
+                "text": "Cover for the runaway nephew becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["popular", "heroic"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "crisis-passenger-reveal-sell-the-story",
+            "label": "Sell this story to court gossip",
+            "hint": "News is currency now.",
+            "rollTable": {
+              "critFail": {
+                "text": "Sell this story to court gossip goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Sell this story to court gossip mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Sell this story to court gossip kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Sell this story to court gossip works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Sell this story to court gossip becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["popular", "heroic"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "crisis-rival-finale",
+        "title": "Donna's Final Intercept",
+        "text": "Donna arrives with backup skaters and challenges you to a winner-takes-contract delivery duel in front of the court.",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "crisis-rival-finale-honor-duel",
+            "label": "Accept honorable duel",
+            "hint": "Style, speed, and maybe brakes.",
+            "rollTable": {
+              "critFail": {
+                "text": "Accept honorable duel goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Accept honorable duel mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Accept honorable duel kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Accept honorable duel works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Accept honorable duel becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["heroic"],
+                "removeTags": ["reckless"]
+              }
+            }
+          },
+          {
+            "id": "crisis-rival-finale-deploy-banana",
+            "label": "Deploy emergency banana peel",
+            "hint": "Ethics are situational.",
+            "rollTable": {
+              "critFail": {
+                "text": "Deploy emergency banana peel goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["reckless"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Deploy emergency banana peel mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Deploy emergency banana peel kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Deploy emergency banana peel works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Deploy emergency banana peel becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming", "lucky"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "crisis-sauce-sentience",
+        "title": "Sauce Becomes Sentient",
+        "text": "The sauce starts whispering tactical advice and demanding equal billing on the receipt.",
+        "requirements": {
+          "requiredTags": ["cursed"],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "crisis-sauce-sentience-ally-with-sauce",
+            "label": "Partner with the talking sauce",
+            "hint": "Two minds, one skewer.",
+            "rollTable": {
+              "critFail": {
+                "text": "Partner with the talking sauce goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Partner with the talking sauce mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Partner with the talking sauce kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Partner with the talking sauce works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["lucky"],
+                "removeTags": ["wounded"]
+              },
+              "crit": {
+                "text": "Partner with the talking sauce becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["charming", "legendary"],
+                "removeTags": ["cursed"]
+              }
+            }
+          },
+          {
+            "id": "crisis-sauce-sentience-exorcise-sauce",
+            "label": "Attempt sauce exorcism",
+            "hint": "Call a cleric and a napkin.",
+            "rollTable": {
+              "critFail": {
+                "text": "Attempt sauce exorcism goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["greedy"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Attempt sauce exorcism mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["chaotic"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Attempt sauce exorcism kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": ["cursed"]
+              },
+              "success": {
+                "text": "Attempt sauce exorcism works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Attempt sauce exorcism becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "legendary"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "crisis-final-plate",
+        "title": "The Final Plate",
+        "text": "The Lich King himself appears, asks one question, and everyone in the hall freezes: 'Why are there pickles on this?'",
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
+        "choices": [
+          {
+            "id": "crisis-final-plate-defend-pickles",
+            "label": "Defend the pickles with passion",
+            "hint": "Stand for your crunchy truth.",
+            "rollTable": {
+              "critFail": {
+                "text": "Defend the pickles with passion goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["cursed"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Defend the pickles with passion mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Defend the pickles with passion kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Defend the pickles with passion works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Defend the pickles with passion becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky", "popular"],
+                "removeTags": []
+              }
+            }
+          },
+          {
+            "id": "crisis-final-plate-blame-marketing",
+            "label": "Blame the marketing department",
+            "hint": "A classic corporate maneuver.",
+            "rollTable": {
+              "critFail": {
+                "text": "Blame the marketing department goes spectacularly wrong and a nearby goat joins the argument.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": -1,
+                  "danger": 2,
+                  "streak": -1
+                },
+                "addTags": ["wounded"],
+                "removeTags": []
+              },
+              "fail": {
+                "text": "Blame the marketing department mostly fails, but at least the witnesses are too confused to boo.",
+                "statChanges": {
+                  "renown": -1,
+                  "supplies": 0,
+                  "danger": 1,
+                  "streak": -1
+                },
+                "addTags": [],
+                "removeTags": []
+              },
+              "mixed": {
+                "text": "Blame the marketing department kind of works and kind of explodes, which feels on brand.",
+                "statChanges": {
+                  "renown": 0,
+                  "supplies": 0,
+                  "danger": 0,
+                  "streak": 0
+                },
+                "addTags": ["charming"],
+                "removeTags": []
+              },
+              "success": {
+                "text": "Blame the marketing department works cleanly and the crowd starts chanting your nickname.",
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1,
+                  "danger": -1,
+                  "streak": 1
+                },
+                "addTags": ["heroic"],
+                "removeTags": []
+              },
+              "crit": {
+                "text": "Blame the marketing department becomes tavern legend by sunrise and even your enemies clap politely.",
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1,
+                  "danger": -2,
+                  "streak": 2
+                },
+                "addTags": ["lucky"],
+                "removeTags": []
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "endings": [
+    {
+      "id": "legendary-golden-skewer",
+      "family": "legendary",
+      "title": "The Golden Skewer",
+      "text": "Your delivery is flawless, the court erupts, and the Lich King names a holiday after your route. Bards immediately exaggerate everything by at least 400 percent.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": 5,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 4
+      }
+    },
+    {
+      "id": "legendary-sauce-crown",
+      "family": "legendary",
+      "title": "Crowned by Sauce",
+      "text": "The sentient sauce declares you chosen and crowns you with a glowing ladle. Your autograph now has a waiting list.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": ["cursed"],
+        "minRenown": 7,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 3
+      }
+    },
+    {
+      "id": "legendary-union-chief",
+      "family": "legendary",
+      "title": "Courier Union Hero",
+      "text": "You negotiate better wages mid-ceremony and win. Every courier in town buys you dinner for a week.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": 5,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 3
+      }
+    },
+    {
+      "id": "legendary-necropolis-marshal",
+      "family": "legendary",
+      "title": "Marshal of Midnight Deliveries",
+      "text": "The necropolis appoints you official night marshal of logistics. You get a cape with reflective trim.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": ["cursed"],
+        "minRenown": 5,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 4
+      }
+    },
+    {
+      "id": "legendary-ballad-route",
+      "family": "legendary",
+      "title": "Ballad of Route Nine",
+      "text": "Your route is turned into a tavern anthem sung every closing hour. Even Donna admits the chorus slaps.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": 5,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 3
+      }
+    },
+    {
+      "id": "heroic-warmth-wins",
+      "family": "heroic",
+      "title": "Warmth Wins",
+      "text": "You deliver a still-warm meal and restore peace between undead nobles and living cooks. The city calls it your cleanest miracle.",
+      "requirements": {
+        "requiredTags": ["popular"],
+        "excludedTags": [],
+        "minRenown": 4,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 1
+      }
+    },
+    {
+      "id": "heroic-frog-savior",
+      "family": "heroic",
+      "title": "Savior of the Frog Rain",
+      "text": "You escort citizens safely through falling frogs before finishing the job. People start waving when you pass.",
+      "requirements": {
+        "requiredTags": ["popular"],
+        "excludedTags": [],
+        "minRenown": 4,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 1
+      }
+    },
+    {
+      "id": "heroic-nephew-return",
+      "family": "heroic",
+      "title": "Family Reunion",
+      "text": "You return the runaway nephew safely and spare him the worst etiquette lecture. The court grants you a permanent guest pass.",
+      "requirements": {
+        "requiredTags": ["heroic"],
+        "excludedTags": [],
+        "minRenown": 2,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 2
+      }
+    },
+    {
+      "id": "heroic-honest-courier",
+      "family": "heroic",
+      "title": "Honest Courier Ending",
+      "text": "You refuse easy scams and finish on merit. It is less flashy, but everyone trusts you with important deliveries now.",
+      "requirements": {
+        "requiredTags": ["popular"],
+        "excludedTags": [],
+        "minRenown": 3,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 1
+      }
+    },
+    {
+      "id": "heroic-public-toast",
+      "family": "heroic",
+      "title": "Public Toast",
+      "text": "The tavern hosts a toast in your honor and your boss finally learns your full name. It only took mild chaos.",
+      "requirements": {
+        "requiredTags": ["heroic"],
+        "excludedTags": [],
+        "minRenown": 3,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": 1
+      }
+    },
+    {
+      "id": "chaotic-bananas-victory",
+      "family": "chaotic",
+      "title": "Banana Peel Doctrine",
+      "text": "You win through improvised nonsense and questionable fruit placement. The court rules it technically legal.",
+      "requirements": {
+        "requiredTags": ["reckless"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "chaotic-dance-toll-champion",
+      "family": "chaotic",
+      "title": "Dance Toll Champion",
+      "text": "Your bridge dance goes viral and you accidentally start a toll-performance festival. Nobody remembers why.",
+      "requirements": {
+        "requiredTags": ["chaotic"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 3,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "chaotic-pickle-doctrine",
+      "family": "chaotic",
+      "title": "Pickle Doctrine",
+      "text": "You convince the Lich King that pickles are a philosophical statement. A new royal menu category is born.",
+      "requirements": {
+        "requiredTags": ["chaotic"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 3,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "chaotic-lawsuit-bards",
+      "family": "chaotic",
+      "title": "Bards v. You",
+      "text": "You beat the bards in court by representing yourself and bringing props. The verdict is confusing but favorable.",
+      "requirements": {
+        "requiredTags": ["chaotic"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "chaotic-sauce-campaign",
+      "family": "chaotic",
+      "title": "Sauce for Mayor",
+      "text": "You and the sentient sauce launch a local campaign and nearly win. Your slogan was weirdly effective.",
+      "requirements": {
+        "requiredTags": ["chaotic", "popular"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "cursed-eternal-lunch-shift",
+      "family": "cursed",
+      "title": "Eternal Lunch Shift",
+      "text": "The delivery succeeds, but a minor curse binds you to lunch rush forever. The tips are decent, the hours are haunted.",
+      "requirements": {
+        "requiredTags": ["wounded"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 4,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "cursed-fork-mark",
+      "family": "cursed",
+      "title": "Marked by the Fork",
+      "text": "The Sacred Fork glows and brands your glove with a warning sigil. Doors open for you, but mirrors heckle you.",
+      "requirements": {
+        "requiredTags": ["cursed"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 3,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "cursed-cold-kebab-prophecy",
+      "family": "cursed",
+      "title": "Cold Kebab Prophecy",
+      "text": "You complete the route at a terrible cosmic price and now hear whispers whenever kebab cools below room temperature.",
+      "requirements": {
+        "requiredTags": ["wounded"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 3,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "cursed-frog-omen",
+      "family": "cursed",
+      "title": "Frog Omen",
+      "text": "Frogs continue falling only when you are on shift. Scholars call it weather, priests call it your vibe.",
+      "requirements": {
+        "requiredTags": ["cursed", "reckless"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 4,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "cursed-ladle-oath",
+      "family": "cursed",
+      "title": "The Ladle Oath",
+      "text": "A cursed ladle chooses you and refuses to leave your side. It critiques every sauce decision you make.",
+      "requirements": {
+        "requiredTags": ["cursed", "reckless"],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 3,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "pathetic-lost-receipt",
+      "family": "pathetic",
+      "title": "The Lost Receipt",
+      "text": "You finish everything but lose the receipt, so nobody believes you. History forgets, your knees remember.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": 2,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "pathetic-eaten-on-route",
+      "family": "pathetic",
+      "title": "Ate the Evidence",
+      "text": "You panic and eat part of the order. The court fines you in napkins and public disappointment.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": 2,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "pathetic-broke-boot",
+      "family": "pathetic",
+      "title": "One Boot Destiny",
+      "text": "Your boot explodes on the stairs and momentum carries you into a decorative urn. At least the urn was insured.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": 0,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "pathetic-fired-then-rehired",
+      "family": "pathetic",
+      "title": "Fired Then Rehired",
+      "text": "You are dramatically fired and quietly rehired before sunset because no one else knows route nine.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": 1,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": 2,
+        "minStreak": null
+      }
+    },
+    {
+      "id": "pathetic-fallback",
+      "family": "pathetic",
+      "title": "Still Breathing, Technically",
+      "text": "The kebab arrives eventually, your reputation does not, and the city moves on. You survive and call that a win.",
+      "requirements": {
+        "requiredTags": [],
+        "excludedTags": [],
+        "minRenown": null,
+        "maxRenown": null,
+        "minSupplies": null,
+        "maxSupplies": null,
+        "minDanger": null,
+        "minStreak": null
+      }
+    }
+  ]
+}

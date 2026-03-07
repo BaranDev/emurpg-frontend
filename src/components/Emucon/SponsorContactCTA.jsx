@@ -39,7 +39,7 @@ const SponsorContactCTA = () => {
 
       {/* Description - Turkish */}
       <p className="text-emucon-text-muted mb-8">
-        EMUCON 2025, 600+ katılımcı ile büyük bir başarı oldu! EMUCON 2026'yı
+        EMUCON 2025, 600+ katılımcı ile büyük bir başarı oldu! EMUCON 2026&#39;yı
         daha da büyük yapmak için bize katılın. Sponsorluk fırsatları ve özel
         paketler için bizimle iletişime geçin.
       </p>

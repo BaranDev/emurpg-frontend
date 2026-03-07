@@ -78,6 +78,10 @@ const TeamMembersPanel = () => {
       const sorted = [...data].sort(
         (a, b) => (a.display_order ?? 0) - (b.display_order ?? 0),
       );
+      // Normalize to sequential 1..N so duplicate values don't cause stale ordering
+      sorted.forEach((m, i) => {
+        m.display_order = i + 1;
+      });
       setMembers(sorted);
     } catch (error) {
       console.error("Error fetching team members:", error);
@@ -202,12 +206,15 @@ const TeamMembersPanel = () => {
 
     const swapIndex = direction === "up" ? index - 1 : index + 1;
     const updated = [...members];
-    const tempOrder = updated[index].display_order;
-    updated[index].display_order = updated[swapIndex].display_order;
-    updated[swapIndex].display_order = tempOrder;
 
     // Swap positions in array
     [updated[index], updated[swapIndex]] = [updated[swapIndex], updated[index]];
+
+    // Re-assign sequential display_order (1 = first, N = last) so values are always unique
+    updated.forEach((m, i) => {
+      m.display_order = i + 1;
+    });
+
     setMembers(updated);
 
     try {
@@ -558,6 +565,7 @@ const TeamMembersPanel = () => {
           <AdminButton
             onClick={() => {
               resetForm();
+              setFormData((prev) => ({ ...prev, display_order: members.length + 1 }));
               setIsCreateModalOpen(true);
             }}
             icon={Plus}

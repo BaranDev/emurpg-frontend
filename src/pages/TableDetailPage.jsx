@@ -72,7 +72,6 @@ const TableDetailPage = () => {
         ws.close();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, backendUrl, fetchTableData]);
 
   // Display loading message while data is being fetched

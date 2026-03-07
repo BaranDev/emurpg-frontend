@@ -26,3 +26,6 @@ export { default as BottomNavBar } from "./BottomNavBar";
 
 // Charroller Components
 export * from "./Charroller";
+
+// Tavern Run Minigame
+export * from "./TavernRun";

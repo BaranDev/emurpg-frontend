@@ -60,7 +60,8 @@
     "about_text_1": "We're not just your average RPG club - we're a community of gamers who love all sorts of adventures!",
     "about_text_2": "From epic D&D campaigns to exciting board game nights, we know how to have a fun while rolling dice and telling stories. Whether you're an experienced player or just curious about tabletop gaming, our doors are always open for new friends who want to join in on the fun since 2023.",
     "upcoming_events": "Upcoming Events",
-    "roll_dice": "Roll the Dice!",
+    "roll_dice": "Tavern Run Mini-Adventure",
+    "roll_dice_description": "Pick a scenario, choose your moves, and roll the d20 to see how your short escape story ends.",
     "meet_gm": "Meet the Game Masters",
     "adventure_gallery": "Adventure Gallery",
     "ready_to_join": "Ready to Join the Quest?",
@@ -151,5 +152,22 @@
     "remaining_today": "characters remaining today",
     "enter_admin": "Enter admin code",
     "back_to_manager": "Back to Character Manager"
+  },
+  "tavern_run": {
+    "start_run": "Start Run",
+    "scenes_count": "{{count}} scenes",
+    "tap_to_roll": "Tap the die to roll!",
+    "continue": "Continue",
+    "see_fate": "See Your Fate",
+    "play_again": "Play Again",
+    "try_another": "Try Another Scenario",
+    "stat_renown": "Renown",
+    "stat_supplies": "Supplies",
+    "stat_danger": "Danger",
+    "stat_streak": "Streak",
+    "act_hook": "The Beginning",
+    "act_complication": "Complication",
+    "act_opportunity": "Opportunity",
+    "act_crisis": "The Crisis"
   }
 }

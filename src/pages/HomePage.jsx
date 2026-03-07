@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
-  FaDiceD20,
   FaDiscord,
   FaWhatsapp,
   FaCalendar,
@@ -9,7 +8,9 @@ import {
   FaBookOpen,
   FaUser,
   FaDice,
+  FaDiceD20,
 } from "react-icons/fa";
+import { TavernRun } from "../components/TavernRun";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,11 +25,10 @@ import {
 } from "../components";
 import ParallaxBackground from "../components/ParallaxBackground";
 import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
-import { config, rpgQuotes } from "../config";
+import { config } from "../config";
 
 const HomePage = ({ onLanguageSwitch }) => {
   const { t, i18n } = useTranslation();
-  const [diceQuote, setDiceQuote] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [teamMembers, setTeamMembers] = useState([]);
   const teamSectionRef = useRef(null);
@@ -97,10 +97,6 @@ const HomePage = ({ onLanguageSwitch }) => {
     observer.observe(node);
     return () => observer.disconnect();
   }, [isLoading]);
-
-  const rollDice = () => {
-    setDiceQuote(rpgQuotes[Math.floor(Math.random() * rpgQuotes.length)]);
-  };
 
   if (isLoading) {
     return (
@@ -323,38 +319,16 @@ const HomePage = ({ onLanguageSwitch }) => {
               <HomePageEventList />
             </div>
           </section>
-          {/* Interactive Dice Section */}
+          {/* Tavern Run Minigame */}
           <section className="py-16 bg-gray-900/80">
             <SectionTitle icon={FaDice} className="mx-auto">
               {t("homepage.roll_dice")}
             </SectionTitle>
-            <div className="container mx-auto px-4 text-center ">
-              <motion.button
-                whileHover={{ scale: 1.15, rotate: 360 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.1 }}
-                onClick={rollDice}
-                className="text-6xl text-yellow-500 ease-in-out transition-all duration-300 rounded-full p-4 
-                border-2 border-yellow-500/50
-                bg-transparent
-                hover:bg-transparent
-                md:hover:text-yellow-400 
-                md:hover:bg-transparent
-                md:hover:border-yellow-400 
-                md:hover:border-opacity-0 
-                md:hover:shadow-[0_0px_35px_5px_rgba(255,255,153,0.10)]"
-              >
-                <FaDiceD20 size={80} />
-              </motion.button>
-              {diceQuote && (
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 text-xl text-yellow-300 italic"
-                >
-                  {diceQuote}
-                </motion.p>
-              )}
+            <p className="max-w-3xl mx-auto px-4 text-center text-gray-300 text-sm md:text-base -mt-4 mb-6">
+              {t("homepage.roll_dice_description")}
+            </p>
+            <div className="container mx-auto px-4">
+              <TavernRun />
             </div>
           </section>
           {/* Game Masters Section */}

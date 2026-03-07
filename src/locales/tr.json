@@ -60,7 +60,8 @@
     "about_text_1": "Biz sadece sıradan bir RPG kulübü değiliz - her türlü maceraya aşık oyunculardan oluşan bir topluluğuz!",
     "about_text_2": "Destansı D&D kampanyalarından heyecan verici masa oyunu gecelerine kadar, zar atarken ve hikaye anlatırken nasıl eğleneceğimizi biliyoruz. İster deneyimli bir oyuncu olun ister masa oyunlarına meraklı biri, kapılarımız 2023'ten beri eğlenceye katılmak isteyen yeni arkadaşlara her zaman açık.",
     "upcoming_events": "Yaklaşan Etkinlikler",
-    "roll_dice": "Zarı At!",
+    "roll_dice": "Tavern Run Mini-Macera",
+    "roll_dice_description": "Bir senaryo seç, hamleni yap ve bu kısa kaçış hikayesinin nasıl biteceğini görmek için d20 zarını at.",
     "meet_gm": "Game Masterlarla Tanışın",
     "adventure_gallery": "Macera Galerisi",
     "ready_to_join": "Göreve Katılmaya Hazır mısın?",
@@ -151,5 +152,22 @@
     "remaining_today": "bugün kalan karakter hakkı",
     "enter_admin": "Admin kodu gir",
     "back_to_manager": "Karakter Yöneticisine Dön"
+  },
+  "tavern_run": {
+    "start_run": "Ba\u015fla",
+    "scenes_count": "{{count}} sahne",
+    "tap_to_roll": "Zar atmak i\u00e7in dokun!",
+    "continue": "Devam Et",
+    "see_fate": "Kaderini G\u00f6r",
+    "play_again": "Tekrar Oyna",
+    "try_another": "Ba\u015fka Senaryo Dene",
+    "stat_renown": "\u00dcn",
+    "stat_supplies": "Malzeme",
+    "stat_danger": "Tehlike",
+    "stat_streak": "Seri",
+    "act_hook": "Ba\u015flang\u0131\u00e7",
+    "act_complication": "Komplikasyon",
+    "act_opportunity": "F\u0131rsat",
+    "act_crisis": "Kriz"
   }
 }

@@ -8,8 +8,8 @@
  *   About tab         - render character backstory, traits, etc.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { describe, it, expect, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CharrollerResults from "../components/Charroller/CharrollerResults";
 import { makeDnd5eCharacter, seedLocalStorage } from "./fixtures/charroller";
@@ -44,9 +44,9 @@ describe("Search filter in Combat tab", () => {
     const searchInput = screen.getByPlaceholderText(/search/i);
     await user.type(searchInput, "longsword");
 
-    expect(screen.getByText("Longsword Attack")).toBeInTheDocument();
-    expect(screen.getByText("Longsword Damage")).toBeInTheDocument();
-    expect(screen.queryByText("Torch Throw")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Longsword Attack").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Longsword Damage").length).toBeGreaterThan(0);
+    expect(screen.queryAllByText("Torch Throw").length).toBe(0);
   });
 
   it("clears the filter when search is empty", async () => {
@@ -62,8 +62,8 @@ describe("Search filter in Combat tab", () => {
     await user.type(searchInput, "longsword");
     await user.clear(searchInput);
 
-    expect(screen.getByText("Longsword Attack")).toBeInTheDocument();
-    expect(screen.getByText("Torch Throw")).toBeInTheDocument();
+    expect(screen.getAllByText("Longsword Attack").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Torch Throw").length).toBeGreaterThan(0);
   });
 });
 

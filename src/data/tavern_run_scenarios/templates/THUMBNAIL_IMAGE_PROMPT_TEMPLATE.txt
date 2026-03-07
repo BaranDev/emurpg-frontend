@@ -1,0 +1,55 @@
+TAVERN RUN THUMBNAIL IMAGE PROMPT TEMPLATE
+
+How to use:
+1) Replace all {{placeholders}}.
+2) Use the Final Prompt block in your image model.
+3) Export as WebP, then upload to R2 under /tavern-run/.
+4) Put the public URL into your scenario JSON thumbnail field.
+
+--------------------------------------------------
+Scenario Inputs
+--------------------------------------------------
+Scenario name: {{SCENARIO_NAME}}
+Core premise: {{SCENARIO_PREMISE}}
+Main character: {{MAIN_CHARACTER}}
+Location: {{LOCATION}}
+Mood: {{MOOD}}  (chaotic | heroic | cursed | bittersweet)
+Color direction: {{COLOR_DIRECTION}}  (amber tavern, moonlit blue, cursed green, etc.)
+Key props: {{KEY_PROPS}}  (loot bag, broken key, map, torch, etc.)
+Comedic detail: {{COMEDIC_DETAIL}}
+
+--------------------------------------------------
+Final Prompt (generic, model-agnostic)
+--------------------------------------------------
+Create a cinematic fantasy game thumbnail for a mini-adventure called "{{SCENARIO_NAME}}".
+
+Scene: {{MAIN_CHARACTER}} in {{LOCATION}}, mid-action, with {{KEY_PROPS}} visible and readable.
+Story beat: {{SCENARIO_PREMISE}}.
+Tone: {{MOOD}}, with a playful tabletop RPG energy and subtle comedy.
+Composition: dynamic three-quarter view, clear focal subject, strong silhouette, dramatic depth.
+Lighting: stylized fantasy lighting, volumetric light, high contrast, readable subject.
+Color palette: {{COLOR_DIRECTION}}, saturated but controlled.
+Art direction: polished game key art, painterly realism, expressive character face, textured materials.
+Extra detail: include {{COMEDIC_DETAIL}} naturally in-scene.
+
+Output constraints:
+- No text, no logo, no watermark, no signature.
+- Keep center area uncluttered for UI overlays.
+- Aspect ratio 16:9.
+- Target resolution 1280x720 or 1920x1080.
+
+Negative guidance:
+blurry, low detail, overexposed, muddy colors, malformed anatomy, extra limbs, gibberish text, watermark, logo, frame, border
+
+--------------------------------------------------
+Quick Prompt Variant (fast generation)
+--------------------------------------------------
+"{{SCENARIO_NAME}}" fantasy game thumbnail, {{MAIN_CHARACTER}} escaping {{LOCATION}} with {{KEY_PROPS}}, {{MOOD}} tone, {{COLOR_DIRECTION}} palette, cinematic lighting, dynamic composition, polished key art, subtle comedy with {{COMEDIC_DETAIL}}, no text, no watermark, 16:9
+
+--------------------------------------------------
+R2 Naming Suggestion
+--------------------------------------------------
+/tavern-run/{{SCENARIO_ID}}.webp
+
+Example:
+/tavern-run/ozwyn-dungeon-escape.webp
