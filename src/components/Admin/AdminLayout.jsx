@@ -17,6 +17,7 @@ import {
   FileText,
   UserPlus,
   Clock,
+  Palette,
 } from "lucide-react";
 import { clearSession, getLoginData } from "../../utils/auth";
 
@@ -57,6 +58,12 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
       label: "Tables",
       icon: Table2,
       description: "Manage tables",
+    },
+    {
+      id: "themes",
+      label: "Table Themes",
+      icon: Palette,
+      description: "Visual styles",
     },
     {
       id: "games",

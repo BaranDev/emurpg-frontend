@@ -12,6 +12,7 @@ const EmuconManagersPanel = lazy(() => import("./EmuconManagersPanel"));
 const EmuconSchedulePanel = lazy(() => import("./EmuconSchedulePanel"));
 const EventsAdminPanel = lazy(() => import("./EventsAdminPanel"));
 const TablesAdminPanel = lazy(() => import("./TablesAdminPanel"));
+const ThemesAdminPanel = lazy(() => import("./ThemesAdminPanel"));
 const GamesLibraryPanel = lazy(() => import("./GamesLibraryPanel"));
 const RegistrationsPanel = lazy(() => import("./RegistrationsPanel"));
 const ReportsPanel = lazy(() => import("./ReportsPanel"));
@@ -304,6 +305,13 @@ const AdminMain = ({ onLogout }) => {
         return (
           <Suspense fallback={<PanelLoader />}>
             <TablesAdminPanel />
+          </Suspense>
+        );
+
+      case "themes":
+        return (
+          <Suspense fallback={<PanelLoader />}>
+            <ThemesAdminPanel />
           </Suspense>
         );
 
