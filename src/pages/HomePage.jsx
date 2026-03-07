@@ -50,13 +50,22 @@ const HomePage = ({ onLanguageSwitch }) => {
 
     const fetchTeamMembers = async () => {
       try {
-        const res = await fetch(`${config.backendUrl}/api/team-members`);
+        const headers = {};
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+        if (cached?.etag) {
+          headers["If-None-Match"] = cached.etag;
+        }
+        const res = await fetch(`${config.backendUrl}/api/team-members`, {
+          headers,
+        });
+        if (res.status === 304) return; // data unchanged, cache is still valid
         if (!res.ok) return;
         const data = await res.json();
+        const etag = res.headers.get("etag");
         setTeamMembers(data);
         localStorage.setItem(
           CACHE_KEY,
-          JSON.stringify({ data, fetched_at: Date.now() }),
+          JSON.stringify({ data, etag, fetched_at: Date.now() }),
         );
       } catch {
         // silently fail - cached data or empty list is fine
@@ -71,7 +80,7 @@ const HomePage = ({ onLanguageSwitch }) => {
         const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
         if (cached?.data?.length) {
           setTeamMembers(cached.data);
-          // Stale-while-revalidate: show cached, refresh if stale
+          // Stale-while-revalidate: show cached, revalidate if stale
           if (Date.now() - cached.fetched_at > CACHE_TTL) {
             fetchTeamMembers();
           }
