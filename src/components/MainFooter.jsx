@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { FaDiscord, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaDiscord, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { config } from "../config";
 import SocialIcon from "./SocialIcon";
 
@@ -40,13 +40,27 @@ export default class MainFooter extends Component {
               <h3 className="text-xl font-bold text-yellow-500 mb-4">
                 Follow Us
               </h3>
-              <div className="flex space-x-4 text-center items-center justify-center">
-                <SocialIcon icon={<FaDiscord />} href={config.DISCORD_LINK} />
+              <div className="flex flex-wrap justify-center gap-6 text-center items-center">
+                <SocialIcon
+                  icon={<FaDiscord />}
+                  href={config.DISCORD_LINK}
+                  label="Discord"
+                />
+                <SocialIcon
+                  icon={<FaWhatsapp />}
+                  href={config.WHATSAPP_LINK}
+                  label="WhatsApp"
+                />
                 <SocialIcon
                   icon={<FaInstagram />}
                   href={config.INSTAGRAM_LINK}
+                  label="Instagram"
                 />
-                <SocialIcon icon={<FaLinkedin />} href={config.LINKEDIN_LINK} />
+                <SocialIcon
+                  icon={<FaLinkedin />}
+                  href={config.LINKEDIN_LINK}
+                  label="LinkedIn"
+                />
               </div>
             </div>
           </div>

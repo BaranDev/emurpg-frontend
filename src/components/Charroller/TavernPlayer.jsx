@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
-import { FaMusic, FaChevronRight } from "react-icons/fa";
+import { FaMusic, FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { getSettings, saveSettings } from "../../utils/characterStorage";
 
 /**
@@ -224,17 +224,19 @@ const TavernPlayer = ({ autoPlay = false, theme = "tavern" }) => {
         />
       </div>
 
-      {/* Collapse */}
+      {/* Minimize Button */}
       <button
         onClick={handleToggleCollapse}
-        title="Collapse player"
-        className="flex items-center justify-center w-7 h-7 rounded-lg transition-all hover:scale-110 flex-shrink-0"
+        aria-label="Minimize player"
+        title="Minimize"
+        className="flex items-center justify-center w-8 h-8 rounded-full border shadow-md transition-all hover:scale-110 hover:brightness-125 flex-shrink-0 ml-1 relative z-10"
         style={{
-          background: t.barBg,
-          border: `1px solid ${t.border}`,
+          background: `linear-gradient(135deg, ${t.bg}, ${t.barBg})`,
+          borderColor: t.accent,
+          boxShadow: `0 2px 8px ${t.shadow}`,
         }}
       >
-        <FaChevronRight size={10} color={t.text} />
+        <FaChevronDown size={14} color="#ffffff" className="drop-shadow-sm" />
       </button>
     </div>
   );

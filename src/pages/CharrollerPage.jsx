@@ -60,6 +60,18 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
     setCharacters(loadedChars);
   }, [refreshKey]);
 
+  // Auto-select first character if none selected
+  useEffect(() => {
+    if (
+      characters.length > 0 &&
+      !selectedCharacter &&
+      !isCreating &&
+      !levelUpChoices
+    ) {
+      setSelectedCharacter(characters[0]);
+    }
+  }, [characters, selectedCharacter, isCreating, levelUpChoices]);
+
   // Reload settings
   useEffect(() => {
     setSettings(getSettings());
@@ -476,8 +488,9 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
             )}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-2 rounded-lg text-tavern-parchmentDark hover:text-tavern-parchment 
-                         hover:bg-tavern-wood/30 transition-colors"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              className="w-8 h-8 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 text-[#1a110a] hover:brightness-110"
+              style={{ background: "rgba(255, 170, 51, 0.9)" }}
             >
               {sidebarCollapsed ? (
                 <Users className="w-5 h-5" />
@@ -565,19 +578,28 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                       <div className="flex items-center gap-3 relative z-10">
                         {/* Main portrait */}
                         <div
-                          className={`w-16 h-16 rounded-md flex-shrink-0 border border-tavern-wood shadow-lg relative overflow-hidden ${
+                          className={`w-16 h-16 rounded-md flex-shrink-0 border border-tavern-wood shadow-lg relative overflow-hidden flex items-center justify-center ${
                             generatingId === char.id ? "animate-pulse" : ""
                           }`}
                           style={{
-                            backgroundColor: "rgba(139, 69, 19, 0.3)",
+                            backgroundColor: "rgba(139, 69, 19, 0.2)",
                           }}
                         >
-                          {char.portrait_url && (
+                          {char.portrait_url ? (
                             <img
                               src={char.portrait_url}
                               alt={char.character_name || "Portrait"}
                               className="absolute inset-0 w-full h-full object-cover"
                             />
+                          ) : (
+                            <div className="flex flex-col items-center justify-center opacity-40">
+                              <Users className="w-6 h-6 text-tavern-parchment" />
+                              <span className="text-[10px] font-cinzel mt-1">
+                                {char.character_name
+                                  ? char.character_name[0]
+                                  : "?"}
+                              </span>
+                            </div>
                           )}
                           {generatingId === char.id && (
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tavern-accent/30 to-transparent animate-[shimmer_1.5s_infinite]" />

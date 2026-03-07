@@ -50,10 +50,11 @@ const CharrollerResults = ({
   const [editDescription, setEditDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  // NEW STATE
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSectionSettings, setShowSectionSettings] = useState(false);
   const [editingSection, setEditingSection] = useState(null);
+  const [hasInspiration, setHasInspiration] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Theme colors
   const themeColors =
@@ -110,6 +111,9 @@ const CharrollerResults = ({
     physicalStress: [false, false, false, false],
     mentalStress: [false, false, false, false],
     consequences: { mild: "", moderate: "", severe: "" },
+
+    // Inspiration
+    inspiration: false,
 
     // Conditions (generic)
     conditions: [],
@@ -174,6 +178,8 @@ const CharrollerResults = ({
   if (!characterData) return null;
 
   const system = characterData.system || "dnd5e";
+
+  const rollD20 = () => Math.floor(Math.random() * 20) + 1;
 
   const handleRoll = (result, rollName) => {
     setRollHistory((prev) =>
@@ -404,7 +410,7 @@ const CharrollerResults = ({
 
             {/* Level Badge Overlay */}
             {characterData.level && (
-              <div className="absolute -bottom-3 -right-3 w-10 h-10 dnd-bg-accent rounded-full flex items-center justify-center border-2 border-[#1a110a] shadow-lg font-bold text-lg text-white font-cinzel">
+              <div className="absolute -bottom-2 -right-2 w-10 h-10 dnd-bg-accent rounded-full flex items-center justify-center border-2 border-[#1a110a] shadow-lg font-bold text-lg text-white font-cinzel z-20">
                 {characterData.level}
               </div>
             )}
@@ -433,12 +439,38 @@ const CharrollerResults = ({
 
             <div className="mt-4 flex flex-wrap gap-2">
               <button
-                className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border border-gray-600 hover:bg-white/5 transition-colors"
-                style={{ color: "#a1a1aa" }}
+                onClick={() => setHasInspiration((v) => !v)}
+                aria-pressed={String(hasInspiration)}
+                className={`px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border transition-colors ${
+                  hasInspiration
+                    ? "border-yellow-500 bg-yellow-500/20 text-yellow-300"
+                    : "border-gray-600 hover:bg-white/5 text-gray-400"
+                }`}
               >
                 Inspiration
               </button>
-              <button className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded dnd-bg-accent text-white hover:brightness-110 transition-all shadow-lg">
+              <button
+                onClick={() => {
+                  const dexRoll = (groupedRolls["ability"] || []).find((r) =>
+                    ["dexterity", "dex"].some((a) =>
+                      r.roll_name.toLowerCase().includes(a),
+                    ),
+                  );
+                  const mod = dexRoll
+                    ? parseInt(
+                        (dexRoll.dice.match(/([+-]\d+)/) || ["", "0"])[1],
+                      )
+                    : 0;
+                  const d20 = rollD20();
+                  const total = d20 + mod;
+                  handleRoll(
+                    { rolls: [d20], total, modifier: mod },
+                    "Initiative",
+                  );
+                  setShowHistory(true);
+                }}
+                className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded dnd-bg-accent text-white hover:brightness-110 transition-all shadow-lg"
+              >
                 Initiative
               </button>
               <button
@@ -482,7 +514,7 @@ const CharrollerResults = ({
                   setEditingSection("hp");
                   setShowSectionSettings(true);
                 }}
-                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+                className="w-7 h-7 bg-transparent text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center flex-shrink-0"
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -560,10 +592,57 @@ const CharrollerResults = ({
                 </button>
               </div>
 
-              <button className="flex-1 py-1 px-2 rounded bg-[#2a2a2a] text-xs font-bold uppercase tracking-wider text-gray-300 hover:bg-gray-700 transition-colors border border-gray-600">
+              <button
+                onClick={() => {
+                  // Determine hit die from class (D&D 5e defaults)
+                  const classDie = {
+                    barbarian: 12,
+                    fighter: 10,
+                    paladin: 10,
+                    ranger: 10,
+                    bard: 8,
+                    cleric: 8,
+                    druid: 8,
+                    monk: 8,
+                    rogue: 8,
+                    warlock: 8,
+                    sorcerer: 6,
+                    wizard: 6,
+                  };
+                  const className = (characterData.class || "").toLowerCase();
+                  const die = classDie[className] ?? 8;
+
+                  // Find CON modifier from ability rolls
+                  const conRoll = (groupedRolls["ability"] || []).find((r) =>
+                    r.roll_name.toLowerCase().includes("constitution"),
+                  );
+                  const conModMatch = conRoll?.dice?.match(/([+-]\d+)/);
+                  const conMod = conModMatch ? parseInt(conModMatch[1]) : 0;
+
+                  const hitDieRoll = Math.floor(Math.random() * die) + 1;
+                  const healed = Math.max(1, hitDieRoll + conMod);
+                  setTrackers((prev) => ({
+                    ...prev,
+                    currentHP: Math.min(prev.maxHP, prev.currentHP + healed),
+                  }));
+                }}
+                className="flex-1 py-1 px-2 rounded bg-[#2a2a2a] text-xs font-bold uppercase tracking-wider text-gray-300 hover:bg-gray-700 transition-colors border border-gray-600"
+              >
                 Short Rest
               </button>
-              <button className="flex-1 py-1 px-2 rounded bg-[#2a2a2a] text-xs font-bold uppercase tracking-wider text-gray-300 hover:bg-gray-700 transition-colors border border-gray-600">
+              <button
+                onClick={() => {
+                  setTrackers((prev) => ({
+                    ...prev,
+                    currentHP: prev.maxHP,
+                    tempHP: 0,
+                    deathSaveSuccess: 0,
+                    deathSaveFail: 0,
+                    usedSpellSlots: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  }));
+                }}
+                className="flex-1 py-1 px-2 rounded bg-[#2a2a2a] text-xs font-bold uppercase tracking-wider text-gray-300 hover:bg-gray-700 transition-colors border border-gray-600"
+              >
                 Long Rest
               </button>
             </div>
@@ -582,7 +661,7 @@ const CharrollerResults = ({
               setEditingSection("abilities");
               setShowSectionSettings(true);
             }}
-            className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+            className="w-7 h-7 bg-transparent text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center flex-shrink-0"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -597,20 +676,37 @@ const CharrollerResults = ({
             "Wisdom",
             "Charisma",
           ].map((stat) => {
-            // Find rolls for this stat to show modifiers
-            const abilityRoll = (groupedRolls["ability"] || []).find((r) =>
-              r.roll_name.toLowerCase().includes(stat.toLowerCase()),
-            );
-            const saveRoll = (groupedRolls["save"] || []).find((r) =>
-              r.roll_name.toLowerCase().includes(stat.toLowerCase()),
-            );
-
             // Extract modifier
             const extractMod = (rollStr) => {
               if (!rollStr) return "+0";
               const match = rollStr.match(/([+-]\d+)/);
-              return match ? match[1] : "+0";
+              if (match) return match[1];
+
+              const val = parseInt(rollStr);
+              if (!isNaN(val) && val >= 3) {
+                // 5e scores are 3-20 usually
+                const mod = Math.floor((val - 10) / 2);
+                return mod >= 0 ? `+${mod}` : `${mod}`;
+              }
+              return "+0";
             };
+
+            const statAliases = {
+              Strength: ["strength", "str"],
+              Dexterity: ["dexterity", "dex"],
+              Constitution: ["constitution", "con"],
+              Intelligence: ["intelligence", "int"],
+              Wisdom: ["wisdom", "wis"],
+              Charisma: ["charisma", "cha"],
+            };
+
+            const aliases = statAliases[stat] || [stat.toLowerCase()];
+            const abilityRoll = (groupedRolls["ability"] || []).find((r) =>
+              aliases.some((a) => r.roll_name.toLowerCase().includes(a)),
+            );
+            const saveRoll = (groupedRolls["save"] || []).find((r) =>
+              aliases.some((a) => r.roll_name.toLowerCase().includes(a)),
+            );
 
             const baseAbMod = abilityRoll ? extractMod(abilityRoll.dice) : "+0";
             const baseSvMod = saveRoll ? extractMod(saveRoll.dice) : "+0";
@@ -631,17 +727,16 @@ const CharrollerResults = ({
                   </span>
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <button
-                      onClick={() =>
-                        abilityRoll &&
+                      aria-label={`${stat} Ability`}
+                      onClick={() => {
+                        if (!abilityRoll) return;
+                        const d20 = rollD20();
+                        const mod = parseInt(abMod);
                         handleRoll(
-                          {
-                            rolls: [10],
-                            total: 10 + parseInt(abMod),
-                            modifier: parseInt(abMod),
-                          },
+                          { rolls: [d20], total: d20 + mod, modifier: mod },
                           abilityRoll.roll_name,
-                        )
-                      }
+                        );
+                      }}
                       className="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider flex flex-col items-center gap-1"
                     >
                       <div className="w-6 h-6 border border-gray-600 rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-gray-300">
@@ -650,17 +745,16 @@ const CharrollerResults = ({
                       Ability
                     </button>
                     <button
-                      onClick={() =>
-                        saveRoll &&
+                      aria-label={`${stat} Save`}
+                      onClick={() => {
+                        if (!saveRoll) return;
+                        const d20 = rollD20();
+                        const mod = parseInt(svMod);
                         handleRoll(
-                          {
-                            rolls: [10],
-                            total: 10 + parseInt(svMod),
-                            modifier: parseInt(svMod),
-                          },
+                          { rolls: [d20], total: d20 + mod, modifier: mod },
                           saveRoll.roll_name,
-                        )
-                      }
+                        );
+                      }}
                       className="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider flex flex-col items-center gap-1"
                     >
                       <div className="w-6 h-6 border dnd-border-accent rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-gray-300 ring-1 ring-red-900/50">
@@ -689,7 +783,7 @@ const CharrollerResults = ({
                 setEditingSection("skills");
                 setShowSectionSettings(true);
               }}
-              className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+              className="w-7 h-7 bg-transparent text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center flex-shrink-0"
             >
               <Settings className="w-4 h-4" />
             </button>
@@ -706,16 +800,17 @@ const CharrollerResults = ({
               return (
                 <button
                   key={i}
-                  onClick={() =>
+                  onClick={() => {
+                    const d20 = rollD20();
                     handleRoll(
                       {
-                        rolls: [10],
-                        total: 10 + parseInt(mod),
+                        rolls: [d20],
+                        total: d20 + parseInt(mod),
                         modifier: parseInt(mod),
                       },
                       roll.roll_name,
-                    )
-                  }
+                    );
+                  }}
                   className="w-full flex items-center justify-between py-1.5 px-2 hover:bg-white/5 rounded group text-left"
                 >
                   <div className="flex items-center gap-2">
@@ -786,6 +881,8 @@ const CharrollerResults = ({
                   <div className="relative w-1/2">
                     <input
                       type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder={`Search ${expandedCategory || "Combat"}...`}
                       className="dnd-input w-full rounded pl-8 pr-2 py-1 text-sm"
                     />
@@ -805,47 +902,67 @@ const CharrollerResults = ({
                           )
                         : ["spell", "sanity", "other"].includes(cat),
                     )
-                    .map(
-                      (cat) =>
-                        groupedRolls[cat] &&
-                        groupedRolls[cat].length > 0 && (
-                          <div key={cat} className="mb-4">
-                            <div className="bg-[#1a1511] border border-[#3a2f26] rounded-t px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider flex justify-between">
-                              <span>{categoryLabels[cat]}</span>
-                            </div>
-                            <div className="border border-t-0 border-[#3a2f26] rounded-b">
-                              {groupedRolls[cat].map((roll, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center justify-between p-2 border-b border-[#3a2f26] last:border-0 hover:bg-white/5 transition-colors"
-                                >
-                                  <span
-                                    className="text-sm font-bold text-gray-300 w-1/3 truncate"
-                                    title={roll.roll_name}
-                                  >
-                                    {roll.roll_name}
-                                  </span>
-                                  <div className="flex-1 flex justify-center">
-                                    <DiceRoller
-                                      notation={roll.dice}
-                                      rollName={roll.roll_name}
-                                      onRoll={(result) =>
-                                        handleRoll(result, roll.roll_name)
-                                      }
-                                      criticalMin={characterData.critical_min}
-                                      criticalMax={characterData.critical_max}
-                                    />
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
+                    .map((cat) => {
+                      const rolls = (groupedRolls[cat] || []).filter(
+                        (r) =>
+                          !searchTerm ||
+                          r.roll_name
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase()),
+                      );
+                      return rolls.length > 0 ? (
+                        <div key={cat} className="mb-4">
+                          <div className="bg-[#1a1511] border border-[#3a2f26] rounded-t px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider flex justify-between">
+                            <span>{categoryLabels[cat]}</span>
                           </div>
-                        ),
-                    )}
+                          <div className="border border-t-0 border-[#3a2f26] rounded-b">
+                            {rolls.map((roll, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center justify-between p-2 border-b border-[#3a2f26] last:border-0 hover:bg-white/5 transition-colors"
+                              >
+                                <span
+                                  className="text-sm font-bold text-gray-300 w-1/3 truncate"
+                                  title={roll.roll_name}
+                                >
+                                  {roll.roll_name}
+                                </span>
+                                <div className="flex-1 flex justify-center">
+                                  <DiceRoller
+                                    notation={roll.dice}
+                                    rollName={roll.roll_name}
+                                    onRoll={(result) =>
+                                      handleRoll(result, roll.roll_name)
+                                    }
+                                    criticalMin={characterData.critical_min}
+                                    criticalMax={characterData.critical_max}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null;
+                    })}
 
-                  {/* History inside the tab area for convenience */}
+                  {/* History toggle button */}
+                  <button
+                    data-testid="roll-history-toggle"
+                    aria-label="Roll History"
+                    onClick={() => setShowHistory((v) => !v)}
+                    className="text-xs text-gray-500 hover:text-gray-300 uppercase tracking-wider font-bold flex items-center gap-1 mt-4"
+                  >
+                    <History className="w-3 h-3" />
+                    Roll History{" "}
+                    {rollHistory.length > 0 ? `(${rollHistory.length})` : ""}
+                  </button>
+
+                  {/* History panel */}
                   {showHistory && rollHistory.length > 0 && (
-                    <div className="mt-6 border-t border-[#3a2f26] pt-4">
+                    <div
+                      data-testid="roll-history"
+                      className="mt-6 border-t border-[#3a2f26] pt-4"
+                    >
                       <h4 className="font-cinzel text-xs text-gray-500 font-bold mb-2">
                         RECENT ROLLS
                       </h4>
@@ -876,7 +993,6 @@ const CharrollerResults = ({
                 </div>
               </div>
             )}
-
             {(expandedCategory === "notes" ||
               expandedCategory === "features & traits") && (
               <div>
@@ -888,8 +1004,80 @@ const CharrollerResults = ({
                 />
               </div>
             )}
+
+            {expandedCategory === "inventory" && (
+              <div>
+                <h4 className="font-cinzel text-xs text-gray-500 font-bold mb-3 uppercase tracking-widest">
+                  Equipment
+                </h4>
+                {(characterData.equipment || []).length > 0 ? (
+                  <ul className="space-y-1">
+                    {(characterData.equipment || []).map((item, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-2 py-1.5 px-3 bg-[#1a1511] rounded border border-[#3a2f26] text-sm text-gray-300"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-tavern-accent flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500 text-sm italic text-center py-6">
+                    No items in inventory.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {expandedCategory === "about" && (
+              <div className="space-y-4">
+                {characterData.backstory ||
+                characterData.alignment ||
+                characterData.background ? (
+                  <>
+                    {characterData.background && (
+                      <div>
+                        <h4 className="font-cinzel text-xs text-gray-500 font-bold mb-1 uppercase tracking-widest">
+                          Background
+                        </h4>
+                        <p className="text-sm text-gray-300">
+                          {characterData.background}
+                        </p>
+                      </div>
+                    )}
+                    {characterData.alignment && (
+                      <div>
+                        <h4 className="font-cinzel text-xs text-gray-500 font-bold mb-1 uppercase tracking-widest">
+                          Alignment
+                        </h4>
+                        <p className="text-sm text-gray-300">
+                          {characterData.alignment}
+                        </p>
+                      </div>
+                    )}
+                    {characterData.backstory && (
+                      <div>
+                        <h4 className="font-cinzel text-xs text-gray-500 font-bold mb-1 uppercase tracking-widest">
+                          Backstory
+                        </h4>
+                        <p className="text-sm text-gray-300 font-serif leading-relaxed whitespace-pre-wrap">
+                          {characterData.backstory}
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-gray-500 text-sm italic text-center py-6">
+                    No about information available.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
+          {/* end tab content p-4 div */}
         </div>
+        {/* end center column panel */}
 
         {/* RIGHT COLUMN: Defenses, Senses, etc. (3 cols) */}
         <div className="md:col-span-3 space-y-4">
@@ -904,7 +1092,7 @@ const CharrollerResults = ({
                   setEditingSection("ac_speed");
                   setShowSectionSettings(true);
                 }}
-                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+                className="w-7 h-7 bg-transparent text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center flex-shrink-0"
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -939,7 +1127,7 @@ const CharrollerResults = ({
                   setEditingSection("defenses");
                   setShowSectionSettings(true);
                 }}
-                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+                className="w-7 h-7 bg-transparent text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center flex-shrink-0"
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -957,7 +1145,7 @@ const CharrollerResults = ({
                   setEditingSection("conditions");
                   setShowSectionSettings(true);
                 }}
-                className="!bg-transparent !p-1 !text-gray-500 hover:!text-white hover:!bg-white/10 rounded-full transition-colors flex items-center justify-center"
+                className="w-7 h-7 bg-transparent text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center flex-shrink-0"
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -1027,7 +1215,7 @@ const CharrollerResults = ({
                   </h3>
                   <button
                     onClick={() => setShowSectionSettings(false)}
-                    className="!bg-transparent !p-1 !text-gray-400 hover:!text-white rounded-full"
+                    className="w-7 h-7 bg-transparent text-gray-400 hover:text-white rounded-full flex items-center justify-center flex-shrink-0"
                   >
                     <X className="w-5 h-5" />
                   </button>
