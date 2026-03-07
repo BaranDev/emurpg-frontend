@@ -16,6 +16,7 @@ const TableList = ({ eventSlug }) => {
   const wsConnectionAttempted = useRef(false);
   const [selectedGame, setSelectedGame] = useState(null);
   const [gameDetails, setGameDetails] = useState({});
+  const [themes, setThemes] = useState({});
 
   useEffect(() => {
     const fetchTables = () => {
@@ -44,6 +45,21 @@ const TableList = ({ eventSlug }) => {
         console.log("Games loaded:", data);
       } catch (err) {
         console.log("Error fetching games:", err.message);
+      }
+    };
+
+    const fetchThemes = async () => {
+      try {
+        const response = await fetch(`${config.backendUrl}/api/themes`);
+        if (!response.ok) return;
+        const data = await response.json();
+        const themesMap = {};
+        data.forEach((theme) => {
+          themesMap[theme.id] = theme;
+        });
+        setThemes(themesMap);
+      } catch (err) {
+        console.log("Error fetching themes:", err.message);
       }
     };
 
@@ -82,6 +98,7 @@ const TableList = ({ eventSlug }) => {
 
     fetchTables();
     fetchGames();
+    fetchThemes();
 
     if (!wsConnectionAttempted.current && !error) {
       const socket = connectWebSocket();
@@ -181,7 +198,7 @@ const TableList = ({ eventSlug }) => {
           const gameData = table.game_id ? gameDetails[table.game_id] : null;
           console.log(`Table ${table.slug} game data:`, gameData);
 
-          return tableListFunction(table, gameData, setSelectedGame, t);
+          return tableListFunction(table, gameData, setSelectedGame, t, themes);
         })}
 
         {/* Host your own table card */}
@@ -216,11 +233,20 @@ TableList.propTypes = {
 };
 
 export default TableList;
-function tableListFunction(table, gameData, setSelectedGame, t) {
+function tableListFunction(table, gameData, setSelectedGame, t, themes) {
+  const theme =
+    table.theme_id && themes[table.theme_id]
+      ? themes[table.theme_id]
+      : themes["default"] || {
+          card_styles: "bg-gray-800 rounded-lg border-2 border-yellow-600",
+          hover_animations: "transition-transform transform hover:scale-105",
+          button_styles: "bg-yellow-600 hover:bg-yellow-700 text-white",
+        };
+
   return (
     <div
       key={table.slug}
-      className="bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 border-2 border-yellow-600 flex flex-col h-full"
+      className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.card_styles} ${theme.hover_animations}`}
     >
       {(gameData?.image_url || table.game_image) && (
         <div className="w-full h-32 overflow-hidden">
@@ -238,9 +264,9 @@ function tableListFunction(table, gameData, setSelectedGame, t) {
       )}
       <div className="p-6 flex-grow">
         <h3
-          className={
-            "text-xl font-bold text-yellow-500 mb-2 text-center font-medieval"
-          }
+          className={`text-xl font-bold mb-2 text-center font-medieval ${
+            (!theme.id || theme.id === "default") ? "text-yellow-500" : ""
+          }`}
         >
           {table.game_name}
         </h3>
@@ -273,9 +299,9 @@ function tableListFunction(table, gameData, setSelectedGame, t) {
             to={`/table/${table.slug}`}
             className={`flex-1 text-center ${
               table.is_marked_full
-                ? "bg-gray-500 cursor-not-allowed"
-                : "bg-yellow-600 hover:bg-yellow-700"
-            } text-white px-4 py-2 rounded-md transition-colors`}
+                ? "bg-gray-500 text-white cursor-not-allowed"
+                : theme.button_styles
+            } px-4 py-2 rounded-md transition-colors`}
             onClick={(e) => table.is_marked_full && e.preventDefault()}
           >
             {table.is_marked_full
