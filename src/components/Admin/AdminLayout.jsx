@@ -5,8 +5,6 @@ import {
   Users,
   BarChart3,
   LogOut,
-  Menu,
-  X,
   Castle,
   Shield,
   Sparkles,
@@ -18,13 +16,14 @@ import {
   UserPlus,
   Clock,
   Palette,
+  Settings,
 } from "lucide-react";
 import { clearSession, getLoginData } from "../../utils/auth";
 
 const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [torchFlicker, setTorchFlicker] = useState(1);
+  const [expandedGroup, setExpandedGroup] = useState(null);
   const loginData = getLoginData();
 
   // Animated torch effect
@@ -142,6 +141,64 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
   ];
 
   const menuItems = menuSections.flatMap((s) => s.items);
+
+  // Mobile bottom nav groups
+  const mobileGroups = [
+    {
+      id: "dashboard",
+      label: "Home",
+      icon: Home,
+      items: null, // direct navigate
+    },
+    {
+      id: "events",
+      label: "Events",
+      icon: Calendar,
+      items: menuSections[1].items, // EMURPG section
+    },
+    {
+      id: "emucon",
+      label: "EMUCON",
+      icon: Sparkles,
+      items: menuSections[2].items, // EMUCON section
+    },
+    {
+      id: "management",
+      label: "Manage",
+      icon: Settings,
+      items: menuSections[3].items, // Management section
+    },
+  ];
+
+  // Find which mobile group the active panel belongs to
+  const activeGroupId =
+    mobileGroups.find((g) => g.items?.some((item) => item.id === activePanel))
+      ?.id || (activePanel === "dashboard" ? "dashboard" : null);
+
+  const handleMobileGroupTap = (group) => {
+    if (!group.items) {
+      // Direct navigate (Dashboard)
+      setExpandedGroup(null);
+      onPanelChange(group.id);
+      return;
+    }
+    if (expandedGroup === group.id) {
+      // Collapse if already expanded
+      setExpandedGroup(null);
+    } else {
+      // Expand and navigate to first sub-item if not already in this group
+      setExpandedGroup(group.id);
+      if (activeGroupId !== group.id) {
+        onPanelChange(group.items[0].id);
+      }
+    }
+  };
+
+  const handleSubItemTap = (itemId) => {
+    onPanelChange(itemId);
+  };
+
+  const expandedGroupData = mobileGroups.find((g) => g.id === expandedGroup);
 
   return (
     <div className="min-h-screen bg-gray-950 flex">
@@ -313,85 +370,121 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
         </div>
       </aside>
 
-      {/* Mobile Header */}
+      {/* Mobile Header — branding only */}
       <div className="fixed top-0 left-0 right-0 z-50 lg:hidden bg-gray-900/95 border-b border-yellow-900/30 backdrop-blur-sm">
-        <div className="flex items-center justify-between p-3 sm:p-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Castle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
-            <span className="font-bold text-yellow-500 font-cinzel text-sm sm:text-base">
-              EMURPG Admin
-            </span>
-          </div>
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-5 h-5 text-white" />
-            ) : (
-              <Menu className="w-5 h-5 text-white" />
-            )}
-          </button>
+        <div className="flex items-center gap-2 p-3 sm:p-4">
+          <Castle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
+          <span className="font-bold text-yellow-500 font-cinzel text-sm sm:text-base">
+            EMURPG Admin
+          </span>
         </div>
-
-        {/* Mobile Menu Dropdown */}
-        {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-gray-900/98 border-b border-yellow-900/30 backdrop-blur-sm max-h-[80vh] overflow-y-auto shadow-2xl">
-            <nav className="p-2 sm:p-3">
-              {menuSections.map((section, si) => (
-                <div key={si}>
-                  {section.label && (
-                    <p className="px-2 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
-                      {section.label}
-                    </p>
-                  )}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2">
-                    {section.items.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = activePanel === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            onPanelChange(item.id);
-                            setIsMobileMenuOpen(false);
-                          }}
-                          className={`flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-lg transition-all text-center ${
-                            isActive
-                              ? "bg-yellow-900/40 text-yellow-400 border border-yellow-500/30"
-                              : "bg-transparent text-gray-400 hover:bg-gray-800 hover:text-white border border-transparent"
-                          }`}
-                        >
-                          <Icon
-                            className={`w-5 h-5 sm:w-6 sm:h-6 ${
-                              isActive ? "text-yellow-300" : ""
-                            }`}
-                          />
-                          <span className="text-xs sm:text-sm font-medium leading-tight">
-                            {item.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </nav>
-            <div className="p-2 sm:p-3 border-t border-gray-800">
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="text-sm sm:text-base">Logout</span>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
+      {/* Mobile Bottom Nav — grouped with expanding secondary row */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(3,7,30,0.98) 0%, rgba(3,7,30,0.93) 100%)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderTop: "1px solid rgba(234,179,8,0.12)",
+          paddingBottom: "max(env(safe-area-inset-bottom, 0px), 4px)",
+        }}
+      >
+        {/* Secondary row — sub-items for expanded group */}
+        {expandedGroupData?.items && (
+          <div
+            className="flex overflow-x-auto px-2 py-1.5 border-b border-yellow-900/20"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {expandedGroupData.items.map((item) => {
+              const Icon = item.icon;
+              const isActive = activePanel === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleSubItemTap(item.id)}
+                  className={`flex items-center gap-1.5 flex-shrink-0 px-3 py-1.5 rounded-lg transition-all duration-200 active:scale-95 ${
+                    isActive
+                      ? "bg-yellow-900/30 text-yellow-400 border border-yellow-500/30"
+                      : "text-gray-400 hover:text-gray-200 border border-transparent"
+                  }`}
+                >
+                  <Icon
+                    className={`w-3.5 h-3.5 flex-shrink-0 ${
+                      isActive ? "text-yellow-300" : ""
+                    }`}
+                  />
+                  <span
+                    className={`text-[11px] font-medium whitespace-nowrap ${
+                      isActive ? "text-yellow-400" : "text-gray-500"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Primary row — category tabs */}
+        <div className="flex items-stretch justify-around px-1 py-1">
+          {mobileGroups.map((group) => {
+            const Icon = group.icon;
+            const isGroupActive = activeGroupId === group.id;
+            const isExpanded = expandedGroup === group.id;
+            return (
+              <button
+                key={group.id}
+                onClick={() => handleMobileGroupTap(group)}
+                className={`flex flex-col items-center justify-center flex-1 py-2 px-1 rounded-xl gap-1 transition-all duration-200 active:scale-95 ${
+                  isGroupActive
+                    ? "text-yellow-400"
+                    : "text-gray-500 hover:text-gray-300"
+                }`}
+              >
+                <div className="relative flex items-center justify-center">
+                  <Icon
+                    className={`w-5 h-5 transition-all duration-200 ${
+                      isGroupActive
+                        ? "drop-shadow-[0_0_6px_rgba(250,204,21,0.5)]"
+                        : ""
+                    }`}
+                  />
+                  {isGroupActive && !isExpanded && (
+                    <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-yellow-400" />
+                  )}
+                  {isExpanded && (
+                    <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                  )}
+                </div>
+                <span
+                  className={`text-[10px] font-medium leading-none whitespace-nowrap transition-all duration-200 ${
+                    isGroupActive ? "text-yellow-400" : "text-gray-600"
+                  }`}
+                >
+                  {group.label}
+                </span>
+              </button>
+            );
+          })}
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="flex flex-col items-center justify-center flex-1 py-2 px-1 rounded-xl gap-1 transition-all duration-200 active:scale-95 text-red-400/60 hover:text-red-400"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="text-[10px] font-medium leading-none whitespace-nowrap text-red-400/50">
+              Logout
+            </span>
+          </button>
+        </div>
+      </nav>
+
       {/* Main Content */}
-      <main className="flex-1 lg:ml-0 min-h-screen pt-14 sm:pt-16 lg:pt-0 relative z-10">
+      <main className="flex-1 lg:ml-0 min-h-screen pt-14 sm:pt-16 lg:pt-0 pb-20 lg:pb-0 relative z-10">
         <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           {/* Breadcrumb */}
           {activePanel !== "dashboard" && (

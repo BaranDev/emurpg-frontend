@@ -27,7 +27,7 @@ import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
 import { config, rpgQuotes } from "../config";
 
 const HomePage = ({ onLanguageSwitch }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [diceQuote, setDiceQuote] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [teamMembers, setTeamMembers] = useState([]);
@@ -130,9 +130,9 @@ const HomePage = ({ onLanguageSwitch }) => {
 
   return (
     <>
-      <Navbar onLanguageSwitch={onLanguageSwitch} />
       <Navbar
         onLanguageSwitch={onLanguageSwitch}
+        scrollEffectEnabled={false}
         buttons={[
           {
             label: t("navbar.events"),

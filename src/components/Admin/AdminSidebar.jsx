@@ -64,7 +64,7 @@ const AdminSidebar = ({ collapsed, onToggle, adminType = "emurpg" }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="relative mt-4 px-2 ">
+      <nav className="relative mt-4 px-2 pb-20">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (

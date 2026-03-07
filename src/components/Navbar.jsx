@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBars, FaTimes, FaGithub, FaGlobe } from "react-icons/fa";
+import { FaGithub, FaGlobe } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import emurpgLogo from "../assets/logo/LOGO_DARKGRAY.png";
@@ -10,7 +10,6 @@ const Navbar = ({
   onLanguageSwitch,
 }) => {
   const { t, i18n } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(!scrollEffectEnabled);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -80,9 +79,9 @@ const Navbar = ({
     <>
       {isVisible && (
         <nav
-          className={`${
-            scrollEffectEnabled ? "fixed animate-slideDown" : "relative"
-          } top-0 left-0 right-0 z-50 transition-all duration-200`}
+          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+            scrollEffectEnabled ? "animate-slideDown" : ""
+          }`}
           style={{
             background:
               "linear-gradient(to bottom, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 50%, rgba(15, 23, 42, 0.85) 100%)",
@@ -198,55 +197,16 @@ const Navbar = ({
                 </button>
               </div>
 
-              {/* Mobile menu button */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-white/70 hover:text-white focus:outline-none p-2 rounded-lg hover:bg-white/10 transition-all"
-                >
-                  {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-                </button>
-              </div>
+              {/* Mobile language globe */}
+              <button
+                onClick={handleLanguageToggle}
+                className="md:hidden p-2 rounded-lg text-white/80 hover:text-white transition-colors duration-300"
+                title={t("navbar.language")}
+                aria-label={t("navbar.language")}
+              >
+                <FaGlobe className="text-lg" />
+              </button>
             </div>
-
-            {/* Mobile menu */}
-            {isOpen && (
-              <div className="md:hidden border-t border-white/10 bg-slate-900/95 backdrop-blur-md animate-fadeIn">
-                <div className="px-3 pt-3 pb-4 space-y-2">
-                  {[emuconButton, ...buttons].map((button) => (
-                    <button
-                      key={button.label}
-                      disabled={button.disabled}
-                      onClick={button.onClick}
-                      className={`block px-4 py-2.5 rounded-lg w-full text-left relative font-medium transition-all duration-300 ${
-                        button.disabled
-                          ? "text-gray-500 cursor-not-allowed opacity-50"
-                          : "text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/20"
-                      }`}
-                    >
-                      {button.label}
-                      {button.badge && (
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-[10px] px-2 py-0.5 rounded-full text-white font-bold shadow-lg border border-white/30">
-                          {button.badge}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                  {/* Language Switcher for Mobile */}
-                  <button
-                    onClick={handleLanguageToggle}
-                    className="block px-4 py-2.5 rounded-lg w-full text-left text-white/80 hover:text-white flex items-center gap-2 border border-white/20 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
-                  >
-                    <FaGlobe className="text-lg" />
-                    <span>
-                      {currentLanguage === "en"
-                        ? t("navbar.english")
-                        : t("navbar.turkish")}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </nav>
       )}

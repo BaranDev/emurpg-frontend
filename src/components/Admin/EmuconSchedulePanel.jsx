@@ -120,7 +120,7 @@ const EmuconSchedulePanel = () => {
             type: editForm.type,
             isEditable: editForm.isEditable,
           }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -148,7 +148,7 @@ const EmuconSchedulePanel = () => {
         {
           method: "POST",
           headers: { apiKey },
-        }
+        },
       );
 
       if (response.ok) {
@@ -221,7 +221,7 @@ const EmuconSchedulePanel = () => {
             apiKey,
           },
           body: JSON.stringify({ deleteEvents: true }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -277,9 +277,9 @@ const EmuconSchedulePanel = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-white font-cinzel flex items-center gap-3">
             <Clock className="w-6 h-6 sm:w-7 sm:h-7 text-amber-400" />
@@ -289,12 +289,13 @@ const EmuconSchedulePanel = () => {
             Manage time periods for the event day
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
           <AdminButton
             variant="primary"
             icon={Plus}
             onClick={() => setShowCreateModal(true)}
-            className="w-full sm:w-auto"
+            size="sm"
+            className="flex-1 sm:flex-none sm:w-auto"
           >
             Add Period
           </AdminButton>
@@ -302,7 +303,8 @@ const EmuconSchedulePanel = () => {
             variant="secondary"
             icon={RefreshCw}
             onClick={fetchPeriods}
-            className="w-full sm:w-auto"
+            size="sm"
+            className="flex-1 sm:flex-none sm:w-auto"
           >
             Refresh
           </AdminButton>
@@ -310,9 +312,10 @@ const EmuconSchedulePanel = () => {
             variant="danger"
             icon={AlertTriangle}
             onClick={() => setShowResetConfirm(true)}
-            className="w-full sm:w-auto"
+            size="sm"
+            className="flex-1 sm:flex-none sm:w-auto"
           >
-            Reset to Default
+            Reset
           </AdminButton>
         </div>
       </div>
@@ -325,13 +328,16 @@ const EmuconSchedulePanel = () => {
       )}
 
       {/* Visual Timeline */}
-      <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 sm:p-6">
-        <h3 className="text-base sm:text-lg font-semibold text-white mb-4 sm:mb-6 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-amber-400" />
-          Day Timeline Overview
+      <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 sm:p-6">
+        <h3 className="text-sm sm:text-lg font-semibold text-white mb-3 sm:mb-6 flex items-center gap-2">
+          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+          Day Timeline
         </h3>
 
         {/* Timeline container - scrollable on mobile */}
+        <p className="text-xs text-gray-500 mb-2 sm:hidden">
+          Scroll horizontally to view full timeline
+        </p>
         <div className="relative overflow-x-auto">
           <div className="min-w-[700px]">
             {/* Time markers - Top */}
@@ -377,7 +383,7 @@ const EmuconSchedulePanel = () => {
                   const width = getTimeWidth(period.startTime, period.endTime);
                   const duration = getDuration(
                     period.startTime,
-                    period.endTime
+                    period.endTime,
                   );
                   const typeColor =
                     PERIOD_TYPE_COLORS[period.type] ||
@@ -462,8 +468,8 @@ const EmuconSchedulePanel = () => {
 
       {/* Periods List */}
       <div className="bg-gray-800/50 border border-gray-700 rounded-xl overflow-hidden">
-        <div className="p-3 sm:p-4 border-b border-gray-700">
-          <h3 className="text-base sm:text-lg font-semibold text-white">
+        <div className="p-2 sm:p-4 border-b border-gray-700">
+          <h3 className="text-sm sm:text-lg font-semibold text-white">
             All Periods
           </h3>
         </div>
@@ -472,9 +478,9 @@ const EmuconSchedulePanel = () => {
           {periods.map((period) => (
             <div
               key={period.id}
-              className="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-900/30 transition-colors"
+              className="p-2 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 hover:bg-gray-900/30 transition-colors"
             >
-              <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4">
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4">
                 <div
                   className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${
                     PERIOD_TYPE_COLORS[period.type] ||

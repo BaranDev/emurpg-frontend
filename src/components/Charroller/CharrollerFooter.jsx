@@ -62,7 +62,7 @@ const CharrollerFooter = () => {
         <div className="text-center mt-8 text-gray-500 text-sm">
           <p>{config.FOOTER_TEXT}</p>
           <p className="mt-2 text-xs opacity-50">
-            Charroller v1.0 • Built with Arcane Magic
+            Charroller v1.0 • Built with Tavern Magic
           </p>
         </div>
       </div>

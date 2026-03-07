@@ -11,6 +11,8 @@
   },
   "events_page": {
     "title": "Yaklaşan Etkinlikler",
+    "title_game": "Oyun Etkinlikleri",
+    "title_general": "Genel Etkinlikler",
     "homepage": "Ana Sayfa",
     "character_roller": "Character Roller",
     "soon_badge": "Yakında"
@@ -94,6 +96,12 @@
     "event_rules": "Etkinlik Kuralları",
     "submit": "Etkinliğe Kayıt Ol"
   },
+  "bottom_nav": {
+    "home": "Ana Sayfa",
+    "events": "Etkinlikler",
+    "charroller": "Charroller",
+    "language": "Dil"
+  },
   "common": {
     "close": "Kapat",
     "beta": "BETA",
@@ -105,6 +113,8 @@
     "hero_description": "Masa oyuncuları için en iyi yardımcı. Karakter oluştur, zar at ve kahramanlarını her maceraya hazır tut.",
     "cta_enter": "Karakter Yöneticisine Gir",
     "cta_learn_more": "Charroller Nedir?",
+    "cta_music_hint": "İçeri adım at ve taverna ambiyansını başlat.",
+    "cta_music_ready": "Taverna ambiyansı hazır. Ne zaman hazırsan içeri gir.",
     "info_title": "Aksiyona Geç",
     "info_description": "Charroller masa oyunlarını daha kolay, hızlı ve eğlenceli hale getirir. Artık sayfa çevirme veya hesap yapma yok.",
     "feature_ai_title": "Yapay Zeka ile Oluşturma",

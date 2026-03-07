@@ -1,65 +1,31 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Home, Users, Scroll, Settings, Globe } from "lucide-react";
+import { ArrowLeft, Settings, Globe } from "lucide-react";
+import { FaPlay, FaPause } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { useGlobalAudio } from "../../contexts/GlobalAudioContext";
 import logoYellow from "../../assets/logo/LOGO_YELLOW.png";
-import logoBlue from "../../assets/logo/LOGO_LIGHTBLUE.png";
 
 /**
- * CharrollerNavbar - Custom navigation for Charroller pages
- * Supports both arcane (landing) and tavern (manager) themes
+ * CharrollerNavbar - Minimal tavern-themed navbar for Charroller pages.
+ * Only a back arrow (to /) + logo on the left, music/language/settings on right.
  */
-const CharrollerNavbar = ({
-  theme = "arcane", // "arcane" | "tavern"
-  onLanguageSwitch,
-  onSettingsOpen,
-}) => {
+const CharrollerNavbar = ({ onLanguageSwitch, onSettingsOpen }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isPlaying, togglePlay, hasUserInteracted, unlockAudio } =
+    useGlobalAudio();
 
-  // Theme configuration
-  const themeConfig = {
-    arcane: {
-      bg: "rgba(15, 30, 50, 0.95)",
-      bgScrolled: "rgba(15, 30, 50, 0.98)",
-      border: "rgba(74, 158, 255, 0.3)",
-      accent: "#4a9eff",
-      accentHover: "rgba(74, 158, 255, 0.2)",
-      text: "#e2e8f0",
-      textMuted: "#94a3b8",
-      logo: logoBlue,
-      shadow: "0 4px 30px rgba(74, 158, 255, 0.15)",
-    },
-    tavern: {
-      bg: "rgba(42, 26, 15, 0.95)",
-      bgScrolled: "rgba(42, 26, 15, 0.98)",
-      border: "rgba(139, 69, 19, 0.4)",
-      accent: "#ffaa33",
-      accentHover: "rgba(255, 170, 51, 0.2)",
-      text: "#d4a574",
-      textMuted: "#a67c52",
-      logo: logoYellow,
-      shadow: "0 4px 30px rgba(139, 69, 19, 0.2)",
-    },
-  };
-
-  const colors = themeConfig[theme] || themeConfig.arcane;
-
-  // Handle scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const isOnManager = location.pathname.includes("/manager");
-  const isOnLanding = location.pathname === "/charroller";
 
   const handleLanguageToggle = () => {
     const newLang = i18n.language === "en" ? "tr" : "en";
@@ -67,157 +33,148 @@ const CharrollerNavbar = ({
     if (onLanguageSwitch) onLanguageSwitch(newLang);
   };
 
-  const navLinks = [
-    { label: t("events_page.homepage"), icon: Home, href: "/" },
-    {
-      label: t("charroller.your_characters"),
-      icon: Users,
-      href: "/charroller/manager",
-      active: isOnManager,
-    },
-    {
-      label: t("charroller.cta_learn_more"),
-      icon: Scroll,
-      href: "/charroller",
-      active: isOnLanding && !isOnManager,
-    },
-  ];
+  const handleMusicToggle = async () => {
+    if (!hasUserInteracted) {
+      await unlockAudio();
+    } else {
+      await togglePlay();
+    }
+  };
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        background: isScrolled ? colors.bgScrolled : colors.bg,
-        borderBottom: `1px solid ${colors.border}`,
-        boxShadow: isScrolled ? colors.shadow : "none",
-        backdropFilter: "blur(10px)",
+        background: isScrolled
+          ? "rgba(42, 26, 15, 0.97)"
+          : "rgba(42, 26, 15, 0.88)",
+        borderBottom: "1px solid rgba(139, 69, 19, 0.3)",
+        boxShadow: isScrolled
+          ? "0 4px 32px rgba(80, 40, 10, 0.2), inset 0 -1px 0 rgba(139, 69, 19, 0.12)"
+          : "none",
+        backdropFilter: "blur(14px)",
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo - at very left */}
+        <div className="flex items-center justify-between h-14">
+          {/* Left: back arrow + logo */}
           <div className="flex items-center gap-3">
-            <img
-              src={colors.logo}
-              alt="Charroller"
-              className="w-10 h-10 drop-shadow-md"
-            />
-            <div className="hidden sm:flex items-center gap-2">
+            {/* Back to home */}
+            <button
+              onClick={() => navigate("/")}
+              className="group flex items-center gap-2 px-2.5 py-1.5 -ml-2.5 rounded-lg transition-all duration-300"
+              style={{ color: "#d4a574" }}
+              title={t("events_page.homepage")}
+            >
+              <ArrowLeft
+                className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1"
+                style={{
+                  filter: "drop-shadow(0 0 4px rgba(255, 170, 51, 0.5))",
+                }}
+              />
               <span
-                className="font-cinzel font-bold text-lg"
-                style={{ color: colors.text }}
+                className="hidden sm:inline text-sm font-medium tracking-wide opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  color: "#d4a574",
+                  textShadow: "0 0 12px rgba(255, 170, 51, 0.3)",
+                }}
+              >
+                {t("events_page.homepage")}
+              </span>
+            </button>
+
+            {/* Divider */}
+            <div
+              className="hidden sm:block h-5 w-px"
+              style={{ background: "rgba(139, 69, 19, 0.4)" }}
+            />
+
+            {/* Logo + brand */}
+            <button
+              onClick={() => navigate("/charroller")}
+              className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-90"
+            >
+              <img
+                src={logoYellow}
+                alt="Charroller"
+                className="w-8 h-8"
+                style={{
+                  filter:
+                    "drop-shadow(0 0 8px rgba(255, 170, 51, 0.4)) brightness(1.1)",
+                }}
+              />
+              <span
+                className="hidden sm:inline font-cinzel font-bold text-base tracking-wide"
+                style={{
+                  color: "#d4a574",
+                  textShadow: "0 0 16px rgba(255, 170, 51, 0.25)",
+                }}
               >
                 Charroller
               </span>
               <span
-                className="px-1.5 py-0.5 text-[10px] font-bold rounded"
+                className="hidden sm:inline px-1.5 py-0.5 text-[9px] font-bold rounded"
                 style={{
-                  background: `${colors.accent}22`,
-                  color: colors.accent,
-                  border: `1px solid ${colors.accent}44`,
+                  background: "rgba(255, 170, 51, 0.12)",
+                  color: "#ffaa33",
+                  border: "1px solid rgba(255, 170, 51, 0.25)",
                 }}
               >
                 BETA
               </span>
-            </div>
+            </button>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => navigate(link.href)}
-                className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg transition-all
-                  ${link.active ? "font-medium" : ""}
-                `}
-                style={{
-                  color: link.active ? colors.accent : colors.textMuted,
-                  background: link.active ? colors.accentHover : "transparent",
-                }}
-              >
-                <link.icon className="w-4 h-4" />
-                {link.label}
-              </button>
-            ))}
-          </div>
+          {/* Right: music (mobile) + language + settings */}
+          <div className="flex items-center gap-1">
+            {/* Music toggle — mobile only */}
+            <button
+              onClick={handleMusicToggle}
+              className="md:hidden p-2 rounded-lg transition-all duration-300"
+              style={{
+                color: isPlaying ? "#ffaa33" : "#8a7060",
+                filter: isPlaying
+                  ? "drop-shadow(0 0 6px rgba(255, 170, 51, 0.4))"
+                  : "none",
+              }}
+              title={isPlaying ? "Pause music" : "Play music"}
+            >
+              {isPlaying ? (
+                <FaPause className="w-4 h-4" />
+              ) : (
+                <FaPlay className="w-4 h-4" />
+              )}
+            </button>
 
-          {/* Right side actions */}
-          <div className="flex items-center gap-2">
-            {/* Language toggle */}
+            {/* Language */}
             <button
               onClick={handleLanguageToggle}
-              className="p-2 rounded-lg transition-colors"
-              style={{ color: colors.textMuted }}
+              className="p-2 rounded-lg transition-colors duration-300 hover:text-amber-300"
+              style={{ color: "#8a7060" }}
               title={t("navbar.language")}
             >
               <Globe className="w-5 h-5" />
             </button>
 
-            {/* Settings (only on manager) */}
+            {/* Settings — manager only */}
             {isOnManager && onSettingsOpen && (
               <button
                 onClick={onSettingsOpen}
-                className="p-2 rounded-lg transition-colors"
-                style={{ color: colors.textMuted }}
+                className="p-2 rounded-lg transition-colors duration-300 hover:text-amber-300"
+                style={{ color: "#8a7060" }}
                 title={t("common.settings")}
               >
                 <Settings className="w-5 h-5" />
               </button>
             )}
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg transition-colors"
-              style={{ color: colors.text }}
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div
-            className="md:hidden py-4 border-t"
-            style={{ borderColor: colors.border }}
-          >
-            <div className="space-y-2">
-              {navLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => {
-                    navigate(link.href);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all"
-                  style={{
-                    color: link.active ? colors.accent : colors.text,
-                    background: link.active
-                      ? colors.accentHover
-                      : "transparent",
-                  }}
-                >
-                  <link.icon className="w-5 h-5" />
-                  {link.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );
 };
 
 CharrollerNavbar.propTypes = {
-  theme: PropTypes.oneOf(["arcane", "tavern"]),
   onLanguageSwitch: PropTypes.func,
   onSettingsOpen: PropTypes.func,
 };

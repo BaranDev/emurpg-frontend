@@ -53,6 +53,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Load characters
   useEffect(() => {
@@ -93,6 +94,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
     setIsCreating(false);
     setCreateMode(null);
     setError(null);
+    setMobileSidebarOpen(false);
   };
 
   const handleDeselectCharacter = () => {
@@ -116,6 +118,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
     setSelectedCharacter(null);
     setSelectedFile(null);
     setError(null);
+    setMobileSidebarOpen(false);
   };
 
   const handleCancelCreate = () => {
@@ -454,20 +457,43 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       <TavernBackground />
 
       <CharrollerNavbar
-        theme="tavern"
         onLanguageSwitch={onLanguageSwitch}
         onSettingsOpen={() => setShowSettings(true)}
       />
 
-      <div className="relative z-10 min-h-screen pt-16 flex">
+      <div className="relative z-10 min-h-screen pt-14 flex">
+        {/* Mobile sidebar backdrop */}
+        {mobileSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/60 z-20 md:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+
+        {/* Mobile sidebar toggle button */}
+        <button
+          className={`fixed bottom-24 left-6 z-[60] md:hidden w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-opacity duration-300 ${mobileSidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+          onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(139, 69, 19, 0.9), rgba(101, 50, 14, 0.9))",
+            border: "2px solid rgba(255, 170, 51, 0.5)",
+            boxShadow: "0 4px 20px rgba(80, 40, 10, 0.5)",
+          }}
+        >
+          <Users className="w-6 h-6 text-amber-200" />
+        </button>
+
         {/* =============================== */}
         {/* SIDEBAR */}
         {/* =============================== */}
         <aside
           className={`
-            fixed left-0 top-16 bottom-0 z-20 animate-fadeIn
-            ${sidebarCollapsed ? "w-16" : "w-72"}
+            fixed left-0 top-14 bottom-0 animate-fadeIn
             transition-all duration-300
+            w-72 z-30 ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            md:translate-x-0 md:z-20
+            ${sidebarCollapsed ? "md:w-16" : "md:w-72"}
           `}
           style={{
             background:
@@ -480,16 +506,17 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
             className="p-4 flex items-center justify-between"
             style={{ borderBottom: "1px solid rgba(139, 69, 19, 0.3)" }}
           >
-            {!sidebarCollapsed && (
+            {(!sidebarCollapsed || mobileSidebarOpen) && (
               <h2 className="font-cinzel text-tavern-parchment text-lg flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 {t("charroller.your_characters")}
               </h2>
             )}
+            {/* Desktop: collapse/expand toggle */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="w-8 h-8 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 text-[#1a110a] hover:brightness-110"
+              className="hidden md:flex w-8 h-8 rounded-lg transition-colors items-center justify-center flex-shrink-0 text-[#1a110a] hover:brightness-110"
               style={{ background: "rgba(255, 170, 51, 0.9)" }}
             >
               {sidebarCollapsed ? (
@@ -498,9 +525,17 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                 <X className="w-4 h-4" />
               )}
             </button>
+            {/* Mobile: close button */}
+            <button
+              onClick={() => setMobileSidebarOpen(false)}
+              className="flex md:hidden w-8 h-8 rounded-lg transition-colors items-center justify-center flex-shrink-0 text-[#1a110a] hover:brightness-110"
+              style={{ background: "rgba(255, 170, 51, 0.9)" }}
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || mobileSidebarOpen) && (
             <>
               {/* Create Buttons */}
               <div
@@ -650,10 +685,10 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
         <main
           className={`
             flex-1 min-h-screen transition-all duration-300
-            ${sidebarCollapsed ? "ml-16" : "ml-72"}
+            ml-0 ${sidebarCollapsed ? "md:ml-16" : "md:ml-72"}
           `}
         >
-          <div className="max-w-5xl mx-auto p-6">
+          <div className="max-w-5xl mx-auto p-4 md:p-6">
             {/* Creating New Character */}
             {isCreating && (
               <div className="animate-fadeIn">
@@ -736,33 +771,33 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
 
             {/* Empty State / Creation Hub */}
             {!selectedCharacter && !isCreating && (
-              <div className="flex flex-col items-center justify-center min-h-[75vh] text-center animate-fadeIn relative">
+              <div className="flex flex-col items-center justify-center min-h-[60vh] md:min-h-[75vh] text-center animate-fadeIn relative">
                 {/* Decorative background circle */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 md:w-96 h-64 md:h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div
-                  className="w-28 h-28 rounded-full flex items-center justify-center mb-8 shadow-2xl relative z-10"
+                  className="w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center mb-6 md:mb-8 shadow-2xl relative z-10"
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(61, 40, 23, 0.8), rgba(42, 26, 15, 0.9))",
                     border: "2px solid rgba(139, 69, 19, 0.5)",
                   }}
                 >
-                  <Scroll className="w-14 h-14 text-red-500/80 drop-shadow-lg" />
+                  <Scroll className="w-10 h-10 md:w-14 md:h-14 text-red-500/80 drop-shadow-lg" />
                 </div>
 
-                <h2 className="text-4xl font-cinzel text-white mb-3 tracking-wide drop-shadow-md relative z-10">
+                <h2 className="text-3xl md:text-4xl font-cinzel text-white mb-3 tracking-wide drop-shadow-md relative z-10">
                   {t("charroller.manager_title")}
                 </h2>
 
-                <p className="text-tavern-parchmentDark mb-10 max-w-lg text-lg relative z-10">
+                <p className="text-tavern-parchmentDark mb-8 md:mb-10 max-w-lg text-base md:text-lg relative z-10 px-4">
                   {t("charroller.no_characters_desc")}
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-5 relative z-10">
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 relative z-10 w-full px-4 sm:w-auto sm:px-0">
                   <button
                     onClick={() => handleStartCreate("upload")}
-                    className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg
+                    className="flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 rounded-xl font-bold text-base md:text-lg
                                text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-red-900/20 hover:shadow-xl"
                     style={{
                       background:
@@ -775,7 +810,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                   </button>
                   <button
                     onClick={() => handleStartCreate("describe")}
-                    className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg
+                    className="flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 rounded-xl font-bold text-base md:text-lg
                                text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-red-900/20 hover:shadow-xl"
                     style={{
                       background:
@@ -792,9 +827,9 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           </div>
         </main>
 
-        {/* Music Player */}
-        <div className="fixed bottom-4 right-4 z-30">
-          <TavernPlayer theme="tavern" autoPlay />
+        {/* Music Player — desktop only (mobile uses navbar play button) */}
+        <div className="hidden md:block fixed bottom-4 right-4 z-30">
+          <TavernPlayer autoPlay />
         </div>
       </div>
 

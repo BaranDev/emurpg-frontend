@@ -11,6 +11,8 @@
   },
   "events_page": {
     "title": "Upcoming Events",
+    "title_game": "Game Events",
+    "title_general": "General Events",
     "homepage": "Homepage",
     "character_roller": "Character Roller",
     "soon_badge": "Soon"
@@ -94,6 +96,12 @@
     "event_rules": "Event Rules",
     "submit": "Register for Event"
   },
+  "bottom_nav": {
+    "home": "Home",
+    "events": "Events",
+    "charroller": "Charroller",
+    "language": "Language"
+  },
   "common": {
     "close": "Close",
     "beta": "BETA",
@@ -105,6 +113,8 @@
     "hero_description": "The ultimate companion for tabletop roleplayers. Create characters, roll dice, and keep your heroes ready for any quest.",
     "cta_enter": "Enter Character Manager",
     "cta_learn_more": "What is Charroller?",
+    "cta_music_hint": "Step inside to wake the tavern ambience.",
+    "cta_music_ready": "The tavern ambience is ready. Enter when you are.",
     "info_title": "Roll Into Action",
     "info_description": "Charroller makes tabletop gaming easier, faster, and more fun. No more flipping through pages or doing math mid-session.",
     "feature_ai_title": "AI-Powered Creation",

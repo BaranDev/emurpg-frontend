@@ -86,7 +86,7 @@ const EmuconManagersPanel = () => {
             apiKey: API_KEY,
           },
           body: JSON.stringify(newManager),
-        }
+        },
       );
 
       if (response.ok) {
@@ -115,7 +115,7 @@ const EmuconManagersPanel = () => {
             "Content-Type": "application/json",
             apiKey: API_KEY,
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -147,7 +147,7 @@ const EmuconManagersPanel = () => {
             "Content-Type": "application/json",
             apiKey: API_KEY,
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -170,7 +170,7 @@ const EmuconManagersPanel = () => {
             "Content-Type": "application/json",
             apiKey: API_KEY,
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -321,7 +321,7 @@ EMURPG Team`;
   const filteredManagers = managers.filter(
     (m) =>
       m.clubName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.clubId?.toLowerCase().includes(searchTerm.toLowerCase())
+      m.clubId?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (isLoading) {
@@ -329,9 +329,9 @@ EMURPG Team`;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <div>
           <h2 className="font-metamorphous text-xl font-bold text-amber-100">
             EMUCON Event Managers
@@ -373,27 +373,27 @@ EMURPG Team`;
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div className="rounded-xl border border-amber-900/30 bg-gray-900/50 p-3 sm:p-4 text-center">
-          <Users className="mx-auto mb-2 h-5 w-5 sm:h-6 sm:w-6 text-amber-500" />
-          <p className="text-xl sm:text-2xl font-bold text-amber-100">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="rounded-xl border border-amber-900/30 bg-gray-900/50 p-2 sm:p-4 text-center">
+          <Users className="mx-auto mb-1 sm:mb-2 h-4 w-4 sm:h-6 sm:w-6 text-amber-500" />
+          <p className="text-lg sm:text-2xl font-bold text-amber-100">
             {managers.length}
           </p>
-          <p className="text-xs text-gray-400">Total Managers</p>
+          <p className="text-[10px] sm:text-xs text-gray-400">Total</p>
         </div>
-        <div className="rounded-xl border border-emerald-900/30 bg-gray-900/50 p-3 sm:p-4 text-center">
-          <Shield className="mx-auto mb-2 h-5 w-5 sm:h-6 sm:w-6 text-emerald-500" />
-          <p className="text-xl sm:text-2xl font-bold text-emerald-100">
+        <div className="rounded-xl border border-emerald-900/30 bg-gray-900/50 p-2 sm:p-4 text-center">
+          <Shield className="mx-auto mb-1 sm:mb-2 h-4 w-4 sm:h-6 sm:w-6 text-emerald-500" />
+          <p className="text-lg sm:text-2xl font-bold text-emerald-100">
             {managers.filter((m) => m.status === "active").length}
           </p>
-          <p className="text-xs text-gray-400">Active</p>
+          <p className="text-[10px] sm:text-xs text-gray-400">Active</p>
         </div>
-        <div className="rounded-xl border border-purple-900/30 bg-gray-900/50 p-3 sm:p-4 text-center">
-          <RefreshCw className="mx-auto mb-2 h-5 w-5 sm:h-6 sm:w-6 text-purple-500" />
-          <p className="text-xl sm:text-2xl font-bold text-purple-100">
+        <div className="rounded-xl border border-purple-900/30 bg-gray-900/50 p-2 sm:p-4 text-center">
+          <RefreshCw className="mx-auto mb-1 sm:mb-2 h-4 w-4 sm:h-6 sm:w-6 text-purple-500" />
+          <p className="text-lg sm:text-2xl font-bold text-purple-100">
             {managers.filter((m) => m.status === "pending").length}
           </p>
-          <p className="text-xs text-gray-400">Pending Activation</p>
+          <p className="text-[10px] sm:text-xs text-gray-400">Pending</p>
         </div>
       </div>
 
@@ -408,7 +408,7 @@ EMURPG Team`;
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           {filteredManagers.map((manager) => (
             <div
               key={manager.id}
@@ -807,7 +807,7 @@ EMURPG Team`;
               <pre className="max-h-48 overflow-auto whitespace-pre-wrap text-xs text-gray-400">
                 {generateInvitationMessage(
                   selectedPendingManager,
-                  copiedMessage || "en"
+                  copiedMessage || "en",
                 )}
               </pre>
             </div>
@@ -839,9 +839,9 @@ EMURPG Team`;
         {bulkResult && (
           <div className="space-y-4">
             {/* Summary Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               <div className="rounded-lg border border-emerald-900/30 bg-emerald-900/20 p-2 sm:p-3 text-center">
-                <p className="text-xl sm:text-2xl font-bold text-emerald-400">
+                <p className="text-lg sm:text-2xl font-bold text-emerald-400">
                   {bulkResult.summary.created}
                 </p>
                 <p className="text-xs text-emerald-300">Created</p>

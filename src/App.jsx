@@ -18,6 +18,7 @@ import Privacy from "./components/Privacy";
 import { GlobalAudioProvider } from "./contexts/GlobalAudioContext";
 import EmuconDemoLive from "./pages/Emucon/DemoLive";
 import EmuconDemoHome from "./pages/Emucon/DemoHome";
+import BottomNavBar from "./components/BottomNavBar";
 
 // Inner component that has access to translation context
 function AppContent() {
@@ -159,6 +160,7 @@ function AppContent() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <BottomNavBar onLanguageSwitch={handleLanguageSwitch} />
       </Router>
     </>
   );

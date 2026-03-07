@@ -5,7 +5,7 @@ const FireButton = ({
   onClick,
   color1 = "yellow",
   textcolor = "white",
-  text = "",
+  text = null,
 }) => (
   <motion.button
     whileHover={{ scale: 1.05 }}
@@ -56,7 +56,7 @@ FireButton.propTypes = {
   onClick: PropTypes.func,
   color1: PropTypes.string,
   textcolor: PropTypes.string,
-  text: PropTypes.string,
+  text: PropTypes.node,
 };
 
 export default FireButton;

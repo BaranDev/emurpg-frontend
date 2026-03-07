@@ -22,6 +22,7 @@ export { default as GameGuideModal } from "./GameGuideModal";
 export { default as HomePageEventList } from "./HomePageEventList";
 export { default as LanguageSelector } from "./LanguageSelector";
 export { default as GeneralEventRegistrationForm } from "./GeneralEventRegistrationForm";
+export { default as BottomNavBar } from "./BottomNavBar";
 
 // Charroller Components
 export * from "./Charroller";

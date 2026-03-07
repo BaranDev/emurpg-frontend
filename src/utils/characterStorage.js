@@ -1,6 +1,6 @@
 /**
  * Character Storage - Local storage utilities for character management
- * 
+ *
  * Handles saving, loading, exporting, and importing character data.
  * Characters are stored in localStorage with the key "emurpg_characters"
  */
@@ -39,7 +39,7 @@ export const getCharacters = () => {
  */
 export const getCharacterById = (id) => {
   const characters = getCharacters();
-  return characters.find(c => c.id === id) || null;
+  return characters.find((c) => c.id === id) || null;
 };
 
 /**
@@ -50,7 +50,7 @@ export const getCharacterById = (id) => {
  */
 export const saveCharacter = (characterData, portraitUrl = null) => {
   const characters = getCharacters();
-  
+
   const newCharacter = {
     id: generateId(),
     ...characterData,
@@ -59,9 +59,9 @@ export const saveCharacter = (characterData, portraitUrl = null) => {
     last_played: null,
     play_count: 0,
   };
-  
+
   characters.unshift(newCharacter); // Add to beginning
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
     return newCharacter;
@@ -79,16 +79,16 @@ export const saveCharacter = (characterData, portraitUrl = null) => {
  */
 export const updateCharacter = (id, updates) => {
   const characters = getCharacters();
-  const index = characters.findIndex(c => c.id === id);
-  
+  const index = characters.findIndex((c) => c.id === id);
+
   if (index === -1) return null;
-  
+
   characters[index] = {
     ...characters[index],
     ...updates,
     updated_at: new Date().toISOString(),
   };
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
     return characters[index];
@@ -119,10 +119,10 @@ export const markAsPlayed = (id) => {
  */
 export const deleteCharacter = (id) => {
   const characters = getCharacters();
-  const filtered = characters.filter(c => c.id !== id);
-  
+  const filtered = characters.filter((c) => c.id !== id);
+
   if (filtered.length === characters.length) return false;
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
     return true;
@@ -151,7 +151,7 @@ export const deleteAllCharacters = () => {
  */
 export const exportCharacters = () => {
   const characters = getCharacters();
-  
+
   const exportData = {
     version: EXPORT_VERSION,
     exported_at: new Date().toISOString(),
@@ -159,11 +159,11 @@ export const exportCharacters = () => {
     character_count: characters.length,
     characters: characters,
   };
-  
+
   const blob = new Blob([JSON.stringify(exportData, null, 2)], {
     type: "application/json",
   });
-  
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -182,35 +182,35 @@ export const exportCharacters = () => {
 export const importCharacters = async (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        
+
         // Validate format
         if (!data.characters || !Array.isArray(data.characters)) {
           throw new Error("Invalid file format: missing characters array");
         }
-        
+
         const existingCharacters = getCharacters();
-        const existingIds = new Set(existingCharacters.map(c => c.id));
-        
+        const existingIds = new Set(existingCharacters.map((c) => c.id));
+
         let imported = 0;
         const errors = [];
-        
+
         for (const char of data.characters) {
           try {
             // Generate new ID if already exists
             if (existingIds.has(char.id)) {
               char.id = generateId();
             }
-            
+
             // Validate required fields
             if (!char.character_name && !char.name) {
               errors.push(`Character missing name, skipped`);
               continue;
             }
-            
+
             existingCharacters.push({
               ...char,
               imported_at: new Date().toISOString(),
@@ -221,15 +221,15 @@ export const importCharacters = async (file) => {
             errors.push(`Failed to import character: ${err.message}`);
           }
         }
-        
+
         localStorage.setItem(STORAGE_KEY, JSON.stringify(existingCharacters));
-        
+
         resolve({ success: true, imported, errors });
       } catch (error) {
         reject(new Error(`Failed to parse file: ${error.message}`));
       }
     };
-    
+
     reader.onerror = () => reject(new Error("Failed to read file"));
     reader.readAsText(file);
   });
@@ -258,7 +258,7 @@ export const getSettings = () => {
  */
 export const getDefaultSettings = () => ({
   musicEnabled: true,
-  musicVolume: 30,
+  musicVolume: 24,
   soundEffectsEnabled: true,
   portraitGenerationEnabled: true,
   adminCode: "",
@@ -275,6 +275,15 @@ export const saveSettings = (settings) => {
     const current = getSettings();
     const updated = { ...current, ...settings };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("charroller-settings-changed", {
+          detail: updated,
+        }),
+      );
+    }
+
     return updated;
   } catch (error) {
     console.error("Error saving settings:", error);

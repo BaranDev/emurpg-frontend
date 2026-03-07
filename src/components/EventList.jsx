@@ -234,7 +234,7 @@ const EventList = () => {
                   >
                     {event.available_tables > 0
                       ? `${event.available_seats} ${t(
-                          "event_list_component.seats_available"
+                          "event_list_component.seats_available",
                         )}`
                       : t("event_list_component.registrations_not_started")}
                   </span>

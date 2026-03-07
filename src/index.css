@@ -121,3 +121,15 @@
 html.modal-open nav {
   display: none;
 }
+
+/* Bottom padding on mobile to prevent content hiding behind BottomNavBar */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 4rem;
+  }
+}
+
+/* Hide scrollbar on horizontally scrollable nav bars */
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+}

@@ -528,7 +528,7 @@ const EmuconAdminPanel = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-6">
       {/* Stats Cards */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -575,7 +575,7 @@ const EmuconAdminPanel = () => {
       )}
 
       {/* Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -770,7 +770,7 @@ const EmuconAdminPanel = () => {
 
                             {/* Events (Club Expanded) */}
                             {isClubExpanded && (
-                              <div className="bg-gray-900/30 px-3 sm:px-6 py-2 sm:py-3">
+                              <div className="bg-gray-900/30 px-2 sm:px-6 py-1.5 sm:py-3">
                                 {allEvents.length === 0 ? (
                                   <p className="text-sm text-gray-500 text-center py-2">
                                     No events for this club
@@ -1044,7 +1044,7 @@ const EmuconAdminPanel = () => {
         title={`Add Event - ${selectedClub?.nameEn || ""}`}
       >
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
                 Event Type
@@ -1135,7 +1135,7 @@ const EmuconAdminPanel = () => {
               placeholder="Event Name"
             />
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
                 Time Display
@@ -1714,7 +1714,7 @@ const EmuconAdminPanel = () => {
           <p className="text-sm text-gray-400">
             Share this link with participants to register for the event:
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <input
               type="text"
               value={registrationLink}

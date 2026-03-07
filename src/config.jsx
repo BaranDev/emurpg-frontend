@@ -1,5 +1,8 @@
 const DEV = import.meta.env.VITE_DEV === "true";
 const backendUrl = DEV ? "http://localhost:8000" : "https://api.emurpg.com";
+const R2_PUBLIC_URL =
+  import.meta.env.VITE_R2_PUBLIC_URL || "https://r2.emurpg.com";
+
 const config = {
   backendUrl: backendUrl,
   DISCORD_LINK: "https://discord.gg/QFynV24URr",
@@ -10,6 +13,8 @@ const config = {
   FOOTER_ICON_SIZE: 18,
   ENABLE_SCROLL_SNAP: false, // Toggle scroll snapping for EmuconHome
   ENABLE_R2: import.meta.env.VITE_ENABLE_R2 === "true",
+  r2PublicUrl: R2_PUBLIC_URL,
+  tavernAmbientUrl: `${R2_PUBLIC_URL}/sound/tavern-ambient.mp3`,
 };
 
 const rpgQuotes = [
