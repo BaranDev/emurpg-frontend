@@ -104,7 +104,7 @@ const TablesAdminPanel = () => {
                     `${backendUrl}/api/admin/table/${tableSlug}`,
                     {
                       headers: { apiKey },
-                    }
+                    },
                   );
                   if (tableRes.ok) {
                     const { data } = await tableRes.json();
@@ -114,10 +114,10 @@ const TablesAdminPanel = () => {
                 } catch {
                   return null;
                 }
-              })
+              }),
             );
             return { ...event, tableDetails: tableDetails.filter(Boolean) };
-          })
+          }),
         );
         setEvents(eventsWithTables);
       }
@@ -138,7 +138,7 @@ const TablesAdminPanel = () => {
     const connectWebSocket = () => {
       try {
         const socket = new WebSocket(
-          `${backendUrl.replace("http", "ws")}/ws/updates`
+          `${backendUrl.replace("http", "ws")}/ws/updates`,
         );
         socket.onopen = () => console.log("Tables WS connected");
         socket.onmessage = () => fetchData();
@@ -168,7 +168,7 @@ const TablesAdminPanel = () => {
           method: "POST",
           headers: { "Content-Type": "application/json", apiKey },
           body: JSON.stringify(tableForm),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to create table");
@@ -203,7 +203,7 @@ const TablesAdminPanel = () => {
             created_at: selectedTable.created_at,
             theme_id: editForm.themeId,
           }),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to update table");
@@ -229,7 +229,7 @@ const TablesAdminPanel = () => {
             {
               method: "DELETE",
               headers: { apiKey },
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to delete table");
@@ -255,7 +255,7 @@ const TablesAdminPanel = () => {
         {
           method: "POST",
           headers: { apiKey },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to toggle table status");
@@ -273,7 +273,7 @@ const TablesAdminPanel = () => {
         `${backendUrl}/api/admin/get_players/${table.slug}`,
         {
           headers: { apiKey },
-        }
+        },
       );
 
       if (response.ok) {
@@ -282,7 +282,7 @@ const TablesAdminPanel = () => {
         setIsPlayersModalOpen(true);
 
         const socket = new WebSocket(
-          `${backendUrl.replace("http", "ws")}/ws/updates`
+          `${backendUrl.replace("http", "ws")}/ws/updates`,
         );
         socket.onmessage = () => refreshPlayers(table.slug);
         playerWsRef.current = socket;
@@ -299,7 +299,7 @@ const TablesAdminPanel = () => {
         `${backendUrl}/api/admin/table/${tableSlug}`,
         {
           headers: { apiKey },
-        }
+        },
       );
       if (response.ok) {
         const { data } = await response.json();
@@ -322,7 +322,7 @@ const TablesAdminPanel = () => {
           method: "POST",
           headers: { "Content-Type": "application/json", apiKey },
           body: JSON.stringify({ ...newPlayer, table_id: selectedTable.slug }),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to add player");
@@ -347,7 +347,7 @@ const TablesAdminPanel = () => {
     try {
       const response = await fetch(
         `${backendUrl}/api/admin/${endpoints[action]}/${selectedTable.slug}/${studentId}`,
-        { method: "POST", headers: { apiKey } }
+        { method: "POST", headers: { apiKey } },
       );
 
       if (!response.ok) throw new Error(`Failed to ${action} player`);
@@ -369,7 +369,7 @@ const TablesAdminPanel = () => {
         try {
           const response = await fetch(
             `${backendUrl}/api/admin/delete_player/${selectedTable.slug}/${studentId}`,
-            { method: "DELETE", headers: { apiKey } }
+            { method: "DELETE", headers: { apiKey } },
           );
 
           if (!response.ok) throw new Error("Failed to delete player");
@@ -434,7 +434,7 @@ const TablesAdminPanel = () => {
         .map((row) =>
           row
             .map((cell) => `"${(cell || "").toString().replace(/"/g, '""')}"`)
-            .join(",")
+            .join(","),
         )
         .join("\n");
       const csvFile = new File([csvContent], "tables.csv", {
@@ -508,7 +508,7 @@ const TablesAdminPanel = () => {
   };
 
   const ongoingEvents = events.filter(
-    (e) => e.is_ongoing && e.event_type === "game"
+    (e) => e.is_ongoing && e.event_type === "game",
   );
   const filteredEvents =
     selectedEventFilter === "all"
@@ -520,7 +520,7 @@ const TablesAdminPanel = () => {
       ...t,
       eventName: e.name,
       eventSlug: e.slug,
-    }))
+    })),
   );
 
   const stats = {
@@ -529,7 +529,7 @@ const TablesAdminPanel = () => {
     full: allTables.filter((t) => t.is_marked_full).length,
     totalPlayers: allTables.reduce(
       (sum, t) => sum + (t.total_joined_players || 0),
-      0
+      0,
     ),
   };
 
@@ -658,7 +658,7 @@ const TablesAdminPanel = () => {
                       .includes(searchTerm.toLowerCase()) ||
                     t.game_master
                       .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
+                      .includes(searchTerm.toLowerCase()),
                 )
                 .map((table) => (
                   <div
@@ -707,15 +707,15 @@ const TablesAdminPanel = () => {
                             table.is_marked_full
                               ? "bg-red-500"
                               : table.total_joined_players >= table.player_quota
-                              ? "bg-amber-500"
-                              : "bg-green-500"
+                                ? "bg-amber-500"
+                                : "bg-green-500"
                           }`}
                           style={{
                             width: `${Math.min(
                               (table.total_joined_players /
                                 table.player_quota) *
                                 100,
-                              100
+                              100,
                             )}%`,
                           }}
                         />
@@ -799,7 +799,7 @@ const TablesAdminPanel = () => {
               value={selectedEvent?.slug || ""}
               onChange={(e) =>
                 setSelectedEvent(
-                  ongoingEvents.find((ev) => ev.slug === e.target.value)
+                  ongoingEvents.find((ev) => ev.slug === e.target.value),
                 )
               }
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
@@ -1146,10 +1146,10 @@ const TablesAdminPanel = () => {
                           status === "approved"
                             ? "bg-green-500/20 text-green-400"
                             : status === "backup"
-                            ? "bg-yellow-500/20 text-yellow-400"
-                            : status === "rejected"
-                            ? "bg-red-500/20 text-red-400"
-                            : "bg-gray-500/20 text-gray-400"
+                              ? "bg-yellow-900/30 text-yellow-300"
+                              : status === "rejected"
+                                ? "bg-red-500/20 text-red-400"
+                                : "bg-gray-500/20 text-gray-400"
                         }`}
                       >
                         {status}

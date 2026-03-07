@@ -369,7 +369,7 @@ IMPORTANT RULES:
                     {theme.name}
                   </h3>
                   {theme.is_default && (
-                    <span className="text-[10px] bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded-full border border-yellow-500/30 uppercase tracking-widest ml-2 flex-shrink-0">
+                    <span className="text-[10px] bg-yellow-900/40 text-yellow-300 px-2 py-1 rounded-full border border-yellow-500/30 uppercase tracking-widest ml-2 flex-shrink-0">
                       Default
                     </span>
                   )}
@@ -511,7 +511,8 @@ IMPORTANT RULES:
                   <div className="mb-3 p-3 bg-amber-900/20 border border-amber-500/50 rounded-lg flex items-center gap-3">
                     <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                     <p className="text-xs text-amber-200/80">
-                      Image uploads are temporarily disabled. You can still customize colors and animations.
+                      Image uploads are temporarily disabled. You can still
+                      customize colors and animations.
                     </p>
                   </div>
                 )}
@@ -532,10 +533,10 @@ IMPORTANT RULES:
                       </button>
                     </div>
                   ) : (
-                    <label 
+                    <label
                       className={`flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed rounded-lg transition-colors ${
-                        !config.ENABLE_R2 
-                          ? "border-gray-700 bg-gray-800/50 cursor-not-allowed" 
+                        !config.ENABLE_R2
+                          ? "border-gray-700 bg-gray-800/50 cursor-not-allowed"
                           : "border-gray-600 cursor-pointer hover:border-yellow-500"
                       }`}
                     >
@@ -544,7 +545,9 @@ IMPORTANT RULES:
                           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
                         ) : (
                           <>
-                            <Upload className={`w-6 h-6 ${!config.ENABLE_R2 ? "text-gray-600" : "text-gray-400"}`} />
+                            <Upload
+                              className={`w-6 h-6 ${!config.ENABLE_R2 ? "text-gray-600" : "text-gray-400"}`}
+                            />
                             <span className="text-[10px] text-gray-500 mt-1 uppercase">
                               {config.ENABLE_R2 ? "Upload" : "Fixed"}
                             </span>
@@ -561,7 +564,8 @@ IMPORTANT RULES:
                     </label>
                   )}
                   <div className="text-xs text-gray-500 italic max-w-[200px]">
-                    Optimized to WebP automatically. Recommended: dark or subtle patterns.
+                    Optimized to WebP automatically. Recommended: dark or subtle
+                    patterns.
                   </div>
                 </div>
               </div>
@@ -681,10 +685,7 @@ IMPORTANT RULES:
         onCancel={() => setConfirmDialog({ ...confirmDialog, open: false })}
       />
       {/* Toast Notification */}
-      <Toast 
-        {...toast}
-        onClose={hideToast}
-      />
+      <Toast {...toast} onClose={hideToast} />
     </div>
   );
 };

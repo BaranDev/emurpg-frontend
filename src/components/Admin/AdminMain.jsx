@@ -66,8 +66,8 @@ const DashboardPanel = ({ stats, onNavigate }) => {
           onClick={() => onNavigate("tables")}
         >
           <div className="flex flex-col sm:flex-row items-center sm:gap-3 text-center sm:text-left">
-            <div className="p-2 bg-[#f48c06]/20 rounded-lg mb-2 sm:mb-0">
-              <Table2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#faa307]" />
+            <div className="p-2 bg-[#6a040f]/30 rounded-lg mb-2 sm:mb-0">
+              <Table2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#ffba08]" />
             </div>
             <div>
               <p className="text-xl sm:text-2xl font-bold text-white">
@@ -104,8 +104,8 @@ const DashboardPanel = ({ stats, onNavigate }) => {
           onClick={() => onNavigate("registrations")}
         >
           <div className="flex flex-col sm:flex-row items-center sm:gap-3 text-center sm:text-left">
-            <div className="p-2 bg-[#ffba08]/20 rounded-lg mb-2 sm:mb-0">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#faa307]" />
+            <div className="p-2 bg-[#6a040f]/30 rounded-lg mb-2 sm:mb-0">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#ffba08]" />
             </div>
             <div>
               <p className="text-xl sm:text-2xl font-bold text-white">
@@ -159,8 +159,8 @@ const DashboardPanel = ({ stats, onNavigate }) => {
           onClick={() => onNavigate("managers")}
           className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/50 border border-gray-700 rounded-xl hover:border-[#f48c06]/30 transition-all group"
         >
-          <div className="p-2 sm:p-3 bg-[#f48c06]/20 rounded-lg group-hover:bg-[#f48c06]/30 transition-colors">
-            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-[#faa307]" />
+          <div className="p-2 sm:p-3 bg-[#6a040f]/30 rounded-lg group-hover:bg-[#6a040f]/40 transition-colors">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-[#ffba08]" />
           </div>
           <div className="text-left">
             <p className="font-semibold text-white text-sm sm:text-base">

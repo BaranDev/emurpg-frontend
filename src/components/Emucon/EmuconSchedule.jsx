@@ -656,9 +656,9 @@ const CategoryBadge = ({ type, lang = "tr" }) => {
   const t = translations[lang].categories;
   const configs = {
     scheduled: {
-      bg: "bg-amber-500/20",
+      bg: "bg-amber-900/40",
       border: "border-amber-500/40",
-      text: "text-amber-400",
+      text: "text-amber-300",
       icon: Clock,
       label: t.scheduled,
     },
@@ -703,7 +703,7 @@ const LanguageSwitcher = ({ lang, setLang }) => {
         onClick={() => setLang("tr")}
         className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
           lang === "tr"
-            ? "bg-amber-500/30 text-amber-400 border border-amber-500/40"
+            ? "bg-amber-900/50 text-amber-300 border border-amber-500/40"
             : "text-stone-400 hover:text-stone-200 hover:bg-white/5 border border-transparent"
         }`}
       >
@@ -713,7 +713,7 @@ const LanguageSwitcher = ({ lang, setLang }) => {
         onClick={() => setLang("en")}
         className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
           lang === "en"
-            ? "bg-amber-500/30 text-amber-400 border border-amber-500/40"
+            ? "bg-amber-900/50 text-amber-300 border border-amber-500/40"
             : "text-stone-400 hover:text-stone-200 hover:bg-white/5 border border-transparent"
         }`}
       >
@@ -946,8 +946,8 @@ const ScheduleCard = ({
                             ? item.activity
                             : item.activityEn
                           : lang === "tr"
-                          ? "Sürekli etkinlik"
-                          : "Continuous event"}
+                            ? "Sürekli etkinlik"
+                            : "Continuous event"}
                       </p>
                     </div>
                   )}
@@ -1333,7 +1333,7 @@ const EmuconSchedule = ({
             (corner) =>
               corner.scheduled.length > 0 ||
               corner.continuous.length > 0 ||
-              corner.standTime.length > 0
+              corner.standTime.length > 0,
           );
 
           if (hasData) {
@@ -1344,7 +1344,7 @@ const EmuconSchedule = ({
     } catch (error) {
       console.error(
         "Failed to fetch detailed schedule, using fallback:",
-        error
+        error,
       );
     }
   }, [backendUrl]);

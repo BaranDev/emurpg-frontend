@@ -443,7 +443,7 @@ const CharrollerResults = ({
                 aria-pressed={String(hasInspiration)}
                 className={`px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border transition-colors ${
                   hasInspiration
-                    ? "border-yellow-500 bg-yellow-500/20 text-yellow-300"
+                    ? "border-yellow-500 bg-yellow-900/40 text-yellow-200"
                     : "border-gray-600 hover:bg-white/5 text-gray-400"
                 }`}
               >

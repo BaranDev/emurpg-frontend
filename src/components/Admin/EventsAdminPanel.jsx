@@ -79,7 +79,7 @@ const EventsAdminPanel = () => {
                   `${backendUrl}/api/admin/table/${tableSlug}`,
                   {
                     headers: { apiKey },
-                  }
+                  },
                 );
                 if (tableRes.ok) {
                   const { data } = await tableRes.json();
@@ -89,13 +89,13 @@ const EventsAdminPanel = () => {
               } catch {
                 return null;
               }
-            })
+            }),
           );
           return {
             ...event,
             tableDetails: tableDetails.filter(Boolean),
           };
-        })
+        }),
       );
 
       setEvents(eventsWithTables);
@@ -110,7 +110,7 @@ const EventsAdminPanel = () => {
     const connectWebSocket = () => {
       try {
         const socket = new WebSocket(
-          `${backendUrl.replace("http", "ws")}/ws/updates`
+          `${backendUrl.replace("http", "ws")}/ws/updates`,
         );
 
         socket.onopen = () => {
@@ -183,7 +183,7 @@ const EventsAdminPanel = () => {
             apiKey,
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to update event");
@@ -210,7 +210,7 @@ const EventsAdminPanel = () => {
             {
               method: "PUT",
               headers: { apiKey },
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to finish event");
@@ -241,7 +241,7 @@ const EventsAdminPanel = () => {
             {
               method: "DELETE",
               headers: { apiKey },
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to delete event");
@@ -266,7 +266,7 @@ const EventsAdminPanel = () => {
         `${backendUrl}/api/admin/events/${event.slug}/announcement`,
         {
           headers: { apiKey },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to generate announcement");
@@ -285,7 +285,7 @@ const EventsAdminPanel = () => {
         `${backendUrl}/api/admin/events/${event.slug}/report`,
         {
           headers: { apiKey },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to generate report");
@@ -304,7 +304,7 @@ const EventsAdminPanel = () => {
         `${backendUrl}/api/admin/events/${event.slug}/attendance`,
         {
           headers: { apiKey },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to generate attendance");
@@ -518,7 +518,7 @@ const EventsAdminPanel = () => {
                 className="p-4 cursor-pointer hover:bg-gray-800/70 transition-colors"
                 onClick={() =>
                   setExpandedEvent(
-                    expandedEvent === event.slug ? null : event.slug
+                    expandedEvent === event.slug ? null : event.slug,
                   )
                 }
               >
@@ -659,7 +659,7 @@ const EventsAdminPanel = () => {
                             <span className="ml-2 font-bold text-white">
                               {
                                 event.tableDetails.filter(
-                                  (t) => !t.is_marked_full
+                                  (t) => !t.is_marked_full,
                                 ).length
                               }
                             </span>
@@ -669,7 +669,7 @@ const EventsAdminPanel = () => {
                             <span className="ml-2 font-bold text-white">
                               {
                                 event.tableDetails.filter(
-                                  (t) => t.is_marked_full
+                                  (t) => t.is_marked_full,
                                 ).length
                               }
                             </span>
@@ -681,7 +681,7 @@ const EventsAdminPanel = () => {
                             <span className="ml-2 font-bold text-white">
                               {event.tableDetails.reduce(
                                 (sum, t) => sum + (t.total_joined_players || 0),
-                                0
+                                0,
                               )}
                             </span>
                           </div>
@@ -825,7 +825,7 @@ const EventsAdminPanel = () => {
                 {formData.clubs.map((club, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm flex items-center gap-2"
+                    className="px-3 py-1 bg-yellow-900/40 text-yellow-200 rounded-full text-sm flex items-center gap-2"
                   >
                     {club}
                     <button

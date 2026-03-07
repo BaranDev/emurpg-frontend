@@ -160,7 +160,7 @@ const EmuconAdminPanel = () => {
           `${backendUrl}/api/emucon/availability/${cornerId}/${periodId}`,
           {
             headers: { apiKey },
-          }
+          },
         );
 
         if (response.ok) {
@@ -183,13 +183,13 @@ const EmuconAdminPanel = () => {
               `${backendUrl}/api/emucon/manager/available-periods/${clubId}`,
               {
                 headers: { apiKey },
-              }
+              },
             );
 
             if (clubResponse.ok) {
               const clubData = await clubResponse.json();
               const availablePeriod = clubData.availablePeriods?.find(
-                (p) => p.periodId === periodId
+                (p) => p.periodId === periodId,
               );
 
               if (availablePeriod && !availablePeriod.available) {
@@ -217,7 +217,7 @@ const EmuconAdminPanel = () => {
         setIsCheckingConflict(false);
       }
     },
-    [backendUrl, apiKey]
+    [backendUrl, apiKey],
   );
 
   useEffect(() => {
@@ -258,7 +258,7 @@ const EmuconAdminPanel = () => {
             apiKey,
           },
           body: JSON.stringify(eventFormData),
-        }
+        },
       );
       if (response.ok) {
         await fetchCorners();
@@ -278,7 +278,7 @@ const EmuconAdminPanel = () => {
         {
           method: "DELETE",
           headers: { apiKey },
-        }
+        },
       );
       if (response.ok) {
         await fetchCorners();
@@ -370,7 +370,7 @@ const EmuconAdminPanel = () => {
             apiKey,
           },
           body: JSON.stringify(clubFormData),
-        }
+        },
       );
       if (response.ok) {
         await fetchCorners();
@@ -394,7 +394,7 @@ const EmuconAdminPanel = () => {
             apiKey,
           },
           body: JSON.stringify({ deleteEvents: true }),
-        }
+        },
       );
       if (response.ok) {
         await fetchCorners();
@@ -449,7 +449,7 @@ const EmuconAdminPanel = () => {
     try {
       const response = await fetch(
         `${backendUrl}/api/emucon/admin/event/${eventId}/participants`,
-        { headers: { apiKey } }
+        { headers: { apiKey } },
       );
       if (response.ok) {
         const data = await response.json();
@@ -470,7 +470,7 @@ const EmuconAdminPanel = () => {
         {
           method: "POST",
           headers: { apiKey },
-        }
+        },
       );
       if (response.ok) {
         const data = await response.json();
@@ -515,7 +515,7 @@ const EmuconAdminPanel = () => {
     return clubs.some(
       (club) =>
         club.nameEn?.toLowerCase().includes(term) ||
-        club.nameTr?.toLowerCase().includes(term)
+        club.nameTr?.toLowerCase().includes(term),
     );
   });
 
@@ -534,8 +534,8 @@ const EmuconAdminPanel = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 sm:p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-500/20 rounded-lg">
-                <Layers className="w-5 h-5 text-yellow-400" />
+              <div className="p-2 bg-yellow-900/40 rounded-lg">
+                <Layers className="w-5 h-5 text-yellow-300" />
               </div>
               <div>
                 <p className="text-xl sm:text-2xl font-bold text-white">
@@ -621,8 +621,8 @@ const EmuconAdminPanel = () => {
                       setExpandedCorner(isExpanded ? null : corner.id)
                     }
                   >
-                    <div className="p-2 bg-yellow-500/20 rounded-lg flex-shrink-0">
-                      <Layers className="w-5 h-5 text-yellow-400" />
+                    <div className="p-2 bg-yellow-900/40 rounded-lg flex-shrink-0">
+                      <Layers className="w-5 h-5 text-yellow-300" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-white truncate">
@@ -811,7 +811,7 @@ const EmuconAdminPanel = () => {
                                                   onClick={() =>
                                                     fetchParticipants(
                                                       event.id,
-                                                      event.nameEn
+                                                      event.nameEn,
                                                     )
                                                   }
                                                   className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded-full text-[10px] sm:text-xs hover:bg-purple-500/30 transition-colors"
@@ -825,7 +825,7 @@ const EmuconAdminPanel = () => {
                                                 <button
                                                   onClick={() =>
                                                     generateRegistrationLink(
-                                                      event.id
+                                                      event.id,
                                                     )
                                                   }
                                                   className="p-0.5 sm:p-1 hover:bg-green-500/20 rounded transition-colors"
@@ -837,7 +837,7 @@ const EmuconAdminPanel = () => {
                                                   onClick={() =>
                                                     openEditEventModal(
                                                       event,
-                                                      club
+                                                      club,
                                                     )
                                                   }
                                                   className="p-0.5 sm:p-1 hover:bg-gray-700 rounded transition-colors"
@@ -891,7 +891,7 @@ const EmuconAdminPanel = () => {
                                                   onClick={() =>
                                                     fetchParticipants(
                                                       event.id,
-                                                      event.nameEn
+                                                      event.nameEn,
                                                     )
                                                   }
                                                   className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded-full text-[10px] sm:text-xs hover:bg-purple-500/30 transition-colors"
@@ -905,7 +905,7 @@ const EmuconAdminPanel = () => {
                                                 <button
                                                   onClick={() =>
                                                     generateRegistrationLink(
-                                                      event.id
+                                                      event.id,
                                                     )
                                                   }
                                                   className="p-0.5 sm:p-1 hover:bg-green-500/20 rounded transition-colors"
@@ -917,7 +917,7 @@ const EmuconAdminPanel = () => {
                                                   onClick={() =>
                                                     openEditEventModal(
                                                       event,
-                                                      club
+                                                      club,
                                                     )
                                                   }
                                                   className="p-0.5 sm:p-1 hover:bg-gray-700 rounded transition-colors"
@@ -971,7 +971,7 @@ const EmuconAdminPanel = () => {
                                                   onClick={() =>
                                                     fetchParticipants(
                                                       event.id,
-                                                      event.nameEn
+                                                      event.nameEn,
                                                     )
                                                   }
                                                   className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded-full text-[10px] sm:text-xs hover:bg-purple-500/30 transition-colors"
@@ -985,7 +985,7 @@ const EmuconAdminPanel = () => {
                                                 <button
                                                   onClick={() =>
                                                     generateRegistrationLink(
-                                                      event.id
+                                                      event.id,
                                                     )
                                                   }
                                                   className="p-0.5 sm:p-1 hover:bg-green-500/20 rounded transition-colors"
@@ -997,7 +997,7 @@ const EmuconAdminPanel = () => {
                                                   onClick={() =>
                                                     openEditEventModal(
                                                       event,
-                                                      club
+                                                      club,
                                                     )
                                                   }
                                                   className="p-0.5 sm:p-1 hover:bg-gray-700 rounded transition-colors"
@@ -1281,7 +1281,7 @@ const EmuconAdminPanel = () => {
                     corner.id,
                     newPeriodId,
                     eventFormData.clubId,
-                    selectedEvent?.id
+                    selectedEvent?.id,
                   );
                 }
               }}

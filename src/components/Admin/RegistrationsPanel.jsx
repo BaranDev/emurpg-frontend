@@ -87,7 +87,7 @@ const RegistrationsPanel = () => {
     try {
       const response = await fetch(
         `${backendUrl}/api/admin/general_registrations/${selectedEvent.slug}`,
-        { headers: { apiKey } }
+        { headers: { apiKey } },
       );
 
       if (!response.ok) throw new Error("Failed to fetch registrations");
@@ -126,7 +126,7 @@ const RegistrationsPanel = () => {
             event_slug: selectedEvent.slug,
             email: registration.email,
           }),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to approve registration");
@@ -156,7 +156,7 @@ const RegistrationsPanel = () => {
                 event_slug: selectedEvent.slug,
                 email: registration.email,
               }),
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to reject registration");
@@ -187,7 +187,7 @@ const RegistrationsPanel = () => {
             {
               method: "DELETE",
               headers: { apiKey },
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to delete registration");
@@ -220,7 +220,7 @@ const RegistrationsPanel = () => {
             apiKey,
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to add registration");
@@ -240,7 +240,7 @@ const RegistrationsPanel = () => {
     try {
       const response = await fetch(
         `${backendUrl}/api/admin/events/${selectedEvent.slug}/attendance`,
-        { headers: { apiKey } }
+        { headers: { apiKey } },
       );
 
       if (!response.ok) throw new Error("Failed to download attendance");
@@ -279,7 +279,7 @@ const RegistrationsPanel = () => {
         return "text-red-400 bg-red-400/10";
       case "pending":
       default:
-        return "text-yellow-400 bg-yellow-400/10";
+        return "text-yellow-300 bg-yellow-900/30";
     }
   };
 
@@ -548,7 +548,7 @@ const RegistrationsPanel = () => {
                         <td className="px-4 py-3">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                              reg.status
+                              reg.status,
                             )}`}
                           >
                             {reg.status || "pending"}
@@ -769,7 +769,7 @@ const RegistrationsPanel = () => {
                 <p className="text-sm text-gray-400 mb-1">Status</p>
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                    selectedRegistration.status
+                    selectedRegistration.status,
                   )}`}
                 >
                   {selectedRegistration.status || "pending"}
@@ -794,7 +794,7 @@ const RegistrationsPanel = () => {
                 <p className="text-sm text-gray-400 mb-1">Registered At</p>
                 <p className="text-gray-300">
                   {new Date(
-                    selectedRegistration.registered_at
+                    selectedRegistration.registered_at,
                   ).toLocaleString()}
                 </p>
               </div>
