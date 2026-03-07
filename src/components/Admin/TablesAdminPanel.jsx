@@ -25,6 +25,7 @@ import ConfirmDialog from "./shared/ConfirmDialog";
 const TablesAdminPanel = () => {
   const [events, setEvents] = useState([]);
   const [games, setGames] = useState([]);
+  const [themes, setThemes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEventFilter, setSelectedEventFilter] = useState("all");
@@ -52,6 +53,7 @@ const TablesAdminPanel = () => {
     game_play_time: 0,
     game_guide_text: "",
     game_guide_video: "",
+    theme_id: "default",
   });
 
   const [editForm, setEditForm] = useState({
@@ -59,6 +61,7 @@ const TablesAdminPanel = () => {
     gameMaster: "",
     playerQuota: "",
     language: "",
+    themeId: "default",
   });
 
   const [newPlayer, setNewPlayer] = useState({
@@ -80,10 +83,15 @@ const TablesAdminPanel = () => {
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [eventsRes, gamesRes] = await Promise.all([
+      const [eventsRes, gamesRes, themesRes] = await Promise.all([
         fetch(`${backendUrl}/api/admin/events`, { headers: { apiKey } }),
         fetch(`${backendUrl}/api/games`, { headers: { apiKey } }),
+        fetch(`${backendUrl}/api/themes`, { headers: { apiKey } }),
       ]);
+
+      if (themesRes && themesRes.ok) {
+        setThemes(await themesRes.json());
+      }
 
       if (eventsRes.ok) {
         const eventsData = await eventsRes.json();
@@ -193,6 +201,7 @@ const TablesAdminPanel = () => {
             slug: selectedTable.slug,
             language: editForm.language,
             created_at: selectedTable.created_at,
+            theme_id: editForm.themeId,
           }),
         }
       );
@@ -470,6 +479,7 @@ const TablesAdminPanel = () => {
       game_play_time: 0,
       game_guide_text: "",
       game_guide_video: "",
+      theme_id: "default",
     });
     setSelectedGameId("");
     setIsCustomGame(false);
@@ -721,6 +731,7 @@ const TablesAdminPanel = () => {
                             gameMaster: table.game_master,
                             playerQuota: table.player_quota,
                             language: table.language,
+                            themeId: table.theme_id || "default",
                           });
                           setIsEditModalOpen(true);
                         }}
@@ -902,6 +913,26 @@ const TablesAdminPanel = () => {
             </div>
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Table Theme
+            </label>
+            <select
+              value={tableForm.theme_id}
+              onChange={(e) =>
+                setTableForm({ ...tableForm, theme_id: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
+            >
+              <option value="default">Default</option>
+              {themes.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex gap-3 pt-4">
             <AdminButton
               type="submit"
@@ -995,6 +1026,26 @@ const TablesAdminPanel = () => {
                 required
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Table Theme
+            </label>
+            <select
+              value={editForm.themeId}
+              onChange={(e) =>
+                setEditForm({ ...editForm, themeId: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
+            >
+              <option value="default">Default</option>
+              {themes.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex gap-3 pt-4">
