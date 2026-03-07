@@ -40,86 +40,108 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
     onLogout?.();
   };
 
-  const menuItems = [
+  const menuSections = [
     {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: Home,
-      description: "Overview & stats",
+      label: null,
+      items: [
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          icon: Home,
+          description: "Overview & stats",
+        },
+      ],
     },
     {
-      id: "events",
-      label: "EMURPG Events",
-      icon: Calendar,
-      description: "Game events",
+      label: "EMURPG",
+      items: [
+        {
+          id: "events",
+          label: "Events",
+          icon: Calendar,
+          description: "Game events",
+        },
+        {
+          id: "tables",
+          label: "Tables",
+          icon: Table2,
+          description: "Manage tables",
+        },
+        {
+          id: "themes",
+          label: "Table Themes",
+          icon: Palette,
+          description: "Visual styles",
+        },
+        {
+          id: "games",
+          label: "Games Library",
+          icon: Gamepad2,
+          description: "Game database",
+        },
+      ],
     },
     {
-      id: "tables",
-      label: "Tables",
-      icon: Table2,
-      description: "Manage tables",
+      label: "EMUCON",
+      items: [
+        {
+          id: "emucon",
+          label: "Corners",
+          icon: Sparkles,
+          description: "Corner activities",
+        },
+        {
+          id: "managers",
+          label: "Managers",
+          icon: UserPlus,
+          description: "Club managers",
+        },
+        {
+          id: "emucon-schedule",
+          label: "Schedule",
+          icon: Clock,
+          description: "Time periods",
+        },
+      ],
     },
     {
-      id: "themes",
-      label: "Table Themes",
-      icon: Palette,
-      description: "Visual styles",
-    },
-    {
-      id: "games",
-      label: "Games Library",
-      icon: Gamepad2,
-      description: "Game database",
-    },
-    {
-      id: "emucon",
-      label: "EMUCON Corners",
-      icon: Sparkles,
-      description: "Corner activities",
-    },
-    {
-      id: "managers",
-      label: "EMUCON Managers",
-      icon: UserPlus,
-      description: "Club managers",
-    },
-    {
-      id: "emucon-schedule",
-      label: "EMUCON Schedule",
-      icon: Clock,
-      description: "Time periods",
-    },
-    {
-      id: "registrations",
-      label: "Registrations",
-      icon: Users,
-      description: "General event signups",
-    },
-    {
-      id: "reports",
-      label: "Reports",
-      icon: FileText,
-      description: "Generate reports",
-    },
-    {
-      id: "analytics",
-      label: "Analytics",
-      icon: BarChart3,
-      description: "View statistics",
-    },
-    {
-      id: "team-members",
-      label: "Team Members",
-      icon: Users,
-      description: "Manage game masters",
-    },
-    {
-      id: "admin-accounts",
-      label: "Admin Accounts",
-      icon: Shield,
-      description: "Manage admin access",
+      label: "Management",
+      items: [
+        {
+          id: "registrations",
+          label: "Registrations",
+          icon: Users,
+          description: "General event signups",
+        },
+        {
+          id: "reports",
+          label: "Reports",
+          icon: FileText,
+          description: "Generate reports",
+        },
+        {
+          id: "analytics",
+          label: "Analytics",
+          icon: BarChart3,
+          description: "View statistics",
+        },
+        {
+          id: "team-members",
+          label: "Team Members",
+          icon: Users,
+          description: "Manage game masters",
+        },
+        {
+          id: "admin-accounts",
+          label: "Admin Accounts",
+          icon: Shield,
+          description: "Manage admin access",
+        },
+      ],
     },
   ];
+
+  const menuItems = menuSections.flatMap((s) => s.items);
 
   return (
     <div className="min-h-screen bg-gray-950 flex">
@@ -220,34 +242,46 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
 
         {/* Navigation */}
         <nav className="p-3 space-y-1 overflow-y-auto h-[calc(100vh-180px)]">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activePanel === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onPanelChange(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                  isActive
-                    ? "bg-yellow-900/40 text-yellow-400 border border-yellow-500/30"
-                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                }`}
-                title={!isSidebarOpen ? item.label : undefined}
-              >
-                <Icon
-                  className={`w-5 h-5 flex-shrink-0 ${
-                    isActive ? "text-yellow-300" : ""
-                  }`}
-                />
-                {isSidebarOpen && (
-                  <div className="text-left">
-                    <p className="text-sm font-medium">{item.label}</p>
-                    <p className="text-xs text-gray-500">{item.description}</p>
-                  </div>
-                )}
-              </button>
-            );
-          })}
+          {menuSections.map((section, si) => (
+            <div key={si}>
+              {section.label && isSidebarOpen && (
+                <p className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
+                  {section.label}
+                </p>
+              )}
+              {section.label && !isSidebarOpen && si > 0 && (
+                <div className="mx-3 my-2 border-t border-gray-700/50" />
+              )}
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = activePanel === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onPanelChange(item.id)}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                      isActive
+                        ? "bg-yellow-900/40 text-yellow-400 border border-yellow-500/30"
+                        : "bg-transparent text-gray-400 hover:bg-gray-800 hover:text-white border border-transparent"
+                    }`}
+                    title={!isSidebarOpen ? item.label : undefined}
+                  >
+                    <Icon
+                      className={`w-5 h-5 flex-shrink-0 ${
+                        isActive ? "text-yellow-300" : ""
+                      }`}
+                    />
+                    {isSidebarOpen && (
+                      <div className="text-left">
+                        <p className="text-sm font-medium">{item.label}</p>
+                        <p className="text-xs text-gray-500">{item.description}</p>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* User/Logout */}
@@ -301,34 +335,45 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-gray-900/98 border-b border-yellow-900/30 backdrop-blur-sm max-h-[80vh] overflow-y-auto shadow-2xl">
-            <nav className="p-2 sm:p-3 grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activePanel === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      onPanelChange(item.id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-lg transition-all text-center ${
-                      isActive
-                        ? "bg-yellow-900/40 text-yellow-400 border border-yellow-500/30"
-                        : "text-gray-400 hover:bg-gray-800 hover:text-white border border-transparent"
-                    }`}
-                  >
-                    <Icon
-                      className={`w-5 h-5 sm:w-6 sm:h-6 ${
-                        isActive ? "text-yellow-300" : ""
-                      }`}
-                    />
-                    <span className="text-xs sm:text-sm font-medium leading-tight">
-                      {item.label}
-                    </span>
-                  </button>
-                );
-              })}
+            <nav className="p-2 sm:p-3">
+              {menuSections.map((section, si) => (
+                <div key={si}>
+                  {section.label && (
+                    <p className="px-2 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
+                      {section.label}
+                    </p>
+                  )}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2">
+                    {section.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activePanel === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            onPanelChange(item.id);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className={`flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-lg transition-all text-center ${
+                            isActive
+                              ? "bg-yellow-900/40 text-yellow-400 border border-yellow-500/30"
+                              : "bg-transparent text-gray-400 hover:bg-gray-800 hover:text-white border border-transparent"
+                          }`}
+                        >
+                          <Icon
+                            className={`w-5 h-5 sm:w-6 sm:h-6 ${
+                              isActive ? "text-yellow-300" : ""
+                            }`}
+                          />
+                          <span className="text-xs sm:text-sm font-medium leading-tight">
+                            {item.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </nav>
             <div className="p-2 sm:p-3 border-t border-gray-800">
               <button
