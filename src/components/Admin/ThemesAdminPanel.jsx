@@ -1,10 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
-import AdminButton from "./shared/AdminButton";
-import AdminModal from "./shared/AdminModal";
-import ConfirmDialog from "./shared/ConfirmDialog";
-import LoadingSpinner from "./shared/LoadingSpinner";
+import { useToast } from "../../hooks/useToast";
+import {
+  AdminButton,
+  AdminModal,
+  ConfirmDialog,
+  LoadingSpinner,
+  Toast,
+} from "./shared";
 import {
   Plus,
   Edit2,
@@ -28,6 +32,7 @@ const ThemesAdminPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedThemeId, setSelectedThemeId] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   const [form, setForm] = useState({
     name: "",
@@ -113,7 +118,7 @@ const ThemesAdminPanel = () => {
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
-      alert("Image is too large. Maximum size is 10MB.");
+      showToast("Image is too large. Maximum size is 10MB.", "warning");
       return;
     }
 
@@ -131,12 +136,13 @@ const ThemesAdminPanel = () => {
       if (res.ok) {
         const data = await res.json();
         setForm((prev) => ({ ...prev, background_image_url: data.url }));
+        showToast("Image uploaded successfully", "success");
       } else {
         const data = await res.json();
-        alert(`Upload failed: ${data.detail || "Unknown error"}`);
+        throw new Error(data.detail || "Upload failed");
       }
     } catch (err) {
-      alert(`Error uploading: ${err.message}`);
+      showToast(err.message, "error");
     } finally {
       setIsUploading(false);
     }
@@ -227,18 +233,19 @@ const ThemesAdminPanel = () => {
         setIsModalOpen(false);
         resetForm();
         fetchThemes();
+        showToast(isEditMode ? "Theme updated" : "Theme created", "success");
       } else {
         const data = await res.json();
-        alert(`Error: ${data.detail || "Failed to save theme"}`);
+        throw new Error(data.detail || "Failed to save theme");
       }
     } catch (err) {
-      alert(`Error saving theme: ${err.message}`);
+      showToast(err.message, "error");
     }
   };
 
   const handleDelete = (theme) => {
     if (theme.id === "default") {
-      alert("Cannot delete the master default theme.");
+      showToast("Cannot delete the master default theme.", "warning");
       return;
     }
     setConfirmDialog({
@@ -256,12 +263,13 @@ const ThemesAdminPanel = () => {
           );
           if (res.ok) {
             fetchThemes();
+            showToast("Theme deleted", "success");
           } else {
             const data = await res.json();
-            alert(`Error: ${data.detail || "Failed to delete theme"}`);
+            throw new Error(data.detail || "Failed to delete theme");
           }
         } catch (err) {
-          alert(`Error deleting theme: ${err.message}`);
+          showToast(err.message, "error");
         }
         setConfirmDialog({ ...confirmDialog, open: false });
       },
@@ -671,6 +679,11 @@ IMPORTANT RULES:
         message={confirmDialog.message}
         onConfirm={confirmDialog.onConfirm}
         onCancel={() => setConfirmDialog({ ...confirmDialog, open: false })}
+      />
+      {/* Toast Notification */}
+      <Toast 
+        {...toast}
+        onClose={hideToast}
       />
     </div>
   );

@@ -17,10 +17,14 @@ import {
 } from "lucide-react";
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
-import AdminModal from "./shared/AdminModal";
-import AdminButton from "./shared/AdminButton";
-import LoadingSpinner from "./shared/LoadingSpinner";
-import ConfirmDialog from "./shared/ConfirmDialog";
+import { useToast } from "../../hooks/useToast";
+import { 
+  AdminModal, 
+  AdminButton, 
+  LoadingSpinner, 
+  ConfirmDialog,
+  Toast 
+} from "./shared";
 
 const INITIAL_FORM = {
   name: "",
@@ -46,6 +50,7 @@ const TeamMembersPanel = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
     title: "",
@@ -114,9 +119,10 @@ const TeamMembersPanel = () => {
       setIsCreateModalOpen(false);
       resetForm();
       fetchMembers();
+      showToast("Team member created successfully", "success");
     } catch (error) {
       console.error("Error creating team member:", error);
-      alert("Failed to create team member");
+      showToast(error.message || "Failed to create team member", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -142,9 +148,10 @@ const TeamMembersPanel = () => {
       setSelectedMember(null);
       resetForm();
       fetchMembers();
+      showToast("Team member updated successfully", "success");
     } catch (error) {
       console.error("Error updating team member:", error);
-      alert("Failed to update team member");
+      showToast(error.message || "Failed to update team member", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -165,11 +172,15 @@ const TeamMembersPanel = () => {
             },
           );
 
-          if (!response.ok) throw new Error("Failed to delete team member");
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.detail || "Failed to delete team member");
+          }
           fetchMembers();
+          showToast("Team member deleted successfully", "success");
         } catch (error) {
           console.error("Error deleting team member:", error);
-          alert("Failed to delete team member");
+          showToast(error.message, "error");
         }
         setConfirmDialog({
           open: false,
@@ -217,10 +228,14 @@ const TeamMembersPanel = () => {
         },
       );
 
-      if (!response.ok) throw new Error("Failed to reorder team members");
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || "Failed to reorder team members");
+      }
+      showToast("Order updated", "success");
     } catch (error) {
       console.error("Error reordering team members:", error);
-      alert("Failed to reorder team members");
+      showToast(error.message, "error");
       fetchMembers();
     }
   };
@@ -722,6 +737,11 @@ const TeamMembersPanel = () => {
             onConfirm: null,
           })
         }
+      />
+      {/* Toast Notification */}
+      <Toast 
+        {...toast}
+        onClose={hideToast}
       />
     </div>
   );
