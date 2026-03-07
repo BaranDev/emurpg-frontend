@@ -28,7 +28,7 @@ function AppContent() {
   const [useNewAdmin, setUseNewAdmin] = useState(true); // Toggle for new vs legacy admin
 
   console.log(
-    "Hello my curious friend! If you are seeing this, you must be interested in how this app works. Feel free to reach out to me on cevdetbaranoral@gmail.com if you want to help me on EMURPG's apps.",
+    "Hello my curious friend! If you are seeing this, you must be interested in how this app works. Feel free to reach out to me on contact@cevdetbaran.com if you want to help me on EMURPG's apps.",
   );
 
   useEffect(() => {
