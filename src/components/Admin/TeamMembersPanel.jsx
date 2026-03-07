@@ -18,12 +18,12 @@ import {
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
 import { useToast } from "../../hooks/useToast";
-import { 
-  AdminModal, 
-  AdminButton, 
-  LoadingSpinner, 
+import {
+  AdminModal,
+  AdminButton,
+  LoadingSpinner,
   ConfirmDialog,
-  Toast 
+  Toast,
 } from "./shared";
 
 const INITIAL_FORM = {
@@ -320,11 +320,14 @@ const TeamMembersPanel = () => {
           <div className="mb-2 p-3 bg-amber-900/20 border border-amber-500/50 rounded-lg flex items-center gap-3 w-full max-w-md">
             <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
             <p className="text-xs text-amber-200/80">
-              Photo uploads are temporarily disabled. Team profiles will use repository assets where available.
+              Photo uploads are temporarily disabled. Team profiles will use
+              repository assets where available.
             </p>
           </div>
         )}
-        <div className={`relative group ${!config.ENABLE_R2 ? "cursor-not-allowed" : "cursor-pointer"}`}>
+        <div
+          className={`relative group ${!config.ENABLE_R2 ? "cursor-not-allowed" : "cursor-pointer"}`}
+        >
           <input
             type="file"
             accept="image/*"
@@ -332,11 +335,13 @@ const TeamMembersPanel = () => {
             disabled={!config.ENABLE_R2}
             className={`absolute inset-0 w-full h-full opacity-0 z-10 ${!config.ENABLE_R2 ? "cursor-not-allowed" : "cursor-pointer"}`}
           />
-          <div className={`w-[120px] h-[120px] rounded-full border-2 overflow-hidden bg-gray-800 flex items-center justify-center transition-colors ${
-            !config.ENABLE_R2 
-              ? "border-gray-700" 
-              : "border-amber-600/50 group-hover:border-amber-400"
-          }`}>
+          <div
+            className={`w-[120px] h-[120px] rounded-full border-2 overflow-hidden bg-gray-800 flex items-center justify-center transition-colors ${
+              !config.ENABLE_R2
+                ? "border-gray-700"
+                : "border-amber-600/50 group-hover:border-amber-400"
+            }`}
+          >
             {photoPreview ? (
               <img
                 src={photoPreview}
@@ -346,7 +351,9 @@ const TeamMembersPanel = () => {
             ) : (
               <div className="flex flex-col items-center text-gray-500">
                 <Upload className="w-6 h-6 mb-1" />
-                <span className="text-xs">{config.ENABLE_R2 ? "Upload" : "Fixed"}</span>
+                <span className="text-xs">
+                  {config.ENABLE_R2 ? "Upload" : "Fixed"}
+                </span>
               </div>
             )}
           </div>
@@ -565,7 +572,10 @@ const TeamMembersPanel = () => {
           <AdminButton
             onClick={() => {
               resetForm();
-              setFormData((prev) => ({ ...prev, display_order: members.length + 1 }));
+              setFormData((prev) => ({
+                ...prev,
+                display_order: members.length + 1,
+              }));
               setIsCreateModalOpen(true);
             }}
             icon={Plus}
@@ -747,10 +757,7 @@ const TeamMembersPanel = () => {
         }
       />
       {/* Toast Notification */}
-      <Toast 
-        {...toast}
-        onClose={hideToast}
-      />
+      <Toast {...toast} onClose={hideToast} />
     </div>
   );
 };

@@ -170,7 +170,7 @@ const AdminDashboard = ({ onLogout }) => {
               "Content-Type": "application/json",
               apiKey: API_KEY,
             },
-          }
+          },
         );
 
         if (!response.ok) throw new Error("Failed to fetch table details");
@@ -212,14 +212,14 @@ const AdminDashboard = ({ onLogout }) => {
       if (retryCount > 0) {
         setLoadingRetryCount(retryCount);
         setLoadingMessage(
-          `Loading events... (Attempt ${retryCount + 1}/${maxRetries})`
+          `Loading events... (Attempt ${retryCount + 1}/${maxRetries})`,
         );
       }
       try {
         const response = await fetchWithTimeout(
           `${backendUrl}/api/admin/events`,
           { headers: { apiKey: API_KEY } },
-          60000 // 60 seconds timeout
+          60000, // 60 seconds timeout
         );
 
         if (!response.ok)
@@ -229,13 +229,13 @@ const AdminDashboard = ({ onLogout }) => {
         const withTableDetails = await Promise.all(
           events.map(async (event) => {
             const tableDetails = await Promise.all(
-              event.tables.map((tableSlug) => fetchTableDetails(tableSlug))
+              event.tables.map((tableSlug) => fetchTableDetails(tableSlug)),
             );
             return {
               ...event,
               tableDetails: tableDetails.filter((table) => table !== null),
             };
-          })
+          }),
         );
         setEventsWithTables(withTableDetails);
         setIsLoading(false);
@@ -243,7 +243,7 @@ const AdminDashboard = ({ onLogout }) => {
       } catch (error) {
         console.error(
           `Error fetching events (attempt ${retryCount + 1}/${maxRetries}):`,
-          error
+          error,
         );
 
         // Add more aggressive retry logic with exponential backoff
@@ -252,13 +252,13 @@ const AdminDashboard = ({ onLogout }) => {
           console.log(`Retrying in ${delay / 1000} seconds...`);
           setTimeout(
             () => fetchAndUpdateEvents(retryCount + 1, maxRetries),
-            delay
+            delay,
           );
         } else {
           // Only show failure message after all retries are exhausted
           setIsLoading(false);
           alert(
-            "Failed to load events after multiple attempts. Please check your connection and try again."
+            "Failed to load events after multiple attempts. Please check your connection and try again.",
           );
         }
       }
@@ -325,7 +325,7 @@ const AdminDashboard = ({ onLogout }) => {
         {
           method: "POST",
           headers: { apiKey: API_KEY },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to approve player");
@@ -343,7 +343,7 @@ const AdminDashboard = ({ onLogout }) => {
         {
           method: "POST",
           headers: { apiKey: API_KEY },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to set player as backup");
@@ -361,7 +361,7 @@ const AdminDashboard = ({ onLogout }) => {
         {
           method: "POST",
           headers: { apiKey: API_KEY },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to reject player");
@@ -396,7 +396,7 @@ const AdminDashboard = ({ onLogout }) => {
           apiKey: API_KEY,
         },
         body: updated_table,
-      }
+      },
     );
 
     if (response.ok) {
@@ -422,7 +422,7 @@ const AdminDashboard = ({ onLogout }) => {
             apiKey: API_KEY,
           },
           body: JSON.stringify(eventUpdateData),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to update event");
@@ -442,7 +442,7 @@ const AdminDashboard = ({ onLogout }) => {
     // New: confirmation dialog before deleting table
     if (
       !confirm(
-        "Are you sure you want to delete this table? This will remove all players associated with it."
+        "Are you sure you want to delete this table? This will remove all players associated with it.",
       )
     ) {
       return;
@@ -460,7 +460,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/events`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
 
       if (!updatedEventsResponse.ok)
@@ -470,13 +470,13 @@ const AdminDashboard = ({ onLogout }) => {
       const withTableDetails = await Promise.all(
         updatedEvents.map(async (event) => {
           const tableDetails = await Promise.all(
-            event.tables.map((tableSlug) => fetchTableDetails(tableSlug))
+            event.tables.map((tableSlug) => fetchTableDetails(tableSlug)),
           );
           return {
             ...event,
             tableDetails: tableDetails.filter((table) => table !== null),
           };
-        })
+        }),
       );
 
       setEventsWithTables(withTableDetails);
@@ -554,7 +554,7 @@ const AdminDashboard = ({ onLogout }) => {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
-          JSON.stringify(errorData.detail) || "Failed to generate table layout"
+          JSON.stringify(errorData.detail) || "Failed to generate table layout",
         );
       }
 
@@ -665,13 +665,13 @@ const AdminDashboard = ({ onLogout }) => {
       ]);
 
       table.joined_players?.forEach((player) =>
-        csvRows.push([player.name, "0", table.name, "", ""])
+        csvRows.push([player.name, "0", table.name, "", ""]),
       );
     });
 
     return csvRows
       .map((row) =>
-        row.map((cell) => `"${(cell || "").toString().replace(/"/g, '""')}"`)
+        row.map((cell) => `"${(cell || "").toString().replace(/"/g, '""')}"`),
       )
       .join("\n");
   };
@@ -683,9 +683,9 @@ const AdminDashboard = ({ onLogout }) => {
       [`Event Name: ${event.name}`],
       [
         `Event Period: ${new Date(
-          event.start_date
+          event.start_date,
         ).toLocaleDateString()} - ${new Date(
-          event.end_date
+          event.end_date,
         ).toLocaleDateString()}`,
       ],
       [`Status: ${event.is_ongoing ? "Ongoing" : "Finished"}`],
@@ -710,11 +710,11 @@ const AdminDashboard = ({ onLogout }) => {
 
     const totalPlayers = tables.reduce(
       (sum, t) => sum + t.total_joined_players,
-      0
+      0,
     );
     const totalQuota = tables.reduce(
       (sum, t) => sum + parseInt(t.player_quota || 0),
-      0
+      0,
     );
     const overallFillRate = totalQuota
       ? ((totalPlayers / totalQuota) * 100).toFixed(1)
@@ -726,7 +726,7 @@ const AdminDashboard = ({ onLogout }) => {
       [`Total Tables: ${tables.length}`],
       [`Total Players: ${totalPlayers}`],
       [`Overall Capacity: ${totalQuota}`],
-      [`Overall Fill Rate: ${overallFillRate}%`]
+      [`Overall Fill Rate: ${overallFillRate}%`],
     );
 
     const csv = report
@@ -786,7 +786,7 @@ const AdminDashboard = ({ onLogout }) => {
         .map((row) =>
           row
             .map((cell) => `"${(cell || "").toString().replace(/"/g, '""')}"`)
-            .join(",")
+            .join(","),
         )
         .join("\n");
     } catch (error) {
@@ -850,7 +850,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/events`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       const updatedEvents = await updatedEventsResponse.json();
       setEvents(updatedEvents);
@@ -863,7 +863,7 @@ const AdminDashboard = ({ onLogout }) => {
     // New: confirmation dialog before finishing event
     if (
       !confirm(
-        "Are you sure you want to finish this event? This action cannot be undone."
+        "Are you sure you want to finish this event? This action cannot be undone.",
       )
     ) {
       return;
@@ -874,7 +874,7 @@ const AdminDashboard = ({ onLogout }) => {
       {
         method: "PUT",
         headers: { apiKey: API_KEY },
-      }
+      },
     );
 
     if (response.ok) {
@@ -883,7 +883,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/events`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       const updatedEvents = await updatedEventsResponse.json();
       setEvents(updatedEvents);
@@ -896,7 +896,7 @@ const AdminDashboard = ({ onLogout }) => {
     // New: confirmation dialog before deleting event
     if (
       !confirm(
-        "Are you sure you want to DELETE this event? This action cannot be undone and will remove all associated data."
+        "Are you sure you want to DELETE this event? This action cannot be undone and will remove all associated data.",
       )
     ) {
       return;
@@ -913,7 +913,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/events`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       const updatedEvents = await updatedEventsResponse.json();
       setEvents(updatedEvents);
@@ -932,7 +932,7 @@ const AdminDashboard = ({ onLogout }) => {
         method: "POST",
         headers: { "Content-Type": "application/json", apiKey: API_KEY },
         body: JSON.stringify(newTable),
-      }
+      },
     );
 
     if (response.ok) {
@@ -943,7 +943,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/events`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       const updatedEvents = await updatedEventsResponse.json();
       setEvents(updatedEvents);
@@ -961,7 +961,7 @@ const AdminDashboard = ({ onLogout }) => {
             "Content-Type": "application/json",
             apiKey: API_KEY,
           },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to fetch players");
@@ -1015,7 +1015,7 @@ const AdminDashboard = ({ onLogout }) => {
         "download",
         `event_report_${type}_${reportLanguage}_${
           new Date().toISOString().split("T")[0]
-        }.csv`
+        }.csv`,
       );
       document.body.appendChild(link);
       link.click();
@@ -1049,7 +1049,7 @@ const AdminDashboard = ({ onLogout }) => {
             apiKey: API_KEY,
           },
           body: JSON.stringify(playerData),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to add player");
@@ -1082,7 +1082,7 @@ const AdminDashboard = ({ onLogout }) => {
             apiKey: API_KEY,
           },
           body: JSON.stringify(selectedPlayer),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to update player");
@@ -1114,7 +1114,7 @@ const AdminDashboard = ({ onLogout }) => {
           headers: {
             apiKey: API_KEY,
           },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to delete player");
@@ -1146,13 +1146,13 @@ const AdminDashboard = ({ onLogout }) => {
   const fetchTableDetails = async (
     tableSlug,
     retryCount = 0,
-    maxRetries = 5
+    maxRetries = 5,
   ) => {
     try {
       const response = await fetchWithTimeout(
         `${backendUrl}/api/admin/table/${tableSlug}`,
         { headers: { apiKey: API_KEY } },
-        30000 // 30 seconds timeout
+        30000, // 30 seconds timeout
       );
 
       if (!response.ok) throw new Error("Failed to fetch table");
@@ -1163,7 +1163,7 @@ const AdminDashboard = ({ onLogout }) => {
         `Error fetching table ${tableSlug} (attempt ${
           retryCount + 1
         }/${maxRetries}):`,
-        error
+        error,
       );
 
       if (retryCount < maxRetries) {
@@ -1180,13 +1180,13 @@ const AdminDashboard = ({ onLogout }) => {
 
     // Check arrays in selectedTable
     const isApproved = selectedTable.approved_players?.some(
-      (p) => p.student_id === studentId
+      (p) => p.student_id === studentId,
     );
     const isBackup = selectedTable.backup_players?.some(
-      (p) => p.student_id === studentId
+      (p) => p.student_id === studentId,
     );
     const isRejected = selectedTable.rejected_players?.some(
-      (p) => p.student_id === studentId
+      (p) => p.student_id === studentId,
     );
 
     if (isApproved) return "approved";
@@ -1243,7 +1243,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/general_registrations/${event.slug}`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       if (response.ok) {
         const data = await response.json();
@@ -1265,7 +1265,7 @@ const AdminDashboard = ({ onLogout }) => {
         {
           method: "POST",
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       if (response.ok) {
         alert("Registration approved successfully!");
@@ -1286,7 +1286,7 @@ const AdminDashboard = ({ onLogout }) => {
         {
           method: "POST",
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       if (response.ok) {
         alert("Registration rejected successfully!");
@@ -1308,7 +1308,7 @@ const AdminDashboard = ({ onLogout }) => {
         {
           method: "DELETE",
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       if (response.ok) {
         alert("Registration deleted successfully!");
@@ -1350,7 +1350,7 @@ const AdminDashboard = ({ onLogout }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newManualRegistration),
-        }
+        },
       );
 
       if (response.ok) {
@@ -1404,7 +1404,7 @@ const AdminDashboard = ({ onLogout }) => {
         `${backendUrl}/api/admin/reports/analytics`,
         {
           headers: { apiKey: API_KEY },
-        }
+        },
       );
       if (response.ok) {
         const data = await response.json();
@@ -1518,11 +1518,11 @@ const AdminDashboard = ({ onLogout }) => {
                                 `${backendUrl}/api/admin/events/${event.slug}/attendance`,
                                 {
                                   headers: { apiKey: API_KEY },
-                                }
+                                },
                               );
                               if (!response.ok)
                                 throw new Error(
-                                  "Failed to generate attendance list"
+                                  "Failed to generate attendance list",
                                 );
 
                               const blob = await response.blob();
@@ -1537,7 +1537,7 @@ const AdminDashboard = ({ onLogout }) => {
                             } catch (error) {
                               alert(
                                 "Failed to generate attendance list: " +
-                                  error.message
+                                  error.message,
                               );
                             }
                           }}
@@ -1553,7 +1553,7 @@ const AdminDashboard = ({ onLogout }) => {
                                 `${backendUrl}/api/admin/events/${event.slug}/report`,
                                 {
                                   headers: { apiKey: API_KEY },
-                                }
+                                },
                               );
                               if (!response.ok)
                                 throw new Error("Failed to generate report");
@@ -1569,7 +1569,7 @@ const AdminDashboard = ({ onLogout }) => {
                               URL.revokeObjectURL(url);
                             } catch (error) {
                               alert(
-                                "Failed to generate report: " + error.message
+                                "Failed to generate report: " + error.message,
                               );
                             }
                           }}
@@ -1601,7 +1601,7 @@ const AdminDashboard = ({ onLogout }) => {
                             `${backendUrl}/api/admin/events/${event.slug}/announcement`,
                             {
                               headers: { apiKey: API_KEY },
-                            }
+                            },
                           );
                           if (!response.ok)
                             throw new Error("Failed to generate announcement");
@@ -1618,7 +1618,7 @@ const AdminDashboard = ({ onLogout }) => {
                         } catch (error) {
                           alert(
                             "Failed to generate announcement image: " +
-                              error.message
+                              error.message,
                           );
                         }
                       }}
@@ -1681,7 +1681,7 @@ const AdminDashboard = ({ onLogout }) => {
                     <span className="font-bold text-green-300">
                       {
                         event.tableDetails.filter(
-                          (table) => !table.is_marked_full
+                          (table) => !table.is_marked_full,
                         ).length
                       }
                     </span>
@@ -1691,7 +1691,7 @@ const AdminDashboard = ({ onLogout }) => {
                     <span className="font-bold text-red-300">
                       {
                         event.tableDetails.filter(
-                          (table) => table.is_marked_full
+                          (table) => table.is_marked_full,
                         ).length
                       }
                     </span>
@@ -1782,14 +1782,14 @@ const AdminDashboard = ({ onLogout }) => {
                           table.is_marked_full
                             ? "bg-red-500"
                             : table.total_joined_players >= table.player_quota
-                            ? "bg-amber-500"
-                            : "bg-green-500"
+                              ? "bg-amber-500"
+                              : "bg-green-500"
                         }`}
                         style={{
                           width: `${Math.min(
                             (table.total_joined_players / table.player_quota) *
                               100,
-                            100
+                            100,
                           )}%`,
                         }}
                       ></div>
@@ -1836,7 +1836,7 @@ const AdminDashboard = ({ onLogout }) => {
                             {
                               method: "POST",
                               headers: { apiKey: API_KEY },
-                            }
+                            },
                           );
 
                           if (!response.ok)
@@ -2293,7 +2293,7 @@ const AdminDashboard = ({ onLogout }) => {
                             setNewEvent({
                               ...newEvent,
                               clubs: newEvent.clubs.filter(
-                                (_, i) => i !== index
+                                (_, i) => i !== index,
                               ),
                             })
                           }
@@ -3003,7 +3003,7 @@ const AdminDashboard = ({ onLogout }) => {
                   <p className="text-green-400 font-bold">
                     {
                       generalRegistrations.filter(
-                        (r) => r.status === "approved"
+                        (r) => r.status === "approved",
                       ).length
                     }
                   </p>
@@ -3022,7 +3022,7 @@ const AdminDashboard = ({ onLogout }) => {
                   <p className="text-red-400 font-bold">
                     {
                       generalRegistrations.filter(
-                        (r) => r.status === "rejected"
+                        (r) => r.status === "rejected",
                       ).length
                     }
                   </p>
@@ -3120,8 +3120,8 @@ const AdminDashboard = ({ onLogout }) => {
                             registration.status === "approved"
                               ? "border-green-600/50 bg-green-900/10"
                               : registration.status === "rejected"
-                              ? "border-red-600/50 bg-red-900/10"
-                              : "border-yellow-600/50 bg-yellow-900/10"
+                                ? "border-red-600/50 bg-red-900/10"
+                                : "border-yellow-600/50 bg-yellow-900/10"
                           }`}
                         >
                           {/* Info Section - Compact */}
@@ -3133,8 +3133,8 @@ const AdminDashboard = ({ onLogout }) => {
                                   registration.status === "approved"
                                     ? "bg-green-500"
                                     : registration.status === "rejected"
-                                    ? "bg-red-500"
-                                    : "bg-yellow-500"
+                                      ? "bg-red-500"
+                                      : "bg-yellow-500"
                                 }`}
                               />
 
@@ -3153,8 +3153,8 @@ const AdminDashboard = ({ onLogout }) => {
                                       registration.status === "approved"
                                         ? "bg-green-600/30 text-green-400"
                                         : registration.status === "rejected"
-                                        ? "bg-red-600/30 text-red-400"
-                                        : "bg-yellow-600/30 text-yellow-400"
+                                          ? "bg-red-600/30 text-red-400"
+                                          : "bg-yellow-600/30 text-yellow-400"
                                     }`}
                                   >
                                     {registration.status}
@@ -3188,7 +3188,7 @@ const AdminDashboard = ({ onLogout }) => {
                               <button
                                 onClick={() =>
                                   handleApproveGeneralRegistration(
-                                    registration.student_id
+                                    registration.student_id,
                                   )
                                 }
                                 className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700"
@@ -3201,7 +3201,7 @@ const AdminDashboard = ({ onLogout }) => {
                               <button
                                 onClick={() =>
                                   handleRejectGeneralRegistration(
-                                    registration.student_id
+                                    registration.student_id,
                                   )
                                 }
                                 className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
@@ -3213,7 +3213,7 @@ const AdminDashboard = ({ onLogout }) => {
                             <button
                               onClick={() =>
                                 handleDeleteGeneralRegistration(
-                                  registration.student_id
+                                  registration.student_id,
                                 )
                               }
                               className="bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600"
@@ -3362,7 +3362,7 @@ const AdminDashboard = ({ onLogout }) => {
                     <input
                       type="checkbox"
                       checked={newManualRegistration.clubs.includes(
-                        "not_registered"
+                        "not_registered",
                       )}
                       onChange={() => handleManualClubToggle("not_registered")}
                       className="w-4 h-4"
@@ -3578,7 +3578,7 @@ const AdminDashboard = ({ onLogout }) => {
                                 >
                                   {club}: {count}
                                 </span>
-                              )
+                              ),
                             )}
                           </div>
                         </div>
