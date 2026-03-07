@@ -238,7 +238,8 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
     table.theme_id && themes[table.theme_id]
       ? themes[table.theme_id]
       : themes["default"] || {
-          card_styles: "bg-gray-800 rounded-lg border-2 border-yellow-600",
+          background_styles: "bg-gray-800",
+          card_styles: "rounded-lg border-2 border-yellow-600",
           hover_animations: "transition-transform transform hover:scale-105",
           button_styles: "bg-yellow-600 hover:bg-yellow-700 text-white",
         };
@@ -246,7 +247,7 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
   return (
     <div
       key={table.slug}
-      className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.card_styles} ${theme.hover_animations}`}
+      className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
     >
       {(gameData?.image_url || table.game_image) && (
         <div className="w-full h-32 overflow-hidden">

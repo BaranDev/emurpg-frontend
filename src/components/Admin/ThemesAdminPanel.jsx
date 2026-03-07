@@ -28,6 +28,7 @@ const ThemesAdminPanel = () => {
 
   const [form, setForm] = useState({
     name: "",
+    background_styles: "",
     card_styles: "",
     hover_animations: "",
     button_styles: "",
@@ -71,6 +72,7 @@ const ThemesAdminPanel = () => {
   const resetForm = () => {
     setForm({
       name: "",
+      background_styles: "",
       card_styles: "",
       hover_animations: "",
       button_styles: "",
@@ -87,6 +89,7 @@ const ThemesAdminPanel = () => {
   const handleOpenEdit = (theme) => {
     setForm({
       name: theme.name,
+      background_styles: theme.background_styles || "",
       card_styles: theme.card_styles,
       hover_animations: theme.hover_animations,
       button_styles: theme.button_styles,
@@ -159,14 +162,15 @@ const ThemesAdminPanel = () => {
   };
 
   const copyPrompt = () => {
-    const prompt = `I want to create a cohesive visually stunning TailwindCSS theme for a card component. Give me exactly three strings of Tailwind classes: 
-1) card_styles (background structure, borders, shadows, text colors).
-2) hover_animations (transformations like hover:scale-105, transitions, hover shadows).
-3) button_styles (background, hover state, text color, rounded status). 
+    const prompt = `I want to create a cohesive visually stunning TailwindCSS theme for a card component. Give me exactly four strings of Tailwind classes: 
+1) background_styles (overall theme background color, e.g. bg-gray-900).
+2) card_styles (card structure, borders, shadows, text colors).
+3) hover_animations (transformations like hover:scale-105, transitions, hover shadows).
+4) button_styles (background, hover state, text color, rounded status). 
 
 IMPORTANT RULES: 
 - DO NOT use arbitrary values unnecessarily.
-- Output ONLY a valid raw JSON object with keys "card_styles", "hover_animations", "button_styles". No markdown formatting!`;
+- Output ONLY a valid raw JSON object with keys "background_styles", "card_styles", "hover_animations", "button_styles". No markdown formatting!`;
     navigator.clipboard.writeText(prompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -209,7 +213,7 @@ IMPORTANT RULES:
         {themes.map((theme) => (
           <div
             key={theme.id}
-            className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.card_styles} ${theme.hover_animations}`}
+            className={`shadow-lg flex flex-col h-full overflow-hidden ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
           >
             <div className="w-full h-32 overflow-hidden bg-gray-700 relative">
               <div className="absolute inset-0 flex items-center justify-center opacity-30">
@@ -287,12 +291,11 @@ IMPORTANT RULES:
           setIsModalOpen(false);
           resetForm();
         }}
-        title={isEditMode ? "Edit Theme" : "Create New Theme"}
         size="4xl"
       >
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col xl:flex-row gap-6">
           {/* Form Content */}
-          <div className="flex-1 space-y-4">
+          <div className="w-full xl:flex-[2] space-y-4">
             {/* AI Prompter */}
             <div className="bg-indigo-900/20 border border-indigo-500/30 p-4 rounded-lg">
               <div className="flex justify-between items-start mb-2">
@@ -351,6 +354,21 @@ IMPORTANT RULES:
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Background Styles (Tailwind Classes)
+                </label>
+                <input
+                  type="text"
+                  value={form.background_styles}
+                  onChange={(e) =>
+                    setForm({ ...form, background_styles: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none font-mono text-sm"
+                  placeholder="bg-gray-800"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Hover Animations (Tailwind Classes)
                 </label>
                 <textarea
@@ -400,12 +418,12 @@ IMPORTANT RULES:
           </div>
 
           {/* Live Preview Pane */}
-          <div className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-gray-700 pt-6 lg:pt-0 lg:pl-6">
+          <div className="w-full xl:flex-[1] xl:max-w-md border-t xl:border-t-0 xl:border-l border-gray-700 pt-6 xl:pt-0 xl:pl-6">
             <h4 className="text-gray-400 font-semibold text-sm mb-4 uppercase tracking-wider">
               Live Preview
             </h4>
             <div
-              className={`shadow-lg flex flex-col h-[400px] overflow-hidden ${form.card_styles} ${form.hover_animations}`}
+              className={`shadow-lg flex flex-col h-[400px] overflow-hidden ${form.background_styles || "bg-gray-800"} ${form.card_styles} ${form.hover_animations}`}
             >
               <div className="w-full h-32 overflow-hidden bg-gray-700 relative">
                 <div className="absolute inset-0 flex items-center justify-center opacity-30">
