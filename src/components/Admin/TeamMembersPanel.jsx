@@ -28,7 +28,7 @@ const INITIAL_FORM = {
   description: "",
   display_order: 0,
   is_active: true,
-  social_links: {
+  socials: {
     instagram: "",
     linkedin: "",
     github: "",
@@ -92,7 +92,7 @@ const TeamMembersPanel = () => {
     fd.append("description", formData.description || "");
     fd.append("display_order", formData.display_order);
     fd.append("is_active", formData.is_active);
-    fd.append("social_links", JSON.stringify(formData.social_links));
+    fd.append("socials", JSON.stringify(formData.socials));
     if (photoFile) {
       fd.append("photo", photoFile);
     }
@@ -128,7 +128,7 @@ const TeamMembersPanel = () => {
     setIsSubmitting(true);
     try {
       const response = await fetch(
-        `${backendUrl}/api/admin/team-members/${selectedMember.id}`,
+        `${backendUrl}/api/admin/team-members/${selectedMember._id}`,
         {
           method: "PUT",
           headers: { apiKey },
@@ -158,7 +158,7 @@ const TeamMembersPanel = () => {
       onConfirm: async () => {
         try {
           const response = await fetch(
-            `${backendUrl}/api/admin/team-members/${member.id}`,
+            `${backendUrl}/api/admin/team-members/${member._id}`,
             {
               method: "DELETE",
               headers: { apiKey },
@@ -210,7 +210,7 @@ const TeamMembersPanel = () => {
           },
           body: JSON.stringify({
             items: updated.map((m) => ({
-              id: m.id,
+              id: m._id,
               display_order: m.display_order,
             })),
           }),
@@ -226,7 +226,7 @@ const TeamMembersPanel = () => {
   };
 
   const resetForm = () => {
-    setFormData({ ...INITIAL_FORM, social_links: { ...INITIAL_FORM.social_links } });
+    setFormData({ ...INITIAL_FORM, socials: { ...INITIAL_FORM.socials } });
     setPhotoFile(null);
     setPhotoPreview(null);
   };
@@ -239,13 +239,13 @@ const TeamMembersPanel = () => {
       description: member.description || "",
       display_order: member.display_order ?? 0,
       is_active: member.is_active !== false,
-      social_links: {
-        instagram: member.social_links?.instagram || "",
-        linkedin: member.social_links?.linkedin || "",
-        github: member.social_links?.github || "",
-        youtube: member.social_links?.youtube || "",
-        discord: member.social_links?.discord || "",
-        website: member.social_links?.website || "",
+      socials: {
+        instagram: member.socials?.instagram || "",
+        linkedin: member.socials?.linkedin || "",
+        github: member.socials?.github || "",
+        youtube: member.socials?.youtube || "",
+        discord: member.socials?.discord || "",
+        website: member.socials?.website || "",
       },
     });
     setPhotoFile(null);
@@ -265,7 +265,7 @@ const TeamMembersPanel = () => {
   const updateSocialLink = (key, value) => {
     setFormData((prev) => ({
       ...prev,
-      social_links: { ...prev.social_links, [key]: value },
+      socials: { ...prev.socials, [key]: value },
     }));
   };
 
@@ -420,7 +420,7 @@ const TeamMembersPanel = () => {
             <Instagram className="w-4 h-4 text-pink-400 shrink-0" />
             <input
               type="text"
-              value={formData.social_links.instagram}
+              value={formData.socials.instagram}
               onChange={(e) => updateSocialLink("instagram", e.target.value)}
               placeholder="Instagram URL"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
@@ -430,7 +430,7 @@ const TeamMembersPanel = () => {
             <Linkedin className="w-4 h-4 text-blue-400 shrink-0" />
             <input
               type="text"
-              value={formData.social_links.linkedin}
+              value={formData.socials.linkedin}
               onChange={(e) => updateSocialLink("linkedin", e.target.value)}
               placeholder="LinkedIn URL"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
@@ -440,7 +440,7 @@ const TeamMembersPanel = () => {
             <Github className="w-4 h-4 text-gray-300 shrink-0" />
             <input
               type="text"
-              value={formData.social_links.github}
+              value={formData.socials.github}
               onChange={(e) => updateSocialLink("github", e.target.value)}
               placeholder="GitHub URL"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
@@ -450,7 +450,7 @@ const TeamMembersPanel = () => {
             <Youtube className="w-4 h-4 text-red-400 shrink-0" />
             <input
               type="text"
-              value={formData.social_links.youtube}
+              value={formData.socials.youtube}
               onChange={(e) => updateSocialLink("youtube", e.target.value)}
               placeholder="YouTube URL"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
@@ -462,7 +462,7 @@ const TeamMembersPanel = () => {
             </svg>
             <input
               type="text"
-              value={formData.social_links.discord}
+              value={formData.socials.discord}
               onChange={(e) => updateSocialLink("discord", e.target.value)}
               placeholder="Discord username"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
@@ -472,7 +472,7 @@ const TeamMembersPanel = () => {
             <Globe className="w-4 h-4 text-amber-400 shrink-0" />
             <input
               type="text"
-              value={formData.social_links.website}
+              value={formData.socials.website}
               onChange={(e) => updateSocialLink("website", e.target.value)}
               placeholder="Website URL"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
@@ -574,7 +574,7 @@ const TeamMembersPanel = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {members.map((member, index) => (
             <div
-              key={member.id}
+              key={member._id}
               className="bg-gray-800/50 border border-gray-700 rounded-xl overflow-hidden hover:border-yellow-500/30 transition-colors group"
             >
               <div className="p-4">

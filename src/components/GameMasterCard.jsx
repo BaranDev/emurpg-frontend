@@ -56,11 +56,24 @@ const GameMasterCard = ({
         />
         <div className="absolute inset-2 rounded-full overflow-hidden border-2 border-yellow-500/30 p-1">
           <div className="w-full h-full rounded-full overflow-hidden select-none pointer-events-none">
-            <img
-              src={image}
-              alt={name}
-              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-            />
+            {image ? (
+              <img
+                src={image}
+                alt={name}
+                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-700 text-yellow-500 text-2xl font-bold">
+                {name
+                  ? name
+                      .split(" ")
+                      .map((w) => w[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2)
+                  : "?"}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -190,8 +203,8 @@ const GameMasterCard = ({
 GameMasterCard.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  image: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  image: PropTypes.string,
   socials: PropTypes.shape({
     instagram: PropTypes.string,
     twitter: PropTypes.string,

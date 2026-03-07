@@ -107,6 +107,18 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
       icon: BarChart3,
       description: "View statistics",
     },
+    {
+      id: "team-members",
+      label: "Team Members",
+      icon: Users,
+      description: "Manage game masters",
+    },
+    {
+      id: "admin-accounts",
+      label: "Admin Accounts",
+      icon: Shield,
+      description: "Manage admin access",
+    },
   ];
 
   return (
@@ -333,7 +345,24 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-0 min-h-screen pt-14 sm:pt-16 lg:pt-0 relative z-10">
-        <div className="p-3 sm:p-4 md:p-6 lg:p-8">{children}</div>
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+          {/* Breadcrumb */}
+          {activePanel !== "dashboard" && (
+            <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+              <button
+                onClick={() => onPanelChange("dashboard")}
+                className="hover:text-yellow-500 transition-colors"
+              >
+                Admin
+              </button>
+              <ChevronRight className="w-3 h-3" />
+              <span className="text-yellow-500">
+                {menuItems.find((m) => m.id === activePanel)?.label || activePanel}
+              </span>
+            </nav>
+          )}
+          {children}
+        </div>
       </main>
     </div>
   );

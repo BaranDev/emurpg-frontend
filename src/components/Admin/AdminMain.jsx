@@ -17,6 +17,8 @@ const GamesLibraryPanel = lazy(() => import("./GamesLibraryPanel"));
 const RegistrationsPanel = lazy(() => import("./RegistrationsPanel"));
 const ReportsPanel = lazy(() => import("./ReportsPanel"));
 const AnalyticsPanel = lazy(() => import("./AnalyticsPanel"));
+const TeamMembersPanel = lazy(() => import("./TeamMembersPanel"));
+const AdminAccountsPanel = lazy(() => import("./AdminAccountsPanel"));
 
 // Panel Loading Fallback
 const PanelLoader = () => (
@@ -340,6 +342,20 @@ const AdminMain = ({ onLogout }) => {
         return (
           <Suspense fallback={<PanelLoader />}>
             <AnalyticsPanel />
+          </Suspense>
+        );
+
+      case "team-members":
+        return (
+          <Suspense fallback={<PanelLoader />}>
+            <TeamMembersPanel />
+          </Suspense>
+        );
+
+      case "admin-accounts":
+        return (
+          <Suspense fallback={<PanelLoader />}>
+            <AdminAccountsPanel />
           </Suspense>
         );
 

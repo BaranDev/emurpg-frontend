@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   FaDiceD20,
@@ -23,7 +23,6 @@ import {
   HomePageEventList,
 } from "../components";
 import ParallaxBackground from "../components/ParallaxBackground";
-import * as photos from "../assets/member_photos";
 import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
 import { config, rpgQuotes } from "../config";
 
@@ -31,6 +30,9 @@ const HomePage = ({ onLanguageSwitch }) => {
   const { t } = useTranslation();
   const [diceQuote, setDiceQuote] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const teamSectionRef = useRef(null);
+  const teamFetchedRef = useRef(false);
 
   useEffect(() => {
     document.title = "EMURPG Club - Home";
@@ -39,6 +41,61 @@ const HomePage = ({ onLanguageSwitch }) => {
     return () => {
       clearTimeout(loadTimer);
     };
+  }, []);
+
+  // Lazy-load team members with Intersection Observer + localStorage cache
+  useEffect(() => {
+    const CACHE_KEY = "emurpg_team_members";
+    const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+    const fetchTeamMembers = async () => {
+      try {
+        const res = await fetch(`${config.backendUrl}/api/team-members`);
+        if (!res.ok) return;
+        const data = await res.json();
+        setTeamMembers(data);
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({ data, fetched_at: Date.now() })
+        );
+      } catch {
+        // silently fail - cached data or empty list is fine
+      }
+    };
+
+    const loadFromCacheOrFetch = () => {
+      if (teamFetchedRef.current) return;
+      teamFetchedRef.current = true;
+
+      try {
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+        if (cached?.data?.length) {
+          setTeamMembers(cached.data);
+          // Stale-while-revalidate: show cached, refresh if stale
+          if (Date.now() - cached.fetched_at > CACHE_TTL) {
+            fetchTeamMembers();
+          }
+          return;
+        }
+      } catch {
+        // invalid cache, fetch fresh
+      }
+      fetchTeamMembers();
+    };
+
+    const node = teamSectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadFromCacheOrFetch();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
   const rollDice = () => {
@@ -301,81 +358,20 @@ const HomePage = ({ onLanguageSwitch }) => {
             </div>
           </section>
           {/* Game Masters Section */}
-          <section className="py-24 bg-gray-800/50">
+          <section ref={teamSectionRef} className="py-24 bg-gray-800/50">
             <div className="container mx-auto px-4">
               <SectionTitle icon={FaUser}>{t("homepage.meet_gm")}</SectionTitle>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <GameMasterCard
-                  name="Ayberk Onaylı"
-                  title={t("homepage.gm_president")}
-                  description="Always rolls 1"
-                  image={photos.photo_ayberk}
-                />
-                <GameMasterCard
-                  name="Cevdet Baran Oral"
-                  title={t("homepage.gm_dungeon_master")}
-                  description="El. Psy. Kongroo."
-                  image={photos.photo_baran}
-                  socials={{
-                    instagram: "https://www.instagram.com/baranbvb/",
-                    linkedin: "https://www.linkedin.com/in/cevdetbaranoral/",
-                    github: "https://github.com/barandev",
-                    website: "https://cevdetbaran.com/",
-                  }}
-                />
-                <GameMasterCard
-                  name="Çağan Meriç"
-                  title={t("homepage.gm_game_master")}
-                  description="A terrifying presence has entered the room..."
-                  image={photos.photo_cagan}
-                  socials={{
-                    instagram: "https://www.instagram.com/caganmeric.77",
-                  }}
-                />
-                <GameMasterCard
-                  name="Yunus Bahadır"
-                  title={t("homepage.gm_game_master")}
-                  description="Hope is born in the shadowed depths of darkness, not in the brilliance of light."
-                  image={photos.photo_yunus}
-                  socials={{
-                    instagram: "https://www.instagram.com/ynsbahadir",
-                    linkedin:
-                      "https://www.linkedin.com/in/yunus-bahadır-565090341",
-                  }}
-                />
-                <GameMasterCard
-                  name="Yusuf Mete Kuzu"
-                  title={t("homepage.gm_game_master")}
-                  description=""
-                  image={photos.photo_mete}
-                />
-                <GameMasterCard
-                  name="Deha Deniz Kurtoğlu"
-                  title={t("Design | General support")}
-                  description="But in the end, you lack the stomach. For the agony you'll bring upon yourself."
-                  image={photos.photo_deha}
-                />
-                <GameMasterCard
-                  name="Mehmet Sevban Karaman"
-                  title={t("homepage.gm_game_master")}
-                  description="I regret nothing."
-                  socials={{
-                    instagram: "https://www.instagram.com/sewbeni_02/",
-                  }}
-                  image={photos.photo_mehmet}
-                />
-                <GameMasterCard
-                  name="Araklon RPG"
-                  title={t("homepage.gm_instructor")}
-                  description=""
-                  image={photos.photo_roman}
-                  socials={{
-                    instagram: "https://www.instagram.com/araklonrpg/",
-                    youtube: "https://www.youtube.com/@araklon",
-                    website: "https://www.araklon.com/",
-                    discord: "https://discord.gg/2QKj3tyVYX",
-                  }}
-                />
+                {teamMembers.map((member) => (
+                  <GameMasterCard
+                    key={member._id}
+                    name={member.name}
+                    title={member.title}
+                    description={member.description || ""}
+                    image={member.photo_url}
+                    socials={member.socials}
+                  />
+                ))}
               </div>
             </div>
           </section>
