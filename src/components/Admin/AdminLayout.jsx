@@ -274,7 +274,9 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
                     {isSidebarOpen && (
                       <div className="text-left">
                         <p className="text-sm font-medium">{item.label}</p>
-                        <p className="text-xs text-gray-500">{item.description}</p>
+                        <p className="text-xs text-gray-500">
+                          {item.description}
+                        </p>
                       </div>
                     )}
                   </button>
