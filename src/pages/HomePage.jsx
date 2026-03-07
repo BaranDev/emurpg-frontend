@@ -96,7 +96,7 @@ const HomePage = ({ onLanguageSwitch }) => {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading]);
 
   const rollDice = () => {
     setDiceQuote(rpgQuotes[Math.floor(Math.random() * rpgQuotes.length)]);

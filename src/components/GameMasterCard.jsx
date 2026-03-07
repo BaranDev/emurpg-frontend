@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 import {
   FaScroll,
@@ -44,10 +43,7 @@ const GameMasterCard = ({
   const displayImage = getStaticImage();
 
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="relative bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg overflow-hidden p-5 md:p-6 group"
-    >
+    <div className="relative bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg overflow-hidden p-5 md:p-6 group transition-transform duration-300 hover:scale-[1.02]">
       {/* Decorative corners */}
       <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-yellow-500/30 rounded-tl-lg" />
       <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-yellow-500/30 rounded-tr-lg" />
@@ -58,16 +54,9 @@ const GameMasterCard = ({
       <div className="relative z-10">
         {/* Image container with decorative border */}
         <div className="relative w-28 h-28 md:w-32 md:h-32 mx-auto mb-5">
-          <motion.div
-            className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-500/20 to-yellow-600/20"
-            animate={{
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear",
-            }}
+          <div
+            className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 animate-spin"
+            style={{ animationDuration: "20s", animationTimingFunction: "linear" }}
           />
           <div className="absolute inset-2 rounded-full overflow-hidden border-2 border-yellow-500/30 p-1">
             <div className="w-full h-full rounded-full overflow-hidden select-none pointer-events-none">
@@ -75,6 +64,8 @@ const GameMasterCard = ({
                 <img
                   src={displayImage}
                   alt={name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                 />
               ) : (
@@ -212,7 +203,7 @@ const GameMasterCard = ({
 
       {/* Hover effect overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-    </motion.div>
+    </div>
   );
 };
 

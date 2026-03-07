@@ -12,6 +12,8 @@ import {
   FileText,
   AlertCircle,
   Gamepad2,
+  Upload,
+  XCircle,
 } from "lucide-react";
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
@@ -47,8 +49,46 @@ const GamesLibraryPanel = () => {
     guide_video_url: "",
   });
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const backendUrl = config.backendUrl;
   const apiKey = getApiKey();
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image is too large. Maximum size is 5 MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+
+      const res = await fetch(`${backendUrl}/api/admin/games/upload`, {
+        method: "POST",
+        headers: { apiKey },
+        body: fd,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setFormData((prev) => ({ ...prev, image_url: data.url }));
+      } else {
+        const data = await res.json();
+        throw new Error(data.detail || "Upload failed");
+      }
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = () => setFormData((prev) => ({ ...prev, image_url: "" }));
 
   const fetchGames = useCallback(async () => {
     setIsLoading(true);
@@ -109,7 +149,7 @@ const GamesLibraryPanel = () => {
             apiKey,
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to update game");
@@ -136,7 +176,7 @@ const GamesLibraryPanel = () => {
             {
               method: "DELETE",
               headers: { apiKey },
-            }
+            },
           );
 
           if (!response.ok) throw new Error("Failed to delete game");
@@ -191,7 +231,7 @@ const GamesLibraryPanel = () => {
   const filteredGames = games.filter(
     (game) =>
       game.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      game.id.toLowerCase().includes(searchTerm.toLowerCase())
+      game.id.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (isLoading) {
@@ -449,18 +489,72 @@ const GamesLibraryPanel = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Image URL
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Cover Image
             </label>
-            <input
-              type="text"
-              value={formData.image_url}
-              onChange={(e) =>
-                setFormData({ ...formData, image_url: e.target.value })
-              }
-              placeholder="https://example.com/image.jpg"
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-            />
+            {!config.ENABLE_R2 && (
+              <div className="mb-3 p-3 bg-amber-900/20 border border-amber-500/50 rounded-lg flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                <p className="text-xs text-amber-200/80">
+                  Image uploads are temporarily disabled.
+                </p>
+              </div>
+            )}
+            <div className="flex items-center gap-4">
+              {formData.image_url ? (
+                <div className="relative group">
+                  <img
+                    src={formData.image_url}
+                    alt="Preview"
+                    className="w-24 h-24 object-cover rounded-lg border border-gray-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <label
+                  className={`flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed rounded-lg transition-colors ${
+                    !config.ENABLE_R2
+                      ? "border-gray-700 bg-gray-800/50 cursor-not-allowed"
+                      : "border-gray-600 cursor-pointer hover:border-yellow-500"
+                  }`}
+                >
+                  <div className="flex flex-col items-center justify-center pt-2">
+                    {isUploading ? (
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500" />
+                    ) : (
+                      <>
+                        <Upload
+                          className={`w-6 h-6 ${
+                            !config.ENABLE_R2
+                              ? "text-gray-600"
+                              : "text-gray-400"
+                          }`}
+                        />
+                        <span className="text-[10px] text-gray-500 mt-1 uppercase">
+                          {config.ENABLE_R2 ? "Upload" : "Disabled"}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploading || !config.ENABLE_R2}
+                  />
+                </label>
+              )}
+              <div className="text-xs text-gray-500 italic max-w-[200px]">
+                Optimized to WebP automatically. Max 5 MB.
+              </div>
+            </div>
           </div>
 
           <div>
@@ -605,17 +699,72 @@ const GamesLibraryPanel = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Image URL
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Cover Image
             </label>
-            <input
-              type="text"
-              value={formData.image_url}
-              onChange={(e) =>
-                setFormData({ ...formData, image_url: e.target.value })
-              }
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-            />
+            {!config.ENABLE_R2 && (
+              <div className="mb-3 p-3 bg-amber-900/20 border border-amber-500/50 rounded-lg flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                <p className="text-xs text-amber-200/80">
+                  Image uploads are temporarily disabled.
+                </p>
+              </div>
+            )}
+            <div className="flex items-center gap-4">
+              {formData.image_url ? (
+                <div className="relative group">
+                  <img
+                    src={formData.image_url}
+                    alt="Preview"
+                    className="w-24 h-24 object-cover rounded-lg border border-gray-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <label
+                  className={`flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed rounded-lg transition-colors ${
+                    !config.ENABLE_R2
+                      ? "border-gray-700 bg-gray-800/50 cursor-not-allowed"
+                      : "border-gray-600 cursor-pointer hover:border-yellow-500"
+                  }`}
+                >
+                  <div className="flex flex-col items-center justify-center pt-2">
+                    {isUploading ? (
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500" />
+                    ) : (
+                      <>
+                        <Upload
+                          className={`w-6 h-6 ${
+                            !config.ENABLE_R2
+                              ? "text-gray-600"
+                              : "text-gray-400"
+                          }`}
+                        />
+                        <span className="text-[10px] text-gray-500 mt-1 uppercase">
+                          {config.ENABLE_R2 ? "Upload" : "Disabled"}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploading || !config.ENABLE_R2}
+                  />
+                </label>
+              )}
+              <div className="text-xs text-gray-500 italic max-w-[200px]">
+                Optimized to WebP automatically. Max 5 MB.
+              </div>
+            </div>
           </div>
 
           <div>
