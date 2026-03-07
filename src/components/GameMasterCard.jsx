@@ -34,7 +34,7 @@ const GameMasterCard = ({
   // Fallback to static assets if R2 is disabled and no image is provided from DB
   const getStaticImage = () => {
     if (config.ENABLE_R2 || image) return image;
-    
+
     // Slugify name to match export keys like photo_baran
     const slug = name?.toLowerCase().split(" ")[0];
     return MemberPhotos[`photo_${slug}`] || null;
@@ -56,7 +56,10 @@ const GameMasterCard = ({
         <div className="relative w-28 h-28 md:w-32 md:h-32 mx-auto mb-5">
           <div
             className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 animate-spin"
-            style={{ animationDuration: "20s", animationTimingFunction: "linear" }}
+            style={{
+              animationDuration: "20s",
+              animationTimingFunction: "linear",
+            }}
           />
           <div className="absolute inset-2 rounded-full overflow-hidden border-2 border-yellow-500/30 p-1">
             <div className="w-full h-full rounded-full overflow-hidden select-none pointer-events-none">
