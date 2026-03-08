@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
   FaScroll,
@@ -10,6 +11,8 @@ import {
   FaGithub,
   FaGlobe,
   FaDiscord,
+  FaCopy,
+  FaTimes,
 } from "react-icons/fa";
 
 import { config } from "../config";
@@ -31,6 +34,33 @@ const GameMasterCard = ({
     discord: null,
   },
 }) => {
+  const [showDiscordModal, setShowDiscordModal] = useState(false);
+  const [discordCopied, setDiscordCopied] = useState(false);
+
+  // Validate and sanitize social URLs to prevent navigation to invalid paths
+  const isValidUrl = (url) => {
+    if (!url) return false;
+    try {
+      // Valid URLs must start with http:// or https://
+      return url.startsWith("http://") || url.startsWith("https://");
+    } catch {
+      return false;
+    }
+  };
+
+  const handleDiscordClick = (e) => {
+    e.preventDefault();
+    setShowDiscordModal(true);
+  };
+
+  const handleCopyDiscord = () => {
+    if (socials.discord) {
+      navigator.clipboard.writeText(socials.discord);
+      setDiscordCopied(true);
+      setTimeout(() => setDiscordCopied(false), 2000);
+    }
+  };
+
   // Fallback to static assets if R2 is disabled and no image is provided from DB
   const getStaticImage = () => {
     if (config.ENABLE_R2 || image) return image;
@@ -120,7 +150,7 @@ const GameMasterCard = ({
         {/* Social links */}
         {Object.values(socials).some((social) => social) ? (
           <div className="flex justify-center gap-3 md:gap-4 mt-4 border-t border-yellow-500/20 pt-3 md:pt-4">
-            {socials.website && (
+            {isValidUrl(socials.website) && (
               <a
                 href={socials.website}
                 target="_blank"
@@ -130,7 +160,7 @@ const GameMasterCard = ({
                 <FaGlobe size={20} />
               </a>
             )}
-            {socials.facebook && (
+            {isValidUrl(socials.facebook) && (
               <a
                 href={socials.facebook}
                 target="_blank"
@@ -140,7 +170,7 @@ const GameMasterCard = ({
                 <FaFacebook size={20} />
               </a>
             )}
-            {socials.twitter && (
+            {isValidUrl(socials.twitter) && (
               <a
                 href={socials.twitter}
                 target="_blank"
@@ -150,7 +180,7 @@ const GameMasterCard = ({
                 <FaTwitter size={20} />
               </a>
             )}
-            {socials.instagram && (
+            {isValidUrl(socials.instagram) && (
               <a
                 href={socials.instagram}
                 target="_blank"
@@ -160,7 +190,7 @@ const GameMasterCard = ({
                 <FaInstagram size={20} />
               </a>
             )}
-            {socials.linkedin && (
+            {isValidUrl(socials.linkedin) && (
               <a
                 href={socials.linkedin}
                 target="_blank"
@@ -170,7 +200,7 @@ const GameMasterCard = ({
                 <FaLinkedin size={20} />
               </a>
             )}
-            {socials.github && (
+            {isValidUrl(socials.github) && (
               <a
                 href={socials.github}
                 target="_blank"
@@ -180,7 +210,7 @@ const GameMasterCard = ({
                 <FaGithub size={20} />
               </a>
             )}
-            {socials.youtube && (
+            {isValidUrl(socials.youtube) && (
               <a
                 href={socials.youtube}
                 target="_blank"
@@ -190,15 +220,14 @@ const GameMasterCard = ({
                 <FaYoutube size={20} />
               </a>
             )}
-            {socials.discord && (
-              <a
-                href={socials.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-yellow-500/50 hover:text-yellow-500 transition-colors"
+            {!isValidUrl(socials.discord) && socials.discord && (
+              <button
+                onClick={handleDiscordClick}
+                className="text-yellow-500/50 hover:text-yellow-500 transition-colors bg-transparent border-none cursor-pointer"
+                title="Click to view Discord username"
               >
                 <FaDiscord size={20} />
-              </a>
+              </button>
             )}
           </div>
         ) : null}
@@ -207,6 +236,63 @@ const GameMasterCard = ({
       {/* Hover effect overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </div>
+
+    {/* Discord Username Modal */}
+    {showDiscordModal && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg border-2 border-yellow-500/40 p-6 max-w-sm w-full shadow-2xl">
+          {/* Close Button */}
+          <button
+            onClick={() => setShowDiscordModal(false)}
+            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+          >
+            <FaTimes size={20} />
+          </button>
+
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-4">
+            <FaDiscord size={28} className="text-blue-400" />
+            <h2 className="text-2xl font-bold text-yellow-500">Discord</h2>
+          </div>
+
+          {/* Username Display */}
+          <div className="mb-6">
+            <p className="text-gray-400 text-sm mb-2">Username:</p>
+            <div className="bg-gray-700/50 border border-gray-600 rounded-lg p-4 flex items-center justify-between">
+              <code className="text-yellow-300 font-mono text-lg break-all">
+                {socials.discord}
+              </code>
+            </div>
+          </div>
+
+          {/* Copy Button */}
+          <button
+            onClick={handleCopyDiscord}
+            className={`w-full px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+              discordCopied
+                ? "bg-emerald-600 text-white"
+                : "bg-yellow-600 hover:bg-yellow-700 text-white"
+            }`}
+          >
+            <FaCopy size={16} />
+            {discordCopied ? "Copied!" : "Copy Username"}
+          </button>
+
+          {/* Helper Text */}
+          <p className="text-gray-400 text-xs mt-4 text-center">
+            💡 Share this username to add them on Discord
+          </p>
+
+          {/* Close Button */}
+          <button
+            onClick={() => setShowDiscordModal(false)}
+            className="w-full mt-3 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
   );
 };
 

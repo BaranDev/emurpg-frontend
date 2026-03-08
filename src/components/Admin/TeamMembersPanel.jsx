@@ -108,8 +108,23 @@ const TeamMembersPanel = () => {
     return fd;
   };
 
+  // Validate social URLs - must be http:// or https://
+  const validateSocialUrls = () => {
+    for (const [key, url] of Object.entries(formData.socials)) {
+      if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+        showToast(
+          `${key} URL must start with http:// or https:// (got: ${url})`,
+          "error",
+        );
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleCreate = async (e) => {
     e.preventDefault();
+    if (!validateSocialUrls()) return;
     setIsSubmitting(true);
     try {
       const response = await fetch(`${backendUrl}/api/admin/team-members`, {
@@ -135,6 +150,7 @@ const TeamMembersPanel = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!selectedMember) return;
+    if (!validateSocialUrls()) return;
     setIsSubmitting(true);
     try {
       const response = await fetch(
@@ -457,6 +473,10 @@ const TeamMembersPanel = () => {
         <label className="block text-sm font-medium text-gray-300 mb-2">
           Social Links
         </label>
+        <p className="text-xs text-gray-400 mb-3">
+          💡 Enter full URLs for socials. For Discord, enter the username only
+          (e.g., baran__)
+        </p>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex items-center gap-2">
             <Instagram className="w-4 h-4 text-pink-400 shrink-0" />
