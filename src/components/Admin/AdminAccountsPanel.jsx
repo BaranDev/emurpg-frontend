@@ -1,54 +1,73 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  message,
-  Popconfirm,
-  Skeleton,
-  Typography,
-  Tooltip,
-  Space,
-  Tag,
-} from "antd";
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  KeyOutlined,
-  CopyOutlined,
-} from "@ant-design/icons";
+  Plus,
+  Pencil,
+  Trash2,
+  KeyRound,
+  Copy,
+  Shield,
+  Crown,
+  Calendar,
+  Loader2,
+} from "lucide-react";
 import { config } from "../../config";
 import { getAuthHeaders } from "../../utils/auth";
-
-const { Text, Title } = Typography;
+import { useToast } from "../../hooks/useToast";
+import {
+  AdminModal,
+  AdminButton,
+  ConfirmDialog,
+  LoadingSpinner,
+  Toast,
+} from "./shared";
 
 const AdminAccountsPanel = () => {
   const [admins, setAdmins] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [apiKeyModalOpen, setApiKeyModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [displayedApiKey, setDisplayedApiKey] = useState("");
   const [editingAdmin, setEditingAdmin] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [submittingAction, setSubmittingAction] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
 
-  const [createForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [createForm, setCreateForm] = useState({ username: "", password: "" });
+  const [editForm, setEditForm] = useState({ username: "", password: "" });
+
+  const { toast, showToast, hideToast } = useToast();
 
   const backendUrl = config.backendUrl;
 
+  const closeConfirmDialog = () => {
+    setConfirmDialog({ open: false, title: "", message: "", onConfirm: null });
+  };
+
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "\u2014";
+    const parsed = new Date(dateValue);
+    return Number.isNaN(parsed.getTime())
+      ? "\u2014"
+      : parsed.toLocaleDateString();
+  };
+
   // ---------- Fetch admins ----------
   const fetchAdmins = useCallback(async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const response = await fetch(`${backendUrl}/api/admin/admins`, {
         headers: getAuthHeaders(),
       });
       if (response.status === 403) {
-        message.error("Super-admin access required to manage admin accounts.");
+        showToast(
+          "Super-admin access required to manage admin accounts.",
+          "error",
+        );
         setAdmins([]);
         return;
       }
@@ -59,30 +78,47 @@ const AdminAccountsPanel = () => {
       const data = await response.json();
       setAdmins(Array.isArray(data) ? data : data.admins || []);
     } catch (error) {
-      message.error(error.message || "Failed to load admin accounts.");
+      showToast(error.message || "Failed to load admin accounts.", "error");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }, [backendUrl]);
+  }, [backendUrl, showToast]);
 
   useEffect(() => {
     fetchAdmins();
   }, [fetchAdmins]);
 
+  const resetCreateForm = () => {
+    setCreateForm({ username: "", password: "" });
+  };
+
+  const resetEditForm = () => {
+    setEditForm({ username: "", password: "" });
+  };
+
   // ---------- Create ----------
-  const handleCreate = async (values) => {
-    setSubmitting(true);
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    const username = createForm.username.trim();
+    const password = createForm.password.trim();
+
+    if (!username || !password) {
+      showToast("Username and password are required.", "warning");
+      return;
+    }
+
+    setSubmittingAction(true);
     try {
       const response = await fetch(`${backendUrl}/api/admin/admins`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({
-          username: values.username,
-          password: values.password,
+          username,
+          password,
         }),
       });
       if (response.status === 403) {
-        message.error("Super-admin access required.");
+        showToast("Super-admin access required.", "error");
         return;
       }
       if (!response.ok) {
@@ -90,112 +126,135 @@ const AdminAccountsPanel = () => {
         throw new Error(err.detail || "Failed to create admin");
       }
       const data = await response.json();
-      message.success(`Admin "${data.username}" created successfully.`);
-      setCreateModalOpen(false);
-      createForm.resetFields();
+      showToast(`Admin "${data.username}" created successfully.`, "success");
+      setIsCreateModalOpen(false);
+      resetCreateForm();
       if (data.api_key) {
         setDisplayedApiKey(data.api_key);
-        setApiKeyModalOpen(true);
+        setIsApiKeyModalOpen(true);
       }
       fetchAdmins();
     } catch (error) {
-      message.error(error.message || "Failed to create admin.");
+      showToast(error.message || "Failed to create admin.", "error");
     } finally {
-      setSubmitting(false);
+      setSubmittingAction(false);
     }
   };
 
   // ---------- Edit ----------
   const openEditModal = (admin) => {
     setEditingAdmin(admin);
-    editForm.setFieldsValue({
+    setEditForm({
       username: admin.username,
       password: "",
     });
-    setEditModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  const handleEdit = async (values) => {
+  const handleEdit = async (e) => {
+    e.preventDefault();
     if (!editingAdmin) return;
-    setSubmitting(true);
+
+    const username = editForm.username.trim();
+    const password = editForm.password.trim();
+    setSubmittingAction(true);
+
     try {
       const body = {};
-      if (values.username && values.username !== editingAdmin.username) {
-        body.username = values.username;
+      if (username && username !== editingAdmin.username) {
+        body.username = username;
       }
-      if (values.password) {
-        body.password = values.password;
+      if (password) {
+        body.password = password;
       }
+
       if (Object.keys(body).length === 0) {
-        message.info("No changes to save.");
-        setEditModalOpen(false);
+        showToast("No changes to save.", "info");
+        setIsEditModalOpen(false);
+        setEditingAdmin(null);
+        resetEditForm();
         return;
       }
+
       const response = await fetch(
         `${backendUrl}/api/admin/admins/${editingAdmin._id}`,
         {
           method: "PUT",
           headers: getAuthHeaders(),
           body: JSON.stringify(body),
-        }
+        },
       );
       if (response.status === 403) {
-        message.error("Super-admin access required.");
+        showToast("Super-admin access required.", "error");
         return;
       }
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
         throw new Error(err.detail || "Failed to update admin");
       }
-      message.success("Admin updated successfully.");
-      setEditModalOpen(false);
+      showToast("Admin updated successfully.", "success");
+      setIsEditModalOpen(false);
       setEditingAdmin(null);
-      editForm.resetFields();
+      resetEditForm();
       fetchAdmins();
     } catch (error) {
-      message.error(error.message || "Failed to update admin.");
+      showToast(error.message || "Failed to update admin.", "error");
     } finally {
-      setSubmitting(false);
+      setSubmittingAction(false);
     }
   };
 
   // ---------- Delete ----------
-  const handleDelete = async (admin) => {
+  const performDelete = async (admin) => {
+    setSubmittingAction(true);
     try {
       const response = await fetch(
         `${backendUrl}/api/admin/admins/${admin._id}`,
         {
           method: "DELETE",
           headers: getAuthHeaders(),
-        }
+        },
       );
       if (response.status === 403) {
-        message.error("Super-admin access required.");
+        showToast("Super-admin access required.", "error");
         return;
       }
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
         throw new Error(err.detail || "Failed to delete admin");
       }
-      message.success(`Admin "${admin.username}" deleted.`);
-      fetchAdmins();
+      showToast(`Admin "${admin.username}" deleted.`, "success");
+      await fetchAdmins();
     } catch (error) {
-      message.error(error.message || "Failed to delete admin.");
+      showToast(error.message || "Failed to delete admin.", "error");
+    } finally {
+      closeConfirmDialog();
+      setSubmittingAction(false);
     }
+  };
+
+  const openDeleteConfirm = (admin) => {
+    setConfirmDialog({
+      open: true,
+      title: "Delete Admin",
+      message: `Are you sure you want to delete "${admin.username}"? This cannot be undone.`,
+      onConfirm: () => performDelete(admin),
+    });
   };
 
   // ---------- Reset API Key ----------
   const handleResetKey = async (admin) => {
+    setSubmittingAction(true);
     try {
       const response = await fetch(
         `${backendUrl}/api/admin/admins/${admin._id}/reset-key`,
         {
           method: "POST",
           headers: getAuthHeaders(),
-        }
+        },
       );
       if (response.status === 403) {
-        message.error("Super-admin access required.");
+        showToast("Super-admin access required.", "error");
         return;
       }
       if (!response.ok) {
@@ -205,11 +264,13 @@ const AdminAccountsPanel = () => {
       const data = await response.json();
       if (data.api_key) {
         setDisplayedApiKey(data.api_key);
-        setApiKeyModalOpen(true);
+        setIsApiKeyModalOpen(true);
       }
-      message.success(`API key reset for "${admin.username}".`);
+      showToast(`API key reset for "${admin.username}".`, "success");
     } catch (error) {
-      message.error(error.message || "Failed to reset API key.");
+      showToast(error.message || "Failed to reset API key.", "error");
+    } finally {
+      setSubmittingAction(false);
     }
   };
 
@@ -217,335 +278,366 @@ const AdminAccountsPanel = () => {
   const handleCopyKey = async () => {
     try {
       await navigator.clipboard.writeText(displayedApiKey);
-      message.success("API key copied to clipboard.");
+      showToast("API key copied to clipboard.", "success");
     } catch {
-      message.error("Failed to copy. Please select and copy manually.");
+      showToast("Failed to copy. Please select and copy manually.", "error");
     }
   };
 
-  // ---------- Table columns ----------
-  const columns = [
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      render: (text) => (
-        <Text strong style={{ color: "#c4a35a" }}>
-          {text}
-        </Text>
-      ),
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      render: (role) => {
-        const color = role === "super_admin" ? "#faad14" : "#c4a35a";
-        const label = role === "super_admin" ? "Super Admin" : "Admin";
-        return <Tag color={color}>{label}</Tag>;
-      },
-    },
-    {
-      title: "Created",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (date) =>
-        date ? new Date(date).toLocaleDateString() : "\u2014",
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="Edit">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => openEditModal(record)}
-              style={{ color: "#c4a35a" }}
-            />
-          </Tooltip>
-          <Popconfirm
-            title="Reset API Key"
-            description={`Generate a new API key for "${record.username}"? The old key will stop working.`}
-            onConfirm={() => handleResetKey(record)}
-            okText="Reset"
-            okButtonProps={{ danger: true }}
-          >
-            <Tooltip title="Reset API Key">
-              <Button
-                type="text"
-                icon={<KeyOutlined />}
-                style={{ color: "#c4a35a" }}
-              />
-            </Tooltip>
-          </Popconfirm>
-          <Popconfirm
-            title="Delete Admin"
-            description={`Are you sure you want to delete "${record.username}"? This cannot be undone.`}
-            onConfirm={() => handleDelete(record)}
-            okText="Delete"
-            okButtonProps={{ danger: true }}
-          >
-            <Tooltip title="Delete">
-              <Button type="text" icon={<DeleteOutlined />} danger />
-            </Tooltip>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  const { totalAdmins, superAdmins, regularAdmins } = useMemo(() => {
+    const total = admins.length;
+    const supers = admins.filter(
+      (admin) => admin.role === "super_admin",
+    ).length;
+    return {
+      totalAdmins: total,
+      superAdmins: supers,
+      regularAdmins: total - supers,
+    };
+  }, [admins]);
 
   // ---------- Render ----------
   return (
-    <div style={{ padding: 24 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
+    <div className="space-y-6 px-2 sm:px-0">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <Title level={4} style={{ color: "#c4a35a", margin: 0 }}>
+          <h2 className="font-cinzel text-2xl font-bold text-amber-100">
             Admin Accounts
-          </Title>
-          <Text type="secondary">
-            Manage administrator accounts and API keys
-          </Text>
+          </h2>
+          <p className="text-sm text-gray-400">
+            Manage super-admin protected accounts and rotate keys safely.
+          </p>
         </div>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setCreateModalOpen(true)}
-          style={{
-            backgroundColor: "#c4a35a",
-            borderColor: "#c4a35a",
-          }}
+
+        <AdminButton
+          icon={Plus}
+          onClick={() => setIsCreateModalOpen(true)}
+          className="w-full md:w-auto"
         >
           Create Admin
-        </Button>
+        </AdminButton>
       </div>
 
-      {loading ? (
-        <Skeleton active paragraph={{ rows: 6 }} />
-      ) : (
-        <Table
-          dataSource={admins}
-          columns={columns}
-          rowKey={(record) => record._id || record.username}
-          pagination={false}
-          locale={{ emptyText: "No admin accounts found." }}
-        />
-      )}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="rounded-xl border border-amber-800/30 bg-gray-900/70 p-4">
+          <p className="text-xs uppercase tracking-wide text-gray-400">Total</p>
+          <p className="mt-1 flex items-center gap-2 text-2xl font-bold text-amber-100">
+            <Shield className="h-5 w-5 text-amber-400" />
+            {totalAdmins}
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-amber-800/30 bg-gray-900/70 p-4">
+          <p className="text-xs uppercase tracking-wide text-gray-400">
+            Super Admins
+          </p>
+          <p className="mt-1 flex items-center gap-2 text-2xl font-bold text-amber-100">
+            <Crown className="h-5 w-5 text-amber-400" />
+            {superAdmins}
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-amber-800/30 bg-gray-900/70 p-4">
+          <p className="text-xs uppercase tracking-wide text-gray-400">
+            Admins
+          </p>
+          <p className="mt-1 flex items-center gap-2 text-2xl font-bold text-amber-100">
+            <Shield className="h-5 w-5 text-amber-400" />
+            {regularAdmins}
+          </p>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-amber-900/40 bg-gray-900/70">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-amber-900/30 text-sm">
+            <thead className="bg-amber-950/20">
+              <tr>
+                <th className="px-4 py-3 text-left font-semibold text-gray-300">
+                  Username
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-300">
+                  Role
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-300">
+                  Created
+                </th>
+                <th className="px-4 py-3 text-right font-semibold text-gray-300">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-amber-900/20">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="px-4 py-10 text-center">
+                    <LoadingSpinner
+                      size="md"
+                      message="Loading admin accounts..."
+                    />
+                  </td>
+                </tr>
+              ) : admins.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-4 py-10 text-center text-gray-400"
+                  >
+                    No admin accounts found.
+                  </td>
+                </tr>
+              ) : (
+                admins.map((admin) => (
+                  <tr
+                    key={admin._id || admin.username}
+                    className="hover:bg-amber-950/10"
+                  >
+                    <td className="px-4 py-3 text-amber-200">
+                      {admin.username}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-semibold ${
+                          admin.role === "super_admin"
+                            ? "border-amber-500/60 bg-amber-700/20 text-amber-300"
+                            : "border-amber-700/60 bg-amber-900/20 text-amber-200"
+                        }`}
+                      >
+                        {admin.role === "super_admin" ? "Super Admin" : "Admin"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-gray-300">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Calendar className="h-4 w-4 text-amber-400/80" />
+                        {formatDate(admin.created_at)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          className="rounded-lg border border-amber-700/40 p-2 text-amber-300 transition hover:bg-amber-900/30"
+                          title="Edit"
+                          onClick={() => openEditModal(admin)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="rounded-lg border border-amber-700/40 p-2 text-amber-300 transition hover:bg-amber-900/30"
+                          title="Reset API key"
+                          onClick={() => handleResetKey(admin)}
+                          disabled={submittingAction}
+                        >
+                          <KeyRound className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="rounded-lg border border-red-700/40 p-2 text-red-400 transition hover:bg-red-950/40"
+                          title="Delete"
+                          onClick={() => openDeleteConfirm(admin)}
+                          disabled={submittingAction}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* ---------- Create Modal ---------- */}
-      <Modal
+      <AdminModal
+        isOpen={isCreateModalOpen}
+        onClose={() => {
+          setIsCreateModalOpen(false);
+          resetCreateForm();
+        }}
         title="Create Admin Account"
-        open={createModalOpen}
-        onCancel={() => {
-          setCreateModalOpen(false);
-          createForm.resetFields();
-        }}
-        footer={null}
-        destroyOnClose
+        size="sm"
       >
-        <Form
-          form={createForm}
-          layout="vertical"
-          onFinish={handleCreate}
-          style={{ marginTop: 16 }}
-        >
-          <Form.Item
-            name="username"
-            label="Username"
-            rules={[{ required: true, message: "Please enter a username" }]}
-          >
-            <Input placeholder="Enter username" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please enter a password" }]}
-          >
-            <Input.Password placeholder="Enter password" />
-          </Form.Item>
-          <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
-            <Space>
-              <Button
-                onClick={() => {
-                  setCreateModalOpen(false);
-                  createForm.resetFields();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitting}
-                style={{
-                  backgroundColor: "#c4a35a",
-                  borderColor: "#c4a35a",
-                }}
-              >
-                Create
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
+        <form className="space-y-4" onSubmit={handleCreate}>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Username
+            </label>
+            <input
+              value={createForm.username}
+              onChange={(e) =>
+                setCreateForm((prev) => ({ ...prev, username: e.target.value }))
+              }
+              placeholder="Enter username"
+              required
+              className="w-full rounded-lg border border-amber-800/40 bg-gray-950 px-3 py-2 text-sm text-amber-100 placeholder:text-gray-500 focus:border-amber-500 focus:outline-none"
+            />
+          </div>
 
-      {/* ---------- Edit Modal ---------- */}
-      <Modal
-        title="Edit Admin Account"
-        open={editModalOpen}
-        onCancel={() => {
-          setEditModalOpen(false);
-          setEditingAdmin(null);
-          editForm.resetFields();
-        }}
-        footer={null}
-        destroyOnClose
-      >
-        <Form
-          form={editForm}
-          layout="vertical"
-          onFinish={handleEdit}
-          style={{ marginTop: 16 }}
-        >
-          <Form.Item
-            name="username"
-            label="Username"
-            rules={[{ required: true, message: "Please enter a username" }]}
-          >
-            <Input placeholder="Enter username" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            help="Leave blank to keep the current password"
-          >
-            <Input.Password placeholder="Enter new password (optional)" />
-          </Form.Item>
-          <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
-            <Space>
-              <Button
-                onClick={() => {
-                  setEditModalOpen(false);
-                  setEditingAdmin(null);
-                  editForm.resetFields();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitting}
-                style={{
-                  backgroundColor: "#c4a35a",
-                  borderColor: "#c4a35a",
-                }}
-              >
-                Save Changes
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Password
+            </label>
+            <input
+              type="password"
+              value={createForm.password}
+              onChange={(e) =>
+                setCreateForm((prev) => ({ ...prev, password: e.target.value }))
+              }
+              placeholder="Enter password"
+              required
+              className="w-full rounded-lg border border-amber-800/40 bg-gray-950 px-3 py-2 text-sm text-amber-100 placeholder:text-gray-500 focus:border-amber-500 focus:outline-none"
+            />
+          </div>
 
-      {/* ---------- One-Time API Key Modal ---------- */}
-      <Modal
-        title={
-          <span style={{ color: "#c4a35a" }}>
-            <KeyOutlined style={{ marginRight: 8 }} />
-            API Key Created
-          </span>
-        }
-        open={apiKeyModalOpen}
-        onCancel={() => {
-          setApiKeyModalOpen(false);
-          setDisplayedApiKey("");
-        }}
-        footer={
-          <Space>
-            <Button
-              type="primary"
-              icon={<CopyOutlined />}
-              onClick={handleCopyKey}
-              style={{
-                backgroundColor: "#c4a35a",
-                borderColor: "#c4a35a",
+          <div className="flex justify-end gap-3 pt-2">
+            <AdminButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setIsCreateModalOpen(false);
+                resetCreateForm();
               }}
             >
-              Copy Key
-            </Button>
-            <Button
+              Cancel
+            </AdminButton>
+            <AdminButton type="submit" loading={submittingAction}>
+              Create
+            </AdminButton>
+          </div>
+        </form>
+      </AdminModal>
+
+      {/* ---------- Edit Modal ---------- */}
+      <AdminModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingAdmin(null);
+          resetEditForm();
+        }}
+        title="Edit Admin Account"
+        size="sm"
+      >
+        <form className="space-y-4" onSubmit={handleEdit}>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Username
+            </label>
+            <input
+              value={editForm.username}
+              onChange={(e) =>
+                setEditForm((prev) => ({ ...prev, username: e.target.value }))
+              }
+              placeholder="Enter username"
+              required
+              className="w-full rounded-lg border border-amber-800/40 bg-gray-950 px-3 py-2 text-sm text-amber-100 placeholder:text-gray-500 focus:border-amber-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              New Password
+            </label>
+            <input
+              type="password"
+              value={editForm.password}
+              onChange={(e) =>
+                setEditForm((prev) => ({ ...prev, password: e.target.value }))
+              }
+              placeholder="Leave blank to keep current password"
+              className="w-full rounded-lg border border-amber-800/40 bg-gray-950 px-3 py-2 text-sm text-amber-100 placeholder:text-gray-500 focus:border-amber-500 focus:outline-none"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3 pt-2">
+            <AdminButton
+              type="button"
+              variant="secondary"
               onClick={() => {
-                setApiKeyModalOpen(false);
+                setIsEditModalOpen(false);
+                setEditingAdmin(null);
+                resetEditForm();
+              }}
+            >
+              Cancel
+            </AdminButton>
+            <AdminButton type="submit" loading={submittingAction}>
+              Save Changes
+            </AdminButton>
+          </div>
+        </form>
+      </AdminModal>
+
+      {/* ---------- One-Time API Key Modal ---------- */}
+      <AdminModal
+        isOpen={isApiKeyModalOpen}
+        onClose={() => {
+          setIsApiKeyModalOpen(false);
+          setDisplayedApiKey("");
+        }}
+        title="API Key Created"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <div className="rounded-lg border border-amber-700/40 bg-gray-950 p-4">
+            <code className="break-all text-sm text-amber-200">
+              {displayedApiKey}
+            </code>
+          </div>
+
+          <p className="text-center text-xs text-amber-300">
+            This key is shown once. Copy and store it securely.
+          </p>
+
+          <div className="flex justify-end gap-3">
+            <AdminButton icon={Copy} type="button" onClick={handleCopyKey}>
+              Copy Key
+            </AdminButton>
+            <AdminButton
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setIsApiKeyModalOpen(false);
                 setDisplayedApiKey("");
               }}
             >
               Close
-            </Button>
-          </Space>
-        }
-        styles={{
-          content: {
-            backgroundColor: "#1a1a2e",
-            border: "1px solid #c4a35a33",
-          },
-          header: {
-            backgroundColor: "#1a1a2e",
-            borderBottom: "1px solid #c4a35a33",
-          },
-          footer: {
-            backgroundColor: "#1a1a2e",
-            borderTop: "1px solid #c4a35a33",
-          },
-        }}
-      >
-        <div style={{ padding: "16px 0" }}>
-          <div
-            style={{
-              backgroundColor: "#0d0d1a",
-              border: "1px solid #c4a35a44",
-              borderRadius: 8,
-              padding: 16,
-              marginBottom: 16,
-              wordBreak: "break-all",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "'Courier New', Courier, monospace",
-                fontSize: 15,
-                color: "#c4a35a",
-                letterSpacing: "0.5px",
-              }}
-              copyable={{
-                text: displayedApiKey,
-                tooltips: ["Copy", "Copied!"],
-              }}
-            >
-              {displayedApiKey}
-            </Text>
+            </AdminButton>
           </div>
-          <Text
-            type="warning"
-            style={{
-              display: "block",
-              textAlign: "center",
-              fontSize: 13,
-              color: "#faad14",
-            }}
-          >
-            This key will only be shown once. Copy it now and store it securely.
-          </Text>
         </div>
-      </Modal>
+      </AdminModal>
+
+      <ConfirmDialog
+        isOpen={confirmDialog.open}
+        onClose={closeConfirmDialog}
+        onConfirm={confirmDialog.onConfirm || (() => {})}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        loading={submittingAction}
+      />
+
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
+
+      {submittingAction && (
+        <div className="pointer-events-none fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-lg border border-amber-700/50 bg-gray-900/90 px-3 py-2 text-xs text-amber-200 shadow-lg">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Processing...
+        </div>
+      )}
     </div>
   );
 };
