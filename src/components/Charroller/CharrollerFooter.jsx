@@ -1,6 +1,6 @@
 import { FaDiscord, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { config } from "../../config";
-import SocialIcon from "../SocialIcon";
+import SocialIcon from "../shared/SocialIcon";
 import { useTranslation } from "react-i18next";
 
 const CharrollerFooter = () => {

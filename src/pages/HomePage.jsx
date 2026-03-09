@@ -23,7 +23,7 @@ import {
   MainFooter,
   HomePageEventList,
 } from "../components";
-import ParallaxBackground from "../components/ParallaxBackground";
+import ParallaxBackground from "../components/shared/ParallaxBackground";
 import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
 import { config } from "../config";
 
