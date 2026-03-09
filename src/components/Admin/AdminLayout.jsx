@@ -19,6 +19,7 @@ import {
   Settings,
 } from "lucide-react";
 import { clearSession, getLoginData } from "../../utils/auth";
+import { ServerStatus } from "./AdminHeader";
 
 const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -285,6 +286,13 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
           </div>
         </div>
 
+        {/* Server health badge */}
+        {isSidebarOpen && (
+          <div className="px-4 py-2 border-b border-yellow-900/20">
+            <ServerStatus />
+          </div>
+        )}
+
         {/* Toggle Button */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -372,11 +380,14 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
 
       {/* Mobile Header — branding only */}
       <div className="fixed top-0 left-0 right-0 z-50 lg:hidden bg-gray-900/95 border-b border-yellow-900/30 backdrop-blur-sm">
-        <div className="flex items-center gap-2 p-3 sm:p-4">
-          <Castle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
-          <span className="font-bold text-yellow-500 font-cinzel text-sm sm:text-base">
-            EMURPG Admin
-          </span>
+        <div className="flex items-center justify-between p-3 sm:p-4">
+          <div className="flex items-center gap-2">
+            <Castle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
+            <span className="font-bold text-yellow-500 font-cinzel text-sm sm:text-base">
+              EMURPG Admin
+            </span>
+          </div>
+          <ServerStatus />
         </div>
       </div>
 
