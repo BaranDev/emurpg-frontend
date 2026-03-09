@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { LogOut, Bell, RefreshCw, User, Swords } from "lucide-react";
-import { config } from "../../config";
+import { useServerHealth } from "./shared/useServerHealth";
 
 const STATUS_CONFIG = {
   checking: {
@@ -26,32 +25,8 @@ const STATUS_CONFIG = {
   },
 };
 
-const ServerStatus = () => {
-  const [status, setStatus] = useState("checking");
-  const [responseTime, setResponseTime] = useState(null);
-
-  const checkHealth = useCallback(async () => {
-    const start = Date.now();
-    try {
-      const res = await fetch(`${config.backendUrl}/health`, {
-        signal: AbortSignal.timeout(5000),
-        cache: "no-store",
-      });
-      const elapsed = Date.now() - start;
-      setResponseTime(elapsed);
-      setStatus(res.ok ? (elapsed > 800 ? "degraded" : "online") : "degraded");
-    } catch {
-      setStatus("offline");
-      setResponseTime(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    checkHealth();
-    const interval = setInterval(checkHealth, 30000);
-    return () => clearInterval(interval);
-  }, [checkHealth]);
-
+export const ServerStatus = () => {
+  const { status, responseMs } = useServerHealth();
   const { dotClass, label, labelClass } = STATUS_CONFIG[status];
 
   return (
@@ -62,19 +37,19 @@ const ServerStatus = () => {
       <Swords className="h-3.5 w-3.5 flex-shrink-0 text-amber-500" />
       <div className={`h-2 w-2 flex-shrink-0 rounded-full ${dotClass}`} />
       <span className={`font-medium ${labelClass}`}>{label}</span>
-      {responseTime !== null && (
+      {responseMs !== null && (
         <>
           <span className="text-gray-500">·</span>
           <span
             className={
-              responseTime > 800
-                ? "text-amber-400"
-                : responseTime > 400
-                  ? "text-amber-300"
+              responseMs >= 800
+                ? "text-red-400"
+                : responseMs >= 300
+                  ? "text-amber-400"
                   : "text-emerald-400"
             }
           >
-            {responseTime}ms
+            {responseMs}ms
           </span>
         </>
       )}
