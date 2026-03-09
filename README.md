@@ -253,31 +253,31 @@ emurpg-frontend/
 │   │   │   ├── SponsorBenefitCard.jsx # Sponsor benefit card
 │   │   │   ├── SponsorTierCard.jsx    # Sponsorship tier card
 │   │   │   └── SponsorContactCTA.jsx  # Sponsor contact CTA
-│   │   ├── AdminDashboard.jsx         # Legacy admin (fallback)
-│   │   ├── ErrorBoundary.jsx          # React error boundary
-│   │   ├── EventCard.jsx              # Single event preview
-│   │   ├── EventList.jsx              # WebSocket-connected event list
-│   │   ├── EventsFooter.jsx           # Events page footer
-│   │   ├── FireButton.jsx             # CTA with flame animation
-│   │   ├── GameGuideModal.jsx         # Game rules/info modal
-│   │   ├── GameMasterCard.jsx         # GM profile card (lazy loaded)
-│   │   ├── GeneralEventRegistrationForm.jsx # Event-wide registration
-│   │   ├── HomePageEventList.jsx      # Homepage event preview
-│   │   ├── InstagramGrid.jsx          # Instagram embed grid
-│   │   ├── LanguageSelector.jsx       # Language choice modal
-│   │   ├── Login.jsx                  # Legacy login component
-│   │   ├── MainFooter.jsx             # Main site footer
-│   │   ├── Navbar.jsx                 # Primary navigation bar
-│   │   ├── NewsCard.jsx               # News item card
-│   │   ├── NotFound.jsx               # 404 page
-│   │   ├── ParallaxBackground.jsx     # Forest/cloud parallax
-│   │   ├── Privacy.jsx                # Privacy policy page
-│   │   ├── RegistrationForm.jsx       # Player table registration
-│   │   ├── SectionTitle.jsx           # Styled section heading
-│   │   ├── SocialButton.jsx           # Social media link button
-│   │   ├── SocialIcon.jsx             # Small social icon button
-│   │   ├── TableList.jsx              # Game tables with WebSocket
-│   │   └── TestimonialCard.jsx        # Testimonial display
+│   │   ├── layout/                    # Navigation & footer wrappers
+│   │   │   ├── Navbar.jsx             # Primary navigation bar
+│   │   │   ├── MainFooter.jsx         # Main site footer
+│   │   │   ├── BottomNavBar.jsx       # Mobile bottom nav
+│   │   │   └── EventsFooter.jsx       # Events page footer
+│   │   ├── shared/                    # Reusable UI atoms
+│   │   │   ├── SectionTitle.jsx       # Styled section heading
+│   │   │   ├── SocialButton.jsx       # Social media link button
+│   │   │   ├── SocialIcon.jsx         # Small social icon button
+│   │   │   ├── FireButton.jsx         # CTA with flame animation
+│   │   │   ├── ParallaxBackground.jsx # Forest/cloud parallax
+│   │   │   ├── InstagramGrid.jsx      # Instagram embed grid
+│   │   │   ├── LanguageSelector.jsx   # Language choice modal
+│   │   │   └── ErrorBoundary.jsx      # React error boundary
+│   │   ├── events/                    # Events domain components
+│   │   │   ├── EventCard.jsx          # Single event preview
+│   │   │   ├── EventList.jsx          # WebSocket-connected event list
+│   │   │   ├── HomePageEventList.jsx  # Homepage event preview
+│   │   │   ├── RegistrationForm.jsx   # Player table registration
+│   │   │   └── GeneralEventRegistrationForm.jsx # Event-wide registration
+│   │   ├── tables/                    # Tables domain components
+│   │   │   ├── TableList.jsx          # Game tables with WebSocket
+│   │   │   ├── GameMasterCard.jsx     # GM profile card (lazy loaded)
+│   │   │   └── GameGuideModal.jsx     # Game rules/info modal
+│   │   └── index.jsx                  # Barrel — re-exports all shared components
 │   ├── contexts/
 │   │   └── GlobalAudioContext.jsx     # Persistent audio for Charroller
 │   ├── data/
@@ -287,21 +287,23 @@ emurpg-frontend/
 │   ├── locales/
 │   │   ├── en.json                    # English translations
 │   │   └── tr.json                    # Turkish translations
-│   ├── pages/
-│   │   ├── HomePage.jsx               # Landing page
-│   │   ├── EventsPage.jsx             # Events listing
-│   │   ├── TableDetailPage.jsx        # Individual table (WebSocket)
-│   │   ├── CharrollerLandingPage.jsx  # Charroller intro
-│   │   ├── CharrollerPage.jsx         # Character manager
-│   │   ├── EmuconRulesPage.jsx        # EMUCON rules
+│   ├── pages/                         # One file per App.jsx route
+│   │   ├── HomePage.jsx               # /
+│   │   ├── EventsPage.jsx             # /events
+│   │   ├── TableDetailPage.jsx        # /table/:slug
+│   │   ├── EmuconRulesPage.jsx        # /emucon/rules
+│   │   ├── NotFound.jsx               # * (404)
+│   │   ├── Privacy.jsx                # /privacy
+│   │   ├── Admin/
+│   │   │   └── index.jsx              # /admin (auth state + login gate)
+│   │   ├── Charroller/
+│   │   │   ├── Landing.jsx            # /charroller
+│   │   │   └── Manager.jsx            # /charroller/manager
 │   │   └── Emucon/
-│   │       ├── Home.jsx               # EMUCON landing
-│   │       ├── Live.jsx               # Live event board
-│   │       ├── Register.jsx           # EMUCON registration
-│   │       ├── Sponsors.jsx           # Sponsor page
-│   │       ├── ThankYou.jsx           # Post-registration
-│   │       ├── DemoHome.jsx           # Demo EMUCON (no backend)
-│   │       └── DemoLive.jsx           # Demo live board
+│   │       ├── ThankYou.jsx           # /emucon, /emucon/live, /emucon/register/:token
+│   │       ├── Sponsors.jsx           # /emucon/sponsors
+│   │       ├── DemoHome.jsx           # /demo/emucon
+│   │       └── DemoLive.jsx           # /demo/emucon/live
 │   ├── test/
 │   │   ├── setup.js                   # Vitest setup (@testing-library/jest-dom)
 │   │   ├── fixtures/                  # Test mock data
@@ -315,6 +317,9 @@ emurpg-frontend/
 │   └── plans/                         # Design documents & plans
 ├── trash/                             # Archived/deprecated code
 ├── index.html                         # HTML entry point with SEO meta tags
+├── e2e/
+│   └── smoke.spec.js                  # Playwright smoke tests (all 15 routes)
+├── playwright.config.js               # Playwright config (webServer: vite preview)
 ├── vite.config.js                     # Vite + Vitest configuration
 ├── tailwind.config.js                 # Custom theme (colors, fonts, keyframes)
 ├── postcss.config.js                  # PostCSS with Tailwind + Autoprefixer
@@ -335,14 +340,14 @@ All routes are declared in `src/App.jsx` using React Router v6:
 | `/` | `HomePage` | Public | Landing page with team section, events preview, social links |
 | `/events` | `EventsPage` | Public | Full event listing with WebSocket updates |
 | `/table/:slug` | `TableDetailPage` | Public | Individual table details + player registration |
-| `/admin` | `AdminLogin` / `AdminMain` | Protected | Admin dashboard (login-gated) |
+| `/admin` | `AdminPage` | Protected | Admin page — handles login gate, renders `AdminLogin` / `AdminMain` / `EmuconManagerDashboard` based on auth state |
 | `/emucon` | `EmuconThankYou` | Public | EMUCON event page |
 | `/emucon/live` | `EmuconThankYou` | Public | Live event board |
 | `/emucon/sponsors` | `EmuconSponsors` | Public | Sponsor tiers and benefits |
 | `/emucon/rules` | `EmuconRulesPage` | Public | Event rules (bilingual) |
 | `/emucon/register/:token` | `EmuconThankYou` | Token | Token-based event registration |
-| `/charroller` | `CharrollerLandingPage` | Public | Character tool landing (with audio) |
-| `/charroller/manager` | `CharrollerPage` | Public | Character manager (with audio) |
+| `/charroller` | `Charroller/Landing` | Public | Character tool landing (with audio) |
+| `/charroller/manager` | `Charroller/Manager` | Public | Character manager (with audio) |
 | `/demo/emucon` | `EmuconDemoHome` | Public | Demo EMUCON without backend |
 | `/demo/emucon/live` | `EmuconDemoLive` | Public | Demo live board with mock data |
 | `/privacy` | `Privacy` | Public | Privacy policy |
@@ -355,11 +360,12 @@ Charroller routes are wrapped in `<GlobalAudioProvider>` to persist ambient musi
 The application uses React hooks for local state. There is no global state library (Redux, Zustand, etc.). State flows top-down:
 
 ```
-App.jsx (root)
-├── Language: localStorage("selectedLanguage") + i18n.changeLanguage()
+App.jsx (pure router)
+└── onLanguageSwitch callback → Pages → Navbar
+
+pages/Admin/index.jsx (auth owner)
 ├── Auth: localStorage("login", "apiKey") with TTL expiration
-├── Admin Type: "emurpg" | "emucon_manager" (determines dashboard view)
-└── Routes pass onLanguageSwitch callback → Pages → Navbar
+└── Admin Type: "emurpg" | "emucon_manager" (determines dashboard view)
 ```
 
 **localStorage Keys:**
@@ -374,16 +380,19 @@ App.jsx (root)
 
 ### Component Organization
 
-Components follow a modular structure with domain-specific subdirectories:
+Components follow a domain-based subfolder structure. All shared components are re-exported from `src/components/index.jsx`.
 
 ```
 components/
-├── Admin/           # Admin panel components (protected)
-│   ├── Emucon/      # EMUCON-specific admin components
-│   └── shared/      # Reusable admin UI primitives
+├── layout/          # Navbar, MainFooter, BottomNavBar, EventsFooter
+├── shared/          # UI atoms: SectionTitle, FireButton, ParallaxBackground, etc.
+├── events/          # EventCard, EventList, RegistrationForm, etc.
+├── tables/          # TableList, GameMasterCard, GameGuideModal
 ├── Charroller/      # Character sheet tool components
-├── Emucon/          # Public EMUCON event components
-└── *.jsx            # Shared components (Navbar, Footer, etc.)
+├── TavernRun/       # Tavern Run scenario components
+└── Admin/           # Admin panel components
+    ├── Emucon/      # EMUCON-specific admin components
+    └── shared/      # Reusable admin UI primitives
 ```
 
 **Standard component pattern:**
@@ -816,7 +825,6 @@ The URL protocol (`ws://` or `wss://`) is inferred from the `backendUrl` (`http:
 | `ReportsPanel` | Reports and data export |
 | `AnalyticsPanel` | Dashboard metrics and charts |
 | `AdminAccountsPanel` | Admin account CRUD |
-| `AdminDashboard` | Legacy admin panel (fallback when `useNewAdmin=false`) |
 
 **Admin Shared Primitives:**
 
@@ -1000,9 +1008,10 @@ Provides mock API responses for EMUCON demo routes (`/demo/emucon/*`), enabling 
 **Running Tests:**
 
 ```bash
-npm run test         # Run once
-npm run test:watch   # Watch mode
+npm run test         # Run unit tests once
+npm run test:watch   # Unit tests in watch mode
 npm run test:ui      # Browser-based Vitest dashboard
+npm run test:e2e     # Playwright E2E smoke tests (requires built dist/)
 ```
 
 **Vitest Configuration (in `vite.config.js`):**
@@ -1016,7 +1025,16 @@ test: {
 }
 ```
 
-Test coverage is currently minimal, focused on Charroller edge cases.
+**E2E Smoke Tests (Playwright):**
+
+`e2e/smoke.spec.js` covers all 15 routes, verifying no React error boundaries trigger and the 404 page renders for unknown routes. Configured in `playwright.config.js` with `webServer: vite build && vite preview`.
+
+**CI Pipeline (`.github/workflows/ci.yml`):**
+
+Three jobs run on every PR and push to `main`:
+1. `unit-tests` — `npm test`
+2. `build` — `npm run build` (uploads `dist/` as artifact)
+3. `e2e` — Playwright smoke tests against the build artifact
 
 ---
 
@@ -1087,21 +1105,35 @@ Test coverage is currently minimal, focused on Charroller edge cases.
 
 4. **Global CSS base rules** -- `src/index.css` applies `text-yellow-500` to all `h1/h2/h3` and `text-yellow-400` to all `a` elements. Override explicitly when needed (e.g., admin panels, Charroller, EMUCON pages).
 
-5. **Admin toggle** -- `useNewAdmin = true` in `App.jsx` switches between `<AdminMain>` (new sidebar-based) and `<AdminDashboard>` (legacy monolith). Both exist in the codebase.
+5. **EMUCON routes currently redirect to ThankYou** -- `/emucon` and `/emucon/live` both render `<EmuconThankYou>` (event ended). The full pages (`Emucon/Home`, `Emucon/Live`) are available but not wired to production routes.
 
-6. **EMUCON routes currently redirect to ThankYou** -- `/emucon` and `/emucon/live` both render `<EmuconThankYou>` (event ended). The full pages (`Emucon/Home`, `Emucon/Live`) are available but not wired to production routes.
+6. **WebSocket URL** -- derived from `config.backendUrl`. The browser automatically converts `http://` to `ws://` and `https://` to `wss://` when creating `new WebSocket(url)`.
 
-7. **WebSocket URL** -- derived from `config.backendUrl`. The browser automatically converts `http://` to `ws://` and `https://` to `wss://` when creating `new WebSocket(url)`.
+7. **R2 upload requires backend support** -- frontend upload widgets depend on backend endpoints (`/api/admin/games/upload`, etc.) and the `VITE_ENABLE_R2` env var.
 
-8. **R2 upload requires backend support** -- frontend upload widgets depend on backend endpoints (`/api/admin/games/upload`, etc.) and the `VITE_ENABLE_R2` env var.
+8. **Test coverage** -- unit tests cover Charroller edge cases only. New pages must have an E2E smoke test entry in `e2e/smoke.spec.js`; new components with logic must have a unit test.
 
-9. **No test coverage target** -- test suite is minimal. Charroller results are the only tested component.
-
-10. **`config.jsx` RPG quotes** -- contains 200+ themed quotes used for the dice roll feature on the homepage. This is intentional; the quotes are a core feature, not an artifact.
+9. **`config.jsx` RPG quotes** -- contains 200+ themed quotes used for the dice roll feature on the homepage. This is intentional; the quotes are a core feature, not an artifact.
 
 ---
 
 ## Changelog
+
+### [Unreleased] — 2026-03-09
+
+#### Refactor
+- **Component reorganization**: `src/components/` split into `layout/`, `shared/`, `events/`, `tables/` subfolders with a single barrel at `components/index.jsx`
+- **Page-based architecture**: every route maps to exactly one file in `pages/`; `App.jsx` is now a pure router with no state or handlers
+- **Admin extracted**: auth state and login gate moved from `App.jsx` into `pages/Admin/index.jsx`
+- **Charroller pages grouped**: `pages/Charroller/Landing.jsx` and `pages/Charroller/Manager.jsx`
+- **Dead code removed**: `AdminDashboard.jsx` deleted (`useNewAdmin` was hardcoded `true`)
+
+#### CI / Testing
+- **Playwright E2E smoke tests**: `e2e/smoke.spec.js` covers all 15 routes including 404 fallback
+- **CI pipeline**: `.github/workflows/ci.yml` — unit tests → build → E2E smoke on every PR
+- **CLAUDE.md**: agent workspace instructions requiring tests for all new features/pages
+
+---
 
 ### [Unreleased] — 2026-03-08
 
