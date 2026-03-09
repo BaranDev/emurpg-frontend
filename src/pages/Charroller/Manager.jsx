@@ -11,8 +11,8 @@ import {
   TavernBackground,
   LevelUpChoices,
   SettingsPanel,
-} from "../components";
-import { config } from "../config";
+} from "../../components";
+import { config } from "../../config";
 import { Upload, Sparkles, Users, X, Scroll, Settings } from "lucide-react";
 import {
   saveCharacter,
@@ -20,7 +20,7 @@ import {
   getSettings,
   getCharacters,
   deleteCharacter,
-} from "../utils/characterStorage";
+} from "../../utils/characterStorage";
 
 /**
  * CharrollerPage - Character Manager with Sidebar Layout

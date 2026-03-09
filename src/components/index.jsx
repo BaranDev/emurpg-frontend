@@ -1,4 +1,3 @@
-export { default as AdminDashboard } from "./AdminDashboard";
 export { default as EventList } from "./EventList";
 export { default as EventsFooter } from "./EventsFooter";
 export { default as Navbar } from "./Navbar";
