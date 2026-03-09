@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import TableList from "./TableList";
+import TableList from "../tables/TableList";
 import GeneralEventRegistrationForm from "./GeneralEventRegistrationForm";
-import { config } from "../config";
+import { config } from "../../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
 

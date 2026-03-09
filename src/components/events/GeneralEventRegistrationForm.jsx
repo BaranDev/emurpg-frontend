@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { config } from "../config";
+import { config } from "../../config";
 import {
   FaDiceD20,
   FaCheck,
