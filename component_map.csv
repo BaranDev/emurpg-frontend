@@ -1,0 +1,265 @@
+ComponentFile,ComponentPath,Folder,UsedIn,TotalUsageCount
+App.jsx,App.jsx,(src root),index.jsx,1
+index.jsx,assets/member_photos/index.jsx,assets/member_photos,components/tables/GameMasterCard.jsx,1
+AdminAccountsPanel.jsx,components/Admin/AdminAccountsPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,1
+AdminHeader.jsx,components/Admin/AdminHeader.jsx,components/Admin,components/Admin/index.jsx,1
+AdminLayout.jsx,components/Admin/AdminLayout.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+AdminLayout.jsx,components/Admin/AdminLayout.jsx,components/Admin,components/Admin/index.jsx,2
+AdminLogin.jsx,components/Admin/AdminLogin.jsx,components/Admin,components/Admin/index.jsx,1
+AdminMain.jsx,components/Admin/AdminMain.jsx,components/Admin,components/Admin/index.jsx,1
+AdminSidebar.jsx,components/Admin/AdminSidebar.jsx,components/Admin,components/Admin/index.jsx,1
+AnalyticsPanel.jsx,components/Admin/AnalyticsPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+AnalyticsPanel.jsx,components/Admin/AnalyticsPanel.jsx,components/Admin,components/Admin/index.jsx,2
+EmuconManagerDashboard.jsx,components/Admin/Emucon/EmuconManagerDashboard.jsx,components/Admin/Emucon,components/Admin/Emucon/index.jsx,1
+index.jsx,components/Admin/Emucon/index.jsx,components/Admin/Emucon,components/Admin/index.jsx,2
+index.jsx,components/Admin/Emucon/index.jsx,components/Admin/Emucon,pages/Admin/index.jsx,2
+EmuconAdminPanel.jsx,components/Admin/EmuconAdminPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+EmuconAdminPanel.jsx,components/Admin/EmuconAdminPanel.jsx,components/Admin,components/Admin/index.jsx,2
+EmuconManagersPanel.jsx,components/Admin/EmuconManagersPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+EmuconManagersPanel.jsx,components/Admin/EmuconManagersPanel.jsx,components/Admin,components/Admin/index.jsx,2
+EmuconSchedulePanel.jsx,components/Admin/EmuconSchedulePanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+EmuconSchedulePanel.jsx,components/Admin/EmuconSchedulePanel.jsx,components/Admin,components/Admin/index.jsx,2
+EventsAdminPanel.jsx,components/Admin/EventsAdminPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+EventsAdminPanel.jsx,components/Admin/EventsAdminPanel.jsx,components/Admin,components/Admin/index.jsx,2
+GamesLibraryPanel.jsx,components/Admin/GamesLibraryPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+GamesLibraryPanel.jsx,components/Admin/GamesLibraryPanel.jsx,components/Admin,components/Admin/index.jsx,2
+RegistrationsPanel.jsx,components/Admin/RegistrationsPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+RegistrationsPanel.jsx,components/Admin/RegistrationsPanel.jsx,components/Admin,components/Admin/index.jsx,2
+ReportsPanel.jsx,components/Admin/ReportsPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+ReportsPanel.jsx,components/Admin/ReportsPanel.jsx,components/Admin,components/Admin/index.jsx,2
+TablesAdminPanel.jsx,components/Admin/TablesAdminPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,2
+TablesAdminPanel.jsx,components/Admin/TablesAdminPanel.jsx,components/Admin,components/Admin/index.jsx,2
+TeamMembersPanel.jsx,components/Admin/TeamMembersPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,1
+ThemesAdminPanel.jsx,components/Admin/ThemesAdminPanel.jsx,components/Admin,components/Admin/AdminMain.jsx,1
+index.jsx,components/Admin/index.jsx,components/Admin,pages/Admin/index.jsx,1
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/AnalyticsPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/Emucon/EmuconManagerDashboard.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/EmuconAdminPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/EmuconManagersPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/EmuconSchedulePanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/EventsAdminPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/GamesLibraryPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/RegistrationsPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/ReportsPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/TablesAdminPanel.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/index.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/shared/ConfirmDialog.jsx,13
+AdminButton.jsx,components/Admin/shared/AdminButton.jsx,components/Admin/shared,components/Admin/shared/index.jsx,13
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/Emucon/EmuconManagerDashboard.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/EmuconAdminPanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/EmuconManagersPanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/EmuconSchedulePanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/EventsAdminPanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/GamesLibraryPanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/RegistrationsPanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/TablesAdminPanel.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/index.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/shared/ConfirmDialog.jsx,11
+AdminModal.jsx,components/Admin/shared/AdminModal.jsx,components/Admin/shared,components/Admin/shared/index.jsx,11
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/EmuconAdminPanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/EmuconManagersPanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/EmuconSchedulePanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/EventsAdminPanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/GamesLibraryPanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/RegistrationsPanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/TablesAdminPanel.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/index.jsx,9
+ConfirmDialog.jsx,components/Admin/shared/ConfirmDialog.jsx,components/Admin/shared,components/Admin/shared/index.jsx,9
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/AdminMain.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/AnalyticsPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/Emucon/EmuconManagerDashboard.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/EmuconAdminPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/EmuconManagersPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/EmuconSchedulePanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/EventsAdminPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/GamesLibraryPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/RegistrationsPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/TablesAdminPanel.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/index.jsx,12
+LoadingSpinner.jsx,components/Admin/shared/LoadingSpinner.jsx,components/Admin/shared,components/Admin/shared/index.jsx,12
+Toast.jsx,components/Admin/shared/Toast.jsx,components/Admin/shared,components/Admin/shared/index.jsx,1
+index.jsx,components/Admin/shared/index.jsx,components/Admin/shared,components/Admin/AdminAccountsPanel.jsx,3
+index.jsx,components/Admin/shared/index.jsx,components/Admin/shared,components/Admin/TeamMembersPanel.jsx,3
+index.jsx,components/Admin/shared/index.jsx,components/Admin/shared,components/Admin/ThemesAdminPanel.jsx,3
+CharacterCard.jsx,components/Charroller/CharacterCard.jsx,components/Charroller,components/Charroller/CharrollerManager.jsx,2
+CharacterCard.jsx,components/Charroller/CharacterCard.jsx,components/Charroller,components/Charroller/index.jsx,2
+CharrollerBackground.jsx,components/Charroller/CharrollerBackground.jsx,components/Charroller,components/Charroller/index.jsx,1
+CharrollerDescribe.jsx,components/Charroller/CharrollerDescribe.jsx,components/Charroller,components/Charroller/index.jsx,1
+CharrollerFooter.jsx,components/Charroller/CharrollerFooter.jsx,components/Charroller,components/Charroller/index.jsx,1
+CharrollerManager.jsx,components/Charroller/CharrollerManager.jsx,components/Charroller,components/Charroller/index.jsx,1
+CharrollerNavbar.jsx,components/Charroller/CharrollerNavbar.jsx,components/Charroller,components/Charroller/index.jsx,1
+CharrollerResults.jsx,components/Charroller/CharrollerResults.jsx,components/Charroller,components/Charroller/index.jsx,4
+CharrollerResults.jsx,components/Charroller/CharrollerResults.jsx,components/Charroller,test/CharrollerResults.high.test.jsx,4
+CharrollerResults.jsx,components/Charroller/CharrollerResults.jsx,components/Charroller,test/CharrollerResults.low.test.jsx,4
+CharrollerResults.jsx,components/Charroller/CharrollerResults.jsx,components/Charroller,test/CharrollerResults.medium.test.jsx,4
+CharrollerSystemSelector.jsx,components/Charroller/CharrollerSystemSelector.jsx,components/Charroller,components/Charroller/index.jsx,1
+CharrollerUpload.jsx,components/Charroller/CharrollerUpload.jsx,components/Charroller,components/Charroller/index.jsx,1
+DiceRoller.jsx,components/Charroller/DiceRoller.jsx,components/Charroller,components/Charroller/CharrollerResults.jsx,2
+DiceRoller.jsx,components/Charroller/DiceRoller.jsx,components/Charroller,components/Charroller/index.jsx,2
+LevelUpChoices.jsx,components/Charroller/LevelUpChoices.jsx,components/Charroller,components/Charroller/index.jsx,1
+SettingsPanel.jsx,components/Charroller/SettingsPanel.jsx,components/Charroller,components/Charroller/CharrollerManager.jsx,2
+SettingsPanel.jsx,components/Charroller/SettingsPanel.jsx,components/Charroller,components/Charroller/index.jsx,2
+TavernBackground.jsx,components/Charroller/TavernBackground.jsx,components/Charroller,components/Charroller/index.jsx,1
+TavernPlayer.jsx,components/Charroller/TavernPlayer.jsx,components/Charroller,components/Charroller/CharrollerManager.jsx,2
+TavernPlayer.jsx,components/Charroller/TavernPlayer.jsx,components/Charroller,components/Charroller/index.jsx,2
+index.jsx,components/Charroller/index.jsx,components/Charroller,components/index.jsx,1
+EmuconContactGrid.jsx,components/Emucon/EmuconContactGrid.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconContentCard.jsx,components/Emucon/EmuconContentCard.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconDivider.jsx,components/Emucon/EmuconDivider.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconFeatureCard.jsx,components/Emucon/EmuconFeatureCard.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconFooter.jsx,components/Emucon/EmuconFooter.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconHero.jsx,components/Emucon/EmuconHero.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconContactGrid.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconContentCard.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconDivider.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconFooter.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconHero.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconNavbar.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconSchedule.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconSectionHeader.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/EmuconStatsRow.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/SponsorContactCTA.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/SponsorHero.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/SponsorTierCard.jsx,13
+EmuconIcons.jsx,components/Emucon/EmuconIcons.jsx,components/Emucon,components/Emucon/index.jsx,13
+EmuconNavbar.jsx,components/Emucon/EmuconNavbar.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconParallax.jsx,components/Emucon/EmuconParallax.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconSchedule.jsx,components/Emucon/EmuconSchedule.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconSectionHeader.jsx,components/Emucon/EmuconSectionHeader.jsx,components/Emucon,components/Emucon/index.jsx,1
+EmuconStatsRow.jsx,components/Emucon/EmuconStatsRow.jsx,components/Emucon,components/Emucon/index.jsx,1
+LiveCornerCarousel.jsx,components/Emucon/LiveCornerCarousel.jsx,components/Emucon,components/Emucon/index.jsx,1
+SponsorBenefitCard.jsx,components/Emucon/SponsorBenefitCard.jsx,components/Emucon,components/Emucon/index.jsx,1
+SponsorContactCTA.jsx,components/Emucon/SponsorContactCTA.jsx,components/Emucon,components/Emucon/index.jsx,1
+SponsorHero.jsx,components/Emucon/SponsorHero.jsx,components/Emucon,components/Emucon/index.jsx,1
+SponsorTierCard.jsx,components/Emucon/SponsorTierCard.jsx,components/Emucon,components/Emucon/index.jsx,1
+index.jsx,components/Emucon/index.jsx,components/Emucon,pages/Emucon/DemoHome.jsx,3
+index.jsx,components/Emucon/index.jsx,components/Emucon,pages/Emucon/Sponsors.jsx,3
+index.jsx,components/Emucon/index.jsx,components/Emucon,pages/Emucon/ThankYou.jsx,3
+EndingScreen.jsx,components/TavernRun/EndingScreen.jsx,components/TavernRun,components/TavernRun/TavernRun.jsx,1
+ScenarioSelect.jsx,components/TavernRun/ScenarioSelect.jsx,components/TavernRun,components/TavernRun/TavernRun.jsx,1
+SceneCard.jsx,components/TavernRun/SceneCard.jsx,components/TavernRun,components/TavernRun/TavernRun.jsx,1
+TavernRun.jsx,components/TavernRun/TavernRun.jsx,components/TavernRun,components/TavernRun/index.jsx,1
+gameEngine.js,components/TavernRun/gameEngine.js,components/TavernRun,components/TavernRun/TavernRun.jsx,1
+index.jsx,components/TavernRun/index.jsx,components/TavernRun,components/index.jsx,2
+index.jsx,components/TavernRun/index.jsx,components/TavernRun,pages/HomePage.jsx,2
+EventCard.jsx,components/events/EventCard.jsx,components/events,components/events/HomePageEventList.jsx,2
+EventCard.jsx,components/events/EventCard.jsx,components/events,components/index.jsx,2
+EventList.jsx,components/events/EventList.jsx,components/events,components/index.jsx,1
+GeneralEventRegistrationForm.jsx,components/events/GeneralEventRegistrationForm.jsx,components/events,components/events/EventList.jsx,2
+GeneralEventRegistrationForm.jsx,components/events/GeneralEventRegistrationForm.jsx,components/events,components/index.jsx,2
+HomePageEventList.jsx,components/events/HomePageEventList.jsx,components/events,components/index.jsx,1
+RegistrationForm.jsx,components/events/RegistrationForm.jsx,components/events,components/index.jsx,2
+RegistrationForm.jsx,components/events/RegistrationForm.jsx,components/events,pages/TableDetailPage.jsx,2
+index.jsx,components/index.jsx,components,pages/Charroller/Landing.jsx,4
+index.jsx,components/index.jsx,components,pages/Charroller/Manager.jsx,4
+index.jsx,components/index.jsx,components,pages/EventsPage.jsx,4
+index.jsx,components/index.jsx,components,pages/HomePage.jsx,4
+BottomNavBar.jsx,components/layout/BottomNavBar.jsx,components/layout,App.jsx,2
+BottomNavBar.jsx,components/layout/BottomNavBar.jsx,components/layout,components/index.jsx,2
+EventsFooter.jsx,components/layout/EventsFooter.jsx,components/layout,components/index.jsx,1
+MainFooter.jsx,components/layout/MainFooter.jsx,components/layout,components/index.jsx,1
+Navbar.jsx,components/layout/Navbar.jsx,components/layout,components/index.jsx,1
+ErrorBoundary.jsx,components/shared/ErrorBoundary.jsx,components/shared,components/index.jsx,1
+FireButton.jsx,components/shared/FireButton.jsx,components/shared,components/index.jsx,1
+InstagramGrid.jsx,components/shared/InstagramGrid.jsx,components/shared,components/index.jsx,1
+LanguageSelector.jsx,components/shared/LanguageSelector.jsx,components/shared,components/index.jsx,1
+ParallaxBackground.jsx,components/shared/ParallaxBackground.jsx,components/shared,components/index.jsx,2
+ParallaxBackground.jsx,components/shared/ParallaxBackground.jsx,components/shared,pages/HomePage.jsx,2
+SectionTitle.jsx,components/shared/SectionTitle.jsx,components/shared,components/index.jsx,1
+SocialButton.jsx,components/shared/SocialButton.jsx,components/shared,components/index.jsx,1
+SocialIcon.jsx,components/shared/SocialIcon.jsx,components/shared,components/Charroller/CharrollerFooter.jsx,3
+SocialIcon.jsx,components/shared/SocialIcon.jsx,components/shared,components/index.jsx,3
+SocialIcon.jsx,components/shared/SocialIcon.jsx,components/shared,components/layout/MainFooter.jsx,3
+GameGuideModal.jsx,components/tables/GameGuideModal.jsx,components/tables,components/index.jsx,2
+GameGuideModal.jsx,components/tables/GameGuideModal.jsx,components/tables,components/tables/TableList.jsx,2
+GameMasterCard.jsx,components/tables/GameMasterCard.jsx,components/tables,components/index.jsx,1
+TableList.jsx,components/tables/TableList.jsx,components/tables,components/events/EventList.jsx,2
+TableList.jsx,components/tables/TableList.jsx,components/tables,components/index.jsx,2
+config.jsx,config.jsx,(src root),components/Admin/AdminAccountsPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/AdminHeader.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/AdminLogin.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/AdminMain.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/AnalyticsPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/Emucon/EmuconManagerDashboard.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/EmuconAdminPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/EmuconManagersPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/EmuconSchedulePanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/EventsAdminPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/GamesLibraryPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/RegistrationsPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/ReportsPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/TablesAdminPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/TeamMembersPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Admin/ThemesAdminPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Charroller/CharrollerFooter.jsx,35
+config.jsx,config.jsx,(src root),components/Charroller/CharrollerManager.jsx,35
+config.jsx,config.jsx,(src root),components/Charroller/SettingsPanel.jsx,35
+config.jsx,config.jsx,(src root),components/Emucon/EmuconSchedule.jsx,35
+config.jsx,config.jsx,(src root),components/Emucon/LiveCornerCarousel.jsx,35
+config.jsx,config.jsx,(src root),components/TavernRun/ScenarioSelect.jsx,35
+config.jsx,config.jsx,(src root),components/events/EventList.jsx,35
+config.jsx,config.jsx,(src root),components/events/GeneralEventRegistrationForm.jsx,35
+config.jsx,config.jsx,(src root),components/events/HomePageEventList.jsx,35
+config.jsx,config.jsx,(src root),components/events/RegistrationForm.jsx,35
+config.jsx,config.jsx,(src root),components/layout/EventsFooter.jsx,35
+config.jsx,config.jsx,(src root),components/layout/MainFooter.jsx,35
+config.jsx,config.jsx,(src root),components/tables/GameMasterCard.jsx,35
+config.jsx,config.jsx,(src root),components/tables/TableList.jsx,35
+config.jsx,config.jsx,(src root),contexts/GlobalAudioContext.jsx,35
+config.jsx,config.jsx,(src root),pages/Charroller/Manager.jsx,35
+config.jsx,config.jsx,(src root),pages/Emucon/DemoHome.jsx,35
+config.jsx,config.jsx,(src root),pages/HomePage.jsx,35
+config.jsx,config.jsx,(src root),pages/TableDetailPage.jsx,35
+GlobalAudioContext.jsx,contexts/GlobalAudioContext.jsx,contexts,App.jsx,4
+GlobalAudioContext.jsx,contexts/GlobalAudioContext.jsx,contexts,components/Charroller/CharrollerNavbar.jsx,4
+GlobalAudioContext.jsx,contexts/GlobalAudioContext.jsx,contexts,components/Charroller/TavernPlayer.jsx,4
+GlobalAudioContext.jsx,contexts/GlobalAudioContext.jsx,contexts,pages/Charroller/Landing.jsx,4
+emuconMockData.js,data/emuconMockData.js,data,pages/Emucon/DemoLive.jsx,1
+scenarioLoader.js,data/tavern_run_scenarios/scenarioLoader.js,data/tavern_run_scenarios,components/TavernRun/TavernRun.jsx,1
+useToast.js,hooks/useToast.js,hooks,components/Admin/AdminAccountsPanel.jsx,3
+useToast.js,hooks/useToast.js,hooks,components/Admin/TeamMembersPanel.jsx,3
+useToast.js,hooks/useToast.js,hooks,components/Admin/ThemesAdminPanel.jsx,3
+i18n.js,i18n.js,(src root),App.jsx,2
+i18n.js,i18n.js,(src root),test/HomePage.language-toggle.test.jsx,2
+index.jsx,index.jsx,(src root),(UNUSED),0
+index.jsx,pages/Admin/index.jsx,pages/Admin,App.jsx,1
+Landing.jsx,pages/Charroller/Landing.jsx,pages/Charroller,App.jsx,1
+Manager.jsx,pages/Charroller/Manager.jsx,pages/Charroller,App.jsx,1
+DemoHome.jsx,pages/Emucon/DemoHome.jsx,pages/Emucon,App.jsx,1
+DemoLive.jsx,pages/Emucon/DemoLive.jsx,pages/Emucon,App.jsx,1
+Sponsors.jsx,pages/Emucon/Sponsors.jsx,pages/Emucon,App.jsx,1
+ThankYou.jsx,pages/Emucon/ThankYou.jsx,pages/Emucon,App.jsx,1
+EmuconRulesPage.jsx,pages/EmuconRulesPage.jsx,pages,App.jsx,1
+EventsPage.jsx,pages/EventsPage.jsx,pages,App.jsx,1
+HomePage.jsx,pages/HomePage.jsx,pages,App.jsx,2
+HomePage.jsx,pages/HomePage.jsx,pages,test/HomePage.language-toggle.test.jsx,2
+NotFound.jsx,pages/NotFound.jsx,pages,App.jsx,1
+Privacy.jsx,pages/Privacy.jsx,pages,App.jsx,1
+TableDetailPage.jsx,pages/TableDetailPage.jsx,pages,App.jsx,1
+CharrollerResults.high.test.jsx,test/CharrollerResults.high.test.jsx,test,(UNUSED),0
+CharrollerResults.low.test.jsx,test/CharrollerResults.low.test.jsx,test,(UNUSED),0
+CharrollerResults.medium.test.jsx,test/CharrollerResults.medium.test.jsx,test,(UNUSED),0
+HomePage.language-toggle.test.jsx,test/HomePage.language-toggle.test.jsx,test,(UNUSED),0
+charroller.js,test/fixtures/charroller.js,test/fixtures,test/CharrollerResults.high.test.jsx,3
+charroller.js,test/fixtures/charroller.js,test/fixtures,test/CharrollerResults.low.test.jsx,3
+charroller.js,test/fixtures/charroller.js,test/fixtures,test/CharrollerResults.medium.test.jsx,3
+setup.js,test/setup.js,test,(UNUSED),0
+auth.js,utils/auth.js,utils,components/Admin/AdminAccountsPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/AdminLayout.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/AdminLogin.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/AdminMain.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/AnalyticsPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/EmuconAdminPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/EmuconSchedulePanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/EventsAdminPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/GamesLibraryPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/RegistrationsPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/ReportsPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/TablesAdminPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/TeamMembersPanel.jsx,14
+auth.js,utils/auth.js,utils,components/Admin/ThemesAdminPanel.jsx,14
+characterStorage.js,utils/characterStorage.js,utils,components/Charroller/CharrollerManager.jsx,5
+characterStorage.js,utils/characterStorage.js,utils,components/Charroller/CharrollerResults.jsx,5
+characterStorage.js,utils/characterStorage.js,utils,components/Charroller/SettingsPanel.jsx,5
+characterStorage.js,utils/characterStorage.js,utils,contexts/GlobalAudioContext.jsx,5
+characterStorage.js,utils/characterStorage.js,utils,pages/Charroller/Manager.jsx,5

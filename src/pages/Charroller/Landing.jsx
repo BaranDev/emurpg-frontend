@@ -18,9 +18,9 @@ import {
   CharrollerNavbar,
   TavernPlayer,
   TavernBackground,
-} from "../components";
-import { useGlobalAudio } from "../contexts/GlobalAudioContext";
-import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
+} from "../../components";
+import { useGlobalAudio } from "../../contexts/GlobalAudioContext";
+import emurpgLogo from "../../assets/logo/LOGO_WHITE.png";
 
 /**
  * CharrollerLandingPage - Introduction/landing page for Charroller

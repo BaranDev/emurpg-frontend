@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";import EventCard from "./EventCard";
 import { motion } from "framer-motion";
-import { config } from "../config";
+import { config } from "../../config";
 import { FaDragon } from "react-icons/fa";
 
 const HomePageEventList = () => {

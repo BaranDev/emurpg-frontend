@@ -25,8 +25,8 @@ const SOCIAL_LINKS = [
   { key: "youtube", Icon: FaYoutube },
 ];
 
-import { config } from "../config";
-import * as MemberPhotos from "../assets/member_photos";
+import { config } from "../../config";
+import * as MemberPhotos from "../../assets/member_photos";
 
 const GameMasterCard = ({
   name,

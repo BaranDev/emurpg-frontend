@@ -1,5 +1,5 @@
 import { FaDiscord, FaWhatsapp, FaInstagram, FaLinkedin } from "react-icons/fa";
-import { config } from "../config";
+import { config } from "../../config";
 const Footer = () => {
   return (
     <footer className="bg-gray-800 border-t-2 border-yellow-600 py-2 mt-auto">

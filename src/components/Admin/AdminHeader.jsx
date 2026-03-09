@@ -1,5 +1,86 @@
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import { LogOut, Bell, RefreshCw, User } from "lucide-react";
+import { LogOut, Bell, RefreshCw, User, Swords } from "lucide-react";
+import { config } from "../../config";
+
+const STATUS_CONFIG = {
+  checking: {
+    dotClass: "bg-amber-400 animate-pulse",
+    label: "Checking Realm...",
+    labelClass: "text-amber-400",
+  },
+  online: {
+    dotClass: "bg-emerald-500",
+    label: "Realm Online",
+    labelClass: "text-emerald-400",
+  },
+  degraded: {
+    dotClass: "bg-amber-500 animate-pulse",
+    label: "Realm Strained",
+    labelClass: "text-amber-400",
+  },
+  offline: {
+    dotClass: "bg-red-500",
+    label: "Realm Unreachable",
+    labelClass: "text-red-400",
+  },
+};
+
+const ServerStatus = () => {
+  const [status, setStatus] = useState("checking");
+  const [responseTime, setResponseTime] = useState(null);
+
+  const checkHealth = useCallback(async () => {
+    const start = Date.now();
+    try {
+      const res = await fetch(`${config.backendUrl}/health`, {
+        signal: AbortSignal.timeout(5000),
+        cache: "no-store",
+      });
+      const elapsed = Date.now() - start;
+      setResponseTime(elapsed);
+      setStatus(res.ok ? (elapsed > 800 ? "degraded" : "online") : "degraded");
+    } catch {
+      setStatus("offline");
+      setResponseTime(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkHealth();
+    const interval = setInterval(checkHealth, 30000);
+    return () => clearInterval(interval);
+  }, [checkHealth]);
+
+  const { dotClass, label, labelClass } = STATUS_CONFIG[status];
+
+  return (
+    <div
+      className="flex items-center gap-2 rounded-md border border-amber-800/40 bg-gray-800/80 px-3 py-1.5 text-xs"
+      title="API server health — checked every 30s"
+    >
+      <Swords className="h-3.5 w-3.5 flex-shrink-0 text-amber-500" />
+      <div className={`h-2 w-2 flex-shrink-0 rounded-full ${dotClass}`} />
+      <span className={`font-medium ${labelClass}`}>{label}</span>
+      {responseTime !== null && (
+        <>
+          <span className="text-gray-500">·</span>
+          <span
+            className={
+              responseTime > 800
+                ? "text-amber-400"
+                : responseTime > 400
+                  ? "text-amber-300"
+                  : "text-emerald-400"
+            }
+          >
+            {responseTime}ms
+          </span>
+        </>
+      )}
+    </div>
+  );
+};
 
 const AdminHeader = ({
   username,
@@ -22,10 +103,11 @@ const AdminHeader = ({
   return (
     <header className="sticky top-0 z-30 border-b border-amber-900/30 bg-gradient-to-r from-gray-900/95 via-gray-900/95 to-gray-950/95 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between px-6">
-        {/* Left side - Page title area (can be customized) */}
-        <div className="flex items-center gap-4">
+        {/* Left side - Server status + last sync */}
+        <div className="flex items-center gap-3">
+          <ServerStatus />
           {adminType === "emurpg" && lastSyncTime && (
-            <div className="flex items-center gap-2 rounded-lg border border-amber-900/30 bg-gray-900/50 px-3 py-1.5 text-xs text-amber-400/70">
+            <div className="hidden items-center gap-2 rounded-lg border border-amber-900/30 bg-gray-900/50 px-3 py-1.5 text-xs text-amber-400/70 sm:flex">
               <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
               Synced: {formatLastSync(lastSyncTime)}
             </div>

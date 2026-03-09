@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import RegistrationForm from "../components/RegistrationForm";
+import RegistrationForm from "../components/events/RegistrationForm";
 import { config } from "../config";
 import { FaArrowAltCircleLeft, FaDiceD20 } from "react-icons/fa";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa6";
