@@ -17,7 +17,7 @@ export function useServerHealth() {
       setResponseMs(elapsed);
       setLastChecked(new Date());
       if (!res.ok || elapsed >= 800) {
-        setStatus("degraded");
+        setStatus("offline");
       } else if (elapsed >= 300) {
         setStatus("degraded");
       } else {
