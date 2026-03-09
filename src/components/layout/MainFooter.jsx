@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { FaDiscord, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
-import { config } from "../config";
-import SocialIcon from "./shared/SocialIcon";
+import { config } from "../../config";
+import SocialIcon from "../shared/SocialIcon";
 
 export default class MainFooter extends Component {
   render() {

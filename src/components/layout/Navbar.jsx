@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaGithub, FaGlobe } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import emurpgLogo from "../assets/logo/LOGO_DARKGRAY.png";
+import emurpgLogo from "../../assets/logo/LOGO_DARKGRAY.png";
 
 const Navbar = ({
   buttons = [],

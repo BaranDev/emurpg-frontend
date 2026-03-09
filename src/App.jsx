@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { GlobalAudioProvider } from "./contexts/GlobalAudioContext";
-import BottomNavBar from "./components/BottomNavBar";
+import BottomNavBar from "./components/layout/BottomNavBar";
 
 // Pages
 import HomePage from "./pages/HomePage";
