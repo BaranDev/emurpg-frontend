@@ -4,7 +4,8 @@ import AdminLayout from "./AdminLayout";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
-import { Calendar, Users, Table2, Clock, Sparkles } from "lucide-react";
+import { Calendar, Users, Table2, Clock, Sparkles, Activity } from "lucide-react";
+import { useServerHealth } from "./shared/useServerHealth";
 
 // Lazy load panels for better performance
 const EmuconAdminPanel = lazy(() => import("./EmuconAdminPanel"));
@@ -27,6 +28,48 @@ const PanelLoader = () => (
   </div>
 );
 
+const STATUS_HEALTH = {
+  checking: { dot: "bg-amber-400 animate-pulse", text: "text-amber-400", label: "Checking..." },
+  online:   { dot: "bg-emerald-500",             text: "text-emerald-400", label: "Healthy" },
+  degraded: { dot: "bg-amber-500 animate-pulse", text: "text-amber-400",  label: "Slow" },
+  offline:  { dot: "bg-red-500",                 text: "text-red-400",    label: "Unreachable" },
+};
+
+const ServerHealthCard = () => {
+  const { status, responseMs, lastChecked } = useServerHealth();
+  const { dot, text, label } = STATUS_HEALTH[status];
+
+  const formatLastChecked = (date) => {
+    if (!date) return "—";
+    const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (diff < 5) return "Just now";
+    if (diff < 60) return `${diff}s ago`;
+    return `${Math.floor(diff / 60)}m ago`;
+  };
+
+  return (
+    <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 sm:p-4">
+      <div className="flex flex-col sm:flex-row items-center sm:gap-3 text-center sm:text-left">
+        <div className="p-2 bg-gray-700/50 rounded-lg mb-2 sm:mb-0">
+          <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+        </div>
+        <div>
+          <div className="flex items-center justify-center sm:justify-start gap-1.5 mb-0.5">
+            <div className={`h-2 w-2 rounded-full flex-shrink-0 ${dot}`} />
+            <p className={`text-xl sm:text-2xl font-bold ${text}`}>
+              {responseMs !== null ? `${responseMs}ms` : "—"}
+            </p>
+          </div>
+          <p className={`text-[10px] sm:text-xs font-medium ${text}`}>{label}</p>
+          <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
+            {formatLastChecked(lastChecked)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Dashboard Overview Panel
 const DashboardPanel = ({ stats, onNavigate }) => {
   return (
@@ -41,7 +84,7 @@ const DashboardPanel = ({ stats, onNavigate }) => {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <div
           className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 sm:p-4 cursor-pointer hover:border-[#f48c06]/30 transition-colors"
           onClick={() => onNavigate("events")}
@@ -117,6 +160,8 @@ const DashboardPanel = ({ stats, onNavigate }) => {
             </div>
           </div>
         </div>
+
+        <ServerHealthCard />
       </div>
 
       {/* Quick Actions */}
