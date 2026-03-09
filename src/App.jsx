@@ -16,8 +16,8 @@ import EmuconDemoHome from "./pages/Emucon/DemoHome";
 import EmuconDemoLive from "./pages/Emucon/DemoLive";
 import CharrollerLanding from "./pages/Charroller/Landing";
 import CharrollerManager from "./pages/Charroller/Manager";
-import Privacy from "./components/Privacy";
-import NotFound from "./components/NotFound";
+import Privacy from "./pages/Privacy";
+import NotFound from "./pages/NotFound";
 
 function AppContent() {
   console.log(
