@@ -19,3 +19,5 @@ export { default as MusicPlayer } from "./TavernPlayer"; // alias for backward c
 export { default as SettingsPanel } from "./SettingsPanel";
 export { default as DiceRoller, parseDice, rollDice } from "./DiceRoller";
 export { default as LevelUpChoices } from "./LevelUpChoices";
+export { default as FeedbackModal } from "./FeedbackModal";
+export { default as PostCreationModal } from "./PostCreationModal";
