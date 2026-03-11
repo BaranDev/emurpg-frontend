@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import {
@@ -26,34 +26,43 @@ const FAMILY_BORDERS = {
   pathetic: "border-gray-500/40",
 };
 
-const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario }) => {
+const EndingScreen = ({ ending, state, onRestart, onChangeScenario }) => {
   const { t } = useTranslation();
   const familyColor = FAMILY_COLORS[ending.family] || "text-yellow-300";
   const borderColor = FAMILY_BORDERS[ending.family] || "border-yellow-500/30";
 
-  const [showModal, setShowModal] = useState(false);
   const [playerName, setPlayerName] = useState("");
-  const [generating, setGenerating] = useState(false);
+  const [generating, setGenerating] = useState(true);
   const [cardBlob, setCardBlob] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [cardError, setCardError] = useState(false);
+  const previewUrlRef = useRef(null);
 
-  const handleGenerate = async () => {
-    if (!playerName.trim()) return;
+  const doGenerate = async (name) => {
     setGenerating(true);
+    setCardError(false);
     try {
-      const blob = await generateRunCard({
-        ending,
-        state,
-        scenarioName,
-        playerName: playerName.trim(),
-      });
+      const blob = await generateRunCard({ ending, state, playerName: name });
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+      const url = URL.createObjectURL(blob);
+      previewUrlRef.current = url;
       setCardBlob(blob);
+      setPreviewUrl(url);
     } catch (err) {
       console.error("Card generation failed:", err);
+      setCardError(true);
     } finally {
       setGenerating(false);
     }
   };
+
+  useEffect(() => {
+    doGenerate("");
+    return () => {
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleShare = async () => {
     try {
@@ -71,16 +80,6 @@ const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario
     } catch (err) {
       console.error("Copy failed:", err);
     }
-  };
-
-  const handleDownload = () => {
-    downloadCard(cardBlob);
-  };
-
-  const handleClose = () => {
-    setShowModal(false);
-    setCardBlob(null);
-    setCopied(false);
   };
 
   return (
@@ -125,7 +124,74 @@ const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario
           </div>
         </div>
 
-        {/* Actions */}
+        {/* Card preview */}
+        <div className="mb-4">
+          {generating && !previewUrl ? (
+            <div className="w-full aspect-square bg-gray-700/50 rounded-lg flex items-center justify-center">
+              <span className="text-gray-500 text-sm animate-pulse">...</span>
+            </div>
+          ) : cardError ? (
+            <div className="w-full aspect-square bg-gray-700/50 rounded-lg flex items-center justify-center">
+              <span className="text-red-400 text-sm">Card generation failed. Try again.</span>
+            </div>
+          ) : previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Tavern Run Card"
+              className="w-full rounded-lg"
+            />
+          ) : null}
+        </div>
+
+        {/* Optional name input */}
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            maxLength={30}
+            placeholder={t("tavern_run.name_optional")}
+            className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
+            onKeyDown={(e) => e.key === "Enter" && doGenerate(playerName.trim())}
+          />
+          <button
+            onClick={() => doGenerate(playerName.trim())}
+            disabled={generating}
+            className="px-3 py-2 bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:text-gray-400 text-gray-900 font-bold rounded-lg transition-colors duration-300 text-sm whitespace-nowrap"
+          >
+            {generating ? "..." : t("tavern_run.generate_card")}
+          </button>
+        </div>
+
+        {/* Share / copy / download */}
+        {cardBlob && (
+          <div className="flex gap-2 mb-4">
+            {canShare() && (
+              <button
+                onClick={handleShare}
+                className="flex-1 px-3 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
+              >
+                {t("tavern_run.share_card")}
+              </button>
+            )}
+            {canCopy() && (
+              <button
+                onClick={handleCopy}
+                className="flex-1 px-3 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
+              >
+                {copied ? t("tavern_run.copied") : t("tavern_run.copy_card")}
+              </button>
+            )}
+            <button
+              onClick={() => downloadCard(cardBlob)}
+              className="flex-1 px-3 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
+            >
+              {t("tavern_run.download_card")}
+            </button>
+          </div>
+        )}
+
+        {/* Navigation */}
         <div className="flex flex-col gap-2">
           <button
             onClick={onRestart}
@@ -139,83 +205,8 @@ const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario
           >
             {t("tavern_run.try_another")}
           </button>
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
-          >
-            {t("tavern_run.save_card")}
-          </button>
         </div>
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-          onClick={handleClose}
-        >
-          <div
-            className="bg-gray-800 border border-gray-600 rounded-xl p-6 w-80 text-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {!cardBlob ? (
-              /* Step 1: Name input */
-              <>
-                <label className="block text-gray-300 text-sm mb-3">
-                  {t("tavern_run.enter_name")}
-                </label>
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                  maxLength={30}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-center focus:outline-none focus:border-yellow-500 mb-4"
-                  autoFocus
-                  onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-                />
-                <button
-                  onClick={handleGenerate}
-                  disabled={!playerName.trim() || generating}
-                  className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:text-gray-400 text-gray-900 font-bold rounded-lg transition-colors duration-300"
-                >
-                  {generating ? "..." : t("tavern_run.generate_card")}
-                </button>
-              </>
-            ) : (
-              /* Step 2: Share options */
-              <>
-                <p className="text-gray-300 text-sm mb-4">
-                  {ending.title}
-                </p>
-                <div className="flex flex-col gap-2">
-                  {canShare() && (
-                    <button
-                      onClick={handleShare}
-                      className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-gray-900 font-bold rounded-lg transition-colors duration-300"
-                    >
-                      {t("tavern_run.share_card")}
-                    </button>
-                  )}
-                  {canCopy() && (
-                    <button
-                      onClick={handleCopy}
-                      className="w-full px-4 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
-                    >
-                      {copied ? t("tavern_run.copied") : t("tavern_run.copy_card")}
-                    </button>
-                  )}
-                  <button
-                    onClick={handleDownload}
-                    className="w-full px-4 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
-                  >
-                    {t("tavern_run.download_card")}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -233,7 +224,6 @@ EndingScreen.propTypes = {
     streak: PropTypes.number,
     tags: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
-  scenarioName: PropTypes.string.isRequired,
   onRestart: PropTypes.func.isRequired,
   onChangeScenario: PropTypes.func.isRequired,
 };

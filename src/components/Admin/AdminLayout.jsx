@@ -19,7 +19,7 @@ import {
   Settings,
 } from "lucide-react";
 import { clearSession, getLoginData } from "../../utils/auth";
-import { ServerStatus } from "./AdminHeader";
+import { ServerStatus, ServerStatusDot } from "./AdminHeader";
 
 const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -287,11 +287,11 @@ const AdminLayout = ({ children, activePanel, onPanelChange, onLogout }) => {
         </div>
 
         {/* Server health badge */}
-        {isSidebarOpen && (
-          <div className="px-4 py-2 border-b border-yellow-900/20">
-            <ServerStatus />
-          </div>
-        )}
+        <div
+          className={`${isSidebarOpen ? "px-4" : "px-2 flex justify-center"} py-2 border-b border-yellow-900/20`}
+        >
+          {isSidebarOpen ? <ServerStatus /> : <ServerStatusDot />}
+        </div>
 
         {/* Toggle Button */}
         <button
