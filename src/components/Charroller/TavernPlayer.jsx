@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import {
   FaMusic,
@@ -45,8 +45,17 @@ const TavernPlayer = ({ autoPlay = false }) => {
     }
   });
 
+  const hasAutoPlayedRef = useRef(false);
+
   useEffect(() => {
-    if (autoPlay && hasUserInteracted && !isMuted && !isPlaying) {
+    if (
+      autoPlay &&
+      !hasAutoPlayedRef.current &&
+      hasUserInteracted &&
+      !isMuted &&
+      !isPlaying
+    ) {
+      hasAutoPlayedRef.current = true;
       togglePlay();
     }
   }, [autoPlay, hasUserInteracted, isMuted, isPlaying, togglePlay]);
