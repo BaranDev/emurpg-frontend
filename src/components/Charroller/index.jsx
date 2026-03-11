@@ -21,3 +21,5 @@ export { default as DiceRoller, parseDice, rollDice } from "./DiceRoller";
 export { default as LevelUpChoices } from "./LevelUpChoices";
 export { default as FeedbackModal } from "./FeedbackModal";
 export { default as PostCreationModal } from "./PostCreationModal";
+export { default as DataConsentModal } from "./DataConsentModal";
+export { default as AdminCharactersPanel } from "./AdminCharactersPanel";
