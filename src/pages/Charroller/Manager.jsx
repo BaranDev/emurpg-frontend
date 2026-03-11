@@ -21,6 +21,9 @@ import {
   getCharacters,
   deleteCharacter,
 } from "../../utils/characterStorage";
+import { MessageSquare } from "lucide-react";
+import FeedbackModal from "../../components/Charroller/FeedbackModal";
+import PostCreationModal from "../../components/Charroller/PostCreationModal";
 
 /**
  * CharrollerPage - Character Manager with Sidebar Layout
@@ -54,6 +57,8 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showPostCreation, setShowPostCreation] = useState(false);
 
   // Load characters
   useEffect(() => {
@@ -172,6 +177,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setCreateMode(null);
       setRefreshKey((k) => k + 1);
       setIsLoading(false);
+      setShowPostCreation(true);
 
       // Generate portrait async
       if (settings.portraitGenerationEnabled) {
@@ -248,6 +254,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setCreateMode(null);
       setRefreshKey((k) => k + 1);
       setIsLoading(false);
+      setShowPostCreation(true);
 
       if (settings.portraitGenerationEnabled) {
         console.log(
@@ -459,6 +466,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       <CharrollerNavbar
         onLanguageSwitch={onLanguageSwitch}
         onSettingsOpen={() => setShowSettings(true)}
+        onFeedbackOpen={() => setShowFeedback(true)}
       />
 
       <div className="relative z-10 min-h-screen pt-14 flex">
@@ -827,6 +835,21 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           </div>
         </main>
 
+        {/* Floating feedback button — desktop only */}
+        <button
+          onClick={() => setShowFeedback(true)}
+          className="hidden md:flex fixed bottom-24 right-4 z-30 items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:brightness-110 hover:scale-105 shadow-lg"
+          style={{
+            background: "linear-gradient(135deg, rgba(42, 26, 15, 0.95), rgba(61, 40, 23, 0.95))",
+            border: "1px solid rgba(139, 69, 19, 0.6)",
+            color: "#d4a574",
+            boxShadow: "0 4px 20px rgba(80, 40, 10, 0.4)",
+          }}
+        >
+          <MessageSquare className="w-4 h-4" style={{ color: "#ffaa33" }} />
+          <span>{t("charroller.feedback.button_label")}</span>
+        </button>
+
         {/* Music Player — desktop only (mobile uses navbar play button) */}
         <div className="hidden md:block fixed bottom-4 right-4 z-30">
           <TavernPlayer autoPlay />
@@ -850,6 +873,17 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           characterName={levelUpChoices.originalCharacter?.character_name}
           onApply={handleApplyLevelUpChoices}
           onCancel={() => setLevelUpChoices(null)}
+        />
+      )}
+
+      {showFeedback && (
+        <FeedbackModal onClose={() => setShowFeedback(false)} />
+      )}
+
+      {showPostCreation && (
+        <PostCreationModal
+          onClose={() => setShowPostCreation(false)}
+          onFeedbackOpen={() => setShowFeedback(true)}
         />
       )}
     </>
