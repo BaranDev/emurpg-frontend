@@ -30,7 +30,7 @@ function AppContent() {
   };
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/" element={<HomePage onLanguageSwitch={handleLanguageSwitch} />} />
         <Route path="/events" element={<EventsPage onLanguageSwitch={handleLanguageSwitch} />} />

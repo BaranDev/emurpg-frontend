@@ -12,17 +12,20 @@ export function WebSocketProvider({ children }) {
 
   useEffect(() => {
     const wsUrl = config.backendUrl.replace(/^http/, "ws") + "/ws/updates";
+    let disposed = false;
 
     function connect() {
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
       ws.onopen = () => {
+        if (disposed) return;
         setIsConnected(true);
         backoffRef.current = 1000;
       };
 
       ws.onmessage = (event) => {
+        if (disposed) return;
         let msg;
         try {
           msg = JSON.parse(event.data);
@@ -38,6 +41,7 @@ export function WebSocketProvider({ children }) {
       };
 
       ws.onclose = () => {
+        if (disposed) return;
         setIsConnected(false);
         reconnectTimerRef.current = setTimeout(() => {
           backoffRef.current = Math.min(backoffRef.current * 2, 30000);
@@ -51,6 +55,7 @@ export function WebSocketProvider({ children }) {
     connect();
 
     return () => {
+      disposed = true;
       clearTimeout(reconnectTimerRef.current);
       wsRef.current?.close();
     };
