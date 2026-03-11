@@ -168,6 +168,9 @@
     "act_hook": "The Beginning",
     "act_complication": "Complication",
     "act_opportunity": "Opportunity",
-    "act_crisis": "The Crisis"
+    "act_crisis": "The Crisis",
+    "save_card": "Save Card",
+    "enter_name": "Enter your name",
+    "download_card": "Download"
   }
 }

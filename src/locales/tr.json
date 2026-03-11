@@ -168,6 +168,9 @@
     "act_hook": "Ba\u015flang\u0131\u00e7",
     "act_complication": "Komplikasyon",
     "act_opportunity": "F\u0131rsat",
-    "act_crisis": "Kriz"
+    "act_crisis": "Kriz",
+    "save_card": "Kart Kaydet",
+    "enter_name": "Adini gir",
+    "download_card": "Indir"
   }
 }
