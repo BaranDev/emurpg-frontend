@@ -298,6 +298,19 @@ export const clearAdminCode = () => {
   saveSettings({ adminCode: "", isAdmin: false });
 };
 
+// ========================
+// CONSENT
+// ========================
+
+const CONSENT_KEY = "emurpg_charroller_consent";
+
+export const getConsent = () => localStorage.getItem(CONSENT_KEY); // 'accepted' | 'declined' | null
+
+export const setConsent = (value) => {
+  if (value !== "accepted" && value !== "declined") return;
+  localStorage.setItem(CONSENT_KEY, value);
+};
+
 export default {
   getCharacters,
   getCharacterById,
