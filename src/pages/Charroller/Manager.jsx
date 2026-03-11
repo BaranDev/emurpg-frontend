@@ -13,7 +13,7 @@ import {
   SettingsPanel,
 } from "../../components";
 import { config } from "../../config";
-import { Upload, Sparkles, Users, X, Scroll, Settings, MessageSquare } from "lucide-react";
+import { Upload, Sparkles, Users, X, Scroll, Settings, MessageSquare, Cloud, RefreshCw } from "lucide-react";
 import {
   saveCharacter,
   updateCharacter,
@@ -26,7 +26,7 @@ import {
 import FeedbackModal from "../../components/Charroller/FeedbackModal";
 import PostCreationModal from "../../components/Charroller/PostCreationModal";
 import DataConsentModal from "../../components/Charroller/DataConsentModal";
-import AdminCharactersPanel from "../../components/Charroller/AdminCharactersPanel";
+
 
 /**
  * CharrollerPage - Character Manager with Sidebar Layout
@@ -64,7 +64,37 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const [showPostCreation, setShowPostCreation] = useState(false);
   const [showConsent, setShowConsent] = useState(false);
   const [pendingCreateMode, setPendingCreateMode] = useState(null);
-  const [showAdminChars, setShowAdminChars] = useState(false);
+  // Server characters (admin only)
+  const SERVER_CACHE_KEY = "emurpg_charroller_server_cache";
+  const [serverCharacters, setServerCharacters] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(SERVER_CACHE_KEY) || "[]"); } catch { return []; }
+  });
+  const [serverCharsLoading, setServerCharsLoading] = useState(false);
+
+  const fetchServerCharacters = async (adminCode) => {
+    if (!adminCode) return;
+    setServerCharsLoading(true);
+    try {
+      const res = await fetch(`${config.backendUrl}/api/admin/charroller/characters`, {
+        headers: { "x-admin-code": adminCode },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const chars = (data.characters || []).map((c, i) => ({
+        ...c,
+        _source: "server",
+        id: `server_${c.saved_at || i}_${c.character_name || i}`,
+      }));
+      setServerCharacters(chars);
+      localStorage.setItem(SERVER_CACHE_KEY, JSON.stringify(chars));
+    } finally {
+      setServerCharsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (settings.adminCode) fetchServerCharacters(settings.adminCode);
+  }, [settings.adminCode]);
 
   // Load characters
   useEffect(() => {
@@ -120,6 +150,18 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
     setRefreshKey((k) => k + 1);
   };
 
+  const handleDeleteServerCharacter = async (docId) => {
+    const res = await fetch(`${config.backendUrl}/api/admin/charroller/characters/${docId}`, {
+      method: "DELETE",
+      headers: { "x-admin-code": settings.adminCode },
+    });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+    const updated = serverCharacters.filter((c) => c.doc_id !== docId);
+    setServerCharacters(updated);
+    localStorage.setItem(SERVER_CACHE_KEY, JSON.stringify(updated));
+    if (selectedCharacter?.doc_id === docId) setSelectedCharacter(null);
+  };
+
   // ===============================
   // Create Character Flow
   // ===============================
@@ -143,14 +185,12 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setError(t("charroller.consent.limit_reached"));
       return;
     }
-    setShowAdminChars(false);
     handleStartCreate(mode);
   };
 
   const handleConsentAccept = () => {
     setConsent("accepted");
     setShowConsent(false);
-    setShowAdminChars(false);
     handleStartCreate(pendingCreateMode);
     setPendingCreateMode(null);
   };
@@ -163,7 +203,6 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setPendingCreateMode(null);
       return;
     }
-    setShowAdminChars(false);
     handleStartCreate(pendingCreateMode);
     setPendingCreateMode(null);
   };
@@ -661,91 +700,163 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
 
               {/* Character List */}
               <div className="flex-1 overflow-y-auto p-3 space-y-2">
-                {characters.length === 0 ? (
+                {characters.length === 0 && serverCharacters.length === 0 ? (
                   <div className="text-center py-8 text-tavern-parchmentDark text-sm">
                     <Scroll className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p>{t("charroller.no_characters")}</p>
                   </div>
                 ) : (
-                  characters.map((char) => (
-                    <button
-                      key={char.id}
-                      onClick={() => handleSelectCharacter(char)}
-                      className={`
-                        w-full text-left p-2 rounded-lg transition-all relative overflow-hidden group
-                        ${
-                          selectedCharacter?.id === char.id
-                            ? "ring-2 ring-tavern-candle scale-[1.02]"
-                            : "hover:ring-1 hover:ring-tavern-candle/50 hover:scale-[1.01]"
-                        }
-                      `}
-                      style={{
-                        background:
-                          selectedCharacter?.id === char.id
-                            ? "rgba(20, 15, 10, 0.9)"
-                            : "rgba(30, 20, 15, 0.8)",
-                        border: "1px solid rgba(139, 69, 19, 0.2)",
-                      }}
-                    >
-                      {/* Background Portrait blur */}
-                      {char.portrait_url && (
-                        <div
-                          className="absolute inset-0 opacity-10 blur-sm mix-blend-overlay transition-opacity group-hover:opacity-20"
-                          style={{
-                            backgroundImage: `url(${char.portrait_url})`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                          }}
-                        />
-                      )}
-
-                      <div className="flex items-center gap-3 relative z-10">
-                        {/* Main portrait */}
-                        <div
-                          className={`w-16 h-16 rounded-md flex-shrink-0 border border-tavern-wood shadow-lg relative overflow-hidden flex items-center justify-center ${
-                            generatingId === char.id ? "animate-pulse" : ""
-                          }`}
-                          style={{
-                            backgroundColor: "rgba(139, 69, 19, 0.2)",
-                          }}
-                        >
-                          {char.portrait_url ? (
-                            <img
-                              src={char.portrait_url}
-                              alt={char.character_name || "Portrait"}
-                              className="absolute inset-0 w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="flex flex-col items-center justify-center opacity-40">
-                              <Users className="w-6 h-6 text-tavern-parchment" />
-                              <span className="text-[10px] font-cinzel mt-1">
-                                {char.character_name
-                                  ? char.character_name[0]
-                                  : "?"}
+                  <>
+                    {characters.map((char) => (
+                      <button
+                        key={char.id}
+                        onClick={() => handleSelectCharacter(char)}
+                        className={`
+                          w-full text-left p-2 rounded-lg transition-all relative overflow-hidden group
+                          ${
+                            selectedCharacter?.id === char.id
+                              ? "ring-2 ring-tavern-candle scale-[1.02]"
+                              : "hover:ring-1 hover:ring-tavern-candle/50 hover:scale-[1.01]"
+                          }
+                        `}
+                        style={{
+                          background:
+                            selectedCharacter?.id === char.id
+                              ? "rgba(20, 15, 10, 0.9)"
+                              : "rgba(30, 20, 15, 0.8)",
+                          border: "1px solid rgba(139, 69, 19, 0.2)",
+                        }}
+                      >
+                        {char.portrait_url && (
+                          <div
+                            className="absolute inset-0 opacity-10 blur-sm mix-blend-overlay transition-opacity group-hover:opacity-20"
+                            style={{
+                              backgroundImage: `url(${char.portrait_url})`,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                            }}
+                          />
+                        )}
+                        <div className="flex items-center gap-3 relative z-10">
+                          <div
+                            className={`w-16 h-16 rounded-md flex-shrink-0 border border-tavern-wood shadow-lg relative overflow-hidden flex items-center justify-center ${
+                              generatingId === char.id ? "animate-pulse" : ""
+                            }`}
+                            style={{ backgroundColor: "rgba(139, 69, 19, 0.2)" }}
+                          >
+                            {char.portrait_url ? (
+                              <img
+                                src={char.portrait_url}
+                                alt={char.character_name || "Portrait"}
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex flex-col items-center justify-center opacity-40">
+                                <Users className="w-6 h-6 text-tavern-parchment" />
+                                <span className="text-[10px] font-cinzel mt-1">
+                                  {char.character_name ? char.character_name[0] : "?"}
+                                </span>
+                              </div>
+                            )}
+                            {generatingId === char.id && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tavern-accent/30 to-transparent animate-[shimmer_1.5s_infinite]" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-cinzel text-tavern-parchment truncate text-base drop-shadow-md">
+                              {char.character_name || "Unknown"}
+                            </p>
+                            <p className="text-xs text-tavern-parchmentDark truncate mt-0.5">
+                              {char.class || char.occupation || "Adventurer"}
+                              {char.level ? ` • Lv ${char.level}` : ""}
+                            </p>
+                            {char.system && (
+                              <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded bg-red-900/40 text-red-200 border border-red-900/50 uppercase">
+                                {char.system === "dnd5e" ? "D&D 5E" : char.system}
                               </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+
+                    {/* Server Characters Section (admin only) */}
+                    {settings.adminCode && serverCharacters.length > 0 && (
+                      <>
+                        <div
+                          className="flex items-center gap-2 pt-2 pb-1"
+                          style={{ borderTop: "1px solid rgba(139, 69, 19, 0.25)" }}
+                        >
+                          <Cloud className="w-3 h-3 text-amber-600/70 flex-shrink-0" />
+                          <span className="text-[10px] uppercase tracking-widest text-amber-700/80 font-bold">
+                            Server
+                          </span>
+                        </div>
+                        {serverCharacters.map((char) => (
+                          <button
+                            key={char.id}
+                            onClick={() => handleSelectCharacter(char)}
+                            className={`
+                              w-full text-left p-2 rounded-lg transition-all relative overflow-hidden group
+                              ${
+                                selectedCharacter?.id === char.id
+                                  ? "ring-2 ring-amber-600 scale-[1.02]"
+                                  : "hover:ring-1 hover:ring-amber-700/50 hover:scale-[1.01]"
+                              }
+                            `}
+                            style={{
+                              background:
+                                selectedCharacter?.id === char.id
+                                  ? "rgba(20, 15, 10, 0.9)"
+                                  : "rgba(30, 20, 15, 0.8)",
+                              border: "1px solid rgba(139, 69, 19, 0.2)",
+                            }}
+                          >
+                            <div className="flex items-center gap-3 relative z-10">
+                              <div
+                                className="w-16 h-16 rounded-md flex-shrink-0 border border-tavern-wood shadow-lg relative overflow-hidden flex items-center justify-center"
+                                style={{ backgroundColor: "rgba(139, 69, 19, 0.2)" }}
+                              >
+                                {char.portrait_url ? (
+                                  <img
+                                    src={char.portrait_url}
+                                    alt={char.character_name || "Portrait"}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="flex flex-col items-center justify-center opacity-40">
+                                    <Users className="w-6 h-6 text-tavern-parchment" />
+                                    <span className="text-[10px] font-cinzel mt-1">
+                                      {char.character_name ? char.character_name[0] : "?"}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-cinzel text-tavern-parchment truncate text-base drop-shadow-md">
+                                  {char.character_name || "Unknown"}
+                                </p>
+                                <p className="text-xs text-tavern-parchmentDark truncate mt-0.5">
+                                  {char.class || char.occupation || "Adventurer"}
+                                  {char.level ? ` • Lv ${char.level}` : ""}
+                                </p>
+                                <div className="flex items-center gap-1 mt-1">
+                                  {char.system && (
+                                    <span className="inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded bg-red-900/40 text-red-200 border border-red-900/50 uppercase">
+                                      {char.system === "dnd5e" ? "D&D 5E" : char.system}
+                                    </span>
+                                  )}
+                                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded bg-amber-900/30 text-amber-400 border border-amber-800/40 uppercase">
+                                    <Cloud className="w-2.5 h-2.5" /> Server
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          )}
-                          {generatingId === char.id && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tavern-accent/30 to-transparent animate-[shimmer_1.5s_infinite]" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-cinzel text-tavern-parchment truncate text-base drop-shadow-md">
-                            {char.character_name || "Unknown"}
-                          </p>
-                          <p className="text-xs text-tavern-parchmentDark truncate mt-0.5">
-                            {char.class || char.occupation || "Adventurer"}
-                            {char.level ? ` • Lv ${char.level}` : ""}
-                          </p>
-                          {char.system && (
-                            <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded bg-red-900/40 text-red-200 border border-red-900/50 uppercase">
-                              {char.system === "dnd5e" ? "D&D 5E" : char.system}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  ))
+                          </button>
+                        ))}
+                      </>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -756,16 +867,12 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
               >
                 {settings.adminCode && (
                   <button
-                    onClick={() => {
-                      setShowAdminChars(true);
-                      setSelectedCharacter(null);
-                      setIsCreating(false);
-                      setMobileSidebarOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm ${showAdminChars ? "text-amber-300" : "text-tavern-parchmentDark hover:text-tavern-parchment"} hover:bg-tavern-wood/30`}
+                    onClick={() => fetchServerCharacters(settings.adminCode)}
+                    disabled={serverCharsLoading}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm text-tavern-parchmentDark hover:text-tavern-parchment hover:bg-tavern-wood/30 disabled:opacity-50"
                   >
-                    <Users className="w-4 h-4" />
-                    {t("charroller.consent.admin_section")}
+                    <RefreshCw className={`w-4 h-4 ${serverCharsLoading ? "animate-spin" : ""}`} />
+                    {serverCharsLoading ? "Syncing…" : "Sync server characters"}
                   </button>
                 )}
                 <button
@@ -869,11 +976,6 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
               </div>
             )}
 
-            {/* Admin: All Saved Characters */}
-            {showAdminChars && !isCreating && settings.adminCode && (
-              <AdminCharactersPanel adminCode={settings.adminCode} />
-            )}
-
             {/* Selected Character */}
             {selectedCharacter && !isCreating && (
               <div className="animate-fadeIn">
@@ -881,18 +983,18 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                   characterData={selectedCharacter}
                   onNewCharacter={handleDeselectCharacter}
                   isGeneratingPortrait={generatingId === selectedCharacter.id}
-                  onEditWithAI={handleEditWithAI}
-                  onLevelUp={handleLevelUp}
+                  onEditWithAI={selectedCharacter._source === "server" ? undefined : handleEditWithAI}
+                  onLevelUp={selectedCharacter._source === "server" ? undefined : handleLevelUp}
                   isLevelingUp={isLevelingUp}
-                  onDelete={() => handleDeleteCharacter(selectedCharacter.id)}
-                  onSaveToServer={settings.adminCode ? handleSaveToServer : undefined}
+                  onDelete={selectedCharacter._source === "server" ? () => handleDeleteServerCharacter(selectedCharacter.doc_id) : () => handleDeleteCharacter(selectedCharacter.id)}
+                  onSaveToServer={settings.adminCode && selectedCharacter._source !== "server" ? handleSaveToServer : undefined}
                   theme="tavern"
                 />
               </div>
             )}
 
             {/* Empty State / Creation Hub */}
-            {!selectedCharacter && !isCreating && !showAdminChars && (
+            {!selectedCharacter && !isCreating && (
               <div className="flex flex-col items-center justify-center min-h-[60vh] md:min-h-[75vh] text-center animate-fadeIn relative">
                 {/* Decorative background circle */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 md:w-96 h-64 md:h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none" />

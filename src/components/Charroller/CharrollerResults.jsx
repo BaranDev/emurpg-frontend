@@ -40,6 +40,7 @@ const CharrollerResults = ({
   onLevelUp,
   isLevelingUp = false,
   onDelete,
+  onSaveToServer,
   theme = "arcane", // "tavern" | "arcane"
 }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -51,6 +52,9 @@ const CharrollerResults = ({
   const [isEditing, setIsEditing] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [saveToServerStatus, setSaveToServerStatus] = useState("idle"); // idle | saving | saved | error
+
+  useEffect(() => { setSaveToServerStatus("idle"); }, [characterData?.id]);
   const [showSectionSettings, setShowSectionSettings] = useState(false);
   const [editingSection, setEditingSection] = useState(null);
   const [hasInspiration, setHasInspiration] = useState(false);
@@ -487,6 +491,29 @@ const CharrollerResults = ({
                   title="Delete Character"
                 >
                   <Trash2 className="w-3.5 h-3.5 inline mr-1" /> Delete
+                </button>
+              )}
+              {onSaveToServer && (
+                <button
+                  onClick={async () => {
+                    setSaveToServerStatus("saving");
+                    try {
+                      await onSaveToServer(characterData);
+                      setSaveToServerStatus("saved");
+                      setTimeout(() => setSaveToServerStatus("idle"), 3000);
+                    } catch {
+                      setSaveToServerStatus("error");
+                      setTimeout(() => setSaveToServerStatus("idle"), 3000);
+                    }
+                  }}
+                  disabled={saveToServerStatus === "saving"}
+                  className="px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border border-amber-700/50 text-amber-400 hover:bg-amber-900/20 transition-colors disabled:opacity-50"
+                  title="Save to server"
+                >
+                  {saveToServerStatus === "saving" && "Saving…"}
+                  {saveToServerStatus === "saved" && "✓ Saved"}
+                  {saveToServerStatus === "error" && "✗ Failed"}
+                  {saveToServerStatus === "idle" && "Save to server"}
                 </button>
               )}
               {onEditWithAI && (
@@ -1512,6 +1539,7 @@ CharrollerResults.propTypes = {
   onLevelUp: PropTypes.func,
   isLevelingUp: PropTypes.bool,
   onDelete: PropTypes.func,
+  onSaveToServer: PropTypes.func,
   theme: PropTypes.oneOf(["tavern", "arcane"]),
 };
 
