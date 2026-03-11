@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Settings, Globe } from "lucide-react";
+import { ArrowLeft, Settings, Globe, MessageSquare } from "lucide-react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useGlobalAudio } from "../../contexts/GlobalAudioContext";
@@ -11,7 +11,7 @@ import logoYellow from "../../assets/logo/LOGO_YELLOW.png";
  * CharrollerNavbar - Minimal tavern-themed navbar for Charroller pages.
  * Only a back arrow (to /) + logo on the left, music/language/settings on right.
  */
-const CharrollerNavbar = ({ onLanguageSwitch, onSettingsOpen }) => {
+const CharrollerNavbar = ({ onLanguageSwitch, onSettingsOpen, onFeedbackOpen }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -146,6 +146,18 @@ const CharrollerNavbar = ({ onLanguageSwitch, onSettingsOpen }) => {
               )}
             </button>
 
+            {/* Feedback — mobile only */}
+            {onFeedbackOpen && (
+              <button
+                onClick={onFeedbackOpen}
+                className="md:hidden p-2 rounded-lg transition-colors duration-300 hover:text-amber-300"
+                style={{ color: "#8a7060" }}
+                title="Feedback"
+              >
+                <MessageSquare className="w-5 h-5" />
+              </button>
+            )}
+
             {/* Language */}
             <button
               onClick={handleLanguageToggle}
@@ -177,6 +189,7 @@ const CharrollerNavbar = ({ onLanguageSwitch, onSettingsOpen }) => {
 CharrollerNavbar.propTypes = {
   onLanguageSwitch: PropTypes.func,
   onSettingsOpen: PropTypes.func,
+  onFeedbackOpen: PropTypes.func,
 };
 
 export default CharrollerNavbar;
