@@ -20,12 +20,13 @@ import {
   getSettings,
   getCharacters,
   deleteCharacter,
+  getConsent,
+  setConsent,
 } from "../../utils/characterStorage";
 import FeedbackModal from "../../components/Charroller/FeedbackModal";
 import PostCreationModal from "../../components/Charroller/PostCreationModal";
 import DataConsentModal from "../../components/Charroller/DataConsentModal";
 import AdminCharactersPanel from "../../components/Charroller/AdminCharactersPanel";
-import { getConsent, setConsent } from "../../utils/characterStorage";
 
 /**
  * CharrollerPage - Character Manager with Sidebar Layout
@@ -499,6 +500,27 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   };
 
   // ===============================
+  // Admin: Save to Server
+  // ===============================
+  const handleSaveToServer = async (charData) => {
+    const response = await fetch(
+      `${config.backendUrl}/api/charroller/save-character`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(settings.adminCode ? { "x-admin-code": settings.adminCode } : {}),
+        },
+        body: JSON.stringify({ character_data: charData }),
+      },
+    );
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `Error: ${response.status}`);
+    }
+  };
+
+  // ===============================
   // Level Up Shortcut
   // ===============================
   const handleLevelUp = async () => {
@@ -834,6 +856,19 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
               </div>
             )}
 
+            {/* Consent limit error — shown outside creation flow */}
+            {error && !isCreating && (
+              <div
+                className="mb-4 p-4 rounded-lg text-center animate-fadeIn"
+                style={{
+                  background: "rgba(220, 38, 38, 0.15)",
+                  border: "1px solid rgba(220, 38, 38, 0.4)",
+                }}
+              >
+                <p className="text-red-300 text-sm">{error}</p>
+              </div>
+            )}
+
             {/* Admin: All Saved Characters */}
             {showAdminChars && !isCreating && settings.adminCode && (
               <AdminCharactersPanel adminCode={settings.adminCode} />
@@ -850,6 +885,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                   onLevelUp={handleLevelUp}
                   isLevelingUp={isLevelingUp}
                   onDelete={() => handleDeleteCharacter(selectedCharacter.id)}
+                  onSaveToServer={settings.adminCode ? handleSaveToServer : undefined}
                   theme="tavern"
                 />
               </div>
