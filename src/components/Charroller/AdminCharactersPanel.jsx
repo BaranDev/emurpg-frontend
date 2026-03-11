@@ -60,7 +60,7 @@ const AdminCharactersPanel = ({ adminCode }) => {
   if (error) {
     return (
       <div className="flex items-center justify-center py-16">
-        <p className="text-red-400 text-sm">Error: {error}</p>
+        <p className="text-red-400 text-sm">{t("charroller.feedback.error")}
       </div>
     );
   }
