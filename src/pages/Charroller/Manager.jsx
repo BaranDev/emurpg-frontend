@@ -13,7 +13,7 @@ import {
   SettingsPanel,
 } from "../../components";
 import { config } from "../../config";
-import { Upload, Sparkles, Users, X, Scroll, Settings } from "lucide-react";
+import { Upload, Sparkles, Users, X, Scroll, Settings, MessageSquare } from "lucide-react";
 import {
   saveCharacter,
   updateCharacter,
@@ -21,7 +21,6 @@ import {
   getCharacters,
   deleteCharacter,
 } from "../../utils/characterStorage";
-import { MessageSquare } from "lucide-react";
 import FeedbackModal from "../../components/Charroller/FeedbackModal";
 import PostCreationModal from "../../components/Charroller/PostCreationModal";
 
