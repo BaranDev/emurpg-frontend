@@ -1,20 +1,18 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import TableList from "../tables/TableList";
 import GeneralEventRegistrationForm from "./GeneralEventRegistrationForm";
 import { config } from "../../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 const EventList = () => {
   const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [ws, setWs] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const wsConnected = useRef(false);
-  const wsConnectionAttempted = useRef(false);
 
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
@@ -34,64 +32,15 @@ const EventList = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    // Skip WebSocket connection if backend is down (error state)
+  const handleWsUpdate = useCallback(() => {
     if (error) return;
+    fetch(`${config.backendUrl}/api/events`)
+      .then((res) => res.json())
+      .then((data) => setEvents(data))
+      .catch(() => {});
+  }, [error]);
 
-    const connectWebSocket = () => {
-      try {
-        const socket = new WebSocket(`${config.backendUrl}/ws/updates`);
-
-        socket.onopen = () => {
-          console.log("Events WebSocket connected");
-          wsConnected.current = true;
-        };
-
-        socket.onmessage = () => {
-          if (wsConnected.current) {
-            // Fetch updated events
-            fetch(`${config.backendUrl}/api/events`)
-              .then((res) => res.json())
-              .then((data) => setEvents(data))
-              .catch(() => {});
-          }
-        };
-
-        socket.onclose = () => {
-          console.log("Events WebSocket disconnected");
-          wsConnected.current = false;
-          // Only retry if we had a successful connection before
-          setTimeout(() => {
-            if (!wsConnected.current && !error) connectWebSocket();
-          }, 5000);
-        };
-
-        socket.onerror = () => {
-          console.log("Events WebSocket error - backend may be offline");
-          wsConnected.current = false;
-        };
-
-        return socket;
-      } catch (e) {
-        console.log("WebSocket connection failed:", e);
-        return null;
-      }
-    };
-
-    if (!wsConnectionAttempted.current) {
-      const socket = connectWebSocket();
-      if (socket) setWs(socket);
-      wsConnectionAttempted.current = true;
-    }
-
-    return () => {
-      if (ws) {
-        ws.close();
-        wsConnected.current = false;
-        wsConnectionAttempted.current = false;
-      }
-    };
-  }, [ws, error]);
+  useWebSocket("events", handleWsUpdate);
 
   // Fallback for unsupported browsers
   if (!window.fetch || !window.WebSocket) {

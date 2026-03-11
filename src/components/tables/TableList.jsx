@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { config } from "../../config";
 import GameGuideModal from "./GameGuideModal";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 const TableList = ({ eventSlug }) => {
   const { t } = useTranslation();
@@ -11,32 +12,31 @@ const TableList = ({ eventSlug }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const backendUrl = config.backendUrl;
-  const [ws, setWs] = useState(null);
-  const wsConnected = useRef(false);
-  const wsConnectionAttempted = useRef(false);
   const [selectedGame, setSelectedGame] = useState(null);
   const [gameDetails, setGameDetails] = useState({});
   const [themes, setThemes] = useState({});
 
-  useEffect(() => {
-    const fetchTables = () => {
-      fetch(`${config.backendUrl}/api/events/${eventSlug}/tables`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch tables");
-          return res.json();
-        })
-        .then((data) => {
-          setTables(data);
-          setError(null);
-        })
-        .catch((err) => {
-          console.log("Failed to fetch tables:", err.message);
-          setError(err.message);
-          setTables([]);
-        })
-        .finally(() => setLoading(false));
-    };
+  const fetchTables = useCallback(() => {
+    fetch(`${config.backendUrl}/api/events/${eventSlug}/tables`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch tables");
+        return res.json();
+      })
+      .then((data) => {
+        setTables(data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.log("Failed to fetch tables:", err.message);
+        setError(err.message);
+        setTables([]);
+      })
+      .finally(() => setLoading(false));
+  }, [eventSlug]);
 
+  useWebSocket("tables", fetchTables);
+
+  useEffect(() => {
     const fetchGames = async () => {
       try {
         const response = await fetch(`${config.backendUrl}/api/games`);
@@ -63,55 +63,10 @@ const TableList = ({ eventSlug }) => {
       }
     };
 
-    const connectWebSocket = () => {
-      try {
-        const socket = new WebSocket(`${backendUrl}/ws/updates`);
-
-        socket.onopen = () => {
-          console.log("WebSocket connected");
-          wsConnected.current = true;
-        };
-
-        socket.onmessage = (event) => {
-          console.log("Received message from WebSocket", event.data);
-          if (wsConnected.current) {
-            fetchTables();
-          }
-        };
-
-        socket.onclose = () => {
-          console.log("WebSocket disconnected");
-          wsConnected.current = false;
-        };
-
-        socket.onerror = () => {
-          console.log("WebSocket error - backend may be offline");
-          wsConnected.current = false;
-        };
-
-        return socket;
-      } catch (e) {
-        console.log("WebSocket connection failed:", e);
-        return null;
-      }
-    };
-
     fetchTables();
     fetchGames();
     fetchThemes();
-
-    if (!wsConnectionAttempted.current && !error) {
-      const socket = connectWebSocket();
-      if (socket) setWs(socket);
-      wsConnectionAttempted.current = true;
-    }
-
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
-  }, [eventSlug, backendUrl, ws, error]);
+  }, [eventSlug, backendUrl, fetchTables]);
 
   useEffect(() => {
     const fetchGameDetails = async (gameId) => {

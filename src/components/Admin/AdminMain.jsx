@@ -344,7 +344,7 @@ const AdminMain = ({ onLogout }) => {
       case "events":
         return (
           <Suspense fallback={<PanelLoader />}>
-            <EventsAdminPanel />
+            <EventsAdminPanel onNavigate={setActivePanel} />
           </Suspense>
         );
 

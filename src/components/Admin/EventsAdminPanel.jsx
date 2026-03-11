@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Plus,
   Edit3,
@@ -24,8 +24,9 @@ import AdminModal from "./shared/AdminModal";
 import AdminButton from "./shared/AdminButton";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
-const EventsAdminPanel = () => {
+const EventsAdminPanel = ({ onNavigate }) => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,9 +53,6 @@ const EventsAdminPanel = () => {
     clubs: [],
   });
   const [clubInput, setClubInput] = useState("");
-
-  const wsRef = useRef(null);
-  const wsConnected = useRef(false);
 
   const backendUrl = config.backendUrl;
   const apiKey = getApiKey();
@@ -106,45 +104,11 @@ const EventsAdminPanel = () => {
     }
   }, [backendUrl, apiKey]);
 
+  useWebSocket("events", fetchEvents);
+
   useEffect(() => {
-    const connectWebSocket = () => {
-      try {
-        const socket = new WebSocket(
-          `${backendUrl.replace("http", "ws")}/ws/updates`,
-        );
-
-        socket.onopen = () => {
-          wsConnected.current = true;
-        };
-
-        socket.onmessage = () => {
-          if (wsConnected.current) {
-            fetchEvents();
-          }
-        };
-
-        socket.onclose = () => {
-          wsConnected.current = false;
-          setTimeout(() => {
-            if (!wsConnected.current) connectWebSocket();
-          }, 3000);
-        };
-
-        wsRef.current = socket;
-      } catch (error) {
-        console.error("WebSocket error:", error);
-      }
-    };
-
     fetchEvents();
-    connectWebSocket();
-
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, [fetchEvents, backendUrl]);
+  }, [fetchEvents]);
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
@@ -642,6 +606,19 @@ const EventsAdminPanel = () => {
                           Delete
                         </AdminButton>
                       </>
+                    )}
+                    {onNavigate && (
+                      <AdminButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigate("tables");
+                        }}
+                        variant="secondary"
+                        size="sm"
+                        icon={Table2}
+                      >
+                        Add Tables
+                      </AdminButton>
                     )}
                   </div>
 

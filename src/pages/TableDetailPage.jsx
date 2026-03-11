@@ -1,16 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import RegistrationForm from "../components/events/RegistrationForm";
 import { config } from "../config";
 import { FaArrowAltCircleLeft, FaDiceD20 } from "react-icons/fa";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa6";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 const TableDetailPage = () => {
   const { slug } = useParams();
   const [table, setTable] = useState(null);
   const backendUrl = config.backendUrl;
-  const [ws, setWs] = useState(null);
-  const wsConnected = useRef(false);
 
   useEffect(() => {
     document.title = "EMURPG - Table Details";
@@ -29,49 +28,10 @@ const TableDetailPage = () => {
       });
   }, [backendUrl, slug]);
 
+  useWebSocket("tables", fetchTableData);
+
   useEffect(() => {
-    // Fetch data initially
     fetchTableData();
-
-    // Establish the WebSocket connection
-    const connectWebSocket = () => {
-      const socket = new WebSocket(`${backendUrl}/ws/updates`);
-
-      socket.onopen = () => {
-        console.log("WebSocket connected");
-        wsConnected.current = true;
-      };
-
-      socket.onmessage = (event) => {
-        console.log("Received WebSocket message:", event.data);
-        // Only fetch table data if WebSocket is connected
-        if (wsConnected.current) {
-          fetchTableData();
-        }
-      };
-
-      socket.onclose = () => {
-        console.log("WebSocket disconnected");
-        wsConnected.current = false;
-      };
-
-      socket.onerror = (error) => {
-        console.log("WebSocket error:", error);
-        wsConnected.current = false;
-      };
-
-      setWs(socket);
-    };
-
-    // Connect WebSocket
-    connectWebSocket();
-
-    // Cleanup WebSocket on component unmount
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
   }, [slug, backendUrl, fetchTableData]);
 
   // Display loading message while data is being fetched
