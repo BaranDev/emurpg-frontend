@@ -23,6 +23,9 @@ import {
 } from "../../utils/characterStorage";
 import FeedbackModal from "../../components/Charroller/FeedbackModal";
 import PostCreationModal from "../../components/Charroller/PostCreationModal";
+import DataConsentModal from "../../components/Charroller/DataConsentModal";
+import AdminCharactersPanel from "../../components/Charroller/AdminCharactersPanel";
+import { getConsent, setConsent } from "../../utils/characterStorage";
 
 /**
  * CharrollerPage - Character Manager with Sidebar Layout
@@ -58,6 +61,9 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showPostCreation, setShowPostCreation] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
+  const [pendingCreateMode, setPendingCreateMode] = useState(null);
+  const [showAdminChars, setShowAdminChars] = useState(false);
 
   // Load characters
   useEffect(() => {
@@ -125,6 +131,42 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
     setMobileSidebarOpen(false);
   };
 
+  const handleCreateClick = (mode) => {
+    const consent = getConsent();
+    if (consent === null) {
+      setPendingCreateMode(mode);
+      setShowConsent(true);
+      return;
+    }
+    if (consent === "declined" && characters.length >= 1) {
+      setError(t("charroller.consent.limit_reached"));
+      return;
+    }
+    setShowAdminChars(false);
+    handleStartCreate(mode);
+  };
+
+  const handleConsentAccept = () => {
+    setConsent("accepted");
+    setShowConsent(false);
+    setShowAdminChars(false);
+    handleStartCreate(pendingCreateMode);
+    setPendingCreateMode(null);
+  };
+
+  const handleConsentDecline = () => {
+    setConsent("declined");
+    setShowConsent(false);
+    if (characters.length >= 1) {
+      setError(t("charroller.consent.limit_reached"));
+      setPendingCreateMode(null);
+      return;
+    }
+    setShowAdminChars(false);
+    handleStartCreate(pendingCreateMode);
+    setPendingCreateMode(null);
+  };
+
   const handleCancelCreate = () => {
     setIsCreating(false);
     setCreateMode(null);
@@ -177,6 +219,15 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setRefreshKey((k) => k + 1);
       setIsLoading(false);
       setShowPostCreation(true);
+
+      // Fire-and-forget character save
+      if (getConsent() === "accepted") {
+        fetch(`${config.backendUrl}/api/charroller/save-character`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ character_data: { ...data, system: selectedSystem } }),
+        }).catch(() => {});
+      }
 
       // Generate portrait async
       if (settings.portraitGenerationEnabled) {
@@ -254,6 +305,15 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setRefreshKey((k) => k + 1);
       setIsLoading(false);
       setShowPostCreation(true);
+
+      // Fire-and-forget character save
+      if (getConsent() === "accepted") {
+        fetch(`${config.backendUrl}/api/charroller/save-character`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ character_data: { ...data, system: selectedSystem } }),
+        }).catch(() => {});
+      }
 
       if (settings.portraitGenerationEnabled) {
         console.log(
@@ -550,7 +610,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                 style={{ borderBottom: "1px solid rgba(139, 69, 19, 0.3)" }}
               >
                 <button
-                  onClick={() => handleStartCreate("upload")}
+                  onClick={() => handleCreateClick("upload")}
                   className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg font-medium
                              text-tavern-parchment transition-all hover:brightness-110"
                   style={{
@@ -563,7 +623,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                   {t("charroller.upload_sheet")}
                 </button>
                 <button
-                  onClick={() => handleStartCreate("describe")}
+                  onClick={() => handleCreateClick("describe")}
                   className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg font-medium
                              text-tavern-parchment transition-all hover:brightness-110"
                   style={{
@@ -669,13 +729,27 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
 
               {/* Sidebar Footer */}
               <div
-                className="p-3"
+                className="p-3 space-y-1"
                 style={{ borderTop: "1px solid rgba(139, 69, 19, 0.3)" }}
               >
+                {settings.adminCode && (
+                  <button
+                    onClick={() => {
+                      setShowAdminChars(true);
+                      setSelectedCharacter(null);
+                      setIsCreating(false);
+                      setMobileSidebarOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm ${showAdminChars ? "text-amber-300" : "text-tavern-parchmentDark hover:text-tavern-parchment"} hover:bg-tavern-wood/30`}
+                  >
+                    <Users className="w-4 h-4" />
+                    {t("charroller.consent.admin_section")}
+                  </button>
+                )}
                 <button
                   onClick={() => setShowSettings(true)}
                   className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg
-                             text-tavern-parchmentDark hover:text-tavern-parchment 
+                             text-tavern-parchmentDark hover:text-tavern-parchment
                              hover:bg-tavern-wood/30 transition-colors text-sm"
                 >
                   <Settings className="w-4 h-4" />
@@ -760,6 +834,11 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
               </div>
             )}
 
+            {/* Admin: All Saved Characters */}
+            {showAdminChars && !isCreating && settings.adminCode && (
+              <AdminCharactersPanel adminCode={settings.adminCode} />
+            )}
+
             {/* Selected Character */}
             {selectedCharacter && !isCreating && (
               <div className="animate-fadeIn">
@@ -777,7 +856,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
             )}
 
             {/* Empty State / Creation Hub */}
-            {!selectedCharacter && !isCreating && (
+            {!selectedCharacter && !isCreating && !showAdminChars && (
               <div className="flex flex-col items-center justify-center min-h-[60vh] md:min-h-[75vh] text-center animate-fadeIn relative">
                 {/* Decorative background circle */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 md:w-96 h-64 md:h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none" />
@@ -803,7 +882,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
 
                 <div className="flex flex-col sm:flex-row gap-4 md:gap-5 relative z-10 w-full px-4 sm:w-auto sm:px-0">
                   <button
-                    onClick={() => handleStartCreate("upload")}
+                    onClick={() => handleCreateClick("upload")}
                     className="flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 rounded-xl font-bold text-base md:text-lg
                                text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-red-900/20 hover:shadow-xl"
                     style={{
@@ -816,7 +895,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                     {t("charroller.upload_sheet")}
                   </button>
                   <button
-                    onClick={() => handleStartCreate("describe")}
+                    onClick={() => handleCreateClick("describe")}
                     className="flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 rounded-xl font-bold text-base md:text-lg
                                text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-red-900/20 hover:shadow-xl"
                     style={{
@@ -872,6 +951,13 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           characterName={levelUpChoices.originalCharacter?.character_name}
           onApply={handleApplyLevelUpChoices}
           onCancel={() => setLevelUpChoices(null)}
+        />
+      )}
+
+      {showConsent && (
+        <DataConsentModal
+          onAccept={handleConsentAccept}
+          onDecline={handleConsentDecline}
         />
       )}
 
