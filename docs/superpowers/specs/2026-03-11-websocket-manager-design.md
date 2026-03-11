@@ -15,7 +15,7 @@ Additional bugs found during analysis:
 - `ConnectionManager.broadcast()` calls `send_json` twice per connection — once inside the `try` block and once unconditionally outside it. The fix is to remove the call outside the `try` block.
 - Backend broadcasts a generic string with no type information, causing all consumers to re-fetch regardless of whether the change is relevant to them.
 - `TablesAdminPanel` opens a second WebSocket at L284 (assigned to `playerWsRef.current`) with no `onclose` handler and no cleanup.
-- `TablesAdminPanel` and `EventsAdminPanel` use `.replace("http", "ws")` for URL construction; the other components don't — both patterns coexist. Additionally, `EventList.jsx` passes `http://` directly to `new WebSocket()`, which is an invalid WebSocket URL (should be `ws://`).
+- `TablesAdminPanel` and `EventsAdminPanel` use `.replace("http", "ws")` for URL construction; the other three components don't — both patterns coexist. Additionally, `EventList.jsx`, `TableList.jsx`, and `TableDetailPage.jsx` all pass the raw `http://` URL directly to `new WebSocket()`, which is an invalid WebSocket URL and throws a `SyntaxError` in production (should be `ws://`).
 
 ---
 
@@ -129,7 +129,7 @@ useWebSocket(topic, callback)
 
 | Repo | File | Change |
 |---|---|---|
-| backend | `main.py` | Fix broadcast bug; type the two monitor messages |
+| backend | `main.py` | Fix broadcast bug; type the two monitor messages; remove the now-unused `WS_MESSAGE` constant |
 | backend | `tests/test_ws_updates.py` | New test file |
 | frontend | `src/contexts/WebSocketContext.jsx` | New — provider |
 | frontend | `src/hooks/useWebSocket.js` | New — hook |
