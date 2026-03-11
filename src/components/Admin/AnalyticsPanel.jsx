@@ -420,11 +420,26 @@ const AnalyticsPanel = () => {
                         <p className="text-gray-400 text-xs mb-1 capitalize">
                           {subKey.replace(/_/g, " ")}
                         </p>
-                        <p className="text-lg font-bold text-white">
-                          {typeof subValue === "number"
-                            ? subValue.toLocaleString()
-                            : String(subValue)}
-                        </p>
+                        {typeof subValue === "object" && subValue !== null ? (
+                          <ul className="text-sm text-white space-y-0.5">
+                            {Object.entries(subValue).map(([k, v]) => (
+                              <li key={k} className="flex justify-between gap-2">
+                                <span className="text-gray-400 capitalize truncate">
+                                  {k.replace(/_/g, " ")}
+                                </span>
+                                <span className="font-medium shrink-0">
+                                  {typeof v === "number" ? v.toLocaleString() : String(v)}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-lg font-bold text-white">
+                            {typeof subValue === "number"
+                              ? subValue.toLocaleString()
+                              : String(subValue)}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>
