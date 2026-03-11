@@ -164,6 +164,7 @@
       "family": "legendary",
       "title": "Ending Title",
       "text": "1-3 sentence ending text.",
+      "shareQuote": "First-person 'I did...' shareable quote specific to this outcome. Falls back to family pool if omitted.",
       "requirements": {
         "requiredTags": ["legendary"],
         "excludedTags": [],

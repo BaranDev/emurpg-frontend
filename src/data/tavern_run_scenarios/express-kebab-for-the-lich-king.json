@@ -12,7 +12,9 @@
     "supplies": 2,
     "danger": 1,
     "streak": 0,
-    "tags": ["wounded"]
+    "tags": [
+      "wounded"
+    ]
   },
   "acts": {
     "hook": [
@@ -38,7 +40,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -49,7 +53,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -60,7 +66,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -71,8 +79,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Sprint through the fish market becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -82,8 +94,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["popular", "heroic"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "popular",
+                  "heroic"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           },
@@ -100,7 +117,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -133,8 +152,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["popular"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "popular"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               },
               "crit": {
                 "text": "Borrow a cabbage cart becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -144,7 +167,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -173,7 +199,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -184,7 +212,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -206,7 +236,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -217,8 +249,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["legendary"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "legendary"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           },
@@ -235,7 +271,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -258,7 +296,9 @@
                   "streak": 0
                 },
                 "addTags": [],
-                "removeTags": ["cursed"]
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Do finger guns and promise vibes works cleanly and the crowd starts chanting your nickname.",
@@ -268,7 +308,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -279,8 +321,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming", "legendary"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "charming",
+                  "legendary"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           }
@@ -308,7 +355,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -352,7 +401,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["heroic"],
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -370,7 +421,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -403,7 +456,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["lucky"],
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -414,7 +469,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["popular"],
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -443,7 +500,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -454,7 +513,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -466,7 +527,9 @@
                   "streak": 0
                 },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "success": {
                 "text": "Accept the tiny passenger works cleanly and the crowd starts chanting your nickname.",
@@ -476,7 +539,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -487,7 +552,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "heroic"],
+                "addTags": [
+                  "lucky",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -505,7 +573,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -516,7 +586,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -538,8 +610,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["charming"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "charming"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               },
               "crit": {
                 "text": "Negotiate a passenger fee becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -549,8 +625,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           }
@@ -580,7 +660,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -602,8 +684,12 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "charming"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Perform heroic dance toll works cleanly and the crowd starts chanting your nickname.",
@@ -613,7 +699,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -624,7 +712,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -642,7 +733,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -675,8 +768,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "legendary"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "crit": {
                 "text": "Claim bridge premium membership becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -686,8 +783,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "charming"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           }
@@ -699,7 +800,9 @@
         "text": "Your rival, Donna the Halfling, zooms past on enchanted roller skates with a smug wave and a louder bell.",
         "requirements": {
           "requiredTags": [],
-          "excludedTags": ["heroic"]
+          "excludedTags": [
+            "heroic"
+          ]
         },
         "choices": [
           {
@@ -715,7 +818,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -737,7 +842,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -748,7 +855,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -759,8 +868,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "legendary"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "lucky",
+                  "legendary"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               }
             }
           },
@@ -777,7 +891,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -788,7 +904,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -799,7 +917,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -811,7 +931,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["reckless"]
+                "removeTags": [
+                  "reckless"
+                ]
               },
               "crit": {
                 "text": "Sabotage her bell with jam becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -821,8 +943,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           }
@@ -861,7 +988,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -894,8 +1023,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           },
@@ -923,7 +1056,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -945,7 +1080,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -956,8 +1093,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "heroic"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "lucky",
+                  "heroic"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           }
@@ -985,7 +1127,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1018,8 +1162,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "crit": {
                 "text": "Bribe with complimentary fries becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1029,7 +1177,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["legendary"],
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1047,7 +1197,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1058,7 +1210,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1081,7 +1235,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Present forged hygiene certificate becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1091,8 +1247,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "legendary"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "lucky",
+                  "legendary"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               }
             }
           }
@@ -1103,7 +1264,9 @@
         "title": "Possessed Signpost",
         "text": "A crossroads signpost starts giving contradictory directions in three accents and one pirate voice.",
         "requirements": {
-          "requiredTags": ["chaotic"],
+          "requiredTags": [
+            "chaotic"
+          ],
           "excludedTags": []
         },
         "choices": [
@@ -1120,7 +1283,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1153,8 +1318,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["charming"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "charming"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Follow the pirate voice becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1164,7 +1333,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["legendary", "popular"],
+                "addTags": [
+                  "legendary",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -1182,7 +1354,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1204,8 +1378,12 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "charming"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "success": {
                 "text": "Spin in place and pick a path works cleanly and the crowd starts chanting your nickname.",
@@ -1215,8 +1393,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["lucky"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "crit": {
                 "text": "Spin in place and pick a path becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1226,8 +1408,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           }
@@ -1255,7 +1441,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1266,7 +1454,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1277,7 +1467,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -1288,8 +1480,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "legendary"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Crowd-surf through the protest becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1299,8 +1495,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           },
@@ -1317,7 +1517,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1328,7 +1530,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1361,7 +1565,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -1392,7 +1598,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1403,7 +1611,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1425,7 +1635,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -1436,8 +1648,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming", "lucky"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "charming",
+                  "lucky"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           },
@@ -1454,7 +1671,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1477,7 +1696,9 @@
                   "streak": 0
                 },
                 "addTags": [],
-                "removeTags": ["cursed"]
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Refuse and focus on main kebab works cleanly and the crowd starts chanting your nickname.",
@@ -1488,7 +1709,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["reckless"]
+                "removeTags": [
+                  "reckless"
+                ]
               },
               "crit": {
                 "text": "Refuse and focus on main kebab becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1498,8 +1721,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           }
@@ -1527,7 +1755,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1538,7 +1768,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1550,7 +1782,9 @@
                   "streak": 0
                 },
                 "addTags": [],
-                "removeTags": ["cursed"]
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Take the sewer shortcut works cleanly and the crowd starts chanting your nickname.",
@@ -1571,8 +1805,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           },
@@ -1589,7 +1827,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1633,8 +1873,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["popular", "heroic"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "popular",
+                  "heroic"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           }
@@ -1673,7 +1918,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1684,7 +1931,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -1706,8 +1955,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming", "lucky"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "charming",
+                  "lucky"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               }
             }
           },
@@ -1724,7 +1978,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1758,7 +2014,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["cursed"]
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "crit": {
                 "text": "Recruit them as scouts becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -1768,8 +2026,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["popular"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "popular"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               }
             }
           }
@@ -1781,7 +2043,9 @@
         "text": "The blacksmith remembers you returning her runaway anvil and offers one emergency gear upgrade.",
         "requirements": {
           "requiredTags": [],
-          "excludedTags": ["greedy"]
+          "excludedTags": [
+            "greedy"
+          ]
         },
         "choices": [
           {
@@ -1797,7 +2061,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1819,7 +2085,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -1830,7 +2098,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["lucky"],
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -1841,7 +2111,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["legendary", "popular"],
+                "addTags": [
+                  "legendary",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -1859,7 +2132,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1881,7 +2156,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -1892,7 +2169,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -1903,8 +2182,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           }
@@ -1932,7 +2215,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1943,7 +2228,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -1976,7 +2263,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -1994,7 +2284,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2005,7 +2297,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2017,7 +2311,9 @@
                   "streak": 0
                 },
                 "addTags": [],
-                "removeTags": ["cursed"]
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Take two sacred dabs works cleanly and the crowd starts chanting your nickname.",
@@ -2027,7 +2323,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["legendary"],
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -2038,8 +2336,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["legendary", "popular"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "legendary",
+                  "popular"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           }
@@ -2067,7 +2370,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2078,7 +2383,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2089,8 +2396,12 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["chaotic"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "chaotic"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Promise a dramatic finish works cleanly and the crowd starts chanting your nickname.",
@@ -2101,7 +2412,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["reckless"]
+                "removeTags": [
+                  "reckless"
+                ]
               },
               "crit": {
                 "text": "Promise a dramatic finish becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -2111,7 +2424,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -2129,7 +2444,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2162,7 +2479,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -2173,8 +2492,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "heroic"],
-                "removeTags": ["greedy"]
+                "addTags": [
+                  "lucky",
+                  "heroic"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               }
             }
           }
@@ -2204,7 +2528,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2248,7 +2574,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -2266,7 +2594,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2277,7 +2607,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2310,7 +2642,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["legendary", "heroic"],
+                "addTags": [
+                  "legendary",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -2339,7 +2674,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2350,7 +2687,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2361,8 +2700,12 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["chaotic"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "chaotic"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "success": {
                 "text": "Reheat with emergency spark rune works cleanly and the crowd starts chanting your nickname.",
@@ -2383,8 +2726,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               }
             }
           },
@@ -2401,7 +2749,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2423,7 +2773,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -2445,8 +2797,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           }
@@ -2474,7 +2830,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2485,7 +2843,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2496,8 +2856,12 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["greedy"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "greedy"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Cover for the runaway nephew works cleanly and the crowd starts chanting your nickname.",
@@ -2508,7 +2872,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["reckless"]
+                "removeTags": [
+                  "reckless"
+                ]
               },
               "crit": {
                 "text": "Cover for the runaway nephew becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -2518,7 +2884,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["popular", "heroic"],
+                "addTags": [
+                  "popular",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -2536,7 +2905,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2558,7 +2929,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -2569,7 +2942,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -2580,7 +2955,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["popular", "heroic"],
+                "addTags": [
+                  "popular",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -2632,7 +3010,9 @@
                   "streak": 0
                 },
                 "addTags": [],
-                "removeTags": ["cursed"]
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Accept honorable duel works cleanly and the crowd starts chanting your nickname.",
@@ -2642,8 +3022,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Accept honorable duel becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -2653,8 +3037,12 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["heroic"],
-                "removeTags": ["reckless"]
+                "addTags": [
+                  "heroic"
+                ],
+                "removeTags": [
+                  "reckless"
+                ]
               }
             }
           },
@@ -2671,7 +3059,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2705,7 +3095,9 @@
                   "streak": 1
                 },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Deploy emergency banana peel becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -2715,7 +3107,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming", "lucky"],
+                "addTags": [
+                  "charming",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -2727,7 +3122,9 @@
         "title": "Sauce Becomes Sentient",
         "text": "The sauce starts whispering tactical advice and demanding equal billing on the receipt.",
         "requirements": {
-          "requiredTags": ["cursed"],
+          "requiredTags": [
+            "cursed"
+          ],
           "excludedTags": []
         },
         "choices": [
@@ -2744,7 +3141,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2766,7 +3165,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -2777,8 +3178,12 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["lucky"],
-                "removeTags": ["wounded"]
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Partner with the talking sauce becomes tavern legend by sunrise and even your enemies clap politely.",
@@ -2788,8 +3193,13 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["charming", "legendary"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "charming",
+                  "legendary"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               }
             }
           },
@@ -2806,7 +3216,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["greedy"],
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2817,7 +3229,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2828,8 +3242,12 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
-                "removeTags": ["cursed"]
+                "addTags": [
+                  "charming"
+                ],
+                "removeTags": [
+                  "cursed"
+                ]
               },
               "success": {
                 "text": "Attempt sauce exorcism works cleanly and the crowd starts chanting your nickname.",
@@ -2850,7 +3268,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "legendary"],
+                "addTags": [
+                  "lucky",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2879,7 +3300,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["cursed"],
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2890,7 +3313,9 @@
                   "danger": 1,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
@@ -2923,7 +3348,10 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky", "popular"],
+                "addTags": [
+                  "lucky",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -2941,7 +3369,9 @@
                   "danger": 2,
                   "streak": -1
                 },
-                "addTags": ["wounded"],
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -2963,7 +3393,9 @@
                   "danger": 0,
                   "streak": 0
                 },
-                "addTags": ["charming"],
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
@@ -2974,7 +3406,9 @@
                   "danger": -1,
                   "streak": 1
                 },
-                "addTags": ["heroic"],
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
@@ -2985,7 +3419,9 @@
                   "danger": -2,
                   "streak": 2
                 },
-                "addTags": ["lucky"],
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -3009,7 +3445,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 4
-      }
+      },
+      "shareQuote": "I delivered a kebab to a Lich King and ended up with my own national holiday."
     },
     {
       "id": "legendary-sauce-crown",
@@ -3018,14 +3455,17 @@
       "text": "The sentient sauce declares you chosen and crowns you with a glowing ladle. Your autograph now has a waiting list.",
       "requirements": {
         "requiredTags": [],
-        "excludedTags": ["cursed"],
+        "excludedTags": [
+          "cursed"
+        ],
         "minRenown": 7,
         "maxRenown": null,
         "minSupplies": null,
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 3
-      }
+      },
+      "shareQuote": "I got crowned by sentient sauce. My autograph now has a six-week waiting list."
     },
     {
       "id": "legendary-union-chief",
@@ -3041,7 +3481,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 3
-      }
+      },
+      "shareQuote": "I negotiated better wages mid-ceremony for an undead monarch. He was surprisingly reasonable."
     },
     {
       "id": "legendary-necropolis-marshal",
@@ -3050,14 +3491,17 @@
       "text": "The necropolis appoints you official night marshal of logistics. You get a cape with reflective trim.",
       "requirements": {
         "requiredTags": [],
-        "excludedTags": ["cursed"],
+        "excludedTags": [
+          "cursed"
+        ],
         "minRenown": 5,
         "maxRenown": null,
         "minSupplies": null,
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 4
-      }
+      },
+      "shareQuote": "I became the law of a necropolis. All I wanted was to drop off a kebab."
     },
     {
       "id": "legendary-ballad-route",
@@ -3073,7 +3517,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 3
-      }
+      },
+      "shareQuote": "Bards are writing songs about my delivery route. I told them to skip the part where I got bitten."
     },
     {
       "id": "heroic-warmth-wins",
@@ -3081,7 +3526,9 @@
       "title": "Warmth Wins",
       "text": "You deliver a still-warm meal and restore peace between undead nobles and living cooks. The city calls it your cleanest miracle.",
       "requirements": {
-        "requiredTags": ["popular"],
+        "requiredTags": [
+          "popular"
+        ],
         "excludedTags": [],
         "minRenown": 4,
         "maxRenown": null,
@@ -3089,7 +3536,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 1
-      }
+      },
+      "shareQuote": "I kept the kebab warm through a blizzard, two ambushes, and an emotional crisis. Worth it."
     },
     {
       "id": "heroic-frog-savior",
@@ -3097,7 +3545,9 @@
       "title": "Savior of the Frog Rain",
       "text": "You escort citizens safely through falling frogs before finishing the job. People start waving when you pass.",
       "requirements": {
-        "requiredTags": ["popular"],
+        "requiredTags": [
+          "popular"
+        ],
         "excludedTags": [],
         "minRenown": 4,
         "maxRenown": null,
@@ -3105,7 +3555,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 1
-      }
+      },
+      "shareQuote": "I saved a frog mid-delivery. The Lich King said I had great values. The frog said ribbit."
     },
     {
       "id": "heroic-nephew-return",
@@ -3113,7 +3564,9 @@
       "title": "Family Reunion",
       "text": "You return the runaway nephew safely and spare him the worst etiquette lecture. The court grants you a permanent guest pass.",
       "requirements": {
-        "requiredTags": ["heroic"],
+        "requiredTags": [
+          "heroic"
+        ],
         "excludedTags": [],
         "minRenown": 2,
         "maxRenown": null,
@@ -3121,7 +3574,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 2
-      }
+      },
+      "shareQuote": "I reunited a lich with his long-lost nephew. The kebab was cold but the reunion was warm."
     },
     {
       "id": "heroic-honest-courier",
@@ -3129,7 +3583,9 @@
       "title": "Honest Courier Ending",
       "text": "You refuse easy scams and finish on merit. It is less flashy, but everyone trusts you with important deliveries now.",
       "requirements": {
-        "requiredTags": ["popular"],
+        "requiredTags": [
+          "popular"
+        ],
         "excludedTags": [],
         "minRenown": 3,
         "maxRenown": null,
@@ -3137,7 +3593,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 1
-      }
+      },
+      "shareQuote": "I told the Lich King his order was late. He respected my honesty. Barely."
     },
     {
       "id": "heroic-public-toast",
@@ -3145,7 +3602,9 @@
       "title": "Public Toast",
       "text": "The tavern hosts a toast in your honor and your boss finally learns your full name. It only took mild chaos.",
       "requirements": {
-        "requiredTags": ["heroic"],
+        "requiredTags": [
+          "heroic"
+        ],
         "excludedTags": [],
         "minRenown": 3,
         "maxRenown": null,
@@ -3153,7 +3612,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": 1
-      }
+      },
+      "shareQuote": "An undead monarch raised a toast in my honor. The toast was also undead. Still touching."
     },
     {
       "id": "chaotic-bananas-victory",
@@ -3161,7 +3621,9 @@
       "title": "Banana Peel Doctrine",
       "text": "You win through improvised nonsense and questionable fruit placement. The court rules it technically legal.",
       "requirements": {
-        "requiredTags": ["reckless"],
+        "requiredTags": [
+          "reckless"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3169,7 +3631,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I traded the kebab for a cart of bananas and somehow this was considered a win."
     },
     {
       "id": "chaotic-dance-toll-champion",
@@ -3177,7 +3640,9 @@
       "title": "Dance Toll Champion",
       "text": "Your bridge dance goes viral and you accidentally start a toll-performance festival. Nobody remembers why.",
       "requirements": {
-        "requiredTags": ["chaotic"],
+        "requiredTags": [
+          "chaotic"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3185,7 +3650,8 @@
         "maxSupplies": null,
         "minDanger": 3,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I paid a troll's dance toll. I won. I don't want to talk about what I danced."
     },
     {
       "id": "chaotic-pickle-doctrine",
@@ -3193,7 +3659,9 @@
       "title": "Pickle Doctrine",
       "text": "You convince the Lich King that pickles are a philosophical statement. A new royal menu category is born.",
       "requirements": {
-        "requiredTags": ["chaotic"],
+        "requiredTags": [
+          "chaotic"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3201,7 +3669,8 @@
         "maxSupplies": null,
         "minDanger": 3,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I established an international pickle doctrine. I was just supposed to deliver lunch."
     },
     {
       "id": "chaotic-lawsuit-bards",
@@ -3209,7 +3678,9 @@
       "title": "Bards v. You",
       "text": "You beat the bards in court by representing yourself and bringing props. The verdict is confusing but favorable.",
       "requirements": {
-        "requiredTags": ["chaotic"],
+        "requiredTags": [
+          "chaotic"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3217,7 +3688,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I got sued by bards. The case was settled out of court. I still don't understand why."
     },
     {
       "id": "chaotic-sauce-campaign",
@@ -3225,7 +3697,10 @@
       "title": "Sauce for Mayor",
       "text": "You and the sentient sauce launch a local campaign and nearly win. Your slogan was weirdly effective.",
       "requirements": {
-        "requiredTags": ["chaotic", "popular"],
+        "requiredTags": [
+          "chaotic",
+          "popular"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3233,7 +3708,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I accidentally started a sauce-based political movement. I just wanted a tip."
     },
     {
       "id": "cursed-eternal-lunch-shift",
@@ -3241,7 +3717,9 @@
       "title": "Eternal Lunch Shift",
       "text": "The delivery succeeds, but a minor curse binds you to lunch rush forever. The tips are decent, the hours are haunted.",
       "requirements": {
-        "requiredTags": ["wounded"],
+        "requiredTags": [
+          "wounded"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3249,7 +3727,8 @@
         "maxSupplies": null,
         "minDanger": 4,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I'm on an eternal lunch shift for a lich. No overtime. No breaks. No escape."
     },
     {
       "id": "cursed-fork-mark",
@@ -3257,7 +3736,9 @@
       "title": "Marked by the Fork",
       "text": "The Sacred Fork glows and brands your glove with a warning sigil. Doors open for you, but mirrors heckle you.",
       "requirements": {
-        "requiredTags": ["cursed"],
+        "requiredTags": [
+          "cursed"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3265,7 +3746,8 @@
         "maxSupplies": null,
         "minDanger": 3,
         "minStreak": null
-      }
+      },
+      "shareQuote": "A cursed fork left a mark on my hand. Legends say it will open a gate. I say it itches."
     },
     {
       "id": "cursed-cold-kebab-prophecy",
@@ -3273,7 +3755,9 @@
       "title": "Cold Kebab Prophecy",
       "text": "You complete the route at a terrible cosmic price and now hear whispers whenever kebab cools below room temperature.",
       "requirements": {
-        "requiredTags": ["wounded"],
+        "requiredTags": [
+          "wounded"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3281,7 +3765,8 @@
         "maxSupplies": null,
         "minDanger": 3,
         "minStreak": null
-      }
+      },
+      "shareQuote": "A cold kebab triggered an ancient prophecy. I should have kept it in the warming pouch."
     },
     {
       "id": "cursed-frog-omen",
@@ -3289,7 +3774,10 @@
       "title": "Frog Omen",
       "text": "Frogs continue falling only when you are on shift. Scholars call it weather, priests call it your vibe.",
       "requirements": {
-        "requiredTags": ["cursed", "reckless"],
+        "requiredTags": [
+          "cursed",
+          "reckless"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3297,7 +3785,8 @@
         "maxSupplies": null,
         "minDanger": 4,
         "minStreak": null
-      }
+      },
+      "shareQuote": "The frog I saved was a bad omen. The Lich King told me this. The frog confirmed it."
     },
     {
       "id": "cursed-ladle-oath",
@@ -3305,7 +3794,10 @@
       "title": "The Ladle Oath",
       "text": "A cursed ladle chooses you and refuses to leave your side. It critiques every sauce decision you make.",
       "requirements": {
-        "requiredTags": ["cursed", "reckless"],
+        "requiredTags": [
+          "cursed",
+          "reckless"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "maxRenown": null,
@@ -3313,7 +3805,8 @@
         "maxSupplies": null,
         "minDanger": 3,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I swore an oath to a sentient ladle. It's binding. I checked."
     },
     {
       "id": "pathetic-lost-receipt",
@@ -3329,7 +3822,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I lost the receipt. The Lich King didn't accept the order. I walked home in the rain."
     },
     {
       "id": "pathetic-eaten-on-route",
@@ -3345,7 +3839,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I ate the kebab. I told myself it was a quality check. It was not a quality check."
     },
     {
       "id": "pathetic-broke-boot",
@@ -3361,7 +3856,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "My boot broke mid-delivery. I finished the route in one shoe. The kebab did not survive."
     },
     {
       "id": "pathetic-fired-then-rehired",
@@ -3377,7 +3873,8 @@
         "maxSupplies": null,
         "minDanger": 2,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I got fired and rehired on the same shift. They needed me. Sadly."
     },
     {
       "id": "pathetic-fallback",
@@ -3393,7 +3890,8 @@
         "maxSupplies": null,
         "minDanger": null,
         "minStreak": null
-      }
+      },
+      "shareQuote": "I failed to deliver a kebab to a lich king. Even the skeleton at the door felt bad for me."
     }
   ]
 }

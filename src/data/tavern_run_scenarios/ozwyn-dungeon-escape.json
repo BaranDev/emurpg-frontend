@@ -3,13 +3,18 @@
   "name": "Ozwyn the Owlbear's Dungeon Escape",
   "description": "Ozwyn wakes up in a dungeon with a splitting headache, a bag full of suspicious loot, and several very bad ideas.",
   "thumbnail": "https://r2.emurpg.com/tavern-run/ozwyn-dungeon-escape.webp",
-  "theme": { "accent": "amber", "mood": "chaotic" },
+  "theme": {
+    "accent": "amber",
+    "mood": "chaotic"
+  },
   "startingState": {
     "renown": 0,
     "supplies": 2,
     "danger": 1,
     "streak": 0,
-    "tags": ["wounded"]
+    "tags": [
+      "wounded"
+    ]
   },
   "acts": {
     "hook": [
@@ -17,7 +22,10 @@
         "id": "a-rude-awakening",
         "title": "A Rude Awakening",
         "text": "Ozwyn's eyes snap open. Stone ceiling. Iron bars. A bag of clinking loot clutched to his feathered chest. His head throbs like a war drum played by an enthusiastic orc.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "inspect-loot-bag",
@@ -26,8 +34,13 @@
             "rollTable": {
               "critFail": {
                 "text": "The bag is full of live bees. Ozwyn screams, the bees scream, everyone has a terrible time.",
-                "statChanges": { "danger": 1, "supplies": -1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 1,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -38,20 +51,31 @@
               },
               "mixed": {
                 "text": "Some coins, a dagger, and what appears to be someone's lunch. Could be worse.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Gold coins, a lockpick set, and a very flattering self-portrait of Ozwyn. Past-Ozwyn had taste.",
-                "statChanges": { "supplies": 1, "renown": 1 },
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "The bag contains a small fortune, a map of the dungeon, and a note that says 'You're welcome — Future Ozwyn.' Incredible.",
-                "statChanges": { "supplies": 2, "renown": 1 },
-                "addTags": ["lucky", "greedy"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "lucky",
+                  "greedy"
+                ],
                 "removeTags": []
               }
             }
@@ -63,13 +87,17 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn presses his ear to the door and it swings open, smacking him in the beak. The guards heard that.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "All Ozwyn hears is his own headache. It's quite loud.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -81,14 +109,21 @@
               },
               "success": {
                 "text": "Guard shift change in five minutes. Left corridor is unpatrolled. Ozwyn's owl-ears earn their keep.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn overhears the entire guard rotation, the warden's lunch order, and the password to the front gate. His headache was worth it.",
-                "statChanges": { "renown": 1, "danger": -1 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -100,33 +135,55 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn sees colors that don't exist, speaks fluent Mushroom for eleven minutes, and wakes up in the corner wearing his bag as a hat.",
-                "statChanges": { "danger": 1, "supplies": -1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 1,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "It tastes like regret and feet. Ozwyn's headache gets a headache.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Tastes awful but Ozwyn feels slightly more alive. The mushroom glows inside his stomach. That's probably fine.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "success": {
                 "text": "The mushroom is actually a rare healing truffle. Ozwyn's headache evaporates and he feels ready to fight a dragon. He won't, but he could.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Ozwyn gains temporary night vision, his wounds close, and he can smell treasure through walls. The mushroom winks at him. He winks back.",
-                "statChanges": { "renown": 1, "supplies": 1 },
-                "addTags": ["lucky"],
-                "removeTags": ["wounded"]
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           }
@@ -136,7 +193,10 @@
         "id": "the-note",
         "title": "The Note",
         "text": "There's a note pinned to Ozwyn's chest. Pinned. With an actual pin. Through his fur. It reads: 'RETURN THE CROWN OR ELSE.' Ozwyn does not remember any crown.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "read-carefully",
@@ -145,8 +205,12 @@
             "rollTable": {
               "critFail": {
                 "text": "The note is cursed. The words rearrange into 'FOOL' and the paper dissolves, leaving a rash on Ozwyn's paws.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -157,20 +221,30 @@
               },
               "mixed": {
                 "text": "Written by 'Warden Grimjaw.' There's a PS: 'Also you owe me lunch money.' At least Ozwyn knows who's mad at him.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The back of the note has a partial map scratched in. Someone wanted Ozwyn to escape — or wanted him to think that.",
-                "statChanges": { "renown": 1, "danger": -1 },
+                "statChanges": {
+                  "renown": 1,
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Between the lines, a hidden message: 'Third brick from the left. Good luck, handsome.' Past Ozwyn left himself a way out. What a legend.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -182,32 +256,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn wipes his beak and the ink stains his face permanently. He now looks like he has a villain mustache. Guards will definitely notice.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The note was the only clue to escaping and Ozwyn just blew his nose on it. Classic Ozwyn.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn cleans up nicely, feels better about himself, and the note is now useless. Trade-offs.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "As Ozwyn crumples the note, he spots a key taped to the back. Threats come with free lockpicks if you're disrespectful enough.",
-                "statChanges": { "supplies": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn uses the threat letter to clean his face, fold a jaunty hat, and accidentally discovers it's enchanted paper — it now shows the full dungeon layout. Disrespect wins.",
-                "statChanges": { "supplies": 1, "renown": 1 },
-                "addTags": ["chaotic", "lucky"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -219,8 +315,12 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn gets a paper cut on his beak that bleeds dramatically. The bird looks like a crumpled sock.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -231,20 +331,35 @@
               },
               "mixed": {
                 "text": "The bird is passable. A nearby rat seems impressed. Ozwyn feels a tiny spark of pride in captivity.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "It's beautiful. Ozwyn throws it through the bars and it glides to a guard who is so moved he drops his keys.",
-                "statChanges": { "supplies": 1, "renown": 1 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The origami bird comes alive, flutters through the bars, steals a key ring, and returns. Ozwyn doesn't question magic anymore.",
-                "statChanges": { "supplies": 2, "renown": 1 },
-                "addTags": ["charming", "lucky"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "charming",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -255,7 +370,10 @@
         "id": "cellmate",
         "title": "Cellmate",
         "text": "A figure stirs in the dark corner of the cell. Someone — or something — else is locked in here with Ozwyn. It groans and sits up.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "talk-to-them",
@@ -264,8 +382,12 @@
             "rollTable": {
               "critFail": {
                 "text": "It's a very angry dwarf who says Ozwyn stole his pants last night. Ozwyn looks down. He is indeed wearing dwarf-sized pants.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -276,20 +398,35 @@
               },
               "mixed": {
                 "text": "'Name's Grub. I've been here three days. The food's terrible but the ambiance is worse.' At least Ozwyn has someone to complain with.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "The cellmate is a retired thief who knows every exit. She draws a map in the dust and says 'You remind me of my idiot son. Go. Be free.'",
-                "statChanges": { "renown": 1, "danger": -1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The cellmate is actually the dungeon architect's apprentice, jailed for 'creative differences.' He knows every secret passage, trap, and bathroom. Jackpot.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["popular", "lucky"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "popular",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -301,32 +438,46 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn fake-snores so loudly the guards come to check. His cellmate throws a rock at him. Everyone is having a bad time.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "The cellmate pokes Ozwyn repeatedly. 'I know you're awake. Your tail is wagging.' Owlbears don't wag. Or do they?",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn holds still long enough for the cellmate to monologue about escape plans. Free intel through the power of being annoying.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The cellmate tiptoes past Ozwyn to escape, leaving behind a lockpick 'for the sleeping one.' Patience pays off.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn's fake sleep is so convincing the guards declare him dead and open the cell to remove the body. Ozwyn springs up and casually walks out.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["lucky", "chaotic"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "lucky",
+                  "chaotic"
+                ],
                 "removeTags": []
               }
             }
@@ -338,8 +489,12 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn flexes so hard he pulls a muscle and falls over. The cellmate laughs until they cry. Even the rats are snickering.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -350,20 +505,33 @@
               },
               "mixed": {
                 "text": "The cellmate backs up slightly. Not intimidated, exactly, but willing to share the good corner of the cell.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn's pose is so magnificent the cellmate immediately offers to be his sidekick. 'I've never met a real hero before,' they whisper in awe.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["heroic", "popular"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "heroic",
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn's power pose radiates such raw energy that the cell bars bend slightly outward. The cellmate kneels. A rat salutes. Legend.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["heroic", "legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "heroic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -374,7 +542,10 @@
         "id": "the-guards-lunch",
         "title": "The Guard's Lunch",
         "text": "A food tray slides under the cell bars. Stale bread, mystery stew, and something that might be cheese or might be a dare. The guard is whistling and not paying attention.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "eat-guard-food",
@@ -383,8 +554,13 @@
             "rollTable": {
               "critFail": {
                 "text": "The stew is alive. It bites back. Ozwyn loses the fight against his own lunch and retreats to the corner in shame.",
-                "statChanges": { "supplies": -1, "danger": 1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": 1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -395,21 +571,33 @@
               },
               "mixed": {
                 "text": "It's terrible but filling. Ozwyn's stomach stops complaining and starts merely grumbling passive-aggressively.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Under the bread, a note from a sympathetic cook: 'Side door, midnight, don't tell anyone.' Ozwyn might have a friend out there.",
-                "statChanges": { "supplies": 1, "renown": 1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The 'cheese' is actually a compressed healing potion. Ozwyn's headache vanishes and he feels like he could benchpress the cell door.",
-                "statChanges": { "supplies": 2, "renown": 1 },
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1
+                },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           },
@@ -420,8 +608,12 @@
             "rollTable": {
               "critFail": {
                 "text": "The tray is made of soggy wood. Ozwyn ties it to his arm and it disintegrates immediately. The stew goes everywhere.",
-                "statChanges": { "supplies": -1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "supplies": -1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -432,20 +624,34 @@
               },
               "mixed": {
                 "text": "The tray is dented tin — not great, not terrible. Ozwyn straps it on. He looks ridiculous but marginally safer.",
-                "statChanges": { "danger": -1 },
+                "statChanges": {
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "This is actually a quality tray. Ozwyn fashions a respectable arm-shield. He catches his reflection and looks heroic, in a homeless sort of way.",
-                "statChanges": { "danger": -1, "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "danger": -1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The tray is engraved with a ward symbol. It's enchanted. Ozwyn now has a magic shield that hums when danger is near. Best meal delivery ever.",
-                "statChanges": { "danger": -2, "renown": 1, "supplies": 1 },
-                "addTags": ["heroic", "lucky"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "heroic",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -457,32 +663,56 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn slides the tray directly into the opposite wall. The guard stares. 'Did you just... throw your food at nothing?' Embarrassing.",
-                "statChanges": { "danger": 2, "supplies": -1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The guard steps over the tray without looking down. Professional. Ozwyn respects it but hates it.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The guard stumbles but catches himself. He shoots Ozwyn a dirty look. Not a full trip, but the seed of chaos has been planted.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Perfect slide. The guard goes down like a sack of potatoes. His keys skid within reach. Ozwyn snatches them with owl-like precision.",
-                "statChanges": { "supplies": 1, "renown": 1, "danger": -1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The guard slips, does a full backflip, and knocks himself unconscious. His armor, keys, and sandwich are now Ozwyn's. The cellmate applauds.",
-                "statChanges": { "supplies": 2, "renown": 2, "danger": -1 },
-                "addTags": ["chaotic", "lucky"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "chaotic",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -495,7 +725,10 @@
         "id": "corridor-of-choices",
         "title": "Corridor of Choices",
         "text": "Three passages branch from the cell block. One is well-lit with torches. One is pitch dark and moaning. One smells aggressively of cheese.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "well-lit-path",
@@ -504,13 +737,17 @@
             "rollTable": {
               "critFail": {
                 "text": "The torches are a trap. They explode into smoke and Ozwyn stumbles into a guard barracks mid-poker night. 'Fold,' he says weakly.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Well-lit also means well-guarded. Ozwyn walks straight into a checkpoint and has to awkwardly reverse like a spooked cat.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -522,14 +759,23 @@
               },
               "success": {
                 "text": "The well-lit corridor leads past the kitchens. Ozwyn swipes a pie and a sense of direction. Upward and onward.",
-                "statChanges": { "supplies": 1, "renown": 1 },
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "The torches mark a VIP escape corridor — built for nobles too important to stay imprisoned. Plush carpet, helpful signs, and a complimentary mint.",
-                "statChanges": { "renown": 2, "danger": -1, "supplies": 1 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -541,32 +787,48 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn walks face-first into a wall, a spider web, another wall, and something wet. He emerges covered in mystery goo and terror.",
-                "statChanges": { "danger": 2, "supplies": -1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 2,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "It's dark. Ozwyn trips, falls, and lies on the ground questioning his life choices for a full minute before getting up.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn fumbles through but finds a side passage. It leads somewhere. Where? Who knows. Forward is forward.",
                 "statChanges": {},
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Owl eyes activate. Ozwyn navigates flawlessly and finds a hidden stash of supplies left by previous escapees.",
-                "statChanges": { "supplies": 2 },
+                "statChanges": {
+                  "supplies": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "The darkness is actually an illusion hiding a secret passage. Ozwyn walks through it like a legend and emerges three floors closer to freedom.",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -578,32 +840,50 @@
             "rollTable": {
               "critFail": {
                 "text": "It wasn't cheese. It was a troll's foot spa. Ozwyn has seen things he cannot unsee. The smell will haunt him forever.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "It's just really old cheese storage. No exits, no treasure, just centuries of mold. Ozwyn's headache approves of none of this.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "It leads to the dungeon pantry. No exit, but Ozwyn fills his pockets with cheese wheels. Tactical cheese.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The cheese smell leads to a supply room with a ventilation shaft big enough for an owlbear. Someone has been smuggling cheese through here.",
-                "statChanges": { "supplies": 1, "danger": -1 },
+                "statChanges": {
+                  "supplies": 1,
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Behind the cheese wall is an entire secret smuggler's tunnel. Cheese was the password all along. Ozwyn grabs supplies and sprints toward freedom, smelling incredible.",
-                "statChanges": { "supplies": 2, "renown": 1, "danger": -2 },
-                "addTags": ["lucky", "greedy"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1,
+                  "danger": -2
+                },
+                "addTags": [
+                  "lucky",
+                  "greedy"
+                ],
                 "removeTags": []
               }
             }
@@ -614,7 +894,12 @@
         "id": "the-argumentative-lock",
         "title": "The Argumentative Lock",
         "text": "A heavy oak door blocks the path. Its iron lock has a face — literally. It yawns, notices Ozwyn, and says, 'Oh great, another one. Password?'",
-        "requirements": { "requiredTags": [], "excludedTags": ["lucky"] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": [
+            "lucky"
+          ]
+        },
         "choices": [
           {
             "id": "pick-lock",
@@ -623,13 +908,18 @@
             "rollTable": {
               "critFail": {
                 "text": "The lock bites Ozwyn's lockpick in half and spits it out. 'Rude! I'm telling the warden!' it shrieks. An alarm echoes.",
-                "statChanges": { "danger": 2, "supplies": -1 },
+                "statChanges": {
+                  "danger": 2,
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "'That tickles and I hate it,' the lock says. It does not open. Ozwyn's dignity does not open either.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -641,14 +931,24 @@
               },
               "success": {
                 "text": "'Ooh, you're good,' the lock purrs. It clicks open willingly. 'Come back anytime.' Ozwyn will absolutely not.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn picks the lock so skillfully it falls in love with him. 'Take me with you,' it whispers. Ozwyn now has a sentient lock as a companion. Sure.",
-                "statChanges": { "renown": 2, "supplies": 1 },
-                "addTags": ["charming", "lucky"],
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "charming",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -660,7 +960,9 @@
             "rollTable": {
               "critFail": {
                 "text": "'Your argument is invalid and your fur is unkempt,' the lock snaps. It locks harder out of spite. Ozwyn didn't know locks could do that.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -672,20 +974,32 @@
               },
               "mixed": {
                 "text": "'Tell me a joke and I'll think about it,' the lock says. Ozwyn tells one. The lock considers. 'Mediocre. But fine.' Click.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn presents a compelling argument about the nature of freedom. The lock weeps a single iron tear and opens. 'Go. Be free. For both of us.'",
-                "statChanges": { "renown": 2 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn delivers such an eloquent speech that the lock, the door, and the nearby torch are all moved. The door opens itself. The torch bows.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["charming", "popular"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "charming",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -697,32 +1011,56 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn's headbutt bounces off the door and he falls backward, seeing stars. The lock laughs so hard it jams permanently. Now no one's getting through.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["wounded", "reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded",
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "THWACK. The door holds. Ozwyn's headache returns with interest. 'You done?' the lock asks. Ozwyn is not done. Ozwyn should be done.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The door cracks. Not open, but damaged. The lock says 'OW' and Ozwyn feels slightly guilty but mostly proud.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "CRASH. The door splinters, the lock screams 'I QUIT!' and Ozwyn charges through like a feathered battering ram. Beautiful.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["heroic", "reckless"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "heroic",
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn headbutts the door so hard it explodes into confetti. The lock sails across the hall and embeds in the wall. 'LEGENDARY,' echoes through the dungeon.",
-                "statChanges": { "renown": 3, "danger": -1 },
-                "addTags": ["legendary", "reckless"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary",
+                  "reckless"
+                ],
                 "removeTags": []
               }
             }
@@ -733,7 +1071,10 @@
         "id": "goblin-tax-collector",
         "title": "Goblin Tax Collector",
         "text": "A goblin in a tiny suit sits at a makeshift desk in the corridor. A sign reads: 'DUNGEON TOLL — PAY UP OR ELSE.' The goblin adjusts tiny spectacles.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "pay-toll",
@@ -742,32 +1083,49 @@
             "rollTable": {
               "critFail": {
                 "text": "The goblin counts the coins, declares them counterfeit, and whistles for backup. Three more goblins in tiny suits appear. Audit time.",
-                "statChanges": { "supplies": -2, "danger": 2 },
+                "statChanges": {
+                  "supplies": -2,
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn pays but the goblin demands 'processing fees,' 'corridor maintenance tax,' and 'being-an-owlbear surcharge.' Robbery.",
-                "statChanges": { "supplies": -2 },
+                "statChanges": {
+                  "supplies": -2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The goblin accepts payment and hands Ozwyn an official receipt. 'Keep this for your records.' Ozwyn does not have records.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The goblin is so pleased by the exact change that he shares a shortcut. 'Take the left at the skull. VIP detour. Don't tell anyone.'",
-                "statChanges": { "supplies": -1, "danger": -1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn overpays and the goblin is so flustered by the generosity he gives Ozwyn a dungeon loyalty card. 'Tenth escape is free!' What a deal.",
-                "statChanges": { "supplies": -1, "renown": 1, "danger": -2 },
-                "addTags": ["popular", "charming"],
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 1,
+                  "danger": -2
+                },
+                "addTags": [
+                  "popular",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -779,32 +1137,50 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn's counter-offer offends the goblin's professional pride. 'I studied four years of toll-booth academy for THIS?!' He doubles the price.",
-                "statChanges": { "supplies": -1, "danger": 1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "The goblin sees through every trick. 'Sir, I've dealt with dragons. You're an owlbear in stolen pants. Pay up.'",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "After fifteen minutes of haggling, Ozwyn gets a 10% discount. The goblin looks defeated. Ozwyn feels oddly guilty.",
-                "statChanges": { "supplies": -1, "renown": 1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn talks the toll down to a joke and a handshake. The goblin cackles, stamps a pass, and waves him through. 'First owlbear to make me laugh.'",
-                "statChanges": { "renown": 2 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn negotiates so well the goblin ends up paying HIM for the privilege of meeting a 'real adventurer.' The goblin also offers to be his accountant.",
-                "statChanges": { "supplies": 1, "renown": 2 },
-                "addTags": ["charming", "legendary"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 2
+                },
+                "addTags": [
+                  "charming",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -816,32 +1192,52 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn blinks first. The goblin erupts in victory, dances on his desk, and charges triple. Ozwyn's pride and wallet are both empty.",
-                "statChanges": { "supplies": -2, "danger": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "supplies": -2,
+                  "danger": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The goblin has terrifying staring endurance. After three minutes, Ozwyn's eyes water and he concedes. The toll stays.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "It's a draw. Both parties are impressed. The goblin cuts the toll in half as a sign of mutual respect. 'You've got good eyes, bird-bear.'",
-                "statChanges": { "supplies": -1, "renown": 1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Twenty seconds in, the goblin cracks. 'STOP. You win. Your eyes are terrifying. Go. PLEASE go.' Ozwyn passes toll-free.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn's owl-stare is so intense the goblin has a spiritual awakening, quits his job on the spot, and gives Ozwyn his desk drawer of confiscated loot.",
-                "statChanges": { "supplies": 2, "renown": 2 },
-                "addTags": ["legendary", "heroic"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 2
+                },
+                "addTags": [
+                  "legendary",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -852,7 +1248,10 @@
         "id": "suspicious-puddle",
         "title": "Suspicious Puddle",
         "text": "A puddle sits perfectly centered in the corridor. It ripples despite no wind. It's too clean. It's too round. It's watching Ozwyn.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "walk-around-puddle",
@@ -861,8 +1260,13 @@
             "rollTable": {
               "critFail": {
                 "text": "The puddle takes offense to being avoided and lunges sideways. Ozwyn is now soaking wet and the puddle is snickering. Puddles can't snicker. This one does.",
-                "statChanges": { "danger": 1, "supplies": -1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 1,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -879,14 +1283,22 @@
               },
               "success": {
                 "text": "As Ozwyn skirts the edge, he spots a drain cover the puddle was guarding. Beneath it: a shortcut. Sorry, puddle.",
-                "statChanges": { "danger": -1 },
+                "statChanges": {
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "The puddle is so impressed by Ozwyn's caution it parts like a tiny sea, revealing treasure underneath. 'A wise one,' it gurgles. 'Rare down here.'",
-                "statChanges": { "supplies": 1, "renown": 1, "danger": -1 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -898,32 +1310,51 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn leaps, the puddle rises like a geyser, and he lands face-first on the other side, completely drenched. The puddle does a victory ripple.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn's jump is short. One foot in the puddle. It's warm. It shouldn't be warm. Bad. Bad bad bad.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Clean jump! The puddle splashes indignantly but Ozwyn is already on the other side. Small victories.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn sails over with athletic grace he didn't know he had. The puddle makes an impressed 'bloop' noise. Style points.",
-                "statChanges": { "renown": 1, "streak": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 1,
+                  "streak": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn does a triple-flip over the puddle, sticks the landing, and the puddle applauds with three tiny waves. A nearby skeleton gives a thumbs-up.",
-                "statChanges": { "renown": 2, "streak": 1 },
-                "addTags": ["heroic", "legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "streak": 1
+                },
+                "addTags": [
+                  "heroic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -935,32 +1366,53 @@
             "rollTable": {
               "critFail": {
                 "text": "It tastes like memories, regret, and someone else's Tuesday. Ozwyn is now cursed to occasionally hear puddle thoughts. They're boring.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn sips and the puddle sips back. He doesn't know what that means and doesn't want to.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "It's... actually not bad? Tastes like spring water with a hint of existential dread. Refreshing?",
-                "statChanges": { "supplies": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "The puddle is a minor water elemental. Grateful for the attention, it shares dungeon secrets via ripple-patterns. Good puddle.",
-                "statChanges": { "renown": 1, "supplies": 1 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "renown": 1,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn drinks the entire puddle and absorbs its power. He can now sense water sources, hidden passages, and the emotional state of liquids. Incredible and useless.",
-                "statChanges": { "renown": 2, "supplies": 1 },
-                "addTags": ["legendary", "chaotic"],
+                "statChanges": {
+                  "renown": 2,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "legendary",
+                  "chaotic"
+                ],
                 "removeTags": []
               }
             }
@@ -971,7 +1423,12 @@
         "id": "the-alarm",
         "title": "The Alarm",
         "text": "CLICK. Ozwyn looks down. His big owlbear foot is on a pressure plate. A bell begins to ring somewhere above. That can't be good.",
-        "requirements": { "requiredTags": [], "excludedTags": ["lucky"] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": [
+            "lucky"
+          ]
+        },
         "choices": [
           {
             "id": "hide-alarm",
@@ -980,19 +1437,25 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn hides behind a pillar the width of a stick. His entire body is visible. A guard walks by, makes eye contact, and sighs.",
-                "statChanges": { "danger": 3 },
+                "statChanges": {
+                  "danger": 3
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn finds a barrel but can't fit. He's stuck half-in, half-out when the guards arrive. 'Aren't you the escapee?' 'I'm a barrel.'",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn squeezes into an alcove. Guards run past. One pauses, sniffs, shrugs, and moves on. Too close.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -1004,8 +1467,13 @@
               },
               "crit": {
                 "text": "Ozwyn's hiding spot has a secret door behind it, leading to a guard-free shortcut. The alarm actually helped. Life is beautiful.",
-                "statChanges": { "danger": -1, "renown": 1 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "danger": -1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1017,32 +1485,53 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn leans against the wall, crosses his arms, and says 'Sup' to the arriving guards. They do not think this is casual. They have swords.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn whistles and walks slowly. The guards are suspicious but can't technically prove he's not supposed to be here. 'Papers?' Ozwyn doesn't have papers.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "'Just doing my rounds,' Ozwyn says with a clipboard he found. The guards are confused enough to hesitate. Ozwyn walks briskly away.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn acts so naturally the guards assume he's maintenance. 'That alarm goes off every Tuesday,' he says. They nod and leave.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn convinces the guards that HE triggered the alarm to test THEIR response time. He grades them a C-minus and they apologize. Power.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["legendary", "charming"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -1054,32 +1543,50 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn sprints directly into a dead end. He turns around. The guards are already there. 'Nice run though,' one says.",
-                "statChanges": { "danger": 3 },
+                "statChanges": {
+                  "danger": 3
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn runs but his loot bag jingles with every step, creating a perfect audio trail. Stealth was never an option.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn outruns two guards but the third is annoyingly athletic. He barely loses them around a corner, panting and sweaty.",
-                "statChanges": { "danger": 1, "streak": 1 },
+                "statChanges": {
+                  "danger": 1,
+                  "streak": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Owlbears are surprisingly fast. Ozwyn reaches top speed and the guards give up after one corridor. 'Not paid enough for this.'",
-                "statChanges": { "streak": 1, "renown": 1 },
+                "statChanges": {
+                  "streak": 1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn runs so fast he breaks the sound barrier — for a dungeon. He leaves a trail of scattered papers and stunned guards. By the time anyone reacts, he's floors away.",
-                "statChanges": { "streak": 2, "renown": 2, "danger": -1 },
-                "addTags": ["legendary"],
+                "statChanges": {
+                  "streak": 2,
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1090,7 +1597,10 @@
         "id": "rival-escapee",
         "title": "Rival Escapee",
         "text": "Another prisoner rounds the corner at full sprint — a kobold in shackles, eyes wild with freedom-lust. They skid to a halt at the sight of Ozwyn. An awkward pause.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "team-up",
@@ -1099,32 +1609,57 @@
             "rollTable": {
               "critFail": {
                 "text": "The kobold agrees enthusiastically, then immediately triggers every alarm in the hallway. 'Oops! First escape!' Ozwyn has made a terrible ally.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "They team up but can't agree on direction. After five minutes of arguing at a crossroads, both are hopelessly lost.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The kobold knows one useful shortcut. Ozwyn provides the muscle. Together they are... slightly more competent than alone.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "The kobold is a demolitions expert. Within minutes, they've cleared two blocked passages and befriended a spider. Dream team.",
-                "statChanges": { "renown": 1, "danger": -1 },
-                "addTags": ["popular", "heroic"],
+                "statChanges": {
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "popular",
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The kobold turns out to be a former dungeon engineer. Together, they navigate like they built the place. 'You're the best cellmate I never had,' the kobold sniffles.",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["popular", "heroic", "lucky"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "popular",
+                  "heroic",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1136,32 +1671,53 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn sprints, trips over the kobold's chain, and they both tumble down a staircase into a basement. Negative progress.",
-                "statChanges": { "danger": 2, "supplies": -1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The kobold is shockingly fast. Ozwyn eats dust. Literal dust. The dungeon is very dusty.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Dead heat. Both arrive at the next junction gasping. The kobold wheezes, 'Tie?' Ozwyn wheezes back, 'Tie.' Mutual respect.",
-                "statChanges": { "streak": 1 },
+                "statChanges": {
+                  "streak": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn's bigger legs win the day. He reaches the junction first and takes the better path. The kobold yells 'REMATCH!' from behind.",
-                "statChanges": { "streak": 1, "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "streak": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn outruns the kobold so decisively that other prisoners stop to watch. Someone cheers. The kobold bows in defeat. A dungeon sports legend is born.",
-                "statChanges": { "streak": 2, "renown": 2 },
-                "addTags": ["legendary"],
+                "statChanges": {
+                  "streak": 2,
+                  "renown": 2
+                },
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1173,32 +1729,56 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn sticks out his foot and trips himself. The kobold hops over, waves, and disappears. Guards find Ozwyn on the floor.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The kobold dodges the trip and gives Ozwyn a look of pure betrayal. 'I THOUGHT WE WERE COOL.' They weren't. But still.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The kobold stumbles and the guards chase them instead. Ozwyn feels bad for exactly two seconds before using the distraction to advance.",
-                "statChanges": { "danger": -1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": -1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Perfect trip. The kobold creates enough chaos to occupy every guard on the floor. Ozwyn sneaks past like a shadow. A mean, owlbear-shaped shadow.",
-                "statChanges": { "danger": -2, "renown": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The kobold trips so spectacularly they accidentally take out three guards in a domino effect. Ozwyn walks through the carnage untouched. 'Nothing personal,' he whispers.",
-                "statChanges": { "danger": -2, "renown": 2, "streak": 1 },
-                "addTags": ["chaotic", "legendary"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 2,
+                  "streak": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1211,7 +1791,10 @@
         "id": "treasure-alcove",
         "title": "Treasure Alcove",
         "text": "Behind a loose brick, Ozwyn finds a hidden alcove stuffed with glittering trinkets, coins, and one very pretty tiara. Previous escapees' stash?",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "take-everything",
@@ -1220,32 +1803,56 @@
             "rollTable": {
               "critFail": {
                 "text": "The alcove is booby-trapped. Ozwyn grabs the tiara and a net drops on him. He's now a jewel-encrusted burrito.",
-                "statChanges": { "danger": 2, "supplies": -1 },
-                "addTags": ["greedy", "cursed"],
+                "statChanges": {
+                  "danger": 2,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "greedy",
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "There's too much loot and it all falls out of Ozwyn's bag, making a noise like a chandelier crashing. Subtle.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["greedy"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn stuffs his bag until it's bursting. He can barely walk but he's RICH. Priorities.",
-                "statChanges": { "supplies": 2 },
-                "addTags": ["greedy"],
+                "statChanges": {
+                  "supplies": 2
+                },
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Everything fits perfectly. Ozwyn's bag is heavy with treasure and he's practically skipping. Crime pays. Escape crime pays double.",
-                "statChanges": { "supplies": 3 },
-                "addTags": ["greedy"],
+                "statChanges": {
+                  "supplies": 3
+                },
+                "addTags": [
+                  "greedy"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Among the treasure is a Ring of Feather Fall. Ozwyn takes everything and the ring activates, making his heavy bag weightless. Greedy and graceful.",
-                "statChanges": { "supplies": 3, "renown": 1 },
-                "addTags": ["greedy", "lucky"],
+                "statChanges": {
+                  "supplies": 3,
+                  "renown": 1
+                },
+                "addTags": [
+                  "greedy",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1257,32 +1864,49 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn carefully selects items and picks the one cursed ring. It won't come off and it hums a tiny annoying song constantly.",
-                "statChanges": { "supplies": 1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn picks coins, but they're all dungeon-mint — worthless outside. He carries dead weight.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "A sensible haul. Some coins, a dagger, nothing cursed. Ozwyn feels responsible and slightly bored by it.",
-                "statChanges": { "supplies": 2 },
+                "statChanges": {
+                  "supplies": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn picks the most valuable items with expert precision. Maximum value, minimum weight. He was born for heists.",
-                "statChanges": { "supplies": 2, "renown": 1 },
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn selects a small amulet that turns out to be the most valuable item — a Ward of Safe Passage. It hums protectively. Quality over quantity.",
-                "statChanges": { "supplies": 2, "renown": 1, "danger": -1 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1294,32 +1918,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn writes 'Ozwyn was here' in full name. The guards now have his identity and handwriting. Great escaping, detective.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The note is too polite. Future prisoners will think a very courteous ghost lives in the wall.",
                 "statChanges": {},
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn writes encouragement for future escapees. It's oddly touching. He takes nothing but leaves something behind.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["heroic", "charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "'Good luck — Ozwyn.' The note becomes dungeon legend. Future prisoners will speak of the generous owlbear who paid it forward.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["heroic", "popular"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "heroic",
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn's note is so inspiring it starts a prison revolution three weeks later. Guards will blame 'that bloody owlbear' for years. The legend grows.",
-                "statChanges": { "renown": 3 },
-                "addTags": ["legendary", "heroic", "popular"],
+                "statChanges": {
+                  "renown": 3
+                },
+                "addTags": [
+                  "legendary",
+                  "heroic",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -1330,7 +1976,10 @@
         "id": "friendly-rat",
         "title": "Friendly Rat",
         "text": "A brown rat with a knowing look sits at a crossroads, cleaning its whiskers. It makes eye contact with Ozwyn and nods toward the left tunnel. Smart rat.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "follow-rat",
@@ -1339,32 +1988,51 @@
             "rollTable": {
               "critFail": {
                 "text": "The rat leads Ozwyn directly into a snake nest. Was the rat working for the snakes? Is this a rat-snake alliance? Betrayal.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The rat runs too fast and Ozwyn loses it at a junction. He's now lost AND ratless. The worst combination.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The rat leads Ozwyn through a safe corridor but then disappears into a crack. Useful while it lasted.",
-                "statChanges": { "danger": -1 },
+                "statChanges": {
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The rat navigates Ozwyn past two guard patrols and a trap. At the end, it squeaks proudly. Ozwyn has never respected a rodent more.",
-                "statChanges": { "danger": -2, "renown": 1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The rat leads Ozwyn to a hidden exit, waits at the threshold, and salutes with one tiny paw. Ozwyn salutes back, tears in his owl-eyes. Best friend.",
-                "statChanges": { "danger": -2, "renown": 2 },
-                "addTags": ["popular", "lucky"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 2
+                },
+                "addTags": [
+                  "popular",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1376,32 +2044,56 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn offers cheese. The rat is lactose intolerant and takes extreme offense. It squeaks a war cry and bites Ozwyn's toe.",
-                "statChanges": { "supplies": -1, "danger": 1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "The rat sniffs the offering, turns its nose up, and leaves. Ozwyn has been judged by a rat and found wanting.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The rat eats, nods approvingly, and squeaks twice. It might mean 'go right.' Ozwyn goes right. It seems correct-ish.",
-                "statChanges": { "supplies": -1, "danger": -1 },
-                "addTags": ["popular"],
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "The rat accepts the gift and brings back three friends. They form a tiny honor guard and lead Ozwyn through the dungeon. Rat VIP treatment.",
-                "statChanges": { "supplies": -1, "danger": -2, "renown": 1 },
-                "addTags": ["popular", "charming"],
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": -2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "popular",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The rat summons an army of dungeon rats who create a living carpet of safe passage. Ozwyn walks over traps, past guards, through locked doors. The Rat King endorses him.",
-                "statChanges": { "supplies": -1, "danger": -3, "renown": 2 },
-                "addTags": ["legendary", "popular"],
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": -3,
+                  "renown": 2
+                },
+                "addTags": [
+                  "legendary",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -1414,31 +2106,54 @@
               "critFail": {
                 "text": "Ozwyn names it 'Sir Biscuit' and it immediately runs away. Even rats don't want to be called that.",
                 "statChanges": {},
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The rat tolerates being named 'Crumbles' but refuses to ride on Ozwyn's shoulder. Some boundaries are sacred.",
                 "statChanges": {},
-                "addTags": ["popular"],
+                "addTags": [
+                  "popular"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "'Sir Nibbles' seems happy with the name. He climbs onto Ozwyn's shoulder and sometimes points at things. Mostly cheese.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["popular", "charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "popular",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "'Captain Whiskers' joins permanently. He scouts ahead, squeaks at danger, and looks adorable. Ozwyn's reputation as a beast-whisperer grows.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["popular", "charming"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "popular",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn names it 'Duke Rattington III' and it immediately demonstrates it can unlock doors, disarm traps, and do a backflip. Best recruitment decision ever.",
-                "statChanges": { "renown": 2, "danger": -2, "streak": 1 },
-                "addTags": ["popular", "legendary", "charming"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2,
+                  "streak": 1
+                },
+                "addTags": [
+                  "popular",
+                  "legendary",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -1449,7 +2164,10 @@
         "id": "armory-of-rejects",
         "title": "Armory of Rejects",
         "text": "A storage room full of confiscated gear. Most of it is junk, but one owlbear's junk is another owlbear's arsenal. Time to shop.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "grab-weapon",
@@ -1458,8 +2176,12 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn grabs a sword that immediately breaks. The blade flies across the room and cuts a rope holding up shelves. Avalanche of junk.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1470,20 +2192,36 @@
               },
               "mixed": {
                 "text": "A rusty but serviceable mace. It'll do. Ozwyn gives it an experimental swing and only breaks one shelf.",
-                "statChanges": { "supplies": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Hidden under a pile of broken shields, a perfectly balanced short sword with 'Return to Ozwyn' engraved on it. PAST OZWYN PLANNED FOR THIS.",
-                "statChanges": { "supplies": 2, "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn finds a flaming sword. It's literally on fire. It shouldn't be. He takes it. It sings a war hymn. This is the best day of his life.",
-                "statChanges": { "supplies": 2, "renown": 2, "danger": -1 },
-                "addTags": ["heroic", "legendary"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "heroic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1495,32 +2233,60 @@
             "rollTable": {
               "critFail": {
                 "text": "The hat is cursed. It won't come off and makes Ozwyn compulsively bow to everyone, including enemies. Horrifying.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["cursed", "chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "cursed",
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "It's a jester's hat with bells. Every step jingles. Stealth is now impossible. Ozwyn looks spectacular though.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "A wide-brimmed hat with a feather. It doesn't do anything useful but Ozwyn feels 40% more confident. Placebo armor.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "The hat is a guard captain's helmet. Ozwyn puts it on and suddenly looks official. Guards salute him. This is the power of hats.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The hat is a Crown of Minor Illusion. While wearing it, Ozwyn can look like anyone. He chooses 'guard captain' and strolls through the dungeon like he owns it. He might, soon.",
-                "statChanges": { "renown": 2, "danger": -2, "supplies": 1 },
-                "addTags": ["legendary", "chaotic", "charming"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "legendary",
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -1532,32 +2298,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn sets a trap and immediately walks into it himself. He hangs upside-down from the ceiling for three embarrassing minutes.",
-                "statChanges": { "danger": 1, "supplies": -1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 1,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The traps are too obvious. Guards step around them easily. 'Amateur,' one mutters. Ozwyn is offended.",
                 "statChanges": {},
-                "addTags": ["reckless"],
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "One trap works, one doesn't. A guard trips but his partner helps him up. 50% success rate isn't bad for an owlbear.",
-                "statChanges": { "danger": -1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": -1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn rigs three hallways with confiscated gear. Crashes, shouts, and creative cursing echo behind him. Nobody's following.",
-                "statChanges": { "danger": -2, "renown": 1 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn creates a Rube Goldberg machine of dungeon chaos. A cascade of falling shelves, tripwires, and one angry helmet creates a blockade that'll take hours to clear.",
-                "statChanges": { "danger": -3, "renown": 2 },
-                "addTags": ["legendary", "reckless"],
+                "statChanges": {
+                  "danger": -3,
+                  "renown": 2
+                },
+                "addTags": [
+                  "legendary",
+                  "reckless"
+                ],
                 "removeTags": []
               }
             }
@@ -1568,7 +2356,10 @@
         "id": "the-merchant-ghost",
         "title": "The Merchant Ghost",
         "text": "A translucent figure floats behind a spectral counter. 'WELCOME TO GARY'S GHOST GOODS,' reads the ectoplasmic sign. 'Competitive prices. No refunds. I'm dead.'",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "buy-something",
@@ -1577,32 +2368,52 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn buys a 'health potion' that's just ghost tears in a bottle. He drinks it and can see through walls — his own hands. Temporarily incorporeal. Terrifying.",
-                "statChanges": { "supplies": -2 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "supplies": -2
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Everything is overpriced. Ozwyn buys a 'dungeon map' that's just Gary's old grocery list. 'All sales final,' Gary says smugly.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn buys a flickering ghost lantern. It lights up most of the time. Ghost-quality goods are exactly as advertised.",
-                "statChanges": { "supplies": -1, "danger": -1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Gary sells Ozwyn a skeleton key (literally carved from a skeleton). It works on basic locks and Gary whispers escape tips. Customer service isn't dead.",
-                "statChanges": { "supplies": -1, "renown": 1, "danger": -1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 1,
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Gary has a 'going-out-of-afterlife sale.' Ozwyn gets a pouch of shadow-coins (accepted by dungeon merchants), a health draught, and a hug. Gary needed the hug.",
-                "statChanges": { "supplies": 1, "renown": 1, "danger": -1 },
-                "addTags": ["popular", "lucky"],
+                "statChanges": {
+                  "supplies": 1,
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "popular",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1614,8 +2425,12 @@
             "rollTable": {
               "critFail": {
                 "text": "Gary is a ghost with nothing to lose. He lowers prices to zero and gives Ozwyn cursed items out of spite. 'Free! ALL CURSED! ENJOY!'",
-                "statChanges": { "supplies": 1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1626,20 +2441,37 @@
               },
               "mixed": {
                 "text": "Gary caves slightly. 'Fine. Friends-and-family discount. Even though you're neither.' A small win.",
-                "statChanges": { "supplies": 1 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "supplies": 1
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn's sob story about waking up in prison gets Gary emotional. Ghosts can cry? They can. Massive discount and heartfelt advice.",
-                "statChanges": { "supplies": 2, "renown": 1 },
-                "addTags": ["charming", "popular"],
+                "statChanges": {
+                  "supplies": 2,
+                  "renown": 1
+                },
+                "addTags": [
+                  "charming",
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Gary is so charmed he offers to possess a guard and walk Ozwyn right out the front entrance. 'I haven't had a body in years. This'll be FUN.'",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["charming", "legendary", "popular"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "charming",
+                  "legendary",
+                  "popular"
+                ],
                 "removeTags": []
               }
             }
@@ -1651,32 +2483,46 @@
             "rollTable": {
               "critFail": {
                 "text": "Gary gives directions to his favorite haunt — a dead end with his tombstone. 'Oh wait, you wanted OUT? Should've said so.' Ghost humor.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Gary's directions are for a dungeon layout from 200 years ago. Things have changed. 'The lava room is new?!' Ozwyn screams.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Gary gives somewhat accurate directions filtered through ghost-brain. 'Left, left, through the wall — oh wait, you can't do that — right instead.'",
-                "statChanges": { "danger": -1 },
+                "statChanges": {
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Gary's been watching prisoners escape for centuries. He knows the three best routes and which guards are lazy. Invaluable intel.",
-                "statChanges": { "danger": -2, "renown": 1 },
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Gary reveals a ghost-only passage that living creatures can use 'if they hold their breath and think sad thoughts.' Ozwyn does both. It works. Who knew.",
-                "statChanges": { "danger": -2, "renown": 2 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 2
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1687,7 +2533,12 @@
         "id": "healing-fountain",
         "title": "Healing Fountain?",
         "text": "A stone basin glows with soft blue light. The water sparkles invitingly. A sign reads: 'DRINK AT OWN RISK. Management not liable for tentacles.'",
-        "requirements": { "requiredTags": ["wounded"], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [
+            "wounded"
+          ],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "drink-fountain",
@@ -1696,8 +2547,12 @@
             "rollTable": {
               "critFail": {
                 "text": "Tentacles. The sign was not joking. Ozwyn fights off a fountain-squid and emerges wetter, angrier, and somehow more wounded.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1708,21 +2563,35 @@
               },
               "mixed": {
                 "text": "Minor healing. The headache dulls from 'war drum' to 'gentle bongo.' Progress.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The water is genuinely magical. Ozwyn's wounds knit, his headache fades, and he feels ten years younger. What a fountain.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "Ozwyn drinks and the fountain blesses him with full restoration and a faint blue glow. He's healed, powered up, and looks absolutely majestic.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["heroic", "lucky"],
-                "removeTags": ["wounded"]
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "heroic",
+                  "lucky"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           },
@@ -1733,8 +2602,12 @@
             "rollTable": {
               "critFail": {
                 "text": "The water is not cold. It's sentient. It crawls up Ozwyn's face and tries to become a hat. WATER HAT IS NOT HEALING.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
@@ -1751,15 +2624,26 @@
               },
               "success": {
                 "text": "The water soothes everything it touches. Ozwyn's headache melts away and his bruises fade. He almost feels good.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
-                "removeTags": ["wounded"]
+                "removeTags": [
+                  "wounded"
+                ]
               },
               "crit": {
                 "text": "The fountain recognizes a worthy soul. It heals Ozwyn completely and whispers the location of every trap ahead. Best spa day ever.",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["lucky"],
-                "removeTags": ["wounded"]
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "lucky"
+                ],
+                "removeTags": [
+                  "wounded"
+                ]
               }
             }
           },
@@ -1770,7 +2654,9 @@
             "rollTable": {
               "critFail": {
                 "text": "The fountain water evaporates the instant it leaves the basin. Ozwyn is left holding an empty bottle and a grudge against physics.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -1782,20 +2668,29 @@
               },
               "mixed": {
                 "text": "The water retains some glow in the bottle. It'll probably work once. Maybe. Dungeon healthcare is unreliable.",
-                "statChanges": { "supplies": 1 },
+                "statChanges": {
+                  "supplies": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Two full bottles of glowing healing water. Ozwyn now has portable medicine and the smuggest expression an owlbear can make.",
-                "statChanges": { "supplies": 2 },
+                "statChanges": {
+                  "supplies": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "The water concentrates in the bottle, becoming a potent healing elixir. It also fizzes pleasantly. Ozwyn has crafted a legendary potion using only luck and a stolen bottle.",
-                "statChanges": { "supplies": 3, "renown": 1 },
-                "addTags": ["lucky"],
+                "statChanges": {
+                  "supplies": 3,
+                  "renown": 1
+                },
+                "addTags": [
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -1806,7 +2701,10 @@
         "id": "dungeon-graffiti",
         "title": "Dungeon Graffiti",
         "text": "The walls are covered in scratched messages from past prisoners. 'Turn left at the skull,' 'DON'T trust the cheese,' and 'Gronk was here (sorry about the smell).'",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "follow-wall-advice",
@@ -1815,7 +2713,9 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn follows 'GO DOWN FOR FREEDOM' and descends three floors deeper into the dungeon. The graffiti artist was either a liar or very confused.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -1827,20 +2727,30 @@
               },
               "mixed": {
                 "text": "'Avoid the third corridor' saves Ozwyn from a patrol. He mentally thanks whatever prisoner was helpful between the curse words.",
-                "statChanges": { "danger": -1 },
+                "statChanges": {
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The messages paint a clear escape route when read in order. Previous prisoners collectively mapped the dungeon through graffiti. Collaborative brilliance.",
-                "statChanges": { "danger": -2, "renown": 1 },
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "One message is in owlbear claw-marks: 'Ozwyn, window in the east tower. I knew you'd be back. — Ozwyn.' He's escaped before and left himself notes. LEGEND.",
-                "statChanges": { "danger": -2, "renown": 2 },
-                "addTags": ["legendary"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 2
+                },
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1852,32 +2762,53 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn scratches 'OZWYN WAS HE—' and a guard rounds the corner. 'So YOU'RE Ozwyn. Thanks for the confirmation.' Oops.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn writes an inspirational quote but misspells three words. Future prisoners will be confused and slightly judgy.",
                 "statChanges": {},
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "'Don't give up — Ozwyn' scratched into the wall. It takes time but Ozwyn feels better having done it. Emotional investment in dungeon infrastructure.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn adds useful directions, guard schedules, and a tiny self-portrait. This wall just became the most valuable resource in the dungeon.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["heroic", "popular"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "heroic",
+                  "popular"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn scratches a complete survival guide and signs it with a dashing self-portrait. Within weeks, this wall will be a shrine. The Ozwyn legacy begins.",
-                "statChanges": { "renown": 3 },
-                "addTags": ["legendary", "popular", "heroic"],
+                "statChanges": {
+                  "renown": 3
+                },
+                "addTags": [
+                  "legendary",
+                  "popular",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -1889,7 +2820,9 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn stares at the map so long he doesn't notice a patrol approaching. 'Interesting wall, huh?' says a guard. Oops.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
@@ -1901,20 +2834,32 @@
               },
               "mixed": {
                 "text": "Parts of the map are helpful. Ozwyn memorizes what he can — trap locations, guard rooms, and someone's doodle of a cat.",
-                "statChanges": { "danger": -1 },
+                "statChanges": {
+                  "danger": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "The map is remarkably accurate. Ozwyn traces a clear path to the surface, mentally bookmarking three alternate routes.",
-                "statChanges": { "danger": -2, "renown": 1 },
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "The map reveals a secret passage marked with an owlbear claw symbol. Someone designed an escape route specifically for owlbear-kind. Ozwyn sheds a proud tear.",
-                "statChanges": { "danger": -2, "renown": 2, "supplies": 1 },
-                "addTags": ["lucky", "legendary"],
+                "statChanges": {
+                  "danger": -2,
+                  "renown": 2,
+                  "supplies": 1
+                },
+                "addTags": [
+                  "lucky",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -1927,7 +2872,10 @@
         "id": "the-boss-room",
         "title": "The Boss Room",
         "text": "A massive chamber. A stone golem stands in the center, eyes flickering to life. The exit is behind it. Because of course it is.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "fight-golem",
@@ -1936,32 +2884,56 @@
             "rollTable": {
               "critFail": {
                 "text": "The golem flicks Ozwyn across the room like a chess piece. He embeds in the wall. Cartoon-style. His pride is more damaged than his body. Barely.",
-                "statChanges": { "danger": 3, "supplies": -1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 3,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn lands a heroic punch. The golem doesn't notice. It's made of stone. Ozwyn's fist is not.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "A grueling fight. Ozwyn chips the golem's arm off but takes serious hits. Pyrrhic victory at best. The exit is open, at least.",
-                "statChanges": { "danger": 1, "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "danger": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn finds the golem's weak spot and UNLOADS. Rocks fly, the golem crumbles, and Ozwyn stands victorious atop the rubble. HEROIC.",
-                "statChanges": { "renown": 3 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 3
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn screams a battle cry so fearsome the golem's magic core cracks from vibration alone. It crumbles. Ozwyn walks through the dust like an action hero. LEGENDARY.",
-                "statChanges": { "renown": 4, "danger": -1 },
-                "addTags": ["legendary", "heroic"],
+                "statChanges": {
+                  "renown": 4,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -1973,32 +2945,46 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn sneezes mid-sneak. The golem tracks the sound. Owlbear tiptoeing is not as quiet as Ozwyn believed.",
-                "statChanges": { "danger": 3 },
+                "statChanges": {
+                  "danger": 3
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Almost there — Ozwyn steps on a loose stone. The golem's head rotates 180 degrees. Nightmare fuel.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The golem spots Ozwyn but is too slow to react. Ozwyn scrambles past, scraping the exit doorframe. Close enough.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Owl-soft footsteps. The golem never fully activates. Ozwyn is through the door before its eyes even glow. Stealth master.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn moves like a ghost. He passes the golem, pauses to tie its shoelaces together (it has sandals??), and prances through the exit. Style AND substance.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["chaotic", "lucky"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "chaotic",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -2010,32 +2996,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn offers gold. The golem eats the coins, grows 10% larger, and looks hungrier. That was a feeding, not a bribe. Oh no.",
-                "statChanges": { "supplies": -2, "danger": 2 },
+                "statChanges": {
+                  "supplies": -2,
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "The golem stares blankly at the offered treasure. It's a rock. Rocks don't shop. Ozwyn feels foolish.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The golem considers the shiny coins, distracted just long enough for Ozwyn to dash past. Not a bribe — a diversion.",
-                "statChanges": { "supplies": -1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "supplies": -1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn places gold at the golem's feet. Its programming conflicts — destroy intruder vs. protect treasure. It freezes. Ozwyn walks past a buffering golem.",
-                "statChanges": { "supplies": -1, "renown": 1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "The tiara from the treasure alcove fits perfectly on the golem's head. It looks in a reflection, likes what it sees, and waves Ozwyn through. Fashionable diplomacy.",
-                "statChanges": { "supplies": -1, "renown": 2, "danger": -1 },
-                "addTags": ["charming", "legendary"],
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "charming",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2046,7 +3054,10 @@
         "id": "collapsing-tunnel",
         "title": "Collapsing Tunnel",
         "text": "CRACK. The ceiling groans. Dust rains. Stones fall. The tunnel ahead is collapsing in slow motion. Freedom is on the other side. So is death.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "sprint-tunnel",
@@ -2055,32 +3066,55 @@
             "rollTable": {
               "critFail": {
                 "text": "A boulder clips Ozwyn's tail and he goes down. He crawls out, alive but thoroughly flattened in spirit (and slightly in body).",
-                "statChanges": { "danger": 3 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn makes it through but gets hit by falling debris. He's out but his everything hurts.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "A dive-roll through the last gap. Ozwyn emerges dusty, scratched, and alive. Not graceful, but effective.",
-                "statChanges": { "danger": 1, "streak": 1 },
+                "statChanges": {
+                  "danger": 1,
+                  "streak": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn runs like the wind and clears the collapse with seconds to spare. Rocks crash behind him like applause.",
-                "statChanges": { "streak": 1, "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "streak": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn sprints, slides, and dolphin-dives through a closing gap so perfectly it looks choreographed. The tunnel seals behind him. No one's following. CINEMATIC.",
-                "statChanges": { "streak": 2, "renown": 2, "danger": -1 },
-                "addTags": ["heroic", "legendary"],
+                "statChanges": {
+                  "streak": 2,
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "heroic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2092,32 +3126,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn grabs a beam and it snaps. The ceiling accelerates its collapse. He's made it worse. Much worse. He runs anyway.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn holds a beam but it's too heavy. He manages to slow the collapse just enough to scramble under. His shoulders will never forgive him.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Bracing works temporarily. Ozwyn holds the ceiling long enough to squeeze through. His bear-strength was earned today.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn holds the tunnel open with raw strength while debris bounces off his back. Others escape behind him. He's the last one through and he's a HERO.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn bears the weight of the entire tunnel section single-handedly (single-pawedly?). The stone bends to his will. He steps through as the tunnel seals, untouched. ICON.",
-                "statChanges": { "renown": 3, "danger": -1 },
-                "addTags": ["legendary", "heroic"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -2129,32 +3185,55 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn gives a dramatic speech to no one, lies down, and a rock lands on his tail. He's fine but his speech? Wasted on rubble.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless", "wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless",
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn closes his eyes, embraces destiny — and the collapse stops. Just crumbling. So his dramatic acceptance was premature. Awkward.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn's dramatic pose is so absurd the universe takes pity. A beam falls perfectly to create a shelter. Sometimes style IS substance.",
                 "statChanges": {},
-                "addTags": ["chaotic"],
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn shouts 'NOT TODAY!' and the tunnel collapse... pauses? As if the dungeon is reconsidering? He sprints through the hesitation. Willpower!",
-                "statChanges": { "renown": 2, "streak": 1 },
-                "addTags": ["heroic", "chaotic"],
+                "statChanges": {
+                  "renown": 2,
+                  "streak": 1
+                },
+                "addTags": [
+                  "heroic",
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn shouts 'THE DUNGEON WILL NOT CLAIM ME!' with such conviction the rocks rearrange into a safe archway. Main character energy is REAL.",
-                "statChanges": { "renown": 3, "danger": -1 },
-                "addTags": ["legendary", "chaotic"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary",
+                  "chaotic"
+                ],
                 "removeTags": []
               }
             }
@@ -2165,7 +3244,10 @@
         "id": "guard-patrol",
         "title": "Guard Patrol",
         "text": "Six guards stand between Ozwyn and the exit gate. They're armed, armored, and one is eating a sandwich. The exit is RIGHT THERE.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "disguise-as-guard",
@@ -2174,32 +3256,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn's disguise is a helmet on top of his owl head. He looks like a seven-foot bird in a too-small hat. 'That's the prisoner.' 'Yep.'",
-                "statChanges": { "danger": 3 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The disguise almost works until a guard asks for Ozwyn's badge number. 'Uh... seven?' Wrong answer.",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Two guards buy it. Four don't. Ozwyn makes it halfway before someone says, 'Why does that guard have feathers?' Sprint time.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "'New transfer from the east wing,' Ozwyn grunts. The guards nod. He walks through the checkpoint with practiced authority. Act like you belong.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn's disguise is perfect. He not only passes through but is handed a shift roster. 'You're on break, new guy.' He walks out the FRONT DOOR.",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["legendary", "chaotic", "charming"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "legendary",
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -2211,32 +3315,55 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn throws a rock as a distraction. It bounces off a wall and hits him in the back of the head. The guards watch this happen.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn yells 'FIRE!' Two guards check. Four don't. Still too many.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn rolls a barrel down the corridor. Most guards investigate. One stays. Better odds, at least.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn triggers a distant alarm with a thrown coin. All six guards sprint toward it. Empty exit. Beautiful.",
-                "statChanges": { "renown": 1, "danger": -1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "renown": 1,
+                  "danger": -1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn starts a small, contained fire in a trash pile. Panic. Guards evacuate prisoners. In the chaos, Ozwyn walks out as a 'concerned citizen.' Oscar-worthy.",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["chaotic", "legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "chaotic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2248,32 +3375,56 @@
             "rollTable": {
               "critFail": {
                 "text": "'The inspector is a halfling named Greg.' 'I'm... Greg's assistant?' 'Greg doesn't have an assistant.' Swords drawn.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The guards laugh. Heartily. One wipes a tear. 'Best one we've heard all week.' They do not let Ozwyn pass.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The guards hesitate just long enough for Ozwyn to notice a side passage. Not a complete bluff, but the hesitation is useful.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn delivers 'I'm the inspector' with such gravitas that four guards salute. One opens the gate. The sandwich guard shrugs and keeps eating.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["charming", "legendary"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "charming",
+                  "legendary"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn strides in, declares an 'official inspection,' fails every guard on cleanliness, writes up the sandwich guy, and walks out with a formal escort. GOAT liar.",
-                "statChanges": { "renown": 3, "danger": -2 },
-                "addTags": ["legendary", "charming"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -2
+                },
+                "addTags": [
+                  "legendary",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -2284,7 +3435,12 @@
         "id": "the-final-trap",
         "title": "The Final Trap",
         "text": "A corridor of swinging axes, floor spikes, dart walls, and one suspiciously placed banana peel. The dungeon's greatest hits, all in one hallway.",
-        "requirements": { "requiredTags": [], "excludedTags": ["lucky"] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": [
+            "lucky"
+          ]
+        },
         "choices": [
           {
             "id": "disarm-carefully",
@@ -2293,32 +3449,54 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn disarms the first trap and triggers the last three. The banana peel was the real threat. He knew it.",
-                "statChanges": { "danger": 3, "supplies": -1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 3,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Two traps disarmed, one activates. A dart grazes Ozwyn's ear. He'll never hear the same from that side.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Most traps click off. One dart gets through — caught it in his teeth. Not planned, but impressive.",
-                "statChanges": { "danger": 1, "renown": 1 },
+                "statChanges": {
+                  "danger": 1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Click. Click. Click. Every trap disarmed methodically. Ozwyn walks through the safe corridor feeling like a proper rogue.",
-                "statChanges": { "renown": 2 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn disarms every trap AND repurposes them to face the other direction. Any pursuing guards are in for a VERY bad day.",
-                "statChanges": { "renown": 2, "danger": -2 },
-                "addTags": ["heroic", "legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -2
+                },
+                "addTags": [
+                  "heroic",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2330,32 +3508,61 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn triggers everything at once. The traps fight EACH OTHER. Ozwyn is caught in the crossfire of an automated civil war.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["wounded", "reckless"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "wounded",
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Chaos surfing requires more grace than Ozwyn has. He tumbles through, taking hits, and emerges looking like used confetti.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless", "wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless",
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Ozwyn ducks, rolls, and accidentally dodges most traps. The banana peel still gets him. Always the banana peel.",
-                "statChanges": { "danger": 1, "streak": 1 },
-                "addTags": ["reckless", "chaotic"],
+                "statChanges": {
+                  "danger": 1,
+                  "streak": 1
+                },
+                "addTags": [
+                  "reckless",
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn SURFS an axe blade, DUCKS the darts, LEAPS the spikes. The banana peel? Kicked aside. He is SPEED.",
-                "statChanges": { "streak": 2, "renown": 2 },
-                "addTags": ["reckless", "heroic"],
+                "statChanges": {
+                  "streak": 2,
+                  "renown": 2
+                },
+                "addTags": [
+                  "reckless",
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn rides the chaos like a wave — bouncing off traps, spinning through axes, and using the banana peel as a sled to slide to safety. The dungeon itself applauds.",
-                "statChanges": { "streak": 2, "renown": 3 },
-                "addTags": ["legendary", "reckless", "chaotic"],
+                "statChanges": {
+                  "streak": 2,
+                  "renown": 3
+                },
+                "addTags": [
+                  "legendary",
+                  "reckless",
+                  "chaotic"
+                ],
                 "removeTags": []
               }
             }
@@ -2367,32 +3574,53 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn throws his entire bag and the traps destroy it. The bag, the loot, everything. He watches his treasure evaporate. Then a dart hits his knee.",
-                "statChanges": { "supplies": -3, "danger": 2 },
-                "addTags": ["wounded"],
-                "removeTags": ["greedy"]
+                "statChanges": {
+                  "supplies": -3,
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded"
+                ],
+                "removeTags": [
+                  "greedy"
+                ]
               },
               "fail": {
                 "text": "Not enough loot to trigger all traps. Ozwyn commits his supplies and still has to dodge the last section. Net loss.",
-                "statChanges": { "supplies": -2, "danger": 1 },
+                "statChanges": {
+                  "supplies": -2,
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The thrown loot triggers most traps. Ozwyn tiptoes through the remainder, mourning each lost coin like a fallen friend.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Strategic throwing. Minimum sacrifice, maximum trap activation. Ozwyn walks through safely with most of his loot. Efficient.",
-                "statChanges": { "supplies": -1, "renown": 1 },
+                "statChanges": {
+                  "supplies": -1,
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn throws one single coin. It ricochets off every trap trigger in sequence like a Rube Goldberg masterpiece. Every trap fires harmlessly. The coin rolls back to his feet. Genius.",
-                "statChanges": { "renown": 3, "danger": -1 },
-                "addTags": ["legendary", "lucky"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -1
+                },
+                "addTags": [
+                  "legendary",
+                  "lucky"
+                ],
                 "removeTags": []
               }
             }
@@ -2403,7 +3631,10 @@
         "id": "dungeon-warden",
         "title": "Dungeon Warden",
         "text": "Warden Grimjaw blocks the final corridor, arms crossed. 'Ozwyn. Again.' She says it like a teacher catching a repeat offender.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "talk-way-out",
@@ -2412,32 +3643,50 @@
             "rollTable": {
               "critFail": {
                 "text": "'I can explain—' 'You stole the Duke's crown, crashed a wedding, and rode a horse through my office.' Ozwyn can NOT explain.",
-                "statChanges": { "danger": 3 },
+                "statChanges": {
+                  "danger": 3
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn's excuse is terrible. Grimjaw's eyebrow says everything. 'Back to your cell, Ozwyn.'",
-                "statChanges": { "danger": 2 },
+                "statChanges": {
+                  "danger": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "'What if I return what I stole?' 'You don't even remember WHAT you stole.' Fair point. But Grimjaw sighs and looks tired. Negotiation window: open.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn delivers a heartfelt apology, promises community service, and compliments Grimjaw's new haircut. She steps aside. 'This is the LAST time, Ozwyn.'",
-                "statChanges": { "renown": 2 },
-                "addTags": ["charming"],
+                "statChanges": {
+                  "renown": 2
+                },
+                "addTags": [
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn monologues about destiny, freedom, and the nature of justice so beautifully that Grimjaw wipes a tear. 'Go. Before I change my mind.' Even wardens have hearts.",
-                "statChanges": { "renown": 3, "danger": -1 },
-                "addTags": ["charming", "legendary"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -1
+                },
+                "addTags": [
+                  "charming",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2449,32 +3698,57 @@
             "rollTable": {
               "critFail": {
                 "text": "Grimjaw disarms Ozwyn in one move and hangs him by his bag from a torch sconce. 'I trained for twenty years, Ozwyn. Twenty. Years.'",
-                "statChanges": { "danger": 3, "supplies": -1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 3,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "Ozwyn lands one hit. Grimjaw lands twelve. It's not a duel, it's a lesson. Painful curriculum.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "A surprisingly close fight. Grimjaw nods with grudging respect. 'You've improved since last time.' She still wins, but lets him pass. Pride tax.",
-                "statChanges": { "danger": 1, "renown": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "danger": 1,
+                  "renown": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "Ozwyn fights with everything. Claws, beak, improvised weaponry. Grimjaw is pushed back for the first time in years. She salutes and steps aside.",
-                "statChanges": { "renown": 2, "streak": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 2,
+                  "streak": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn defeats Grimjaw in single combat. She kneels, surrenders her blade, and says, 'You've earned your freedom, owlbear.' On this day, a warrior was born.",
-                "statChanges": { "renown": 3, "streak": 2 },
-                "addTags": ["legendary", "heroic"],
+                "statChanges": {
+                  "renown": 3,
+                  "streak": 2
+                },
+                "addTags": [
+                  "legendary",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -2486,32 +3760,56 @@
             "rollTable": {
               "critFail": {
                 "text": "'I'm... Bozwyn. Different owlbear entirely.' 'You have a name tag that says OZWYN.' Ozwyn looks down. He does indeed.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "'You're wearing the same stolen pants as yesterday, Ozwyn.' Grimjaw's attention to detail is infuriating.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Grimjaw squints. 'You DO look different somehow.' The hat helps. She lets Ozwyn pass while radioing for confirmation. Time to MOVE.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["chaotic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "chaotic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "'I'm Ozwyn's cousin, Flozwyn. Here for a visit. Terrible dungeon, one star.' Grimjaw doesn't buy it but can't prove otherwise. Bureaucracy wins.",
-                "statChanges": { "renown": 1 },
-                "addTags": ["chaotic", "charming"],
+                "statChanges": {
+                  "renown": 1
+                },
+                "addTags": [
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "'I'm Inspector Thaddeus P. Featherbottom, Health and Safety.' Grimjaw pales. 'The inspection was TODAY?' She escorts Ozwyn out personally. GENIUS DISGUISE.",
-                "statChanges": { "renown": 3, "danger": -2 },
-                "addTags": ["legendary", "chaotic", "charming"],
+                "statChanges": {
+                  "renown": 3,
+                  "danger": -2
+                },
+                "addTags": [
+                  "legendary",
+                  "chaotic",
+                  "charming"
+                ],
                 "removeTags": []
               }
             }
@@ -2522,7 +3820,10 @@
         "id": "the-exit-is-locked",
         "title": "The Exit is Locked",
         "text": "Daylight. Sweet, beautiful daylight — just beyond a very locked door. Ozwyn can feel the outside air. He can taste freedom. The door disagrees.",
-        "requirements": { "requiredTags": [], "excludedTags": [] },
+        "requirements": {
+          "requiredTags": [],
+          "excludedTags": []
+        },
         "choices": [
           {
             "id": "pick-exit-lock",
@@ -2531,32 +3832,49 @@
             "rollTable": {
               "critFail": {
                 "text": "The lockpick snaps. The backup snaps. Ozwyn punches the lock and hurts his paw. SO CLOSE. So painfully close.",
-                "statChanges": { "danger": 2, "supplies": -1 },
-                "addTags": ["wounded"],
+                "statChanges": {
+                  "danger": 2,
+                  "supplies": -1
+                },
+                "addTags": [
+                  "wounded"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "This lock is military-grade. Ozwyn's pick skills aren't enough. He can hear birds outside. Mocking birds.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "The lock gives slowly. It takes ten tense minutes. Ozwyn hears guards approaching. The lock clicks open as footsteps echo. GO GO GO.",
-                "statChanges": { "danger": 1, "streak": 1 },
+                "statChanges": {
+                  "danger": 1,
+                  "streak": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "Click. The door swings open. Fresh air hits Ozwyn's face. He almost cries. The lock whispers 'good luck.' Even dungeon hardware roots for him.",
-                "statChanges": { "renown": 2 },
+                "statChanges": {
+                  "renown": 2
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn picks the lock so fast it sets a dungeon record. He steps into sunlight, free and victorious. Behind him, the lock starts a slow clap.",
-                "statChanges": { "renown": 3, "streak": 1 },
-                "addTags": ["legendary"],
+                "statChanges": {
+                  "renown": 3,
+                  "streak": 1
+                },
+                "addTags": [
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2568,32 +3886,48 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn finds a window. It's barred. He finds a chimney. It's too small. He finds a doggy door. It's a trap. The dungeon hates him.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["cursed"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "cursed"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "The alternative route exists but it's a sewer grate. Ozwyn squeezes through and emerges smelling like a swamp's armpit.",
-                "statChanges": { "danger": 1 },
+                "statChanges": {
+                  "danger": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "mixed": {
                 "text": "A side passage leads to a low window. Ozwyn barely squeezes through, losing some loot in the process but gaining freedom.",
-                "statChanges": { "supplies": -1 },
+                "statChanges": {
+                  "supplies": -1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "success": {
                 "text": "A forgotten service tunnel exits behind the dungeon. Ozwyn emerges into a garden. He takes a flower as a souvenir and walks away.",
-                "statChanges": { "renown": 1 },
+                "statChanges": {
+                  "renown": 1
+                },
                 "addTags": [],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn discovers the dungeon architect's personal escape route — pristine, unguarded, with mood lighting. He steps into freedom like a prince exiting a palace.",
-                "statChanges": { "renown": 2, "danger": -1 },
-                "addTags": ["lucky", "legendary"],
+                "statChanges": {
+                  "renown": 2,
+                  "danger": -1
+                },
+                "addTags": [
+                  "lucky",
+                  "legendary"
+                ],
                 "removeTags": []
               }
             }
@@ -2605,32 +3939,57 @@
             "rollTable": {
               "critFail": {
                 "text": "Ozwyn kicks the reinforced door. The door wins. Ozwyn bounces back, holding his foot, hopping in pain. The guards find him hopping.",
-                "statChanges": { "danger": 3 },
-                "addTags": ["wounded", "reckless"],
+                "statChanges": {
+                  "danger": 3
+                },
+                "addTags": [
+                  "wounded",
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "fail": {
                 "text": "WHAM. The door shudders but holds. Again. WHAM. Holds. Ozwyn's foot disagrees with this strategy.",
-                "statChanges": { "danger": 2 },
-                "addTags": ["reckless"],
+                "statChanges": {
+                  "danger": 2
+                },
+                "addTags": [
+                  "reckless"
+                ],
                 "removeTags": []
               },
               "mixed": {
                 "text": "Three kicks and the door cracks. Not open, but cracked. One more should do it — if Ozwyn's foot survives.",
-                "statChanges": { "danger": 1 },
-                "addTags": ["reckless", "heroic"],
+                "statChanges": {
+                  "danger": 1
+                },
+                "addTags": [
+                  "reckless",
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "success": {
                 "text": "BOOM. One mighty owlbear kick. The door EXPLODES off its hinges into the courtyard. Guards scatter. Ozwyn stands in the doorframe, backlit by daylight. ICONIC.",
-                "statChanges": { "renown": 3, "streak": 1 },
-                "addTags": ["heroic"],
+                "statChanges": {
+                  "renown": 3,
+                  "streak": 1
+                },
+                "addTags": [
+                  "heroic"
+                ],
                 "removeTags": []
               },
               "crit": {
                 "text": "Ozwyn kicks the door into LOW ORBIT. It rockets across the courtyard, over the wall, and into the river. The dungeon is now open-air. Freedom was always one kick away.",
-                "statChanges": { "renown": 4, "streak": 2 },
-                "addTags": ["legendary", "heroic"],
+                "statChanges": {
+                  "renown": 4,
+                  "streak": 2
+                },
+                "addTags": [
+                  "legendary",
+                  "heroic"
+                ],
                 "removeTags": []
               }
             }
@@ -2646,14 +4005,18 @@
       "title": "The Owlbear Who Stole Everything",
       "text": "Ozwyn walks into the sunset carrying more treasure than he entered with. The dungeon was supposed to be a punishment. It was a shopping trip.",
       "requirements": {
-        "requiredTags": ["legendary", "greedy"],
+        "requiredTags": [
+          "legendary",
+          "greedy"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": 5,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I went into a dungeon as a prisoner and left with more loot than the dungeon had. Productive trip."
     },
     {
       "id": "dungeon-breaker",
@@ -2661,14 +4024,18 @@
       "title": "Dungeon Breaker",
       "text": "They'll have to rebuild the dungeon after Ozwyn's escape. Walls, doors, morale — all shattered. He didn't escape captivity. He defeated it.",
       "requirements": {
-        "requiredTags": ["legendary", "heroic"],
+        "requiredTags": [
+          "legendary",
+          "heroic"
+        ],
         "excludedTags": [],
         "minRenown": 4,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped a dungeon and destroyed it in the process. Property damage included at no extra charge."
     },
     {
       "id": "the-legend-of-the-headache",
@@ -2676,14 +4043,18 @@
       "title": "The Legend of the Headache",
       "text": "Ozwyn escaped a dungeon while nursing the worst headache of his life. Bards will sing of this. Badly, but loudly.",
       "requirements": {
-        "requiredTags": ["legendary", "wounded"],
+        "requiredTags": [
+          "legendary",
+          "wounded"
+        ],
         "excludedTags": [],
         "minRenown": 3,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped a dungeon with a splitting headache. Bards are singing about it. Loudly and badly."
     },
     {
       "id": "freedoms-favorite-fool",
@@ -2691,14 +4062,19 @@
       "title": "Freedom's Favorite Fool",
       "text": "Nothing Ozwyn did made sense. Every choice was wrong. And yet — here he stands, free, rich, and grinning. Some owlbears are just blessed by chaos.",
       "requirements": {
-        "requiredTags": ["legendary", "lucky", "chaotic"],
+        "requiredTags": [
+          "legendary",
+          "lucky",
+          "chaotic"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped captivity, freed six others, and started a revolution. I was only in there for stealing a pie."
     },
     {
       "id": "the-one-who-walked-out",
@@ -2706,14 +4082,17 @@
       "title": "The One Who Walked Out",
       "text": "Ozwyn didn't run. Didn't sneak. He walked out the front gate on a streak of unstoppable momentum. Coolest owlbear alive.",
       "requirements": {
-        "requiredTags": ["legendary"],
+        "requiredTags": [
+          "legendary"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": 3,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I walked out the front door. No plan. No backup. Just absolute confidence. They let me go."
     },
     {
       "id": "the-reluctant-hero",
@@ -2721,14 +4100,18 @@
       "title": "The Reluctant Hero",
       "text": "Ozwyn didn't want to be a hero. He just wanted to leave. But along the way, he helped everyone he met, because that's who he is. Damn it.",
       "requirements": {
-        "requiredTags": ["heroic", "popular"],
+        "requiredTags": [
+          "heroic",
+          "popular"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I didn't want to be anyone's hero. I just wanted to leave. Turns out those are the same thing."
     },
     {
       "id": "the-bleeding-champion",
@@ -2736,14 +4119,18 @@
       "title": "The Bleeding Champion",
       "text": "Battered, bruised, and still going. Ozwyn escaped not because he was strong, but because he refused to stop. Blood and stubbornness — the owlbear way.",
       "requirements": {
-        "requiredTags": ["heroic", "wounded"],
+        "requiredTags": [
+          "heroic",
+          "wounded"
+        ],
         "excludedTags": [],
         "minRenown": 3,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I bled through two acts, kept moving, and somehow became a symbol of hope. Bandages included."
     },
     {
       "id": "honor-among-owlbears",
@@ -2751,14 +4138,19 @@
       "title": "Honor Among Owlbears",
       "text": "Ozwyn left the dungeon with less than he found — because he gave it away. The treasure was never the point. Freedom was. And maybe the friends along the way.",
       "requirements": {
-        "requiredTags": ["heroic"],
-        "excludedTags": ["greedy"],
+        "requiredTags": [
+          "heroic"
+        ],
+        "excludedTags": [
+          "greedy"
+        ],
         "minRenown": 2,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I made friends with an owlbear in a dungeon. We share custody of a stolen gem now."
     },
     {
       "id": "guardian-of-the-rat",
@@ -2766,14 +4158,19 @@
       "title": "Guardian of the Rat",
       "text": "Ozwyn escaped with a loyal rat on his shoulder and the respect of every creature in the dungeon. Some heroes wear capes. Ozwyn wears a rodent.",
       "requirements": {
-        "requiredTags": ["heroic", "popular", "charming"],
+        "requiredTags": [
+          "heroic",
+          "popular",
+          "charming"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I protected a rat the entire time. Nobody asked me to. He didn't even say thank you."
     },
     {
       "id": "ozwyn-the-unbreakable",
@@ -2781,14 +4178,17 @@
       "title": "Ozwyn the Unbreakable",
       "text": "No supplies. No plan. Nothing but grit and feathers. Ozwyn escaped with almost nothing and earned everything. The hardest road made the strongest owlbear.",
       "requirements": {
-        "requiredTags": ["heroic"],
+        "requiredTags": [
+          "heroic"
+        ],
         "excludedTags": [],
         "minRenown": 2,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": 1
-      }
+      },
+      "shareQuote": "They called me unbreakable. They were mostly right. My left knee disagrees."
     },
     {
       "id": "the-beloved-disaster",
@@ -2796,14 +4196,18 @@
       "title": "The Beloved Disaster",
       "text": "Everything Ozwyn touched went sideways, but everyone he met liked him anyway. Charisma is nature's apology for chaos.",
       "requirements": {
-        "requiredTags": ["chaotic", "charming"],
+        "requiredTags": [
+          "chaotic",
+          "charming"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I accidentally collapsed a wall, flooded a corridor, and became a folk hero. Not intentional."
     },
     {
       "id": "accidentally-in-charge",
@@ -2811,14 +4215,18 @@
       "title": "Accidentally in Charge",
       "text": "Through a series of escalating misunderstandings, Ozwyn is now believed to be the dungeon's new warden. He doesn't correct them. Free room and board, baby.",
       "requirements": {
-        "requiredTags": ["chaotic", "popular"],
+        "requiredTags": [
+          "chaotic",
+          "popular"
+        ],
         "excludedTags": [],
         "minRenown": 3,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I somehow became the dungeon's acting warden. I have no memory of agreeing to this."
     },
     {
       "id": "dungeon-interior-designer",
@@ -2826,14 +4234,18 @@
       "title": "Dungeon Interior Designer",
       "text": "Ozwyn didn't just escape — he rearranged the dungeon on his way out. New trap placements, better lighting, motivational graffiti. The Warden finds a Yelp review pinned to her door.",
       "requirements": {
-        "requiredTags": ["chaotic", "reckless"],
+        "requiredTags": [
+          "chaotic",
+          "reckless"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I rearranged the dungeon and left. The guards are still finding things I moved."
     },
     {
       "id": "the-owlbear-express",
@@ -2841,14 +4253,19 @@
       "title": "The Owlbear Express",
       "text": "Ozwyn didn't walk out. He BARRELLED out — through walls, guards, and basic physics. The dungeon has an owlbear-shaped hole now. It's a tourist attraction.",
       "requirements": {
-        "requiredTags": ["chaotic", "reckless", "heroic"],
+        "requiredTags": [
+          "chaotic",
+          "reckless",
+          "heroic"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I rode an owlbear out of a dungeon at full speed. I did not plan this. I do not regret it."
     },
     {
       "id": "professional-improviser",
@@ -2856,14 +4273,18 @@
       "title": "Professional Improviser",
       "text": "Ozwyn had no plan. He never had a plan. The plan was 'no plan.' And against all logic, it worked. Again.",
       "requirements": {
-        "requiredTags": ["chaotic", "lucky"],
+        "requiredTags": [
+          "chaotic",
+          "lucky"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "My escape plan was improvised at every step. It worked. The dungeon did not see that coming."
     },
     {
       "id": "the-glittering-ruin",
@@ -2871,14 +4292,18 @@
       "title": "The Glittering Ruin",
       "text": "Ozwyn escaped rich and ruined. His pockets overflow with treasure but every piece is cursed. He sparkles in the moonlight like a very sad disco ball.",
       "requirements": {
-        "requiredTags": ["cursed", "greedy"],
+        "requiredTags": [
+          "cursed",
+          "greedy"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": 3,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I found beautiful cursed treasure and took all of it. My future looks shiny and terrible."
     },
     {
       "id": "headache-level-mythic",
@@ -2886,14 +4311,18 @@
       "title": "Headache Level: Mythic",
       "text": "Ozwyn's headache has evolved into a permanent companion. It has opinions. It has a name. Gerald the Headache disapproves of everything.",
       "requirements": {
-        "requiredTags": ["cursed", "wounded"],
+        "requiredTags": [
+          "cursed",
+          "wounded"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "The headache I left with is now considered a legendary affliction. Healers are baffled."
     },
     {
       "id": "permanently-lost",
@@ -2901,14 +4330,17 @@
       "title": "Permanently Lost",
       "text": "Ozwyn is outside. Technically. He's also in a swamp he doesn't recognize, three kingdoms from home, with nothing but vibes and confusion.",
       "requirements": {
-        "requiredTags": ["cursed"],
+        "requiredTags": [
+          "cursed"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": 4,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped by getting so lost I accidentally found the exit. Twice."
     },
     {
       "id": "the-wardens-new-assistant",
@@ -2916,14 +4348,18 @@
       "title": "The Warden's New Assistant",
       "text": "Grimjaw was so impressed by Ozwyn's escape attempt she offered him a job. Ozwyn now works at the dungeon. On purpose. The pay is decent.",
       "requirements": {
-        "requiredTags": ["cursed", "charming"],
+        "requiredTags": [
+          "cursed",
+          "charming"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "The warden hired me on the way out. I haven't figured out how to quit yet."
     },
     {
       "id": "haunted-by-the-lock",
@@ -2931,14 +4367,18 @@
       "title": "Haunted by the Lock",
       "text": "Ozwyn escaped but the talking lock followed him home. It criticizes his cooking, judges his friends, and won't stop asking for passwords. Freedom has a price.",
       "requirements": {
-        "requiredTags": ["cursed", "chaotic"],
+        "requiredTags": [
+          "cursed",
+          "chaotic"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "A lock cursed me on the way out. Every door I touch whispers now. I have not slept well since."
     },
     {
       "id": "local-fool-regional-icon",
@@ -2947,13 +4387,17 @@
       "text": "Ozwyn is famous now. Not for being good at escaping — for being hilariously bad at it. Tavern bards can't stop writing ballads. He gets free drinks out of pity.",
       "requirements": {
         "requiredTags": [],
-        "excludedTags": ["heroic", "legendary"],
+        "excludedTags": [
+          "heroic",
+          "legendary"
+        ],
         "minRenown": 2,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped a dungeon and became a regional icon for all the wrong reasons. Don't ask."
     },
     {
       "id": "nap-champion",
@@ -2961,14 +4405,17 @@
       "title": "Nap Champion",
       "text": "Ozwyn ran out of supplies, ran out of energy, and gave up in a sunny patch outside the dungeon. He's free, technically. He's also asleep. Classic Ozwyn.",
       "requirements": {
-        "requiredTags": ["wounded"],
+        "requiredTags": [
+          "wounded"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": 0
-      }
+      },
+      "shareQuote": "I fell asleep in a dungeon cell and nobody noticed me leave. Most peaceful escape on record."
     },
     {
       "id": "the-loot-was-fake",
@@ -2976,14 +4423,18 @@
       "title": "The Loot Was Fake",
       "text": "All of it. Every coin, every gem, every 'treasure' — theatrical props from the dungeon drama club. Ozwyn escaped with a bag of painted rocks and broken dreams.",
       "requirements": {
-        "requiredTags": ["greedy", "cursed"],
+        "requiredTags": [
+          "greedy",
+          "cursed"
+        ],
         "excludedTags": [],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "Every treasure I collected was fake. I carried it for six rooms before someone told me."
     },
     {
       "id": "emotional-damage-only",
@@ -2992,13 +4443,17 @@
       "text": "Ozwyn is physically fine. Emotionally? Devastated. The dungeon broke nothing but his spirit, his confidence, and his faith in locks. He needs a hug.",
       "requirements": {
         "requiredTags": [],
-        "excludedTags": ["wounded", "heroic"],
+        "excludedTags": [
+          "wounded",
+          "heroic"
+        ],
         "minRenown": null,
         "minSupplies": null,
         "minDanger": 2,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped physically unharmed but emotionally shattered. The dungeon knew exactly what it was doing."
     },
     {
       "id": "not-again",
@@ -3013,7 +4468,8 @@
         "minDanger": null,
         "minStreak": null,
         "maxSupplies": null
-      }
+      },
+      "shareQuote": "I escaped only to discover I was in the wrong dungeon the whole time. Still counts."
     }
   ]
 }

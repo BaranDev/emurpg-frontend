@@ -439,8 +439,8 @@ export async function generateRunCard({ ending, state, playerName }) {
   // Title: auto-fit size so it never wraps
   const titleSz = fitFontSize(ctx, ending.title, textW, 46, 24, "bold");
 
-  // Quote and nameplate
-  const quoteStr   = `\u201C${pickQuote(family)}\u201D`;
+  // Quote and nameplate — prefer scenario-specific shareQuote, fall back to family pool
+  const quoteStr   = `\u201C${ending.shareQuote || pickQuote(family)}\u201D`;
   const titlePrefix = pickTitle(family);
   const bannerText  = playerName
     ? `\u25C6  ${titlePrefix} ${playerName}  \u25C6`
