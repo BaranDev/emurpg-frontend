@@ -8,14 +8,13 @@
 
 ## Problem
 
-Every component that needs real-time updates opens its own WebSocket connection to `/ws/updates`. With 5 consumer components (`TablesAdminPanel` opens 2), a single browser tab can hold up to 6 concurrent connections. This wastes backend resources, duplicates reconnection logic, and is inconsistent.
+Every component that needs real-time updates opens its own WebSocket connection to `/ws/updates`. With 5 consumer components (and `TablesAdminPanel` opening 2), a single browser tab can hold up to 6 concurrent connections. This wastes backend resources, duplicates reconnection logic across components, and is inconsistent in URL construction.
 
 Additional bugs found during analysis:
-
-- `ConnectionManager.broadcast()` calls `send_json` twice per connection — once inside the `try` block and once unconditionally outside it. The fix is to remove the call outside the `try` block.
+- `ConnectionManager.broadcast()` sends every message twice (missing `return` after the `try` block).
 - Backend broadcasts a generic string with no type information, causing all consumers to re-fetch regardless of whether the change is relevant to them.
-- `TablesAdminPanel` opens a second WebSocket at L284 (assigned to `playerWsRef.current`) with no `onclose` handler and no cleanup.
-- `TablesAdminPanel` and `EventsAdminPanel` use `.replace("http", "ws")` for URL construction; the other three components don't — both patterns coexist. Additionally, `EventList.jsx`, `TableList.jsx`, and `TableDetailPage.jsx` all pass the raw `http://` URL directly to `new WebSocket()`, which is an invalid WebSocket URL and throws a `SyntaxError` in production (should be `ws://`).
+- `TablesAdminPanel` opens a second orphaned WebSocket at L284 with no cleanup.
+- Some components use `.replace("http", "ws")` for URL construction; others don't — both patterns coexist.
 
 ---
 
@@ -29,7 +28,7 @@ Additional bugs found during analysis:
 
 ### Backend (`emurpg-backend/main.py`)
 
-1. **Fix `broadcast()` double-send bug** — remove the `send_json` call that sits outside the `try` block (after the `except` block). The call inside the `try` block is correct and must stay.
+1. **Fix `broadcast()` double-send bug** — remove the `send_json` call outside the `try` block.
 2. **Type the messages** — both monitor functions send a JSON object with a `type` field:
    - `monitor_table_changes()` → `{"type": "tables"}`
    - `monitor_event_changes()` → `{"type": "events"}`
@@ -45,41 +44,35 @@ No payload is included — consumers always re-fetch from REST after notificatio
 - Opens exactly one WebSocket connection on mount.
 - Builds the URL once, correctly: `config.backendUrl.replace(/^http/, "ws") + "/ws/updates"`.
 - Reconnects with exponential backoff (1 s → 2 s → 4 s → … capped at 30 s), reset on successful open.
-- Tracks the pending reconnect timer in a `ref` and calls `clearTimeout` in the cleanup function, preventing a stale reconnect after the provider unmounts.
-- Parses incoming JSON. On parse failure, logs and ignores — no crash.
+- Parses incoming JSON. On parse failure, logs and ignores the message.
 - Maintains a `Map<topic, Set<callback>>` subscriber registry.
-- On message: calls all subscribers whose topic matches `message.type`, plus any registered with `null` (wildcard, fires for every message).
+- On message: calls all subscribers whose topic matches `message.type`, plus any subscribers registered with `null` (wildcard).
 - Exposes `{ isConnected }` via context for future use (e.g. server health indicator).
-- On provider unmount: cancels the reconnect timer, then calls `ws.close()`.
+- On provider unmount: calls `ws.close()` cleanly.
 
 **`src/hooks/useWebSocket.js`**
 
 ```js
 useWebSocket(topic, callback)
 // topic: "tables" | "events" | null
-// callback: caller should wrap in useCallback for stability
+// callback: must be a stable reference (caller wraps in useCallback)
 ```
 
-- Internally stores `callback` in a `ref` (`latestCallback`) on every render so that the subscriber registry always invokes the latest version without re-registering.
-- Registers/unregisters a stable wrapper function (not the callback directly) so the `Set` identity stays constant across renders — callers who forget `useCallback` do not cause duplicate subscriptions.
+Registers the callback on mount, unregisters on unmount. Does not manage the connection itself.
 
 #### Modified files
 
-**`src/App.jsx`** — wrap `<Router>` (currently `BrowserRouter`) with `<WebSocketProvider>`:
-```jsx
-<WebSocketProvider>
-  <Router>...</Router>
-</WebSocketProvider>
-```
+**`src/App.jsx`** — wrap the router with `<WebSocketProvider>` once.
 
 **5 consumer components** — delete local WebSocket boilerplate, add one hook call each:
 
 | Component | Topic |
 |---|---|
 | `EventList.jsx` | `"events"` |
+| `HomePageEventList.jsx` | `"events"` |
 | `TableList.jsx` | `"tables"` |
 | `TableDetailPage.jsx` | `"tables"` |
-| `TablesAdminPanel.jsx` | `"tables"` (both usages consolidated into one; `playerWsRef` socket removed) |
+| `TablesAdminPanel.jsx` | `"tables"` (both usages consolidated into one) |
 | `EventsAdminPanel.jsx` | `"events"` |
 
 ---
@@ -90,12 +83,11 @@ useWebSocket(topic, callback)
 |---|---|
 | Backend offline on page load | Silent retry with backoff — no error surfaced to components |
 | Connection drops mid-session | Auto-reconnect; components unaware |
-| Component unmounts | `useWebSocket` unregisters stable wrapper; provider stays alive |
+| Component unmounts | `useWebSocket` unregisters callback; provider stays alive |
 | Last subscriber unmounts | Provider keeps connection open |
-| Provider unmounts | Pending reconnect timer cancelled; `ws.close()` called |
+| Provider unmounts | `ws.close()` called cleanly |
 | Malformed JSON from backend | Caught, logged, ignored — no crash |
 | Unknown `type` in message | No subscribers match, message silently dropped |
-| MongoDB change stream crash (backend) | **Out of scope.** Both monitor tasks exit permanently on `PyMongoError` and are not restarted. This pre-existing behaviour is unchanged by this spec. After a MongoDB crash the backend will stop broadcasting until the server restarts. Track as a separate follow-up. |
 
 ---
 
@@ -105,16 +97,12 @@ useWebSocket(topic, callback)
 
 - Connect to `/ws/updates` via TestClient, trigger a mock broadcast of `{"type": "tables"}`, assert client receives it exactly once.
 - Assert `{"type": "events"}` message shape from `monitor_event_changes`.
-- Regression test: each client receives each broadcast exactly 1 time (verifies the double-send bug fix).
+- Regression test: each client receives each broadcast exactly 1 time (verifies the double-send bug is fixed).
 
 ### Frontend
 
-**Unit tests for `WebSocketContext`** using a mocked `WebSocket` global:
-- Subscriber registered with `"tables"` is called on `{"type": "tables"}` message, not on `{"type": "events"}`.
-- Wildcard subscriber (`null`) is called for both message types.
-- Subscriber is unregistered after `useWebSocket` cleanup runs.
-- Reconnect timer is cancelled on provider unmount (no new socket created after teardown).
-- Passing an `http://` URL to `new WebSocket()` throws a `SyntaxError` synchronously. Regression test: after the `replace(/^http/, "ws")` fix, no `SyntaxError` is thrown. This covers the existing bug in `EventList.jsx` where `config.backendUrl` (`http://...`) was passed directly.
+- Existing component tests are unaffected — the hook hides WS internals.
+- No new component tests required.
 
 ### Manual verification checklist
 
@@ -129,7 +117,7 @@ useWebSocket(topic, callback)
 
 | Repo | File | Change |
 |---|---|---|
-| backend | `main.py` | Fix broadcast bug; type the two monitor messages; remove the now-unused `WS_MESSAGE` constant |
+| backend | `main.py` | Fix broadcast bug; type the two monitor messages |
 | backend | `tests/test_ws_updates.py` | New test file |
 | frontend | `src/contexts/WebSocketContext.jsx` | New — provider |
 | frontend | `src/hooks/useWebSocket.js` | New — hook |
