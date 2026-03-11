@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Plus,
   Edit3,
@@ -21,6 +21,7 @@ import AdminModal from "./shared/AdminModal";
 import AdminButton from "./shared/AdminButton";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 const TablesAdminPanel = () => {
   const [events, setEvents] = useState([]);
@@ -73,9 +74,6 @@ const TablesAdminPanel = () => {
   const [selectedGameId, setSelectedGameId] = useState("");
   const [isCustomGame, setIsCustomGame] = useState(false);
   const [isGeneratingLayout, setIsGeneratingLayout] = useState(false);
-
-  const wsRef = useRef(null);
-  const playerWsRef = useRef(null);
 
   const backendUrl = config.backendUrl;
   const apiKey = getApiKey();
@@ -132,30 +130,16 @@ const TablesAdminPanel = () => {
     }
   }, [backendUrl, apiKey]);
 
+  useWebSocket("tables", () => {
+    fetchData();
+    if (selectedTable) {
+      refreshPlayers(selectedTable.slug);
+    }
+  });
+
   useEffect(() => {
     fetchData();
-
-    const connectWebSocket = () => {
-      try {
-        const socket = new WebSocket(
-          `${backendUrl.replace("http", "ws")}/ws/updates`,
-        );
-        socket.onopen = () => console.log("Tables WS connected");
-        socket.onmessage = () => fetchData();
-        socket.onclose = () => setTimeout(connectWebSocket, 3000);
-        wsRef.current = socket;
-      } catch (error) {
-        console.error("WebSocket error:", error);
-      }
-    };
-
-    connectWebSocket();
-
-    return () => {
-      if (wsRef.current) wsRef.current.close();
-      if (playerWsRef.current) playerWsRef.current.close();
-    };
-  }, [fetchData, backendUrl]);
+  }, [fetchData]);
 
   const handleCreateTable = async (e) => {
     e.preventDefault();
@@ -280,12 +264,6 @@ const TablesAdminPanel = () => {
         const data = await response.json();
         setPlayers(data.players || []);
         setIsPlayersModalOpen(true);
-
-        const socket = new WebSocket(
-          `${backendUrl.replace("http", "ws")}/ws/updates`,
-        );
-        socket.onmessage = () => refreshPlayers(table.slug);
-        playerWsRef.current = socket;
       }
     } catch (error) {
       console.error("Error fetching players:", error);
@@ -1073,7 +1051,6 @@ const TablesAdminPanel = () => {
           setIsPlayersModalOpen(false);
           setSelectedTable(null);
           setPlayers([]);
-          if (playerWsRef.current) playerWsRef.current.close();
         }}
         title={`Players - ${selectedTable?.game_name || ""}`}
         size="lg"
