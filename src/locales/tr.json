@@ -175,6 +175,19 @@
     "remaining_today": "bugün kalan karakter oluşturma hakkı",
     "enter_admin": "Yönetici kodunu gir",
     "back_to_manager": "Karakter Yöneticisine Dön",
+    "consent": {
+      "title": "Başlamadan önce",
+      "body": "Oluşturduğum karakterlerin bu aracı geliştirmek için kullanılmasına izin veriyorum. Verilerim paylaşılmayacak.",
+      "accept": "Kabul Et & Devam",
+      "decline": "Reddet & Devam",
+      "decline_note": "Karakter oluşturmaya devam edebilirsin, ancak 1 karakterle sınırlı olacaksın.",
+      "limit_reached": "1 karakter sınırına ulaştın. Daha fazla karakter oluşturmak için veri paylaşım iznini kabul et.",
+      "admin_section": "Kaydedilen Tüm Karakterler",
+      "admin_loading": "Karakterler yükleniyor...",
+      "admin_empty": "Henüz kaydedilen karakter yok.",
+      "admin_total": "{{count}} karakter kaydedildi",
+      "admin_saved_at": "{{date}} tarihinde kaydedildi"
+    },
     "feedback": {
       "button_label": "Geri Bildirim",
       "modal_title": "Düşüncelerini Paylaş",

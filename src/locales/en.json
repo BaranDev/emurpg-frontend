@@ -175,6 +175,19 @@
     "remaining_today": "characters remaining today",
     "enter_admin": "Enter admin code",
     "back_to_manager": "Back to Character Manager",
+    "consent": {
+      "title": "Before you begin",
+      "body": "I agree to let my created characters be used to improve this tool. My data will not be shared.",
+      "accept": "Accept & Continue",
+      "decline": "Decline & Continue",
+      "decline_note": "You can still create characters, but you'll be limited to 1.",
+      "limit_reached": "You've reached your 1-character limit. Accept data sharing in the consent prompt to create more.",
+      "admin_section": "All Saved Characters",
+      "admin_loading": "Loading characters...",
+      "admin_empty": "No characters saved yet.",
+      "admin_total": "{{count}} characters saved",
+      "admin_saved_at": "Saved {{date}}"
+    },
     "feedback": {
       "button_label": "Feedback",
       "modal_title": "Share Your Thoughts",
