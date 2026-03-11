@@ -26,7 +26,7 @@ import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
-const EventsAdminPanel = () => {
+const EventsAdminPanel = ({ onNavigate }) => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -606,6 +606,19 @@ const EventsAdminPanel = () => {
                           Delete
                         </AdminButton>
                       </>
+                    )}
+                    {onNavigate && (
+                      <AdminButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigate("tables");
+                        }}
+                        variant="secondary"
+                        size="sm"
+                        icon={Table2}
+                      >
+                        Add Tables
+                      </AdminButton>
                     )}
                   </div>
 
