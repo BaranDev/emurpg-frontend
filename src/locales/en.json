@@ -171,6 +171,10 @@
     "act_crisis": "The Crisis",
     "save_card": "Save Card",
     "enter_name": "Enter your name",
-    "download_card": "Download"
+    "generate_card": "Generate Card",
+    "share_card": "Share",
+    "copy_card": "Copy Image",
+    "download_card": "Download",
+    "copied": "Copied!"
   }
 }

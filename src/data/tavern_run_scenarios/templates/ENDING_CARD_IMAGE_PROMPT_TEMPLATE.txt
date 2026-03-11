@@ -2,7 +2,7 @@ TAVERN RUN ENDING CARD IMAGE PROMPT TEMPLATE
 
 How to use:
 1) Generate all 5 family templates using the prompts below.
-2) Export as PNG at 1200x630 (or 2400x1260 for 2x, then scale down).
+2) Export as PNG at 1080x1920 (or 2160x3840 for 2x, then scale down).
 3) Save into src/assets/tavern-run-cards/ as:
    - card-legendary.png
    - card-heroic.png
@@ -15,7 +15,7 @@ How to use:
 --------------------------------------------------
 SHARED CONSTRAINTS (apply to ALL 5 prompts)
 --------------------------------------------------
-- Exactly 1200x630 pixels (16:9 landscape)
+- Exactly 1080x1920 pixels (9:16 portrait)
 - No text, no logo, no watermark, no signature, no letters or numbers of any kind
 - Include a semi-transparent aged parchment/scroll overlay band covering
   the center ~80% width and ~85% height of the image
@@ -37,7 +37,7 @@ watermark, logo, signature, UI elements, frame outside the image
 --------------------------------------------------
 1. LEGENDARY — card-legendary.png
 --------------------------------------------------
-Create a fantasy game result card background, 1200x630 pixels.
+Create a fantasy game result card background, 1080x1920 pixels.
 
 Background scene: A grand golden throne room bathed in warm sunlight
 streaming through tall stained glass windows. Piles of glittering
@@ -66,7 +66,7 @@ Think "you just won the whole dungeon" energy.
 --------------------------------------------------
 2. HEROIC — card-heroic.png
 --------------------------------------------------
-Create a fantasy game result card background, 1200x630 pixels.
+Create a fantasy game result card background, 1080x1920 pixels.
 
 Background scene: A dramatic mountain peak at dawn. The sky is
 golden-pink with the first light of morning. A weathered battle
@@ -96,7 +96,7 @@ Think "the sun rises on a hero who almost didn't make it."
 --------------------------------------------------
 3. CHAOTIC — card-chaotic.png
 --------------------------------------------------
-Create a fantasy game result card background, 1200x630 pixels.
+Create a fantasy game result card background, 1080x1920 pixels.
 
 Background scene: A fantasy tavern in mid-brawl absolute chaos.
 Wooden chairs and ale mugs flying through the air, golden ale
@@ -126,7 +126,7 @@ Think "this is the best worst night of your life."
 --------------------------------------------------
 4. CURSED — card-cursed.png
 --------------------------------------------------
-Create a fantasy game result card background, 1200x630 pixels.
+Create a fantasy game result card background, 1080x1920 pixels.
 
 Background scene: A foggy graveyard at night with cracked
 tombstones and twisted dead trees silhouetted against a dark sky.
@@ -158,7 +158,7 @@ mood. Think "you escaped, but something followed you home."
 --------------------------------------------------
 5. PATHETIC — card-pathetic.png
 --------------------------------------------------
-Create a fantasy game result card background, 1200x630 pixels.
+Create a fantasy game result card background, 1080x1920 pixels.
 
 Background scene: A muddy ditch just outside a fantasy tavern's
 back door. Light rain falling from a gray overcast sky. A
@@ -193,31 +193,31 @@ Quick Prompt Variants (for fast generation)
 --------------------------------------------------
 
 LEGENDARY:
-"Fantasy result card background 1200x630, grand golden throne room,
+"Fantasy result card background 1080x1920, grand golden throne room,
 treasure piles, stained glass sunbeams, aged parchment overlay band
 (empty, no text), gilded ornate border, warm gold palette, cinematic,
 no text no watermark"
 
 HEROIC:
-"Fantasy result card background 1200x630, mountain peak at dawn,
+"Fantasy result card background 1080x1920, mountain peak at dawn,
 battle banner, sword in stone, aged parchment overlay band (empty,
 no text), steel frame border, blue-silver palette, cinematic,
 no text no watermark"
 
 CHAOTIC:
-"Fantasy result card background 1200x630, tavern brawl chaos,
+"Fantasy result card background 1080x1920, tavern brawl chaos,
 flying chairs ale goat on table, aged parchment overlay band (empty,
 no text), jagged cracked border, purple-amber palette, dynamic,
 no text no watermark"
 
 CURSED:
-"Fantasy result card background 1200x630, foggy graveyard night,
+"Fantasy result card background 1080x1920, foggy graveyard night,
 glowing runes cracked mirror, aged parchment overlay band (empty,
 no text), thorny vine border, crimson-green palette, eerie,
 no text no watermark"
 
 PATHETIC:
-"Fantasy result card background 1200x630, muddy ditch outside tavern,
+"Fantasy result card background 1080x1920, muddy ditch outside tavern,
 sad chicken rain, aged parchment overlay band (empty, no text),
 frayed rope border, muted gray-brown palette, deflating comedy,
 no text no watermark"

@@ -27,8 +27,8 @@ const STAT_COLORS = {
   streak: "#60A5FA",
 };
 
-const W = 1200;
-const H = 630;
+const W = 1080;
+const H = 1080;
 const SANS = "'Segoe UI', Arial, sans-serif";
 const SERIF = "Georgia, 'Times New Roman', serif";
 
@@ -60,6 +60,7 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   return currentY + lineHeight;
 }
 
+// Returns a Blob — caller decides whether to download, share, or copy
 export async function generateRunCard({ ending, state, scenarioName, playerName }) {
   const templateSrc = TEMPLATES[ending.family] || TEMPLATES.pathetic;
   const accentColor = FAMILY_COLORS[ending.family] || FAMILY_COLORS.pathetic;
@@ -73,46 +74,46 @@ export async function generateRunCard({ ending, state, scenarioName, playerName 
   // Draw template background
   ctx.drawImage(img, 0, 0, W, H);
 
-  // --- Family badge (top-left of parchment area) ---
-  ctx.font = `bold 14px ${SANS}`;
-  ctx.fillStyle = accentColor;
-  ctx.textAlign = "left";
-  ctx.fillText(ending.family.toUpperCase(), 140, 90);
-
-  // --- Scenario name (top-right of parchment area) ---
-  ctx.font = `13px ${SANS}`;
+  // --- Scenario name (top center) ---
+  ctx.font = `16px ${SANS}`;
   ctx.fillStyle = "#9CA3AF";
-  ctx.textAlign = "right";
-  ctx.fillText(scenarioName, W - 140, 90);
+  ctx.textAlign = "center";
+  ctx.fillText(scenarioName, W / 2, 110);
 
-  // --- Ending title (centered, large) ---
-  ctx.font = `bold 36px ${SANS}`;
+  // --- Family badge ---
+  ctx.font = `bold 16px ${SANS}`;
   ctx.fillStyle = accentColor;
   ctx.textAlign = "center";
-  ctx.fillText(ending.title, W / 2, 155);
+  ctx.fillText(ending.family.toUpperCase(), W / 2, 155);
 
-  // --- Flavor text (centered, wrapped) ---
-  ctx.font = `italic 18px ${SERIF}`;
+  // --- Ending title ---
+  ctx.font = `bold 44px ${SANS}`;
+  ctx.fillStyle = accentColor;
+  ctx.textAlign = "center";
+  ctx.fillText(ending.title, W / 2, 230);
+
+  // --- Flavor text (wrapped) ---
+  ctx.font = `italic 22px ${SERIF}`;
   ctx.fillStyle = "#D1D5DB";
   ctx.textAlign = "center";
   const flavorY = wrapText(
     ctx,
     `\u201C${ending.text}\u201D`,
     W / 2,
-    210,
-    W - 320,
-    26,
+    310,
+    W - 160,
+    34,
   );
 
   // --- Player name ---
-  const nameY = Math.max(flavorY + 20, 340);
-  ctx.font = `bold 20px ${SANS}`;
+  const nameY = Math.max(flavorY + 40, 520);
+  ctx.font = `bold 28px ${SANS}`;
   ctx.fillStyle = "#F3F4F6";
   ctx.textAlign = "center";
   ctx.fillText(playerName, W / 2, nameY);
 
-  // --- Stats row ---
-  const statsY = nameY + 50;
+  // --- Stats row (4 columns) ---
+  const statsY = nameY + 70;
   const stats = [
     { label: "Renown", value: state.renown, color: STAT_COLORS.renown },
     { label: "Supplies", value: state.supplies, color: STAT_COLORS.supplies },
@@ -120,52 +121,69 @@ export async function generateRunCard({ ending, state, scenarioName, playerName 
     { label: "Streak", value: state.streak, color: STAT_COLORS.streak },
   ];
 
-  const statSpacing = 160;
+  const statSpacing = 200;
   const statStartX = W / 2 - ((stats.length - 1) * statSpacing) / 2;
 
   stats.forEach((stat, i) => {
     const x = statStartX + i * statSpacing;
-    // Value
-    ctx.font = `bold 28px ${SANS}`;
+    ctx.font = `bold 38px ${SANS}`;
     ctx.fillStyle = stat.color;
     ctx.textAlign = "center";
     ctx.fillText(String(stat.value), x, statsY);
-    // Label
-    ctx.font = `12px ${SANS}`;
+    ctx.font = `14px ${SANS}`;
     ctx.fillStyle = "#6B7280";
-    ctx.fillText(stat.label, x, statsY + 18);
+    ctx.fillText(stat.label, x, statsY + 22);
   });
 
   // --- Tags ---
-  const tagsY = statsY + 55;
+  const tagsY = statsY + 70;
   if (state.tags && state.tags.length > 0) {
-    ctx.font = `13px ${SANS}`;
+    ctx.font = `15px ${SANS}`;
     ctx.fillStyle = "#D1D5DB";
     ctx.textAlign = "center";
     ctx.fillText(state.tags.join("  \u00B7  "), W / 2, tagsY);
   }
 
   // --- Branding ---
-  ctx.font = `12px ${SANS}`;
+  ctx.font = `14px ${SANS}`;
   ctx.fillStyle = "#6B7280";
   ctx.textAlign = "center";
   ctx.fillText("emurpg.com", W / 2, H - 50);
 
-  // Export as blob URL
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) return reject(new Error("Failed to generate card image"));
-      resolve(URL.createObjectURL(blob));
+      resolve(blob);
     }, "image/png");
   });
 }
 
-export function downloadBlob(blobUrl, filename = "tavern-run-card.png") {
+export function downloadCard(blob, filename = "tavern-run-card.png") {
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = blobUrl;
+  a.href = url;
   a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(blobUrl);
+  URL.revokeObjectURL(url);
 }
+
+export async function shareCard(blob, title = "My Tavern Run") {
+  const file = new File([blob], "tavern-run-card.png", { type: "image/png" });
+  await navigator.share({ files: [file], title });
+}
+
+export async function copyCard(blob) {
+  await navigator.clipboard.write([
+    new ClipboardItem({ "image/png": blob }),
+  ]);
+}
+
+export const canShare = () =>
+  typeof navigator !== "undefined" &&
+  !!navigator.share &&
+  !!navigator.canShare?.({ files: [new File([], "x.png", { type: "image/png" })] });
+
+export const canCopy = () =>
+  typeof navigator !== "undefined" && !!navigator.clipboard?.write;

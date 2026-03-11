@@ -1,7 +1,14 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { generateRunCard, downloadBlob } from "./cardExporter";
+import {
+  generateRunCard,
+  downloadCard,
+  shareCard,
+  copyCard,
+  canShare,
+  canCopy,
+} from "./cardExporter";
 
 const FAMILY_COLORS = {
   legendary: "text-yellow-400",
@@ -27,24 +34,53 @@ const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario
   const [showModal, setShowModal] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [cardBlob, setCardBlob] = useState(null);
+  const [copied, setCopied] = useState(false);
 
-  const handleSaveCard = async () => {
+  const handleGenerate = async () => {
     if (!playerName.trim()) return;
     setGenerating(true);
     try {
-      const blobUrl = await generateRunCard({
+      const blob = await generateRunCard({
         ending,
         state,
         scenarioName,
         playerName: playerName.trim(),
       });
-      downloadBlob(blobUrl);
+      setCardBlob(blob);
     } catch (err) {
       console.error("Card generation failed:", err);
     } finally {
       setGenerating(false);
-      setShowModal(false);
     }
+  };
+
+  const handleShare = async () => {
+    try {
+      await shareCard(cardBlob, ending.title);
+    } catch (err) {
+      console.error("Share failed:", err);
+    }
+  };
+
+  const handleCopy = async () => {
+    try {
+      await copyCard(cardBlob);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
+
+  const handleDownload = () => {
+    downloadCard(cardBlob);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setCardBlob(null);
+    setCopied(false);
   };
 
   return (
@@ -72,34 +108,20 @@ const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario
         {/* Run stats */}
         <div className="grid grid-cols-4 gap-2 mb-6">
           <div className="bg-gray-700/50 rounded-lg p-2">
-            <div className="text-yellow-400 text-lg font-bold">
-              {state.renown}
-            </div>
-            <div className="text-gray-500 text-xs">
-              {t("tavern_run.stat_renown")}
-            </div>
+            <div className="text-yellow-400 text-lg font-bold">{state.renown}</div>
+            <div className="text-gray-500 text-xs">{t("tavern_run.stat_renown")}</div>
           </div>
           <div className="bg-gray-700/50 rounded-lg p-2">
-            <div className="text-green-400 text-lg font-bold">
-              {state.supplies}
-            </div>
-            <div className="text-gray-500 text-xs">
-              {t("tavern_run.stat_supplies")}
-            </div>
+            <div className="text-green-400 text-lg font-bold">{state.supplies}</div>
+            <div className="text-gray-500 text-xs">{t("tavern_run.stat_supplies")}</div>
           </div>
           <div className="bg-gray-700/50 rounded-lg p-2">
             <div className="text-red-400 text-lg font-bold">{state.danger}</div>
-            <div className="text-gray-500 text-xs">
-              {t("tavern_run.stat_danger")}
-            </div>
+            <div className="text-gray-500 text-xs">{t("tavern_run.stat_danger")}</div>
           </div>
           <div className="bg-gray-700/50 rounded-lg p-2">
-            <div className="text-blue-400 text-lg font-bold">
-              {state.streak}
-            </div>
-            <div className="text-gray-500 text-xs">
-              {t("tavern_run.stat_streak")}
-            </div>
+            <div className="text-blue-400 text-lg font-bold">{state.streak}</div>
+            <div className="text-gray-500 text-xs">{t("tavern_run.stat_streak")}</div>
           </div>
         </div>
 
@@ -126,35 +148,71 @@ const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario
         </div>
       </div>
 
-      {/* Name input modal */}
+      {/* Modal */}
       {showModal && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-          onClick={() => setShowModal(false)}
+          onClick={handleClose}
         >
           <div
             className="bg-gray-800 border border-gray-600 rounded-xl p-6 w-80 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <label className="block text-gray-300 text-sm mb-3">
-              {t("tavern_run.enter_name")}
-            </label>
-            <input
-              type="text"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              maxLength={30}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-center focus:outline-none focus:border-yellow-500 mb-4"
-              autoFocus
-              onKeyDown={(e) => e.key === "Enter" && handleSaveCard()}
-            />
-            <button
-              onClick={handleSaveCard}
-              disabled={!playerName.trim() || generating}
-              className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:text-gray-400 text-gray-900 font-bold rounded-lg transition-colors duration-300"
-            >
-              {generating ? "..." : t("tavern_run.download_card")}
-            </button>
+            {!cardBlob ? (
+              /* Step 1: Name input */
+              <>
+                <label className="block text-gray-300 text-sm mb-3">
+                  {t("tavern_run.enter_name")}
+                </label>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  maxLength={30}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-center focus:outline-none focus:border-yellow-500 mb-4"
+                  autoFocus
+                  onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
+                />
+                <button
+                  onClick={handleGenerate}
+                  disabled={!playerName.trim() || generating}
+                  className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:text-gray-400 text-gray-900 font-bold rounded-lg transition-colors duration-300"
+                >
+                  {generating ? "..." : t("tavern_run.generate_card")}
+                </button>
+              </>
+            ) : (
+              /* Step 2: Share options */
+              <>
+                <p className="text-gray-300 text-sm mb-4">
+                  {ending.title}
+                </p>
+                <div className="flex flex-col gap-2">
+                  {canShare() && (
+                    <button
+                      onClick={handleShare}
+                      className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-gray-900 font-bold rounded-lg transition-colors duration-300"
+                    >
+                      {t("tavern_run.share_card")}
+                    </button>
+                  )}
+                  {canCopy() && (
+                    <button
+                      onClick={handleCopy}
+                      className="w-full px-4 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
+                    >
+                      {copied ? t("tavern_run.copied") : t("tavern_run.copy_card")}
+                    </button>
+                  )}
+                  <button
+                    onClick={handleDownload}
+                    className="w-full px-4 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
+                  >
+                    {t("tavern_run.download_card")}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

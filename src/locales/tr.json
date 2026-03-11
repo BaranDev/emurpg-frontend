@@ -171,6 +171,10 @@
     "act_crisis": "Kriz",
     "save_card": "Kart Kaydet",
     "enter_name": "Adini gir",
-    "download_card": "Indir"
+    "generate_card": "Kart Olustur",
+    "share_card": "Paylas",
+    "copy_card": "Resmi Kopyala",
+    "download_card": "Indir",
+    "copied": "Kopyalandi!"
   }
 }
