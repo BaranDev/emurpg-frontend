@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 import { config } from "../../config";
 import {
   FaDiceD20,
@@ -70,6 +71,7 @@ const RegistrationForm = ({
   playerQuota,
   gameInfo,
 }) => {
+  const { t } = useTranslation();
   const [studentId, setStudentId] = useState("");
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
@@ -104,13 +106,11 @@ const RegistrationForm = ({
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!termsAccepted) {
-      alert("You must accept the EMURPG Event Rules and Privacy Policy.");
+      alert(t("registration.accept_terms"));
       return;
     }
     if (!gameKnowledgeAccepted) {
-      alert(
-        "You must confirm that you understand the game you are applying for."
-      );
+      alert(t("registration.game_understanding_required"));
       return;
     }
 
@@ -127,15 +127,15 @@ const RegistrationForm = ({
 
     const result = await response.json();
     if (!response.ok) {
-      alert(result.detail || "An error occurred during registration.");
+      alert(result.detail || t("registration.error_generic"));
     } else {
-      alert("Your registration was successful!");
+      alert(t("registration.success"));
     }
   };
 
   // Format playtime
   const formatPlaytime = (minutes) => {
-    if (!minutes) return "Not specified";
+    if (!minutes) return t("registration.not_specified");
     if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -146,7 +146,7 @@ const RegistrationForm = ({
     <div className="w-full max-w-2xl mx-auto">
       {/* Game Information Card */}
       {gameInfo && (
-        <motion.div         
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg mb-6 overflow-hidden"
@@ -159,7 +159,7 @@ const RegistrationForm = ({
             <div className="flex items-center gap-3">
               <FaGamepad className="text-yellow-500 text-xl" />
               <span className="text-yellow-500 font-bold text-lg">
-                Game Information
+                {t("registration.game_information")}
               </span>
             </div>
             {showGameDetails ? (
@@ -195,7 +195,9 @@ const RegistrationForm = ({
                     {/* Average Playtime */}
                     <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600">
                       <FaClock className="text-yellow-500 mx-auto mb-1 text-lg" />
-                      <p className="text-xs text-gray-400">Avg. Playtime</p>
+                      <p className="text-xs text-gray-400">
+                        {t("registration.avg_playtime")}
+                      </p>
                       <p className="text-white font-semibold text-sm">
                         {formatPlaytime(gameInfo.avg_play_time)}
                       </p>
@@ -204,20 +206,24 @@ const RegistrationForm = ({
                     {/* Player Count */}
                     <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600">
                       <FaUsers className="text-yellow-500 mx-auto mb-1 text-lg" />
-                      <p className="text-xs text-gray-400">Players</p>
+                      <p className="text-xs text-gray-400">
+                        {t("registration.players")}
+                      </p>
                       <p className="text-white font-semibold text-sm">
                         {gameInfo.min_players && gameInfo.max_players
                           ? `${gameInfo.min_players}-${gameInfo.max_players}`
-                          : playerQuota || "N/A"}
+                          : playerQuota || t("registration.not_available")}
                       </p>
                     </div>
 
                     {/* Table Quota */}
                     <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600 col-span-2 sm:col-span-1">
                       <FaDiceD20 className="text-yellow-500 mx-auto mb-1 text-lg" />
-                      <p className="text-xs text-gray-400">Table Quota</p>
+                      <p className="text-xs text-gray-400">
+                        {t("registration.table_quota")}
+                      </p>
                       <p className="text-white font-semibold text-sm">
-                        {playerQuota} seats
+                        {playerQuota} {t("registration.seats")}
                       </p>
                     </div>
                   </div>
@@ -228,7 +234,7 @@ const RegistrationForm = ({
                       <div className="flex items-center gap-2 mb-2">
                         <FaBookOpen className="text-yellow-500" />
                         <h4 className="text-yellow-500 font-semibold text-sm">
-                          About This Game
+                          {t("registration.about_game")}
                         </h4>
                       </div>
                       <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
@@ -247,7 +253,7 @@ const RegistrationForm = ({
                     >
                       <FaPlayCircle className="text-red-500 text-xl group-hover:scale-110 transition-transform" />
                       <span className="text-red-400 font-semibold text-sm">
-                        Watch Tutorial Video
+                        {t("registration.watch_tutorial")}
                       </span>
                     </a>
                   )}
@@ -257,9 +263,7 @@ const RegistrationForm = ({
                     <div className="flex items-start gap-2">
                       <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
                       <p className="text-orange-300 text-xs leading-relaxed">
-                        Please review the game information above before
-                        registering. If you are unfamiliar with this game, we
-                        strongly recommend watching the tutorial video.
+                        {t("registration.review_game_info")}
                       </p>
                     </div>
                   </div>
@@ -278,7 +282,8 @@ const RegistrationForm = ({
             <div>
               <p className="font-semibold">{gameName}</p>
               <p className="text-sm">
-                Player Quota: {playerQuota} | Game details not available
+                {t("registration.player_quota")} {playerQuota} |{" "}
+                {t("registration.game_details_unavailable")}
               </p>
             </div>
           </div>
@@ -296,10 +301,10 @@ const RegistrationForm = ({
         <div className="text-center mb-6">
           <FaDiceD20 className="text-4xl text-yellow-500 mx-auto mb-2" />
           <h2 className="text-xl font-bold text-yellow-500">
-            Join the Adventure
+            {t("registration.join_adventure")}
           </h2>
           <p className="text-gray-400 text-sm">
-            Your quest awaits, brave adventurer!
+            {t("registration.quest_awaits")}
           </p>
         </div>
 
@@ -308,7 +313,7 @@ const RegistrationForm = ({
             icon={FaIdCard}
             type="number"
             maxLength={8}
-            placeholder="Student ID*"
+            placeholder={t("registration.student_id")}
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             required
@@ -317,7 +322,7 @@ const RegistrationForm = ({
           <Input
             icon={FaUser}
             type="text"
-            placeholder="Name/Surname*"
+            placeholder={t("registration.name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -327,7 +332,7 @@ const RegistrationForm = ({
             icon={FaPhoneAlt}
             type="number"
             maxLength={15}
-            placeholder="Contact Number (OPTIONAL)"
+            placeholder={t("registration.contact")}
             value={contact}
             onChange={(e) => setContact(e.target.value)}
           />
@@ -339,16 +344,18 @@ const RegistrationForm = ({
                 type="checkbox"
                 className="form-checkbox h-5 w-5 text-blue-500 rounded border-gray-600 focus:ring-blue-500 focus:ring-offset-gray-800 mt-0.5 flex-shrink-0"
                 checked={gameKnowledgeAccepted}
-                onChange={() => setGameKnowledgeAccepted(!gameKnowledgeAccepted)}
+                onChange={() =>
+                  setGameKnowledgeAccepted(!gameKnowledgeAccepted)
+                }
               />
               <div className="text-sm">
                 <span className="text-blue-300 font-semibold">
-                  I confirm that I understand the game I am applying for.
+                  {t("registration.game_knowledge_confirm")}
                 </span>
                 <p className="text-gray-400 mt-1 text-xs leading-relaxed">
                   {gameInfo?.guide_video_url
-                    ? "If I am not familiar with this game, I have watched the tutorial video provided above."
-                    : "If I am not familiar with this game, I will research how to play before the event."}
+                    ? t("registration.game_knowledge_video")
+                    : t("registration.game_knowledge_research")}
                 </p>
               </div>
             </label>
@@ -367,21 +374,21 @@ const RegistrationForm = ({
                   checked={termsAccepted}
                   onChange={() => setTermsAccepted(!termsAccepted)}
                 />
-                I accept the{" "}
+                {t("registration.accept_privacy")}{" "}
                 <a
                   href="/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-yellow-500 hover:text-yellow-400 underline"
                 >
-                  Privacy Policy
+                  {t("registration.privacy_policy")}
                 </a>{" "}
-                and the{" "}
+                {t("registration.and_the")}{" "}
                 <span
                   onClick={() => setIsModalOpen(true)}
                   className="text-yellow-500 hover:text-yellow-400 underline cursor-pointer"
                 >
-                  Event Rules
+                  {t("registration.event_rules")}
                 </span>
               </div>
             </label>
@@ -404,14 +411,14 @@ const RegistrationForm = ({
           >
             <span className="relative z-10 flex items-center justify-center">
               <FaDiceD20 className="mr-2" />
-              Begin Your Quest
+              {t("registration.begin_quest")}
             </span>
           </motion.button>
 
           {/* Validation Hints */}
           {(!termsAccepted || !gameKnowledgeAccepted) && (
             <p className="text-center text-gray-500 text-xs">
-              Please accept both checkboxes above to register
+              {t("registration.accept_both")}
             </p>
           )}
         </form>
@@ -422,7 +429,7 @@ const RegistrationForm = ({
         <div className="flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-yellow-500 text-2xl font-bold flex items-center">
-              <FaScroll className="mr-2" /> Event Rules
+              <FaScroll className="mr-2" /> {t("registration.event_rules")}
             </h2>
           </div>
           <motion.button
@@ -431,7 +438,7 @@ const RegistrationForm = ({
             onClick={() => setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN")}
             className="w-40 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-4"
           >
-            {ruleLanguage === "EN" ? "Turkce" : "English"}
+            {ruleLanguage === "EN" ? "Türkçe" : "English"}
           </motion.button>
           <div className="text-gray-300 space-y-3">
             {rules[ruleLanguage].map((rule, index) => (
@@ -453,7 +460,7 @@ const RegistrationForm = ({
             onClick={() => setIsModalOpen(false)}
             className="mt-6 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
           >
-            Close
+            {t("common.close")}
           </motion.button>
         </div>
       </Modal>

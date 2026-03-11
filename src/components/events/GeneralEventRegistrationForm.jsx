@@ -112,7 +112,7 @@ const GeneralEventRegistrationForm = ({ eventSlug, clubs }) => {
     if (!termsAccepted) {
       alert(
         t("registration.accept_terms") ||
-          "You must accept the event rules and privacy policy."
+          "You must accept the event rules and privacy policy.",
       );
       return;
     }
@@ -120,7 +120,7 @@ const GeneralEventRegistrationForm = ({ eventSlug, clubs }) => {
     if (clubs.length > 1 && selectedClubs.length === 0) {
       alert(
         t("registration.select_club") ||
-          "Please select at least one club or indicate you are not registered."
+          "Please select at least one club or indicate you are not registered.",
       );
       return;
     }
@@ -137,14 +137,14 @@ const GeneralEventRegistrationForm = ({ eventSlug, clubs }) => {
           contact: contact,
           clubs: clubs.length === 1 ? clubs : selectedClubs,
         }),
-      }
+      },
     );
 
     const result = await response.json();
     if (!response.ok) {
-      alert(result.detail || "An error occurred during registration.");
+      alert(result.detail || t("registration.error_generic"));
     } else {
-      alert("Your registration was successful!");
+      alert(t("registration.success"));
       // Reset form
       setStudentId("");
       setName("");

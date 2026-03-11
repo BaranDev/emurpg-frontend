@@ -143,7 +143,9 @@ const TableList = ({ eventSlug }) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
-        <p className="text-lg text-yellow-500">Loading tables...</p>
+        <p className="text-lg text-yellow-500">
+          {t("table_list.loading_tables")}
+        </p>
       </div>
     );
   }
@@ -259,93 +261,94 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
         </div>
       )}
       <div className="flex flex-col h-full relative z-10">
-      {(gameData?.image_url || table.game_image) && (
-        <div className="w-full h-32 overflow-hidden">
-          <img
-            src={gameData?.image_url || table.game_image}
-            alt={table.game_name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.error(`Image failed to load:`, e.target.src);
-              e.target.src =
-                "https://placehold.co/600x400/333/CCC?text=Game+Image";
-            }}
-          />
-        </div>
-      )}
-      <div className="p-6 flex-grow">
-        <h3
-          className={`text-xl font-bold mb-2 text-center font-medieval ${
-            (!theme.id || theme.id === "default") ? "text-yellow-500" : ""
-          }`}
-        >
-          {table.game_name}
-        </h3>
-
-        {table.language && (
-          <p className="text-sm text-red-500 mb-1 text-center">
-            {table.language}
-          </p>
+        {(gameData?.image_url || table.game_image) && (
+          <div className="w-full h-32 overflow-hidden">
+            <img
+              src={gameData?.image_url || table.game_image}
+              alt={table.game_name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                console.error(`Image failed to load:`, e.target.src);
+                e.target.src =
+                  "https://placehold.co/600x400/333/CCC?text=Game+Image";
+              }}
+            />
+          </div>
         )}
+        <div className="p-6 flex-grow">
+          <h3
+            className={`text-xl font-bold mb-2 text-center font-medieval ${
+              !theme.id || theme.id === "default" ? "text-yellow-500" : ""
+            }`}
+          >
+            {table.game_name}
+          </h3>
 
-        <p className="text-sm text-gray-300 mb-1 text-center">
-          {t("table_list.quest_master")}: {table.game_master}
-        </p>
+          {table.language && (
+            <p className="text-sm text-red-500 mb-1 text-center">
+              {table.language}
+            </p>
+          )}
 
-        <p className="text-sm text-center text-gray-400 mb-2">
-          ⏱️ ~{gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
-          {t("table_list.minutes")}
-        </p>
-
-        {!table.is_marked_full && (
-          <p className="text-sm text-center text-green-400 mb-3">
-            {table.player_quota} {t("table_list.seats")}
+          <p className="text-sm text-gray-300 mb-1 text-center">
+            {t("table_list.quest_master")}: {table.game_master}
           </p>
-        )}
-      </div>
 
-      <div className="p-4 bg-gray-700">
-        <div className="flex gap-2">
-          <Link
-            to={`/table/${table.slug}`}
-            className={`flex-1 text-center ${
-              table.is_marked_full
-                ? "bg-gray-500 text-white cursor-not-allowed"
-                : theme.button_styles
-            } px-4 py-2 rounded-md transition-colors`}
-            onClick={(e) => table.is_marked_full && e.preventDefault()}
-          >
-            {table.is_marked_full
-              ? t("table_list.full")
-              : t("table_list.register")}
-          </Link>
-          <button
-            onClick={() => {
-              // First scroll to top
-              window.scrollTo({
-                top: 400,
-                behavior: "smooth",
-              });
-              // Set a small timeout to ensure scroll completes before modal opens
-              setTimeout(() => {
-                setSelectedGame(
-                  gameData || {
-                    name: table.game_name,
-                    image_url: table.game_image,
-                    avg_play_time: table.game_play_time,
-                    guide_text: table.game_guide_text,
-                    guide_video_url: table.game_guide_video,
-                    min_players: 1,
-                    max_players: table.player_quota,
-                  }
-                );
-              }, 300);
-            }}
-            className="text-center text-sm bg-blue-600/50 hover:bg-blue-600/70 text-white px-3 py-2 rounded-md transition-colors"
-          >
-            {t("table_list.game_info")}
-          </button>
+          <p className="text-sm text-center text-gray-400 mb-2">
+            ⏱️ ~
+            {gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
+            {t("table_list.minutes")}
+          </p>
+
+          {!table.is_marked_full && (
+            <p className="text-sm text-center text-green-400 mb-3">
+              {table.player_quota} {t("table_list.seats")}
+            </p>
+          )}
         </div>
+
+        <div className="p-4 bg-gray-700">
+          <div className="flex gap-2">
+            <Link
+              to={`/table/${table.slug}`}
+              className={`flex-1 text-center ${
+                table.is_marked_full
+                  ? "bg-gray-500 text-white cursor-not-allowed"
+                  : theme.button_styles
+              } px-4 py-2 rounded-md transition-colors`}
+              onClick={(e) => table.is_marked_full && e.preventDefault()}
+            >
+              {table.is_marked_full
+                ? t("table_list.full")
+                : t("table_list.register")}
+            </Link>
+            <button
+              onClick={() => {
+                // First scroll to top
+                window.scrollTo({
+                  top: 400,
+                  behavior: "smooth",
+                });
+                // Set a small timeout to ensure scroll completes before modal opens
+                setTimeout(() => {
+                  setSelectedGame(
+                    gameData || {
+                      name: table.game_name,
+                      image_url: table.game_image,
+                      avg_play_time: table.game_play_time,
+                      guide_text: table.game_guide_text,
+                      guide_video_url: table.game_guide_video,
+                      min_players: 1,
+                      max_players: table.player_quota,
+                    },
+                  );
+                }, 300);
+              }}
+              className="text-center text-sm bg-blue-600/50 hover:bg-blue-600/70 text-white px-3 py-2 rounded-md transition-colors"
+            >
+              {t("table_list.game_info")}
+            </button>
+          </div>
         </div>
       </div>
     </div>
