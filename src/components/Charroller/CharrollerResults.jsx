@@ -23,7 +23,6 @@ import {
   ArrowLeft,
   Loader2,
   Settings,
-  CloudUpload,
 } from "lucide-react";
 import DiceRoller from "./DiceRoller";
 import { getCharacters } from "../../utils/characterStorage";
@@ -41,7 +40,6 @@ const CharrollerResults = ({
   onLevelUp,
   isLevelingUp = false,
   onDelete,
-  onSaveToServer,
   theme = "arcane", // "tavern" | "arcane"
 }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -57,8 +55,6 @@ const CharrollerResults = ({
   const [editingSection, setEditingSection] = useState(null);
   const [hasInspiration, setHasInspiration] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSavingToServer, setIsSavingToServer] = useState(false);
-  const [saveToServerStatus, setSaveToServerStatus] = useState(null); // "ok" | "error" | null
 
   // Theme colors
   const themeColors =
@@ -500,43 +496,6 @@ const CharrollerResults = ({
                   title="Edit with AI"
                 >
                   <Sparkles className="w-3.5 h-3.5 inline mr-1" /> Edit
-                </button>
-              )}
-              {onSaveToServer && (
-                <button
-                  onClick={async () => {
-                    setIsSavingToServer(true);
-                    setSaveToServerStatus(null);
-                    try {
-                      await onSaveToServer(characterData);
-                      setSaveToServerStatus("ok");
-                    } catch {
-                      setSaveToServerStatus("error");
-                    } finally {
-                      setIsSavingToServer(false);
-                      setTimeout(() => setSaveToServerStatus(null), 3000);
-                    }
-                  }}
-                  disabled={isSavingToServer}
-                  className={`px-3 py-1 text-xs uppercase font-bold tracking-wider rounded border transition-colors ${
-                    saveToServerStatus === "ok"
-                      ? "border-green-600/50 bg-green-900/20 text-green-400"
-                      : saveToServerStatus === "error"
-                        ? "border-red-600/50 bg-red-900/20 text-red-400"
-                        : "border-amber-600/50 text-amber-300 hover:bg-amber-500/10"
-                  }`}
-                  title="Save to server (admin)"
-                >
-                  {isSavingToServer ? (
-                    <Loader2 className="w-3.5 h-3.5 inline mr-1 animate-spin" />
-                  ) : (
-                    <CloudUpload className="w-3.5 h-3.5 inline mr-1" />
-                  )}
-                  {saveToServerStatus === "ok"
-                    ? "Saved!"
-                    : saveToServerStatus === "error"
-                      ? "Failed"
-                      : "Save"}
                 </button>
               )}
             </div>
@@ -1553,7 +1512,6 @@ CharrollerResults.propTypes = {
   onLevelUp: PropTypes.func,
   isLevelingUp: PropTypes.bool,
   onDelete: PropTypes.func,
-  onSaveToServer: PropTypes.func,
   theme: PropTypes.oneOf(["tavern", "arcane"]),
 };
 
