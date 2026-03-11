@@ -270,6 +270,7 @@ const TavernRun = () => {
         <EndingScreen
           ending={ending}
           state={gameState}
+          scenarioName={scenario.name}
           onRestart={handleRestart}
           onChangeScenario={handleChangeScenario}
         />

@@ -1,5 +1,7 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import { generateRunCard, downloadBlob } from "./cardExporter";
 
 const FAMILY_COLORS = {
   legendary: "text-yellow-400",
@@ -17,10 +19,33 @@ const FAMILY_BORDERS = {
   pathetic: "border-gray-500/40",
 };
 
-const EndingScreen = ({ ending, state, onRestart, onChangeScenario }) => {
+const EndingScreen = ({ ending, state, scenarioName, onRestart, onChangeScenario }) => {
   const { t } = useTranslation();
   const familyColor = FAMILY_COLORS[ending.family] || "text-yellow-300";
   const borderColor = FAMILY_BORDERS[ending.family] || "border-yellow-500/30";
+
+  const [showModal, setShowModal] = useState(false);
+  const [playerName, setPlayerName] = useState("");
+  const [generating, setGenerating] = useState(false);
+
+  const handleSaveCard = async () => {
+    if (!playerName.trim()) return;
+    setGenerating(true);
+    try {
+      const blobUrl = await generateRunCard({
+        ending,
+        state,
+        scenarioName,
+        playerName: playerName.trim(),
+      });
+      downloadBlob(blobUrl);
+    } catch (err) {
+      console.error("Card generation failed:", err);
+    } finally {
+      setGenerating(false);
+      setShowModal(false);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto animate-scaleIn">
@@ -92,8 +117,47 @@ const EndingScreen = ({ ending, state, onRestart, onChangeScenario }) => {
           >
             {t("tavern_run.try_another")}
           </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-4 py-2 bg-transparent border border-gray-600 hover:border-yellow-500/50 text-gray-400 hover:text-yellow-300 text-sm rounded-lg transition-colors duration-300"
+          >
+            {t("tavern_run.save_card")}
+          </button>
         </div>
       </div>
+
+      {/* Name input modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-gray-800 border border-gray-600 rounded-xl p-6 w-80 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <label className="block text-gray-300 text-sm mb-3">
+              {t("tavern_run.enter_name")}
+            </label>
+            <input
+              type="text"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              maxLength={30}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-center focus:outline-none focus:border-yellow-500 mb-4"
+              autoFocus
+              onKeyDown={(e) => e.key === "Enter" && handleSaveCard()}
+            />
+            <button
+              onClick={handleSaveCard}
+              disabled={!playerName.trim() || generating}
+              className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:text-gray-400 text-gray-900 font-bold rounded-lg transition-colors duration-300"
+            >
+              {generating ? "..." : t("tavern_run.download_card")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -109,7 +173,9 @@ EndingScreen.propTypes = {
     supplies: PropTypes.number,
     danger: PropTypes.number,
     streak: PropTypes.number,
+    tags: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
+  scenarioName: PropTypes.string.isRequired,
   onRestart: PropTypes.func.isRequired,
   onChangeScenario: PropTypes.func.isRequired,
 };
