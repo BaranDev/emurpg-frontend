@@ -41,6 +41,7 @@ const EventList = () => {
   }, [error]);
 
   useWebSocket("events", handleWsUpdate);
+  useWebSocket("tables", handleWsUpdate);
 
   // Fallback for unsupported browsers
   if (!window.fetch || !window.WebSocket) {

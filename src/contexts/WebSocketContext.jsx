@@ -33,11 +33,23 @@ export function WebSocketProvider({ children }) {
           console.warn("[WS] Received non-JSON message:", event.data);
           return;
         }
-        const type = msg?.type ?? null;
-        subscribersRef.current.get(type)?.forEach((fn) => fn());
-        if (type !== null) {
-          subscribersRef.current.get(null)?.forEach((fn) => fn());
+        const topics = new Set();
+        if (typeof msg?.type === "string" && msg.type.length > 0) {
+          topics.add(msg.type);
+        } else if (
+          typeof msg?.message === "string" &&
+          msg.message.toLowerCase().includes("updated")
+        ) {
+          // Backward compatibility for older backend payloads:
+          // {"message": "Records updated"} should refresh both data domains.
+          topics.add("events");
+          topics.add("tables");
         }
+
+        topics.forEach((topic) => {
+          subscribersRef.current.get(topic)?.forEach((fn) => fn(msg));
+        });
+        subscribersRef.current.get(null)?.forEach((fn) => fn(msg));
       };
 
       ws.onclose = () => {

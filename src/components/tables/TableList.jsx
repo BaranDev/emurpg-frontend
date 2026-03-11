@@ -27,7 +27,7 @@ const TableList = ({ eventSlug }) => {
         setError(null);
       })
       .catch((err) => {
-        console.log("Failed to fetch tables:", err.message);
+        console.error("Failed to fetch tables:", err.message);
         setError(err.message);
         setTables([]);
       })
@@ -41,10 +41,9 @@ const TableList = ({ eventSlug }) => {
       try {
         const response = await fetch(`${config.backendUrl}/api/games`);
         if (!response.ok) return;
-        const data = await response.json();
-        console.log("Games loaded:", data);
+        await response.json();
       } catch (err) {
-        console.log("Error fetching games:", err.message);
+        console.error("Error fetching games:", err.message);
       }
     };
 
@@ -59,7 +58,7 @@ const TableList = ({ eventSlug }) => {
         });
         setThemes(themesMap);
       } catch (err) {
-        console.log("Error fetching themes:", err.message);
+        console.error("Error fetching themes:", err.message);
       }
     };
 
@@ -153,7 +152,6 @@ const TableList = ({ eventSlug }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
         {tables.map((table) => {
           const gameData = table.game_id ? gameDetails[table.game_id] : null;
-          console.log(`Table ${table.slug} game data:`, gameData);
 
           return tableListFunction(table, gameData, setSelectedGame, t, themes);
         })}

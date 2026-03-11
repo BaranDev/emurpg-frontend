@@ -16,7 +16,7 @@ export function useWebSocket(topic, callback) {
 
   useEffect(() => {
     const topicKey = topic ?? null;
-    const stableWrapper = () => latestCallbackRef.current?.();
+    const stableWrapper = (msg) => latestCallbackRef.current?.(msg);
 
     if (!subscribersRef.current.has(topicKey)) {
       subscribersRef.current.set(topicKey, new Set());
