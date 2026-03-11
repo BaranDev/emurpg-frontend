@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import { config } from "../../config";
 
 const TAVERN = {
-  cardBg: "linear-gradient(135deg, rgba(42, 26, 15, 0.95), rgba(61, 40, 23, 0.95))",
+  cardBg:
+    "linear-gradient(135deg, rgba(42, 26, 15, 0.95), rgba(61, 40, 23, 0.95))",
   border: "rgba(139, 69, 19, 0.4)",
   accent: "#ffaa33",
   text: "#d4a574",
@@ -31,9 +32,12 @@ const AdminCharactersPanel = ({ adminCode }) => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${config.backendUrl}/api/admin/charroller/characters`, {
-          headers: { "x-admin-code": adminCode },
-        });
+        const res = await fetch(
+          `${config.backendUrl}/api/admin/charroller/characters`,
+          {
+            headers: { "x-admin-code": adminCode },
+          },
+        );
         if (!res.ok) throw new Error(`${res.status}`);
         const data = await res.json();
         setCharacters(data.characters || []);
@@ -49,7 +53,10 @@ const AdminCharactersPanel = ({ adminCode }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="w-8 h-8 animate-spin" style={{ color: TAVERN.accent }} />
+        <Loader2
+          className="w-8 h-8 animate-spin"
+          style={{ color: TAVERN.accent }}
+        />
         <span className="ml-3 text-sm" style={{ color: TAVERN.textDark }}>
           {t("charroller.consent.admin_loading")}
         </span>
@@ -60,7 +67,7 @@ const AdminCharactersPanel = ({ adminCode }) => {
   if (error) {
     return (
       <div className="flex items-center justify-center py-16">
-        <p className="text-red-400 text-sm">{t("charroller.feedback.error")}
+        <p className="text-red-400 text-sm">{t("charroller.feedback.error")}</p>
       </div>
     );
   }
@@ -68,7 +75,10 @@ const AdminCharactersPanel = ({ adminCode }) => {
   if (characters.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-3">
-        <Users className="w-12 h-12 opacity-30" style={{ color: TAVERN.text }} />
+        <Users
+          className="w-12 h-12 opacity-30"
+          style={{ color: TAVERN.text }}
+        />
         <p className="text-sm" style={{ color: TAVERN.textDark }}>
           {t("charroller.consent.admin_empty")}
         </p>
@@ -80,10 +90,16 @@ const AdminCharactersPanel = ({ adminCode }) => {
     <div className="animate-fadeIn">
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
-        <h2 className="text-xl font-cinzel font-bold" style={{ color: TAVERN.text }}>
+        <h2
+          className="text-xl font-cinzel font-bold"
+          style={{ color: TAVERN.text }}
+        >
           {t("charroller.consent.admin_section")}
         </h2>
-        <span className="text-xs px-2 py-1 rounded-full" style={{ background: TAVERN.tagBg, color: TAVERN.accent }}>
+        <span
+          className="text-xs px-2 py-1 rounded-full"
+          style={{ background: TAVERN.tagBg, color: TAVERN.accent }}
+        >
           {t("charroller.consent.admin_total", { count: characters.length })}
         </span>
       </div>
@@ -94,7 +110,10 @@ const AdminCharactersPanel = ({ adminCode }) => {
           <div
             key={`${char.character_name}-${i}`}
             className="rounded-xl overflow-hidden"
-            style={{ background: TAVERN.cardBg, border: `1px solid ${TAVERN.border}` }}
+            style={{
+              background: TAVERN.cardBg,
+              border: `1px solid ${TAVERN.border}`,
+            }}
           >
             {/* Portrait */}
             <div className="relative h-32 bg-black/30 flex items-center justify-center overflow-hidden">
@@ -105,7 +124,10 @@ const AdminCharactersPanel = ({ adminCode }) => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <Users className="w-10 h-10 opacity-20" style={{ color: TAVERN.text }} />
+                <Users
+                  className="w-10 h-10 opacity-20"
+                  style={{ color: TAVERN.text }}
+                />
               )}
               <span
                 className="absolute top-2 right-2 px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
@@ -117,15 +139,24 @@ const AdminCharactersPanel = ({ adminCode }) => {
 
             {/* Info */}
             <div className="p-3">
-              <p className="font-cinzel text-sm font-bold truncate" style={{ color: TAVERN.text }}>
+              <p
+                className="font-cinzel text-sm font-bold truncate"
+                style={{ color: TAVERN.text }}
+              >
                 {char.character_name || "Unknown"}
               </p>
-              <p className="text-xs truncate mt-0.5" style={{ color: TAVERN.textDark }}>
+              <p
+                className="text-xs truncate mt-0.5"
+                style={{ color: TAVERN.textDark }}
+              >
                 {char.class || char.occupation || "Adventurer"}
                 {char.level ? ` · Lv ${char.level}` : ""}
               </p>
               {char.saved_at && (
-                <p className="text-[10px] mt-1.5" style={{ color: TAVERN.textDark }}>
+                <p
+                  className="text-[10px] mt-1.5"
+                  style={{ color: TAVERN.textDark }}
+                >
                   {t("charroller.consent.admin_saved_at", {
                     date: new Date(char.saved_at).toLocaleDateString(),
                   })}

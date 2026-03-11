@@ -1,12 +1,24 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { 
-  Settings, X, Key, Volume2, Image, Trash2, Download, 
-  Upload, Check, AlertTriangle 
+import {
+  Settings,
+  X,
+  Key,
+  Volume2,
+  Image,
+  Trash2,
+  Download,
+  Upload,
+  Check,
+  AlertTriangle,
 } from "lucide-react";
-import { 
-  getSettings, saveSettings, exportCharacters, 
-  importCharacters, deleteAllCharacters, clearAdminCode 
+import {
+  getSettings,
+  saveSettings,
+  exportCharacters,
+  importCharacters,
+  deleteAllCharacters,
+  clearAdminCode,
 } from "../../utils/characterStorage";
 import { config } from "../../config";
 
@@ -31,28 +43,37 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
 
   const validateAdminCode = async () => {
     if (!adminCode.trim()) return;
-    
+
     setIsValidating(true);
     setValidationResult(null);
-    
+
     try {
-      const response = await fetch(`${config.backendUrl}/api/charroller/validate-admin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ admin_code: adminCode })
-      });
-      
+      const response = await fetch(
+        `${config.backendUrl}/api/charroller/validate-admin`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ admin_code: adminCode }),
+        },
+      );
+
       const data = await response.json();
-      
+
       if (data.valid) {
         handleSettingChange("adminCode", adminCode);
         handleSettingChange("isAdmin", true);
-        setValidationResult({ success: true, message: "Admin access granted!" });
+        setValidationResult({
+          success: true,
+          message: "Admin access granted!",
+        });
       } else {
         setValidationResult({ success: false, message: "Invalid admin code" });
       }
     } catch (error) {
-      setValidationResult({ success: false, message: "Failed to validate code" });
+      setValidationResult({
+        success: false,
+        message: "Failed to validate code",
+      });
     } finally {
       setIsValidating(false);
     }
@@ -75,13 +96,13 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
   const handleImport = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     try {
       const result = await importCharacters(file);
       setImportResult({
         success: true,
         message: `Imported ${result.imported} characters`,
-        errors: result.errors
+        errors: result.errors,
       });
       if (onSettingsChange) {
         onSettingsChange(getSettings());
@@ -89,10 +110,10 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
     } catch (error) {
       setImportResult({
         success: false,
-        message: error.message
+        message: error.message,
       });
     }
-    
+
     // Reset file input
     e.target.value = "";
   };
@@ -110,19 +131,19 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
   if (isOpen === false) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0, 0, 0, 0.8)" }}
       onClick={onClose}
     >
-      <div 
+      <div
         className="w-full max-w-md rounded-xl p-6 max-h-[90vh] overflow-y-auto"
         style={{
           background: "linear-gradient(135deg, #3d2817, #2a1a0f)",
           border: "2px solid #8b4513",
-          boxShadow: "0 0 40px rgba(255, 170, 51, 0.2)"
+          boxShadow: "0 0 40px rgba(255, 170, 51, 0.2)",
         }}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -137,8 +158,8 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
             <X className="w-5 h-5" />
           </button>
         </div>
-{/* Sound Settings */}
-        <div 
+        {/* Sound Settings */}
+        <div
           className="p-4 rounded-lg mb-4"
           style={{ background: "rgba(0, 0, 0, 0.3)" }}
         >
@@ -146,30 +167,34 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
             <Volume2 className="w-4 h-4" />
             Sound
           </h3>
-          
+
           <label className="flex items-center justify-between cursor-pointer mb-2">
             <span className="text-tavern-parchment">Background Music</span>
             <input
               type="checkbox"
               checked={settings.musicEnabled}
-              onChange={(e) => handleSettingChange("musicEnabled", e.target.checked)}
+              onChange={(e) =>
+                handleSettingChange("musicEnabled", e.target.checked)
+              }
               className="w-5 h-5 accent-tavern-candleGlow"
             />
           </label>
-          
+
           <label className="flex items-center justify-between cursor-pointer">
             <span className="text-tavern-parchment">Sound Effects</span>
             <input
               type="checkbox"
               checked={settings.soundEffectsEnabled}
-              onChange={(e) => handleSettingChange("soundEffectsEnabled", e.target.checked)}
+              onChange={(e) =>
+                handleSettingChange("soundEffectsEnabled", e.target.checked)
+              }
               className="w-5 h-5 accent-tavern-candleGlow"
             />
           </label>
         </div>
 
         {/* Portrait Generation Toggle */}
-        <div 
+        <div
           className="p-4 rounded-lg mb-4"
           style={{ background: "rgba(0, 0, 0, 0.3)" }}
         >
@@ -177,30 +202,35 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
             <Image className="w-4 h-4" />
             AI Features
           </h3>
-          
+
           <label className="flex items-center justify-between cursor-pointer">
             <span className="text-tavern-parchment">Generate Portraits</span>
             <input
               type="checkbox"
               checked={settings.portraitGenerationEnabled}
-              onChange={(e) => handleSettingChange("portraitGenerationEnabled", e.target.checked)}
+              onChange={(e) =>
+                handleSettingChange(
+                  "portraitGenerationEnabled",
+                  e.target.checked,
+                )
+              }
               className="w-5 h-5 accent-tavern-candleGlow"
             />
           </label>
           <p className="text-xs text-tavern-parchmentDark mt-1">
-            AI-generated character portraits (uses API credits)
+            AI-generated character portraits
           </p>
         </div>
 
         {/* Data Management */}
-        <div 
+        <div
           className="p-4 rounded-lg mb-4"
           style={{ background: "rgba(0, 0, 0, 0.3)" }}
         >
           <h3 className="font-medium text-tavern-candleGlow mb-3">
             Data Management
           </h3>
-          
+
           <div className="space-y-2">
             <button
               onClick={handleExport}
@@ -210,10 +240,12 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
               <Download className="w-4 h-4" />
               Export All Characters
             </button>
-            
-            <label className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded
+
+            <label
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded
                             bg-tavern-woodLight text-tavern-parchment hover:bg-tavern-leather 
-                            transition-colors cursor-pointer">
+                            transition-colors cursor-pointer"
+            >
               <Upload className="w-4 h-4" />
               Import Characters
               <input
@@ -223,16 +255,18 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
                 className="hidden"
               />
             </label>
-            
+
             {importResult && (
-              <p className={`text-sm ${importResult.success ? "text-green-400" : "text-red-400"}`}>
+              <p
+                className={`text-sm ${importResult.success ? "text-green-400" : "text-red-400"}`}
+              >
                 {importResult.message}
               </p>
             )}
           </div>
         </div>
         {/* Admin Code Section */}
-        <div 
+        <div
           className="p-4 rounded-lg mb-4"
           style={{ background: "rgba(0, 0, 0, 0.3)" }}
         >
@@ -240,7 +274,7 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
             <Key className="w-4 h-4" />
             Admin Code
           </h3>
-          
+
           {settings.isAdmin ? (
             <div className="flex items-center justify-between">
               <span className="text-green-400 flex items-center gap-2">
@@ -275,7 +309,11 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
                 </button>
               </div>
               {validationResult && (
-                <p className={validationResult.success ? "text-green-400" : "text-red-400"}>
+                <p
+                  className={
+                    validationResult.success ? "text-green-400" : "text-red-400"
+                  }
+                >
                   {validationResult.message}
                 </p>
               )}
@@ -283,18 +321,18 @@ const SettingsPanel = ({ isOpen, onClose, onSettingsChange }) => {
           )}
         </div>
         {/* Danger Zone */}
-        <div 
+        <div
           className="p-4 rounded-lg"
-          style={{ 
+          style={{
             background: "rgba(220, 38, 38, 0.1)",
-            border: "1px solid rgba(220, 38, 38, 0.3)"
+            border: "1px solid rgba(220, 38, 38, 0.3)",
           }}
         >
           <h3 className="font-medium text-red-400 mb-3 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             Danger Zone
           </h3>
-          
+
           {showDeleteConfirm ? (
             <div className="space-y-2">
               <p className="text-red-300 text-sm">
