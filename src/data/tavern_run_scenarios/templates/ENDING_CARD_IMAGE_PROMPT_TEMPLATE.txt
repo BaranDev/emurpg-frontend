@@ -1,0 +1,32 @@
+TAVERN RUN ENDING CARD IMAGE PROMPT TEMPLATE
+Optimized for: Google Nano Banana 2
+
+How to use:
+1) Copy one prompt below directly into Nano Banana 2.
+2) Export as PNG at 1080x1080 (or 2160x2160 for 2x, scale down after).
+3) Save into src/assets/tavern-run-cards/ matching the filename.
+
+--------------------------------------------------
+LEGENDARY — card-legendary.png
+--------------------------------------------------
+flat vector illustration, tabletop RPG game card, 1:1 square, golden throne room scene decorating the outer edges only, tall stained glass windows with bold geometric light rays, stylized gold coin and jewel piles in corners, ornate gilded filigree border with gold leaf scrollwork around a large centered blank aged parchment scroll, parchment is empty cream-colored with rough torn edges occupying center 80% of the image, warm gold #F6C23E and deep amber palette, bold clean outlines, flat shapes, triumphant mood, no text, no letters, no symbols, no writing anywhere
+
+--------------------------------------------------
+HEROIC — card-heroic.png
+--------------------------------------------------
+flat vector illustration, tabletop RPG game card, 1:1 square, mountain peak at dawn decorating the outer edges only, geometric sunrise rays in pink and gold, battle banner and sword-in-stone silhouettes in lower corners, clean polished steel frame border with rivet details at corners around a large centered blank aged parchment scroll, parchment is empty cream-colored with rough torn edges occupying center 80% of the image, steel blue #60A5FA and silver-white palette with warm dawn accent, bold clean outlines, flat shapes, solemn heroic mood, no text, no letters, no symbols, no writing anywhere
+
+--------------------------------------------------
+CHAOTIC — card-chaotic.png
+--------------------------------------------------
+flat vector illustration, tabletop RPG game card, 1:1 square, tavern brawl chaos decorating the outer edges only, flying chairs and ale mugs at dynamic angles, unbothered goat silhouette on a table in corner, swinging chandelier shape top edge, jagged cracked border with irregular zigzag breaks and flat ale splatter marks around a large centered blank aged parchment scroll, parchment is empty cream-colored with rough torn edges occupying center 80% of the image, warm purple #A78BFA and amber torchlight palette, bold clean outlines, flat shapes, energetic comedic mood, no text, no letters, no symbols, no writing anywhere
+
+--------------------------------------------------
+CURSED — card-cursed.png
+--------------------------------------------------
+flat vector illustration, tabletop RPG game card, 1:1 square, foggy graveyard at night decorating the outer edges only, twisted dead tree silhouettes in corners, cracked tombstone shapes and glowing green arcane rune on edge, cracked mirror shape lower corner, thorny bramble vine border with sharp thorn silhouettes creeping inward around a large centered blank aged parchment scroll, parchment is empty cream-colored with rough torn edges occupying center 80% of the image, deep crimson #F87171 and pitch black palette with sickly green rune glow accents, bold clean outlines, flat shapes, eerie foreboding mood, no text, no letters, no symbols, no writing anywhere
+
+--------------------------------------------------
+PATHETIC — card-pathetic.png
+--------------------------------------------------
+flat vector illustration, tabletop RPG game card, 1:1 square, muddy ditch outside a tavern decorating the outer edges only, sad round chicken silhouette standing in a puddle bottom corner, flat gray rain lines, broken shield and drooping flower shapes along edges, single small warm amber tavern window glow top corner as the only warm tone, frayed hemp rope border loosely uneven at corners around a large centered blank aged parchment scroll, parchment is empty cream-colored with rough torn edges occupying center 80% of the image, fully desaturated muted gray #9CA3AF and muddy brown palette, bold clean outlines, flat shapes, deflating comedic mood, no text, no letters, no symbols, no writing anywhere

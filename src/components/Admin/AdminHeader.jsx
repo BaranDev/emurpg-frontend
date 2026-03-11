@@ -5,22 +5,22 @@ import { useServerHealth } from "./shared/useServerHealth";
 const STATUS_CONFIG = {
   checking: {
     dotClass: "bg-amber-400 animate-pulse",
-    label: "Checking Realm...",
+    label: "Checking Server Connection...",
     labelClass: "text-amber-400",
   },
   online: {
     dotClass: "bg-emerald-500",
-    label: "Realm Online",
+    label: "Server Online",
     labelClass: "text-emerald-400",
   },
   degraded: {
     dotClass: "bg-amber-500 animate-pulse",
-    label: "Realm Strained",
+    label: "Server is slow",
     labelClass: "text-amber-400",
   },
   offline: {
     dotClass: "bg-red-500",
-    label: "Realm Unreachable",
+    label: "Server Offline(don't refresh)",
     labelClass: "text-red-400",
   },
 };
@@ -57,14 +57,21 @@ export const ServerStatus = () => {
   );
 };
 
-const AdminHeader = ({
-  username,
-  adminType,
-  onLogout,
-  onSync,
-  isSyncing = false,
-  lastSyncTime,
-}) => {
+export const ServerStatusDot = () => {
+  const { status } = useServerHealth();
+  const { dotClass, label } = STATUS_CONFIG[status];
+
+  return (
+    <div
+      className="flex items-center justify-center p-1.5 rounded-md border border-amber-800/40 bg-gray-800/80"
+      title={`${label} — checked every 30s`}
+    >
+      <div className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
+    </div>
+  );
+};
+
+const AdminHeader = ({ lastSyncTime }) => {
   const formatLastSync = (time) => {
     if (!time) return "Never";
     const diff = Date.now() - new Date(time).getTime();

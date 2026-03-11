@@ -168,6 +168,14 @@
     "act_hook": "Ba\u015flang\u0131\u00e7",
     "act_complication": "Komplikasyon",
     "act_opportunity": "F\u0131rsat",
-    "act_crisis": "Kriz"
+    "act_crisis": "Kriz",
+    "save_card": "Kart Kaydet",
+    "enter_name": "Adini gir",
+    "name_optional": "Ad\u0131n\u0131z (iste\u011fe ba\u011fl\u0131)",
+    "generate_card": "Kart Olustur",
+    "share_card": "Paylas",
+    "copy_card": "Resmi Kopyala",
+    "download_card": "Indir",
+    "copied": "Kopyalandi!"
   }
 }
