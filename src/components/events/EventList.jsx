@@ -156,6 +156,7 @@ const EventList = () => {
             const accentRgba = isGeneral
               ? "rgba(125, 211, 252, 0.65)"
               : "rgba(253, 164, 175, 0.65)";
+            const chipBg = accentRgba.replace("0.65", "0.08");
             const isClickable =
               event.total_tables > 0 || isGeneral;
             return (
@@ -198,9 +199,9 @@ const EventList = () => {
                     {(event.start_time || event.end_time) && (
                       <span
                         className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                        style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                        style={{ background: chipBg, color: accentRgba }}
                       >
-                        🕐 {[event.start_time, event.end_time].filter(Boolean).join(" – ")}
+                        <span aria-hidden="true">🕐</span> {[event.start_time, event.end_time].filter(Boolean).join(" – ")}
                       </span>
                     )}
                     {event.venue_name && (
@@ -209,18 +210,19 @@ const EventList = () => {
                           href={event.location_url}
                           target="_blank"
                           rel="noopener noreferrer"
+                          aria-label={`View ${event.venue_name} on map (opens in new tab)`}
                           className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-opacity hover:opacity-75"
-                          style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                          style={{ background: chipBg, color: accentRgba }}
                           onClick={(e) => e.stopPropagation()}
                         >
-                          📍 {event.venue_name} ↗
+                          <span aria-hidden="true">📍</span> {event.venue_name} <span aria-hidden="true">↗</span>
                         </a>
                       ) : (
                         <span
                           className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                          style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                          style={{ background: chipBg, color: accentRgba }}
                         >
-                          📍 {event.venue_name}
+                          <span aria-hidden="true">📍</span> {event.venue_name}
                         </span>
                       )
                     )}
@@ -229,19 +231,20 @@ const EventList = () => {
                         href={event.announcement_url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Read announcement: ${event.announcement_title} (opens in new tab)`}
                         className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-opacity hover:opacity-75"
-                        style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                        style={{ background: chipBg, color: accentRgba }}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        📢 {event.announcement_title} ↗
+                        <span aria-hidden="true">📢</span> {event.announcement_title} <span aria-hidden="true">↗</span>
                       </a>
                     )}
                     {(event.bus_time || event.bus_from || event.bus_to) && (
                       <span
                         className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                        style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                        style={{ background: chipBg, color: accentRgba }}
                       >
-                        🚌{" "}
+                        <span aria-hidden="true">🚌</span>{" "}
                         {[
                           event.bus_time,
                           event.bus_from && event.bus_to
