@@ -59,7 +59,7 @@ const Navbar = ({
       className={`px-4 py-2 rounded-lg relative group font-medium transition-all duration-300 ${
         button.disabled
           ? "text-gray-500 cursor-not-allowed opacity-50"
-          : "text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/20 backdrop-blur-sm"
+          : "text-stone-300 hover:text-amber-100 hover:bg-amber-500/5 border border-transparent hover:border-amber-500/20 backdrop-blur-sm"
       }`}
     >
       <span className="relative z-10">{button.label}</span>
@@ -70,7 +70,7 @@ const Navbar = ({
       )}
       {/* Magical glow underline effect */}
       {!button.disabled && (
-        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400/60 via-white/80 to-purple-400/60 group-hover:w-full transition-all duration-300 shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
+        <span className="absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r from-transparent via-amber-400/70 to-transparent group-hover:w-full transition-all duration-300" />
       )}
     </button>
   );
@@ -83,36 +83,23 @@ const Navbar = ({
             scrollEffectEnabled ? "animate-slideDown" : ""
           }`}
           style={{
-            background:
-              "linear-gradient(to bottom, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 50%, rgba(15, 23, 42, 0.85) 100%)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            background: [
+              "radial-gradient(ellipse 70% 100% at 0% 50%,   rgba(18,12,45,0.55) 0%, transparent 65%)",
+              "radial-gradient(ellipse 70% 100% at 100% 50%, rgba(10,15,40,0.45) 0%, transparent 65%)",
+              "linear-gradient(to bottom, rgba(5,6,14,0.92) 0%, rgba(8,10,22,0.85) 100%)",
+            ].join(", "),
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
           }}
         >
-          {/* Cloud-like bottom edge */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden">
-            <svg
-              className="absolute bottom-0 w-full h-full"
-              viewBox="0 0 1200 120"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M0,120 Q200,80 400,100 T800,90 T1200,110 L1200,120 L0,120 Z"
-                fill="rgba(15, 23, 42, 0.9)"
-                opacity="0.6"
-              />
-              <path
-                d="M0,120 Q150,70 350,95 T750,85 T1200,105 L1200,120 L0,120 Z"
-                fill="rgba(15, 23, 42, 0.7)"
-                opacity="0.4"
-              />
-            </svg>
-          </div>
-
-          {/* Misty fog effect */}
-          <div className="absolute inset-0 opacity-30 pointer-events-none">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" />
-          </div>
+          {/* Gold gradient rule at bottom */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(to right, transparent, rgba(201,162,39,0.4) 25%, rgba(201,162,39,0.4) 75%, transparent)",
+            }}
+          />
 
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center h-20">
@@ -185,7 +172,7 @@ const Navbar = ({
                 {/* Language Switcher */}
                 <button
                   onClick={handleLanguageToggle}
-                  className="px-4 py-2 rounded-lg relative group text-white/80 hover:text-white flex items-center gap-2 border border-white/20 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                  className="px-4 py-2 rounded-lg relative group text-stone-400 hover:text-amber-100 flex items-center gap-2 border border-amber-500/20 hover:border-amber-400/35 bg-amber-500/5 hover:bg-amber-500/10 transition-all duration-300 backdrop-blur-sm"
                   title={t("navbar.language")}
                 >
                   <FaGlobe className="text-base group-hover:rotate-180 transition-transform duration-500" />
