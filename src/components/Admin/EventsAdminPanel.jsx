@@ -18,6 +18,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+// XCircle, ChevronDown, ChevronUp retained for event list expand/collapse UI
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
 import AdminModal from "./shared/AdminModal";
@@ -26,70 +27,288 @@ import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
-function OptionalDetailsSection({ formData, onChange, show, onToggle }) {
+// ── Shared arcane input style helpers ────────────────────────────────────────
+const INPUT_CLS =
+  "w-full px-3 py-1.5 rounded-lg text-sm text-stone-200 placeholder:text-stone-600 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all duration-200";
+const INPUT_STYLE = {
+  background: "rgba(6, 8, 18, 0.85)",
+  border: "1px solid rgba(201,162,39,0.2)",
+};
+const LABEL_CLS =
+  "block text-xs text-stone-500 font-cinzel tracking-wide uppercase mb-1";
+
+function AInput(props) {
+  return <input {...props} className={INPUT_CLS} style={INPUT_STYLE} />;
+}
+function ATextarea(props) {
+  return <textarea {...props} className={INPUT_CLS} style={INPUT_STYLE} />;
+}
+function ASelect(props) {
+  return <select {...props} className={`${INPUT_CLS} bg-[rgba(6,8,18,0.85)]`} style={INPUT_STYLE} />;
+}
+
+function FormDivider({ label }) {
   return (
-    <div className="border border-gray-700 rounded-lg overflow-hidden">
-      <button
-        type="button"
-        onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-800/50 hover:bg-gray-800 text-sm text-gray-300 transition-colors"
-      >
-        <span>Optional Details (time, location, announcement, bus)</span>
-        <span className="text-gray-500">{show ? "▲" : "▼"}</span>
-      </button>
-      {show && (
-        <div className="px-4 py-3 space-y-3 border-t border-gray-700">
-          {/* Time */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Start Time</label>
-              <input type="text" name="start_time" value={formData.start_time} onChange={onChange} placeholder="e.g. 10:00" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">End Time</label>
-              <input type="text" name="end_time" value={formData.end_time} onChange={onChange} placeholder="e.g. 18:00" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-          </div>
-          {/* Venue */}
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">Venue Name</label>
-            <input type="text" name="venue_name" value={formData.venue_name} onChange={onChange} placeholder="e.g. Engineering Faculty B Block" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-          </div>
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">Google Maps Link (optional)</label>
-            <input type="url" name="location_url" value={formData.location_url} onChange={onChange} placeholder="https://maps.google.com/..." className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-          </div>
-          {/* Announcement */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Announcement Title</label>
-              <input type="text" name="announcement_title" value={formData.announcement_title} onChange={onChange} placeholder="e.g. Register Now" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Announcement URL</label>
-              <input type="url" name="announcement_url" value={formData.announcement_url} onChange={onChange} placeholder="https://..." className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-          </div>
-          {/* Bus */}
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Bus Departure Time</label>
-              <input type="text" name="bus_time" value={formData.bus_time} onChange={onChange} placeholder="e.g. 09:00" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">From</label>
-              <input type="text" name="bus_from" value={formData.bus_from} onChange={onChange} placeholder="e.g. Main Gate" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">To</label>
-              <input type="text" name="bus_to" value={formData.bus_to} onChange={onChange} placeholder="e.g. Event Hall" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
-            </div>
-          </div>
+    <div className="flex items-center gap-2 pt-1">
+      <div
+        className="h-px flex-1"
+        style={{ background: "rgba(201,162,39,0.12)" }}
+      />
+      <span className="text-xs text-amber-500/40 font-cinzel tracking-widest uppercase flex-shrink-0">
+        {label}
+      </span>
+      <div
+        className="h-px flex-1"
+        style={{ background: "rgba(201,162,39,0.12)" }}
+      />
+    </div>
+  );
+}
+
+function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onAddClub, onRemoveClub, showClubs }) {
+  return (
+    <div className="space-y-3">
+      {/* ── Identity ────────────────────────────────────── */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="col-span-2">
+          <label className={LABEL_CLS}>Event Name</label>
+          <AInput
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={onChange}
+            placeholder="e.g. EMURPG Spring 2025"
+            required
+          />
         </div>
+        <div>
+          <label className={LABEL_CLS}>Type</label>
+          <ASelect
+            name="event_type"
+            value={formData.event_type}
+            onChange={onChange}
+          >
+            <option value="game">Game (RPG)</option>
+            <option value="general">General (Club)</option>
+          </ASelect>
+        </div>
+      </div>
+
+      <div>
+        <label className={LABEL_CLS}>Description</label>
+        <ATextarea
+          name="description"
+          value={formData.description}
+          onChange={onChange}
+          rows={2}
+          placeholder="Brief event description…"
+        />
+      </div>
+
+      {/* ── Schedule ────────────────────────────────────── */}
+      <FormDivider label="Schedule" />
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className={LABEL_CLS}>Start Date</label>
+          <AInput
+            type="date"
+            name="start_date"
+            value={formData.start_date}
+            onChange={onChange}
+            required
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>Start Time</label>
+          <AInput
+            type="text"
+            name="start_time"
+            value={formData.start_time}
+            onChange={onChange}
+            placeholder="10:00"
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>End Date</label>
+          <AInput
+            type="date"
+            name="end_date"
+            value={formData.end_date}
+            onChange={onChange}
+            required
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>End Time</label>
+          <AInput
+            type="text"
+            name="end_time"
+            value={formData.end_time}
+            onChange={onChange}
+            placeholder="18:00"
+          />
+        </div>
+      </div>
+
+      {/* ── Venue ───────────────────────────────────────── */}
+      <FormDivider label="Location" />
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className={LABEL_CLS}>Venue Name</label>
+          <AInput
+            type="text"
+            name="venue_name"
+            value={formData.venue_name}
+            onChange={onChange}
+            placeholder="Engineering Faculty B Block"
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>Google Maps Link</label>
+          <AInput
+            type="url"
+            name="location_url"
+            value={formData.location_url}
+            onChange={onChange}
+            placeholder="https://maps.google.com/…"
+          />
+        </div>
+      </div>
+
+      {/* ── Announcement ────────────────────────────────── */}
+      <FormDivider label="Announcement" />
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className={LABEL_CLS}>Title</label>
+          <AInput
+            type="text"
+            name="announcement_title"
+            value={formData.announcement_title}
+            onChange={onChange}
+            placeholder="Register Now"
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>URL</label>
+          <AInput
+            type="url"
+            name="announcement_url"
+            value={formData.announcement_url}
+            onChange={onChange}
+            placeholder="https://…"
+          />
+        </div>
+      </div>
+
+      {/* ── Transport ───────────────────────────────────── */}
+      <FormDivider label="Transport" />
+      <div className="grid grid-cols-3 gap-3">
+        <div>
+          <label className={LABEL_CLS}>Bus Time</label>
+          <AInput
+            type="text"
+            name="bus_time"
+            value={formData.bus_time}
+            onChange={onChange}
+            placeholder="09:00"
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>From</label>
+          <AInput
+            type="text"
+            name="bus_from"
+            value={formData.bus_from}
+            onChange={onChange}
+            placeholder="Main Gate"
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>To</label>
+          <AInput
+            type="text"
+            name="bus_to"
+            value={formData.bus_to}
+            onChange={onChange}
+            placeholder="Event Hall"
+          />
+        </div>
+      </div>
+
+      {/* ── Clubs (general events only) ─────────────────── */}
+      {showClubs && (
+        <>
+          <FormDivider label="Participating Clubs" />
+          <div>
+            <div className="flex gap-2 mb-2">
+              <AInput
+                type="text"
+                value={clubInput}
+                onChange={(e) => onClubInputChange(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), onAddClub())
+                }
+                placeholder="Club name — press Enter or Add"
+              />
+              <button
+                type="button"
+                onClick={onAddClub}
+                className="px-3 py-1.5 rounded-lg text-xs font-cinzel text-amber-200 transition-all"
+                style={{
+                  background: "rgba(120,80,10,0.4)",
+                  border: "1px solid rgba(201,162,39,0.3)",
+                }}
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {formData.clubs.map((club, idx) => (
+                <span
+                  key={idx}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs text-amber-200"
+                  style={{
+                    background: "rgba(120,80,10,0.3)",
+                    border: "1px solid rgba(201,162,39,0.25)",
+                  }}
+                >
+                  {club}
+                  <button
+                    type="button"
+                    onClick={() => onRemoveClub(club)}
+                    className="text-stone-500 hover:text-red-400 transition-colors"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
 }
+
+import PropTypes from "prop-types";
+
+EventFormFields.propTypes = {
+  formData: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+  clubInput: PropTypes.string,
+  onClubInputChange: PropTypes.func,
+  onAddClub: PropTypes.func,
+  onRemoveClub: PropTypes.func,
+  showClubs: PropTypes.bool,
+};
+
+FormDivider.propTypes = {
+  label: PropTypes.string.isRequired,
+};
+
+AInput.propTypes = { type: PropTypes.string };
+ATextarea.propTypes = { rows: PropTypes.number };
+ASelect.propTypes = { children: PropTypes.node };
 
 const EventsAdminPanel = ({ onNavigate }) => {
   const [events, setEvents] = useState([]);
@@ -101,7 +320,6 @@ const EventsAdminPanel = ({ onNavigate }) => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
@@ -386,11 +604,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
       bus_to: "",
     });
     setClubInput("");
-    setShowDetails(false);
   };
 
   const openEditModal = (event) => {
-    setShowDetails(false);
     setSelectedEvent(event);
     setFormData({
       name: event.name,
@@ -795,139 +1011,24 @@ const EventsAdminPanel = ({ onNavigate }) => {
 
       <AdminModal
         isOpen={isCreateModalOpen}
-        onClose={() => {
-          setIsCreateModalOpen(false);
-          resetForm();
-        }}
+        onClose={() => { setIsCreateModalOpen(false); resetForm(); }}
         title="Create New Event"
       >
-        <form onSubmit={handleCreateEvent} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Event Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-              rows={3}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Start Date
-              </label>
-              <input
-                type="date"
-                name="start_date"
-                value={formData.start_date}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                End Date
-              </label>
-              <input
-                type="date"
-                name="end_date"
-                value={formData.end_date}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Event Type
-            </label>
-            <select
-              name="event_type"
-              value={formData.event_type}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-            >
-              <option value="game">Game Event (Tables & RPG)</option>
-              <option value="general">General Event (Club Registration)</option>
-            </select>
-          </div>
-
-          {formData.event_type === "general" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Clubs
-              </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={clubInput}
-                  onChange={(e) => setClubInput(e.target.value)}
-                  onKeyPress={(e) =>
-                    e.key === "Enter" && (e.preventDefault(), handleAddClub())
-                  }
-                  placeholder="Enter club name"
-                  className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-                />
-                <AdminButton type="button" onClick={handleAddClub} size="sm">
-                  Add
-                </AdminButton>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.clubs.map((club, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1 bg-yellow-900/40 text-yellow-200 rounded-full text-sm flex items-center gap-2"
-                  >
-                    {club}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveClub(club)}
-                      className="hover:text-red-400"
-                    >
-                      <XCircle className="w-4 h-4" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <OptionalDetailsSection
+        <form onSubmit={handleCreateEvent}>
+          <EventFormFields
             formData={formData}
             onChange={handleInputChange}
-            show={showDetails}
-            onToggle={() => setShowDetails((v) => !v)}
+            clubInput={clubInput}
+            onClubInputChange={setClubInput}
+            onAddClub={handleAddClub}
+            onRemoveClub={handleRemoveClub}
+            showClubs={formData.event_type === "general"}
           />
-
-          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-5 mt-4" style={{ borderTop: "1px solid rgba(201,162,39,0.12)" }}>
             <AdminButton
               type="button"
               variant="secondary"
-              onClick={() => {
-                setIsCreateModalOpen(false);
-                resetForm();
-              }}
+              onClick={() => { setIsCreateModalOpen(false); resetForm(); }}
               className="w-full sm:w-auto"
             >
               Cancel
@@ -941,86 +1042,24 @@ const EventsAdminPanel = ({ onNavigate }) => {
 
       <AdminModal
         isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setSelectedEvent(null);
-          resetForm();
-        }}
-        title={`Edit Event: ${selectedEvent?.name || ""}`}
+        onClose={() => { setIsEditModalOpen(false); setSelectedEvent(null); resetForm(); }}
+        title={`Edit: ${selectedEvent?.name || ""}`}
       >
-        <form onSubmit={handleUpdateEvent} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Event Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-              rows={3}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Start Date
-              </label>
-              <input
-                type="date"
-                name="start_date"
-                value={formData.start_date}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                End Date
-              </label>
-              <input
-                type="date"
-                name="end_date"
-                value={formData.end_date}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-
-          <OptionalDetailsSection
+        <form onSubmit={handleUpdateEvent}>
+          <EventFormFields
             formData={formData}
             onChange={handleInputChange}
-            show={showDetails}
-            onToggle={() => setShowDetails((v) => !v)}
+            clubInput={clubInput}
+            onClubInputChange={setClubInput}
+            onAddClub={handleAddClub}
+            onRemoveClub={handleRemoveClub}
+            showClubs={formData.event_type === "general"}
           />
-
-          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-5 mt-4" style={{ borderTop: "1px solid rgba(201,162,39,0.12)" }}>
             <AdminButton
               type="button"
               variant="secondary"
-              onClick={() => {
-                setIsEditModalOpen(false);
-                setSelectedEvent(null);
-                resetForm();
-              }}
+              onClick={() => { setIsEditModalOpen(false); setSelectedEvent(null); resetForm(); }}
               className="w-full sm:w-auto"
             >
               Cancel
