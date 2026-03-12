@@ -174,11 +174,11 @@ const EventList = () => {
             ].filter(Boolean).join("  ·  ");
 
             const StatusBadge = ({ compact = false }) => isGeneral ? (
-              <span className={`rounded-full bg-sky-950/60 text-sky-200 border border-sky-400/30 text-xs ${compact ? "px-2.5 py-1" : "px-3 py-1.5"}`}>
+              <span className={`${compact ? "rounded-full px-2.5 py-1" : "rounded-lg px-3 py-1.5 text-center leading-tight"} bg-sky-950/60 text-sky-200 border border-sky-400/30 text-xs`}>
                 {t("event_list_component.general_event") || "General Event — Registration Open"}
               </span>
             ) : (
-              <span className={`rounded-full text-xs ${compact ? "px-2.5 py-1" : "px-3 py-1.5"} ${
+              <span className={`${compact ? "rounded-full px-2.5 py-1" : "rounded-lg px-3 py-1.5 text-center leading-tight"} text-xs ${
                 event.available_tables > 0
                   ? "bg-emerald-950/60 text-emerald-300 border border-emerald-400/30"
                   : "bg-rose-950/60 text-rose-300 border border-rose-400/30"
