@@ -260,23 +260,27 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setIsLoading(false);
       setShowPostCreation(true);
 
-      // Fire-and-forget character save
-      if (getConsent() === "accepted") {
-        fetch(`${config.backendUrl}/api/charroller/save-character`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ character_data: { ...data, system: selectedSystem } }),
-        }).catch(() => {});
-      }
+      // Save character — capture server doc ID so portrait can be patched in later
+      const serverDocIdPromise =
+        getConsent() === "accepted"
+          ? fetch(`${config.backendUrl}/api/charroller/save-character`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ character_data: { ...data, system: selectedSystem } }),
+            })
+              .then((r) => (r.ok ? r.json() : null))
+              .then((res) => res?.id ?? null)
+              .catch(() => null)
+          : Promise.resolve(null);
 
-      // Generate portrait async
+      // Generate portrait async, then patch the server record with the URL
       if (settings.portraitGenerationEnabled) {
         console.log(
           "[PORTRAIT] portraitGenerationEnabled=true, starting async portrait for id:",
           savedChar.id,
         );
         setGeneratingId(savedChar.id);
-        generatePortrait(data, savedChar.id).then((portraitUrl) => {
+        generatePortrait(data, savedChar.id).then(async (portraitUrl) => {
           console.log(
             "[PORTRAIT] generatePortrait resolved. URL:",
             portraitUrl,
@@ -289,6 +293,19 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                 : prev,
             );
             setRefreshKey((k) => k + 1);
+
+            // Persist portrait URL to the server
+            const serverId = await serverDocIdPromise;
+            if (serverId) {
+              fetch(
+                `${config.backendUrl}/api/charroller/save-character/${serverId}`,
+                {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ portrait_url: portraitUrl }),
+                },
+              ).catch(() => {});
+            }
           } else {
             console.warn(
               "[PORTRAIT] Portrait URL was null/undefined - no image to show",
@@ -346,14 +363,18 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
       setIsLoading(false);
       setShowPostCreation(true);
 
-      // Fire-and-forget character save
-      if (getConsent() === "accepted") {
-        fetch(`${config.backendUrl}/api/charroller/save-character`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ character_data: { ...data, system: selectedSystem } }),
-        }).catch(() => {});
-      }
+      // Save character — capture server doc ID so portrait can be patched in later
+      const serverDocIdPromise =
+        getConsent() === "accepted"
+          ? fetch(`${config.backendUrl}/api/charroller/save-character`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ character_data: { ...data, system: selectedSystem } }),
+            })
+              .then((r) => (r.ok ? r.json() : null))
+              .then((res) => res?.id ?? null)
+              .catch(() => null)
+          : Promise.resolve(null);
 
       if (settings.portraitGenerationEnabled) {
         console.log(
@@ -361,7 +382,7 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
           savedChar.id,
         );
         setGeneratingId(savedChar.id);
-        generatePortrait(data, savedChar.id).then((portraitUrl) => {
+        generatePortrait(data, savedChar.id).then(async (portraitUrl) => {
           console.log(
             "[PORTRAIT] generatePortrait resolved. URL:",
             portraitUrl,
@@ -374,6 +395,19 @@ const CharrollerPage = ({ onLanguageSwitch }) => {
                 : prev,
             );
             setRefreshKey((k) => k + 1);
+
+            // Persist portrait URL to the server
+            const serverId = await serverDocIdPromise;
+            if (serverId) {
+              fetch(
+                `${config.backendUrl}/api/charroller/save-character/${serverId}`,
+                {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ portrait_url: portraitUrl }),
+                },
+              ).catch(() => {});
+            }
           } else {
             console.warn(
               "[PORTRAIT] Portrait URL was null/undefined - no image to show",
