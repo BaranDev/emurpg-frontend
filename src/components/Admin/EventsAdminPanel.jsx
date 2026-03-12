@@ -25,6 +25,7 @@ import AdminModal from "./shared/AdminModal";
 import AdminButton from "./shared/AdminButton";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
+import AnnouncementModal from "./AnnouncementModal";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
 // ── Shared arcane input style helpers ────────────────────────────────────────
@@ -368,6 +369,8 @@ const EventsAdminPanel = ({ onNavigate }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [announcementEvent, setAnnouncementEvent] = useState(null);
+
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
     title: "",
@@ -587,24 +590,6 @@ const EventsAdminPanel = ({ onNavigate }) => {
     });
   };
 
-  const handleGenerateAnnouncement = async (event) => {
-    try {
-      const response = await fetch(
-        `${backendUrl}/api/admin/events/${event.slug}/announcement`,
-        {
-          headers: { apiKey },
-        },
-      );
-
-      if (!response.ok) throw new Error("Failed to generate announcement");
-
-      const blob = await response.blob();
-      downloadFile(blob, `${event.name}_announcement.png`);
-    } catch (error) {
-      console.error("Error generating announcement:", error);
-      alert("Failed to generate announcement image");
-    }
-  };
 
   const handleGenerateReport = async (event) => {
     try {
@@ -941,7 +926,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
                         <AdminButton
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleGenerateAnnouncement(event);
+                            setAnnouncementEvent(event);
                           }}
                           variant="secondary"
                           size="sm"
@@ -1178,6 +1163,12 @@ const EventsAdminPanel = ({ onNavigate }) => {
             onConfirm: null,
           })
         }
+      />
+
+      <AnnouncementModal
+        event={announcementEvent}
+        isOpen={!!announcementEvent}
+        onClose={() => setAnnouncementEvent(null)}
       />
     </div>
   );
