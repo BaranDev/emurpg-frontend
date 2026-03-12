@@ -197,7 +197,13 @@ const EventList = () => {
                 transition={{ delay: index * 0.1 }}
                 onClick={() => isClickable ? setSelectedEvent(event) : null}
                 className={`relative rounded-xl overflow-hidden transition-all duration-300 ${
-                  isClickable ? "cursor-pointer hover:translate-x-1" : "opacity-75"
+                  isClickable
+                    ? `cursor-pointer hover:translate-x-1 group ${
+                        isGeneral
+                          ? "hover:shadow-[0_0_0_1px_rgba(125,211,252,0.28),0_12px_40px_rgba(0,0,0,0.5)]"
+                          : "hover:shadow-[0_0_0_1px_rgba(253,164,175,0.28),0_12px_40px_rgba(0,0,0,0.5)]"
+                      }`
+                    : "opacity-75"
                 }`}
                 style={{
                   background: "rgba(15, 18, 35, 0.75)",
@@ -307,6 +313,15 @@ const EventList = () => {
                     }}
                   >
                     <StatusBadge />
+                    {/* Click affordance arrow */}
+                    {isClickable && (
+                      <span
+                        className={`text-base font-cinzel transition-all duration-200 group-hover:translate-x-0.5 ${
+                          isGeneral ? "text-sky-200/20 group-hover:text-sky-200/50" : "text-rose-200/20 group-hover:text-rose-200/50"
+                        }`}
+                        aria-hidden="true"
+                      >→</span>
+                    )}
                     <span
                       className="font-cinzel text-xs tracking-wide text-center"
                       style={{ color: "rgba(251,191,36,0.45)" }}
@@ -400,8 +415,18 @@ const EventList = () => {
                     style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
                   >
                     <StatusBadge compact />
-                    <span className="text-amber-200/50 text-xs flex items-center gap-1.5">
-                      ✦ {new Date(event.start_date).toLocaleDateString()}
+                    <span className="flex items-center gap-2 text-xs">
+                      <span style={{ color: "rgba(251,191,36,0.45)" }}>
+                        ✦ {new Date(event.start_date).toLocaleDateString()}
+                      </span>
+                      {isClickable && (
+                        <span
+                          className={`font-cinzel transition-all duration-200 group-hover:translate-x-0.5 ${
+                            isGeneral ? "text-sky-200/25 group-hover:text-sky-200/60" : "text-rose-200/25 group-hover:text-rose-200/60"
+                          }`}
+                          aria-hidden="true"
+                        >→</span>
+                      )}
                     </span>
                   </div>
                 </div>
