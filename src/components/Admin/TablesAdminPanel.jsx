@@ -16,6 +16,7 @@ import {
   Image,
   ClipboardList,
   MessageCircle,
+  Copy,
 } from "lucide-react";
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
@@ -80,6 +81,8 @@ const TablesAdminPanel = () => {
   const [hostRequests, setHostRequests] = useState({});
   const [isApplicationsModalOpen, setIsApplicationsModalOpen] = useState(false);
   const [selectedApplicationsEvent, setSelectedApplicationsEvent] = useState(null);
+  const [isDuplicatesModalOpen, setIsDuplicatesModalOpen] = useState(false);
+  const [duplicateGroups, setDuplicateGroups] = useState([]);
   const selectedTableRef = useRef(null);
   const isPlayersModalOpenRef = useRef(false);
 
@@ -438,6 +441,72 @@ const TablesAdminPanel = () => {
     });
   };
 
+  const handleDuplicateReject = async (player) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/reject_player/${player._tableSlug}/${player.student_id}`,
+        { method: "POST", headers: { apiKey } },
+      );
+      if (!response.ok) throw new Error("Failed to reject player");
+      setDuplicateGroups((prev) =>
+        prev
+          .map((group) => ({
+            ...group,
+            apps: group.apps.map((app) =>
+              app._tableSlug === player._tableSlug &&
+              app.student_id === player.student_id
+                ? { ...app, _status: "rejected" }
+                : app,
+            ),
+          }))
+          .filter((group) => group.apps.length >= 2),
+      );
+    } catch (error) {
+      console.error("Error rejecting player:", error);
+      alert("Failed to reject player");
+    }
+  };
+
+  const handleDuplicateRemove = (player) => {
+    setConfirmDialog({
+      open: true,
+      title: "Remove Player",
+      message: `Are you sure you want to remove "${player.name}" from "${player._tableName}"?`,
+      onConfirm: async () => {
+        try {
+          const response = await fetch(
+            `${backendUrl}/api/admin/delete_player/${player._tableSlug}/${player.student_id}`,
+            { method: "DELETE", headers: { apiKey } },
+          );
+          if (!response.ok) throw new Error("Failed to remove player");
+          setDuplicateGroups((prev) =>
+            prev
+              .map((group) => ({
+                ...group,
+                apps: group.apps.filter(
+                  (app) =>
+                    !(
+                      app._tableSlug === player._tableSlug &&
+                      app.student_id === player.student_id
+                    ),
+                ),
+              }))
+              .filter((group) => group.apps.length >= 2),
+          );
+        } catch (error) {
+          console.error("Error removing player:", error);
+          alert("Failed to remove player");
+        }
+        setConfirmDialog({
+          open: false,
+          title: "",
+          message: "",
+          onConfirm: null,
+        });
+      },
+    });
+  };
+
   const getPlayerStatus = (studentId) => {
     if (!selectedTable) return "pending";
     if (selectedTable.approved_players?.some((p) => p.student_id === studentId))
@@ -669,6 +738,135 @@ const TablesAdminPanel = () => {
     ),
   };
 
+  const normalizeName = (name) =>
+    (name ?? "")
+      .toLowerCase()
+      .replace(/ı/g, "i")
+      .replace(/ğ/g, "g")
+      .replace(/ü/g, "u")
+      .replace(/ş/g, "s")
+      .replace(/ö/g, "o")
+      .replace(/ç/g, "c")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+
+  const normalizeId = (id) => (id ?? "").replace(/\D/g, "");
+
+  const handleCheckDuplicates = () => {
+    console.group("[DuplicateCheck] ─────────────────────────────");
+
+    // Collect every player entry from every table across all events.
+    // A player may appear in multiple status arrays (joined, approved, backup,
+    // rejected) within the same table — keep only their most-significant status
+    // per table to avoid counting the same slot twice.
+    const STATUS_RANK = { approved: 0, joined: 1, backup: 2, rejected: 3 };
+
+    // rawEntries: one record per player per table (deduped within a table)
+    const seenInTable = new Map(); // `${tableSlug}:${normId}` → index in rawEntries
+    const rawEntries = [];
+
+    ongoingEvents.forEach((event) => {
+      (event.tableDetails ?? []).forEach((table) => {
+        const lists = [
+          { arr: table.approved_players ?? [], status: "approved" },
+          { arr: table.joined_players ?? [], status: "joined" },
+          { arr: table.backup_players ?? [], status: "backup" },
+          { arr: table.rejected_players ?? [], status: "rejected" },
+        ];
+
+        lists.forEach(({ arr, status }) => {
+          arr.forEach((player) => {
+            const normId = normalizeId(player.student_id);
+            const dedupeKey = `${table.slug}:${normId || normalizeName(player.name)}`;
+
+            if (seenInTable.has(dedupeKey)) {
+              // Keep the higher-priority status for this player in this table
+              const existing = rawEntries[seenInTable.get(dedupeKey)];
+              if (STATUS_RANK[status] < STATUS_RANK[existing._status]) {
+                existing._status = status;
+              }
+            } else {
+              seenInTable.set(dedupeKey, rawEntries.length);
+              rawEntries.push({
+                ...player,
+                _status: status,
+                _tableName: table.game_name,
+                _tableSlug: table.slug,
+                _eventName: event.name,
+              });
+            }
+          });
+        });
+      });
+    });
+
+    console.log(`Total unique player-table entries: ${rawEntries.length}`);
+    rawEntries.forEach((p, i) => {
+      const nameKey = normalizeName(p.name);
+      const idKey = normalizeId(p.student_id);
+      console.log(
+        `  #${i} [${p._eventName} › ${p._tableName}] ` +
+          `name: "${p.name}" → "${nameKey}" | ` +
+          `id: "${p.student_id}" → "${idKey}" | status: ${p._status}`,
+      );
+    });
+
+    // Single-pass O(n) grouping by normalised name and normalised student ID.
+    const nameMap = new Map();
+    const idMap = new Map();
+
+    rawEntries.forEach((player) => {
+      const nameKey = normalizeName(player.name);
+      const idKey = normalizeId(player.student_id);
+
+      if (nameKey) {
+        if (!nameMap.has(nameKey)) nameMap.set(nameKey, []);
+        nameMap.get(nameKey).push(player);
+      }
+      if (idKey) {
+        if (!idMap.has(idKey)) idMap.set(idKey, []);
+        idMap.get(idKey).push(player);
+      }
+    });
+
+    // Merge groups: if the same set of players matches on >1 criterion, produce
+    // one group with all reasons listed rather than two separate entries.
+    const groupMap = new Map(); // serialised player-set key → { reasons[], apps[] }
+
+    const upsertGroup = (reason, groupPlayers) => {
+      const key = groupPlayers
+        .map((p) => `${p._tableSlug}:${normalizeId(p.student_id) || normalizeName(p.name)}`)
+        .sort()
+        .join("|");
+      if (groupMap.has(key)) {
+        groupMap.get(key).reasons.push(reason);
+      } else {
+        groupMap.set(key, { reasons: [reason], apps: groupPlayers });
+      }
+    };
+
+    nameMap.forEach((players, key) => {
+      if (players.length > 1) {
+        console.log(`  → Name match "${key}": ${players.length} entries`);
+        upsertGroup(`Matching name: "${key}"`, players);
+      }
+    });
+    idMap.forEach((players, id) => {
+      if (players.length > 1) {
+        console.log(`  → Student ID match "${id}": ${players.length} entries`);
+        upsertGroup(`Matching student ID: ${id}`, players);
+      }
+    });
+
+    const groups = [...groupMap.values()];
+    console.log(`Result: ${groups.length} duplicate group(s)`);
+    console.groupEnd();
+
+    setDuplicateGroups(groups);
+    setIsDuplicatesModalOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -695,6 +893,14 @@ const TablesAdminPanel = () => {
             icon={RefreshCw}
           >
             Refresh
+          </AdminButton>
+          <AdminButton
+            onClick={handleCheckDuplicates}
+            variant="secondary"
+            icon={Copy}
+            disabled={Object.keys(hostRequests).length === 0}
+          >
+            Duplicate Applicants
           </AdminButton>
           <AdminButton
             onClick={() => setIsCreateModalOpen(true)}
@@ -917,7 +1123,7 @@ const TablesAdminPanel = () => {
                       </AdminButton>
                       <AdminButton
                         onClick={() => handleToggleTableFull(table)}
-                        variant={table.is_marked_full ? "secondary" : "warning"}
+                        variant={table.is_marked_full ? "secondary" : "danger"}
                         size="sm"
                         icon={table.is_marked_full ? Unlock : Lock}
                       >
@@ -1496,12 +1702,139 @@ const TablesAdminPanel = () => {
         })()}
       </AdminModal>
 
+      {/* Duplicate Applicants Modal */}
+      <AdminModal
+        isOpen={isDuplicatesModalOpen}
+        onClose={() => {
+          setIsDuplicatesModalOpen(false);
+          setDuplicateGroups([]);
+        }}
+        title="Duplicate Applicants — All Events"
+        size="lg"
+      >
+        {duplicateGroups.length === 0 ? (
+          <div className="text-center py-12 text-gray-400">
+            <Copy className="w-10 h-10 mx-auto mb-3 opacity-40" />
+            <p className="font-medium">No duplicates found.</p>
+            <p className="text-sm mt-1 text-gray-500">
+              All applicants have unique names and student IDs across every
+              event.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6 max-h-[65vh] overflow-y-auto pr-1">
+            <p className="text-sm text-gray-400">
+              Found{" "}
+              <span className="text-amber-400 font-semibold">
+                {duplicateGroups.length}
+              </span>{" "}
+              duplicate group{duplicateGroups.length !== 1 ? "s" : ""} spanning{" "}
+              {duplicateGroups.reduce((s, g) => s + g.apps.length, 0)}{" "}
+              applications.
+            </p>
+            {duplicateGroups.map((group, gi) => (
+              <div
+                key={gi}
+                className="border border-amber-700/40 bg-amber-900/10 rounded-xl p-4"
+              >
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <Copy className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.reasons.map((r, ri) => (
+                      <span
+                        key={ri}
+                        className="text-xs text-amber-200 bg-amber-900/50 border border-amber-700/50 px-2 py-0.5 rounded-full"
+                      >
+                        {r}
+                      </span>
+                    ))}
+                  </div>
+                  <span className="ml-auto text-xs text-amber-500 bg-amber-900/40 border border-amber-700/40 px-2 py-0.5 rounded-full flex-shrink-0">
+                    {group.apps.length} entries
+                  </span>
+                </div>
+                <div className="overflow-x-auto rounded-lg border border-gray-700">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-gray-800/80 text-gray-400 text-xs uppercase tracking-wider">
+                        <th className="text-left px-3 py-2">Event</th>
+                        <th className="text-left px-3 py-2">Table</th>
+                        <th className="text-left px-3 py-2">Player Name</th>
+                        <th className="text-left px-3 py-2">Student ID</th>
+                        <th className="text-left px-3 py-2">Contact</th>
+                        <th className="text-left px-3 py-2">Status</th>
+                        <th className="text-left px-3 py-2">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700/50">
+                      {group.apps.map((player, ai) => {
+                        const statusColor =
+                          player._status === "approved"
+                            ? "text-green-400"
+                            : player._status === "rejected"
+                              ? "text-red-400"
+                              : player._status === "backup"
+                                ? "text-yellow-400"
+                                : "text-blue-400";
+                        return (
+                          <tr
+                            key={`${player._tableSlug}-${player.student_id}-${ai}`}
+                            className="bg-gray-800/30 hover:bg-gray-800/60 transition-colors"
+                          >
+                            <td className="px-3 py-2 text-yellow-400/80 text-xs font-medium whitespace-nowrap">
+                              {player._eventName}
+                            </td>
+                            <td className="px-3 py-2 text-gray-300 whitespace-nowrap">
+                              {player._tableName}
+                            </td>
+                            <td className="px-3 py-2 text-white font-medium">
+                              {player.name}
+                            </td>
+                            <td className="px-3 py-2 font-mono text-gray-300">
+                              {player.student_id || "—"}
+                            </td>
+                            <td className="px-3 py-2 text-gray-300">
+                              {player.contact || "—"}
+                            </td>
+                            <td className={`px-3 py-2 font-medium ${statusColor}`}>
+                              {player._status}
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                              <div className="flex gap-1.5">
+                                {player._status !== "rejected" && (
+                                  <button
+                                    onClick={() => handleDuplicateReject(player)}
+                                    className="px-2 py-1 text-xs font-medium rounded border text-orange-300 bg-orange-900/30 border-orange-700/40 hover:bg-orange-900/60 transition-colors"
+                                  >
+                                    Reject
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleDuplicateRemove(player)}
+                                  className="px-2 py-1 text-xs font-medium rounded border text-red-300 bg-red-900/30 border-red-700/40 hover:bg-red-900/60 transition-colors"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </AdminModal>
+
       <ConfirmDialog
         isOpen={confirmDialog.open}
         title={confirmDialog.title}
         message={confirmDialog.message}
         onConfirm={confirmDialog.onConfirm}
-        onCancel={() =>
+        onClose={() =>
           setConfirmDialog({
             open: false,
             title: "",
