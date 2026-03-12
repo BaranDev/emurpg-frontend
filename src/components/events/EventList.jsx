@@ -5,7 +5,7 @@ import GeneralEventRegistrationForm from "./GeneralEventRegistrationForm";
 import { config } from "../../config";
 import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
-import { Clock, MapPin, Megaphone, Bus } from "lucide-react";
+import { Clock, MapPin, Megaphone, Bus, ExternalLink } from "lucide-react";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
 const EventList = () => {
@@ -158,6 +158,7 @@ const EventList = () => {
               ? "rgba(125, 211, 252, 0.65)"
               : "rgba(253, 164, 175, 0.65)";
             const iconStyle = { color: isGeneral ? "rgba(125,211,252,0.55)" : "rgba(253,164,175,0.55)" };
+            const linkStyle = { color: isGeneral ? "rgba(125,211,252,0.85)" : "rgba(253,164,175,0.85)" };
             const isClickable = event.total_tables > 0 || isGeneral;
 
             const hasMeta =
@@ -223,10 +224,12 @@ const EventList = () => {
                             href={event.location_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-stone-400 hover:text-stone-200 transition-colors hover:underline underline-offset-2"
+                            className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75"
+                            style={linkStyle}
                             onClick={(e) => e.stopPropagation()}
                           >
                             {event.venue_name}
+                            <ExternalLink size={10} className="flex-shrink-0 opacity-70" />
                           </a>
                         ) : (
                           <span className="text-stone-400">{event.venue_name}</span>
@@ -240,10 +243,12 @@ const EventList = () => {
                           href={event.announcement_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-stone-400 hover:text-stone-200 transition-colors hover:underline underline-offset-2"
+                          className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75"
+                          style={linkStyle}
                           onClick={(e) => e.stopPropagation()}
                         >
                           {event.announcement_title}
+                          <ExternalLink size={10} className="flex-shrink-0 opacity-70" />
                         </a>
                       </div>
                     )}
