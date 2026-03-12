@@ -276,35 +276,6 @@ const ThemesAdminPanel = () => {
     });
   };
 
-  const handleSeedDefaults = () => {
-    setConfirmDialog({
-      open: true,
-      title: "Seed Default Theme Pack",
-      message:
-        "This will upsert the backend default themes (default + curated pack). Existing custom themes are kept.",
-      onConfirm: async () => {
-        try {
-          const res = await fetch(
-            `${backendUrl}/api/admin/themes/seed-defaults`,
-            {
-              method: "POST",
-              headers: { apiKey },
-            },
-          );
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.detail || "Failed to seed default themes");
-          }
-          await fetchThemes();
-          showToast("Default theme pack seeded", "success");
-        } catch (err) {
-          showToast(err.message, "error");
-        }
-        setConfirmDialog((prev) => ({ ...prev, open: false }));
-      },
-    });
-  };
-
   const copyPrompt = () => {
     const prompt = `I want to create a visually stunning TailwindCSS theme for a card component. 
 
@@ -452,9 +423,6 @@ IMPORTANT RULES:
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <AdminButton onClick={handleSeedDefaults} variant="secondary">
-            Seed Default Themes
-          </AdminButton>
           <AdminButton onClick={handleOpenCreate} icon={Plus}>
             Create New Theme
           </AdminButton>
