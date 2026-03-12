@@ -7,6 +7,21 @@ import GameGuideModal from "./GameGuideModal";
 import HostTableModal from "./HostTableModal";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
+// Module-level cache — survives remounts, cleared only on full page refresh.
+// Game data (including image URLs) changes very rarely, so 60 min TTL is safe.
+const _gameCache = {};
+const GAME_CACHE_TTL_MS = 60 * 60 * 1000;
+
+async function fetchGameCached(backendUrl, gameId) {
+  const entry = _gameCache[gameId];
+  if (entry && Date.now() - entry.ts < GAME_CACHE_TTL_MS) return entry.data;
+  const res = await fetch(`${backendUrl}/api/game/${gameId}`);
+  if (!res.ok) throw new Error(`Failed with status: ${res.status}`);
+  const data = await res.json();
+  _gameCache[gameId] = { data, ts: Date.now() };
+  return data;
+}
+
 const TableList = ({ eventSlug }) => {
   const { t } = useTranslation();
   const [tables, setTables] = useState([]);
@@ -70,28 +85,17 @@ const TableList = ({ eventSlug }) => {
   }, [eventSlug, backendUrl, fetchTables]);
 
   useEffect(() => {
-    const fetchGameDetails = async (gameId) => {
-      try {
-        const response = await fetch(`${config.backendUrl}/api/game/${gameId}`);
-        if (!response.ok) {
-          throw new Error(`Failed with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setGameDetails((prevDetails) => ({
-          ...prevDetails,
-          [gameId]: data,
-        }));
-      } catch (error) {
-        console.error(`Error fetching game details for ID "${gameId}":`, error);
-      }
-    };
-
-    // Fetch details for tables with game_id
     tables.forEach((table) => {
-      if (table.game_id && !gameDetails[table.game_id]) {
-        fetchGameDetails(table.game_id);
-      }
+      if (!table.game_id) return;
+      // Skip if already loaded into component state this session
+      if (gameDetails[table.game_id]) return;
+      fetchGameCached(config.backendUrl, table.game_id)
+        .then((data) =>
+          setGameDetails((prev) => ({ ...prev, [table.game_id]: data }))
+        )
+        .catch((err) =>
+          console.error(`Error fetching game details for ID "${table.game_id}":`, err)
+        );
     });
   }, [tables, gameDetails]);
 
