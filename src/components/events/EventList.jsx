@@ -334,10 +334,7 @@ const EventList = () => {
 
                   {/* Scrollable meta chip rail */}
                   {hasMeta && (
-                    <div
-                      className="flex items-center gap-2 px-5 pb-3 overflow-x-auto"
-                      style={{ scrollbarWidth: "none" }}
-                    >
+                    <div className="flex flex-wrap items-center gap-2 px-5 pb-3">
                       {(event.start_time || event.end_time) && (
                         <span
                           className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full whitespace-nowrap text-xs text-stone-400 flex-shrink-0"
