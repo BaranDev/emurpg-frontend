@@ -173,7 +173,7 @@ const EventList = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => isClickable ? setSelectedEvent(event) : null}
-                className={`relative rounded-xl p-5 md:p-6 transition-all duration-300 ${
+                className={`relative rounded-xl overflow-hidden transition-all duration-300 ${
                   isClickable ? "cursor-pointer hover:translate-x-1" : "opacity-75"
                 }`}
                 style={{
@@ -183,95 +183,107 @@ const EventList = () => {
               >
                 {/* Corner ornament */}
                 <span
-                  className="absolute top-4 left-[-2px] text-xs leading-none select-none"
+                  className="absolute top-4 left-[-2px] text-xs leading-none select-none z-10"
                   style={{ color: accentColor }}
                   aria-hidden="true"
                 >
                   ◆
                 </span>
 
-                {/* Title + description */}
-                <h2
-                  className={`text-xl md:text-2xl font-cinzel font-bold mb-1.5 leading-snug ${
-                    isGeneral ? "text-sky-200" : "text-rose-200"
-                  }`}
-                >
-                  {event.name}
-                </h2>
-                <p className="text-stone-400 text-sm leading-relaxed mb-3">
-                  {event.description}
-                </p>
+                {/* Body: two-column on md+ */}
+                <div className="flex flex-col md:flex-row gap-4 px-5 md:px-6 pt-5 md:pt-6 pb-4">
 
-                {/* Meta rows — only if any field is present */}
-                {hasMeta && (
-                  <div
-                    className="space-y-1.5 mb-4 pt-3"
-                    style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-                  >
-                    {(event.start_time || event.end_time) && (
-                      <div className="flex items-center gap-2 text-xs text-stone-400">
-                        <Clock size={12} className="flex-shrink-0" style={iconStyle} />
-                        <span>
-                          {[event.start_time, event.end_time].filter(Boolean).join(" – ")}
-                        </span>
-                      </div>
-                    )}
-                    {event.venue_name && (
-                      <div className="flex items-center gap-2 text-xs">
-                        <MapPin size={12} className="flex-shrink-0" style={iconStyle} />
-                        {event.location_url ? (
+                  {/* Left: title + description */}
+                  <div className="flex-1 min-w-0">
+                    <h2
+                      className={`text-xl md:text-2xl font-cinzel font-bold mb-2 leading-snug ${
+                        isGeneral ? "text-sky-200" : "text-rose-200"
+                      }`}
+                    >
+                      {event.name}
+                    </h2>
+                    <p className="text-stone-400 text-sm leading-relaxed line-clamp-3">
+                      {event.description}
+                    </p>
+                  </div>
+
+                  {/* Right: meta info panel */}
+                  {hasMeta && (
+                    <div
+                      className="md:w-52 lg:w-56 flex-shrink-0 self-start flex flex-col gap-2 rounded-lg px-3 py-2.5"
+                      style={{
+                        background: "rgba(6, 8, 18, 0.5)",
+                        border: isGeneral
+                          ? "1px solid rgba(125,211,252,0.12)"
+                          : "1px solid rgba(253,164,175,0.12)",
+                      }}
+                    >
+                      {(event.start_time || event.end_time) && (
+                        <div className="flex items-center gap-2 text-xs text-stone-400">
+                          <Clock size={12} className="flex-shrink-0" style={iconStyle} />
+                          <span>{[event.start_time, event.end_time].filter(Boolean).join(" – ")}</span>
+                        </div>
+                      )}
+                      {event.venue_name && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <MapPin size={12} className="flex-shrink-0" style={iconStyle} />
+                          {event.location_url ? (
+                            <a
+                              href={event.location_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75"
+                              style={linkStyle}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {event.venue_name}
+                              <ExternalLink size={10} className="flex-shrink-0 opacity-70" />
+                            </a>
+                          ) : (
+                            <span className="text-stone-400">{event.venue_name}</span>
+                          )}
+                        </div>
+                      )}
+                      {event.announcement_title && event.announcement_url && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <Megaphone size={12} className="flex-shrink-0" style={iconStyle} />
                           <a
-                            href={event.location_url}
+                            href={event.announcement_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75"
                             style={linkStyle}
                             onClick={(e) => e.stopPropagation()}
                           >
-                            {event.venue_name}
+                            {event.announcement_title}
                             <ExternalLink size={10} className="flex-shrink-0 opacity-70" />
                           </a>
-                        ) : (
-                          <span className="text-stone-400">{event.venue_name}</span>
-                        )}
-                      </div>
-                    )}
-                    {event.announcement_title && event.announcement_url && (
-                      <div className="flex items-center gap-2 text-xs">
-                        <Megaphone size={12} className="flex-shrink-0" style={iconStyle} />
-                        <a
-                          href={event.announcement_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75"
-                          style={linkStyle}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {event.announcement_title}
-                          <ExternalLink size={10} className="flex-shrink-0 opacity-70" />
-                        </a>
-                      </div>
-                    )}
-                    {(event.bus_time || event.bus_from || event.bus_to) && (
-                      <div className="flex items-center gap-2 text-xs text-stone-400">
-                        <Bus size={12} className="flex-shrink-0" style={iconStyle} />
-                        <span>
-                          {[
-                            event.bus_time,
-                            event.bus_from && event.bus_to
-                              ? `${event.bus_from} → ${event.bus_to}`
-                              : event.bus_from || event.bus_to,
-                          ]
-                            .filter(Boolean)
-                            .join("  ·  ")}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                        </div>
+                      )}
+                      {(event.bus_time || event.bus_from || event.bus_to) && (
+                        <div className="flex items-center gap-2 text-xs text-stone-400">
+                          <Bus size={12} className="flex-shrink-0" style={iconStyle} />
+                          <span>
+                            {[
+                              event.bus_time,
+                              event.bus_from && event.bus_to
+                                ? `${event.bus_from} → ${event.bus_to}`
+                                : event.bus_from || event.bus_to,
+                            ]
+                              .filter(Boolean)
+                              .join("  ·  ")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
-                {/* Footer: availability badge + date */}
-                <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                {/* Footer strip: badge + date */}
+                <div
+                  className="flex flex-wrap items-center justify-between gap-3 px-5 md:px-6 py-3"
+                  style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+                >
                   {isGeneral ? (
                     <span className="px-3 py-1.5 rounded-full bg-sky-950/60 text-sky-200 border border-sky-400/30 text-xs">
                       {t("event_list_component.general_event") ||
