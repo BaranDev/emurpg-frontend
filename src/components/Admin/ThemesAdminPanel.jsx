@@ -44,8 +44,8 @@ const ThemesAdminPanel = () => {
   });
 
   const [isUploading, setIsUploading] = useState(false);
-
   const [copied, setCopied] = useState(false);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
 
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
@@ -276,6 +276,35 @@ const ThemesAdminPanel = () => {
     });
   };
 
+  const handleSeedDefaults = () => {
+    setConfirmDialog({
+      open: true,
+      title: "Seed Default Theme Pack",
+      message:
+        "This will upsert the backend default themes (default + curated pack). Existing custom themes are kept.",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(
+            `${backendUrl}/api/admin/themes/seed-defaults`,
+            {
+              method: "POST",
+              headers: { apiKey },
+            },
+          );
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.detail || "Failed to seed default themes");
+          }
+          await fetchThemes();
+          showToast("Default theme pack seeded", "success");
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+        setConfirmDialog((prev) => ({ ...prev, open: false }));
+      },
+    });
+  };
+
   const copyPrompt = () => {
     const prompt = `I want to create a visually stunning TailwindCSS theme for a card component. 
 
@@ -301,6 +330,98 @@ IMPORTANT RULES:
     navigator.clipboard.writeText(prompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const renderThemePreviewCard = (theme, nameOverride = null) => {
+    const hasTextClass = (theme.card_styles || "").includes("text-");
+    const titleClass = hasTextClass ? "" : "text-amber-100";
+    const bodyMutedClass = hasTextClass ? "opacity-75" : "text-stone-400";
+    const bodyStrongClass = hasTextClass ? "" : "text-stone-200";
+    const secondaryButtonClass = theme.button_styles
+      ? `${theme.button_styles} opacity-85`
+      : "bg-indigo-950/60 text-indigo-300 border border-indigo-500/30";
+
+    return (
+      <div
+        className={`relative !flex !flex-col h-full min-h-[420px] overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-0.5 ${theme.background_styles || "bg-gray-800"} ${theme.card_styles || ""} ${theme.hover_animations || ""}`}
+      >
+        {theme.background_image_url && (
+          <div className="absolute inset-0 z-0">
+            <img
+              src={theme.background_image_url}
+              alt=""
+              className="w-full h-full object-cover opacity-60"
+            />
+          </div>
+        )}
+
+        <div className="flex flex-col h-full relative z-10">
+          <div className="w-full h-36 overflow-hidden relative bg-black/20">
+            <div className="absolute inset-0 flex items-center justify-center opacity-30">
+              <Palette className="w-10 h-10" />
+            </div>
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.45) 100%)",
+              }}
+            />
+          </div>
+
+          <div className="p-5 flex-grow flex flex-col gap-2">
+            <h3
+              className={`text-base font-cinzel font-semibold text-center leading-snug ${titleClass}`}
+            >
+              {nameOverride || theme.name}
+            </h3>
+
+            <p className="text-center">
+              <span className="px-2 py-0.5 rounded-full bg-red-950/60 text-red-300 border border-red-400/25 text-xs">
+                EN
+              </span>
+            </p>
+
+            <p className={`text-xs text-center ${bodyMutedClass}`}>
+              Quest Master: <span className={bodyStrongClass}>Arin</span>
+            </p>
+
+            <p className={`text-xs text-center ${bodyMutedClass}`}>
+              ⏱ ~240 minutes
+            </p>
+
+            <p className="text-center">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-300 border border-emerald-400/25 text-xs">
+                5 total seats available
+              </span>
+            </p>
+          </div>
+
+          <div
+            className="p-3"
+            style={{
+              background: "rgba(0, 0, 0, 0.22)",
+              borderTop: "1px solid rgba(255,255,255,0.05)",
+            }}
+          >
+            <div className="flex gap-2">
+              <button
+                className={`flex-1 text-center text-sm px-3 py-2 rounded-lg border transition-all duration-200 ${theme.button_styles || "bg-gray-700 text-white border-gray-600"}`}
+                disabled
+              >
+                Register
+              </button>
+              <button
+                className={`text-center text-sm px-3 py-2 rounded-lg border transition-all duration-200 ${secondaryButtonClass}`}
+                disabled
+              >
+                Game Info
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (isLoading) return <LoadingSpinner />;
@@ -330,91 +451,50 @@ IMPORTANT RULES:
             Manage visual appearances for event tables
           </p>
         </div>
-        <AdminButton onClick={handleOpenCreate} icon={Plus}>
-          Create New Theme
-        </AdminButton>
+        <div className="flex items-center gap-2 flex-wrap">
+          <AdminButton onClick={handleSeedDefaults} variant="secondary">
+            Seed Default Themes
+          </AdminButton>
+          <AdminButton onClick={handleOpenCreate} icon={Plus}>
+            Create New Theme
+          </AdminButton>
+        </div>
       </div>
 
       {/* Theme Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {themes.map((theme) => (
-          <div
-            key={theme.id}
-            className={`shadow-lg !flex !flex-col h-full min-h-[400px] overflow-hidden relative ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
-          >
-            {theme.background_image_url && (
-              <div className="absolute inset-0 z-0">
-                <img
-                  src={theme.background_image_url}
-                  alt=""
-                  className="w-full h-full object-cover opacity-60"
-                />
-              </div>
-            )}
-            <div className="w-full h-32 overflow-hidden bg-gray-700/50 relative z-10">
-              <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                <Palette className="w-12 h-12" />
-              </div>
+          <div key={theme.id} className="space-y-3">
+            <div className="relative">
+              {renderThemePreviewCard(theme)}
+              {theme.is_default && (
+                <span className="absolute top-3 right-3 z-20 text-[10px] bg-yellow-900/40 text-yellow-300 px-2 py-1 rounded-full border border-yellow-500/30 uppercase tracking-widest">
+                  Default
+                </span>
+              )}
             </div>
-            <div className="p-6 flex-grow flex flex-col justify-between relative z-10">
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <h3
-                    className={`text-xl font-bold text-center font-medieval ${
-                      !theme.id || theme.id === "default"
-                        ? "text-yellow-500"
-                        : ""
-                    }`}
-                  >
-                    {theme.name}
-                  </h3>
-                  {theme.is_default && (
-                    <span className="text-[10px] bg-yellow-900/40 text-yellow-300 px-2 py-1 rounded-full border border-yellow-500/30 uppercase tracking-widest ml-2 flex-shrink-0">
-                      Default
-                    </span>
-                  )}
-                </div>
 
-                <div className="flex justify-between items-center text-gray-300 mb-4 text-sm mt-4">
-                  <span className="flex items-center gap-2">
-                    <Users className="w-4 h-4" /> 2 / 5
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" /> 4 hrs
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-2 mt-4">
-                <button
-                  className={`w-full text-center px-4 py-2 transition-colors ${theme.button_styles}`}
-                  disabled
+            <div className="flex gap-2">
+              <AdminButton
+                onClick={() => handleOpenEdit(theme)}
+                variant="secondary"
+                className="flex-1"
+                size="sm"
+                icon={Edit2}
+              >
+                Edit
+              </AdminButton>
+              {theme.id !== "default" && (
+                <AdminButton
+                  onClick={() => handleDelete(theme)}
+                  variant="danger"
+                  className="flex-1"
+                  size="sm"
+                  icon={Trash2}
                 >
-                  Join Table (Preview)
-                </button>
-                <div className="flex gap-2">
-                  <AdminButton
-                    onClick={() => handleOpenEdit(theme)}
-                    variant="secondary"
-                    className="flex-1"
-                    size="sm"
-                    icon={Edit2}
-                  >
-                    Edit
-                  </AdminButton>
-                  {theme.id !== "default" && (
-                    <AdminButton
-                      onClick={() => handleDelete(theme)}
-                      variant="danger"
-                      className="flex-1"
-                      size="sm"
-                      icon={Trash2}
-                    >
-                      Delete
-                    </AdminButton>
-                  )}
-                </div>
-              </div>
+                  Delete
+                </AdminButton>
+              )}
             </div>
           </div>
         ))}
@@ -426,21 +506,22 @@ IMPORTANT RULES:
         onClose={() => {
           setIsModalOpen(false);
           resetForm();
+          setShowMobilePreview(false);
         }}
         size="xl"
       >
-        <div className="flex flex-col xl:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Form Content */}
-          <div className="w-full xl:flex-[2] space-y-4">
+          <div className="w-full lg:flex-[2] space-y-4">
             {/* AI Prompter */}
-            <div className="bg-indigo-900/20 border border-indigo-500/30 p-4 rounded-lg">
-              <div className="flex justify-between items-start mb-2">
+            <div className="bg-indigo-900/20 border border-indigo-500/30 p-3 sm:p-4 rounded-lg">
+              <div className="flex justify-between items-center gap-2">
                 <h4 className="text-indigo-400 font-semibold text-sm">
                   🤖 LLM Theme Generator Helper
                 </h4>
                 <button
                   onClick={copyPrompt}
-                  className="text-indigo-300 hover:text-white flex items-center gap-1 text-xs bg-indigo-500/20 px-2 py-1 rounded transition-colors"
+                  className="flex-shrink-0 text-indigo-300 hover:text-white flex items-center gap-1 text-xs bg-indigo-500/20 px-2 py-1 rounded transition-colors"
                 >
                   {copied ? (
                     <Check className="w-3 h-3" />
@@ -450,7 +531,7 @@ IMPORTANT RULES:
                   {copied ? "Copied!" : "Copy Prompt"}
                 </button>
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-gray-400 mt-1.5 hidden sm:block">
                 Copy the prompt and paste it into ChatGPT/Claude. Then paste the
                 resulting JSON values into the fields below to see a live
                 preview.
@@ -602,75 +683,73 @@ IMPORTANT RULES:
                 />
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-gray-700">
-                <AdminButton type="submit" className="flex-1">
-                  {isEditMode ? "Save Changes" : "Create Theme"}
-                </AdminButton>
+              <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-700">
                 <AdminButton
                   type="button"
                   variant="secondary"
+                  className="w-full sm:w-auto"
                   onClick={() => {
                     setIsModalOpen(false);
                     resetForm();
+                    setShowMobilePreview(false);
                   }}
                 >
                   Cancel
+                </AdminButton>
+                <AdminButton type="submit" className="flex-1">
+                  {isEditMode ? "Save Changes" : "Create Theme"}
                 </AdminButton>
               </div>
             </form>
           </div>
 
           {/* Live Preview Pane */}
-          <div className="w-full xl:flex-[1] xl:max-w-md border-t xl:border-t-0 xl:border-l border-gray-700 pt-6 xl:pt-0 xl:pl-6">
-            <h4 className="text-gray-400 font-semibold text-sm mb-4 uppercase tracking-wider">
-              Live Preview
-            </h4>
-            <div
-              className={`shadow-lg !flex !flex-col h-[400px] overflow-hidden relative ${form.background_styles || "bg-gray-800"} ${form.card_styles} ${form.hover_animations}`}
+          <div className="w-full lg:flex-[1] lg:max-w-sm">
+            {/* Mobile toggle */}
+            <button
+              type="button"
+              onClick={() => setShowMobilePreview((v) => !v)}
+              className="lg:hidden w-full flex items-center justify-between px-4 py-2.5 rounded-lg mb-3 text-sm font-cinzel text-amber-200/70 transition-colors"
+              style={{
+                background: "rgba(120,80,10,0.18)",
+                border: "1px solid rgba(201,162,39,0.2)",
+              }}
             >
-              {form.background_image_url && (
-                <div className="absolute inset-0 z-0">
-                  <img
-                    src={form.background_image_url}
-                    alt=""
-                    className="w-full h-full object-cover opacity-60"
-                  />
-                </div>
-              )}
-              <div className="w-full h-32 overflow-hidden bg-gray-700/50 relative z-10">
-                <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                  <Palette className="w-12 h-12" />
-                </div>
-              </div>
-              <div className="p-6 flex-grow flex flex-col justify-between relative z-10">
-                <div>
-                  <h3
-                    className={`text-xl font-bold text-center font-medieval ${
-                      !form.card_styles.includes("text-")
-                        ? "text-yellow-500"
-                        : ""
-                    }`}
-                  >
-                    {form.name || "Theme Name Preview"}
-                  </h3>
-                  <div className="flex justify-between items-center text-gray-300 mb-4 text-sm mt-4">
-                    <span className="flex items-center gap-2">
-                      <Users className="w-4 h-4" /> 2 / 5
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" /> 4 hrs
-                    </span>
-                  </div>
-                </div>
-                <button
-                  className={`w-full text-center px-4 py-2 transition-colors ${
-                    form.button_styles ||
-                    "bg-gray-600 text-white rounded cursor-not-allowed"
-                  }`}
-                  disabled
-                >
-                  Join Table
-                </button>
+              <span>Live Preview</span>
+              <span
+                className="text-xs transition-transform duration-200"
+                style={{
+                  display: "inline-block",
+                  transform: showMobilePreview
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)",
+                }}
+              >
+                ▾
+              </span>
+            </button>
+
+            {/* Always visible on lg+, toggled on smaller */}
+            <div
+              className={`${showMobilePreview ? "block" : "hidden"} lg:block`}
+            >
+              <h4 className="hidden lg:block text-gray-400 font-semibold text-sm mb-4 uppercase tracking-wider border-l border-gray-700 pl-6">
+                Live Preview
+              </h4>
+              <div className="lg:pl-6 lg:border-l lg:border-gray-700">
+                {renderThemePreviewCard(
+                  {
+                    id: selectedThemeId || "preview",
+                    name: form.name || "Theme Name Preview",
+                    background_styles: form.background_styles || "",
+                    background_image_url: form.background_image_url || "",
+                    card_styles: form.card_styles || "",
+                    hover_animations: form.hover_animations || "",
+                    button_styles: form.button_styles || "",
+                    is_default: false,
+                  },
+                  form.name || "Theme Name Preview",
+                )}
               </div>
             </div>
           </div>
