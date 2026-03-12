@@ -17,6 +17,8 @@ import {
   AlertCircle,
   ChevronDown,
   ChevronUp,
+  AlertTriangle,
+  Copy,
 } from "lucide-react";
 // XCircle, ChevronDown, ChevronUp retained for event list expand/collapse UI
 import { config } from "../../config";
@@ -370,6 +372,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [announcementEvent, setAnnouncementEvent] = useState(null);
+  const [dupWarn, setDupWarn] = useState({ open: false, event: null, groups: [] });
+  const [isDupDetailOpen, setIsDupDetailOpen] = useState(false);
+  const [dupDetailGroups, setDupDetailGroups] = useState([]);
 
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
@@ -731,6 +736,133 @@ const EventsAdminPanel = ({ onNavigate }) => {
     general: events.filter((e) => e.event_type === "general").length,
   };
 
+  // ── Duplicate-player helpers ─────────────────────────────────────────────
+  const normalizeName = (name) =>
+    (name ?? "")
+      .toLowerCase()
+      .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u")
+      .replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+
+  const normalizeId = (id) => (id ?? "").replace(/\D/g, "");
+
+  const checkDuplicatesForEvent = (event) => {
+    const STATUS_RANK = { approved: 0, joined: 1, backup: 2, rejected: 3 };
+    const seenInTable = new Map();
+    const rawEntries = [];
+
+    (event.tableDetails ?? []).forEach((table) => {
+      [
+        { arr: table.approved_players ?? [], status: "approved" },
+        { arr: table.joined_players   ?? [], status: "joined"   },
+        { arr: table.backup_players   ?? [], status: "backup"   },
+        { arr: table.rejected_players ?? [], status: "rejected" },
+      ].forEach(({ arr, status }) => {
+        arr.forEach((player) => {
+          const normId  = normalizeId(player.student_id);
+          const dedupeKey = `${table.slug}:${normId || normalizeName(player.name)}`;
+          if (seenInTable.has(dedupeKey)) {
+            const ex = rawEntries[seenInTable.get(dedupeKey)];
+            if (STATUS_RANK[status] < STATUS_RANK[ex._status]) ex._status = status;
+          } else {
+            seenInTable.set(dedupeKey, rawEntries.length);
+            rawEntries.push({
+              ...player,
+              _status:    status,
+              _tableName: table.game_name,
+              _tableSlug: table.slug,
+              _eventName: event.name,
+            });
+          }
+        });
+      });
+    });
+
+    const nameMap = new Map();
+    const idMap   = new Map();
+    rawEntries.forEach((p) => {
+      const nk = normalizeName(p.name);
+      const ik = normalizeId(p.student_id);
+      if (nk) { if (!nameMap.has(nk)) nameMap.set(nk, []); nameMap.get(nk).push(p); }
+      if (ik) { if (!idMap.has(ik))   idMap.set(ik, []);   idMap.get(ik).push(p);   }
+    });
+
+    const groupMap = new Map();
+    const upsert = (reason, players) => {
+      const key = players
+        .map((p) => `${p._tableSlug}:${normalizeId(p.student_id) || normalizeName(p.name)}`)
+        .sort().join("|");
+      if (groupMap.has(key)) groupMap.get(key).reasons.push(reason);
+      else groupMap.set(key, { reasons: [reason], apps: players });
+    };
+    nameMap.forEach((ps, k) => { if (ps.length > 1) upsert(`Matching name: "${k}"`, ps); });
+    idMap.forEach((ps, id) => { if (ps.length > 1) upsert(`Matching student ID: ${id}`, ps); });
+
+    return [...groupMap.values()];
+  };
+
+  const handleDupDetailReject = async (player) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/reject_player/${player._tableSlug}/${player.student_id}`,
+        { method: "POST", headers: { apiKey } },
+      );
+      if (!response.ok) throw new Error("Failed to reject player");
+      setDupDetailGroups((prev) =>
+        prev
+          .map((group) => ({
+            ...group,
+            apps: group.apps.map((app) =>
+              app._tableSlug === player._tableSlug &&
+              app.student_id === player.student_id
+                ? { ...app, _status: "rejected" }
+                : app,
+            ),
+          }))
+          .filter((group) => group.apps.length >= 2),
+      );
+    } catch (error) {
+      console.error("Error rejecting player:", error);
+      alert("Failed to reject player");
+    }
+  };
+
+  const handleDupDetailRemove = (player) => {
+    setConfirmDialog({
+      open: true,
+      title: "Remove Player",
+      message: `Are you sure you want to remove "${player.name}" from "${player._tableName}"?`,
+      onConfirm: async () => {
+        try {
+          const response = await fetch(
+            `${backendUrl}/api/admin/delete_player/${player._tableSlug}/${player.student_id}`,
+            { method: "DELETE", headers: { apiKey } },
+          );
+          if (!response.ok) throw new Error("Failed to remove player");
+          setDupDetailGroups((prev) =>
+            prev
+              .map((group) => ({
+                ...group,
+                apps: group.apps.filter(
+                  (app) =>
+                    !(
+                      app._tableSlug === player._tableSlug &&
+                      app.student_id === player.student_id
+                    ),
+                ),
+              }))
+              .filter((group) => group.apps.length >= 2),
+          );
+        } catch (error) {
+          console.error("Error removing player:", error);
+          alert("Failed to remove player");
+        }
+        setConfirmDialog({ open: false, title: "", message: "", onConfirm: null });
+      },
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -926,7 +1058,12 @@ const EventsAdminPanel = ({ onNavigate }) => {
                         <AdminButton
                           onClick={(e) => {
                             e.stopPropagation();
-                            setAnnouncementEvent(event);
+                            const groups = checkDuplicatesForEvent(event);
+                            if (groups.length > 0) {
+                              setDupWarn({ open: true, event, groups });
+                            } else {
+                              setAnnouncementEvent(event);
+                            }
                           }}
                           variant="secondary"
                           size="sm"
@@ -1164,6 +1301,160 @@ const EventsAdminPanel = ({ onNavigate }) => {
           })
         }
       />
+
+      {/* ── Duplicate-player warning interceptor ───────────────────────── */}
+      <AdminModal
+        isOpen={dupWarn.open}
+        onClose={() => setDupWarn({ open: false, event: null, groups: [] })}
+        title="Duplicate Players Detected"
+        size="sm"
+      >
+        <div className="flex flex-col items-center gap-4 py-2">
+          <div className="rounded-full p-3 bg-amber-900/30 text-amber-400">
+            <AlertTriangle className="h-8 w-8" />
+          </div>
+          <p className="text-center text-gray-300 text-sm leading-relaxed">
+            <span className="text-amber-400 font-semibold">
+              {dupWarn.groups.length} duplicate group
+              {dupWarn.groups.length !== 1 ? "s" : ""}
+            </span>{" "}
+            found across the tables for{" "}
+            <span className="text-white font-medium">
+              {dupWarn.event?.name}
+            </span>
+            . Would you like to review them before generating the announcement?
+          </p>
+          <div className="flex gap-3 pt-2 w-full justify-center flex-wrap">
+            <AdminButton
+              variant="secondary"
+              onClick={() => {
+                setDupDetailGroups(dupWarn.groups);
+                setIsDupDetailOpen(true);
+                setDupWarn({ open: false, event: null, groups: [] });
+              }}
+              icon={Copy}
+            >
+              See Duplicates
+            </AdminButton>
+            <AdminButton
+              variant="primary"
+              onClick={() => {
+                const ev = dupWarn.event;
+                setDupWarn({ open: false, event: null, groups: [] });
+                setAnnouncementEvent(ev);
+              }}
+            >
+              Proceed Anyway
+            </AdminButton>
+          </div>
+        </div>
+      </AdminModal>
+
+      {/* ── Duplicate-player detail modal ───────────────────────────────── */}
+      <AdminModal
+        isOpen={isDupDetailOpen}
+        onClose={() => { setIsDupDetailOpen(false); setDupDetailGroups([]); }}
+        title="Duplicate Players — Detail"
+        size="lg"
+      >
+        <div className="space-y-6 max-h-[65vh] overflow-y-auto pr-1">
+          <p className="text-sm text-gray-400">
+            Found{" "}
+            <span className="text-amber-400 font-semibold">
+              {dupDetailGroups.length}
+            </span>{" "}
+            duplicate group{dupDetailGroups.length !== 1 ? "s" : ""} spanning{" "}
+            {dupDetailGroups.reduce((s, g) => s + g.apps.length, 0)} player
+            entries.
+          </p>
+          {dupDetailGroups.map((group, gi) => (
+            <div
+              key={gi}
+              className="border border-amber-700/40 bg-amber-900/10 rounded-xl p-4"
+            >
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <Copy className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <div className="flex flex-wrap gap-1.5">
+                  {group.reasons.map((r, ri) => (
+                    <span
+                      key={ri}
+                      className="text-xs text-amber-200 bg-amber-900/50 border border-amber-700/50 px-2 py-0.5 rounded-full"
+                    >
+                      {r}
+                    </span>
+                  ))}
+                </div>
+                <span className="ml-auto text-xs text-amber-500 bg-amber-900/40 border border-amber-700/40 px-2 py-0.5 rounded-full flex-shrink-0">
+                  {group.apps.length} entries
+                </span>
+              </div>
+              <div className="overflow-x-auto rounded-lg border border-gray-700">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-800/80 text-gray-400 text-xs uppercase tracking-wider">
+                      <th className="text-left px-3 py-2">Table</th>
+                      <th className="text-left px-3 py-2">Player Name</th>
+                      <th className="text-left px-3 py-2">Student ID</th>
+                      <th className="text-left px-3 py-2">Contact</th>
+                      <th className="text-left px-3 py-2">Status</th>
+                      <th className="text-left px-3 py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-700/50">
+                    {group.apps.map((player, ai) => {
+                      const statusColor =
+                        player._status === "approved" ? "text-green-400"
+                        : player._status === "rejected" ? "text-red-400"
+                        : player._status === "backup"   ? "text-yellow-400"
+                        : "text-blue-400";
+                      return (
+                        <tr
+                          key={`${player._tableSlug}-${player.student_id}-${ai}`}
+                          className="bg-gray-800/30 hover:bg-gray-800/60 transition-colors"
+                        >
+                          <td className="px-3 py-2 text-gray-300 whitespace-nowrap">
+                            {player._tableName}
+                          </td>
+                          <td className="px-3 py-2 text-white font-medium">
+                            {player.name}
+                          </td>
+                          <td className="px-3 py-2 font-mono text-gray-300">
+                            {player.student_id || "—"}
+                          </td>
+                          <td className="px-3 py-2 text-gray-300">
+                            {player.contact || "—"}
+                          </td>
+                          <td className={`px-3 py-2 font-medium ${statusColor}`}>
+                            {player._status}
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            <div className="flex gap-1.5">
+                              {player._status !== "rejected" && (
+                                <button
+                                  onClick={() => handleDupDetailReject(player)}
+                                  className="px-2 py-1 text-xs font-medium rounded border text-orange-300 bg-orange-900/30 border-orange-700/40 hover:bg-orange-900/60 transition-colors"
+                                >
+                                  Reject
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleDupDetailRemove(player)}
+                                className="px-2 py-1 text-xs font-medium rounded border text-red-300 bg-red-900/30 border-red-700/40 hover:bg-red-900/60 transition-colors"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
+        </div>
+      </AdminModal>
 
       <AnnouncementModal
         event={announcementEvent}
