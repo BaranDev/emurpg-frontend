@@ -14,6 +14,8 @@ import {
   AlertCircle,
   UserPlus,
   Image,
+  ClipboardList,
+  MessageCircle,
 } from "lucide-react";
 import { config } from "../../config";
 import { getApiKey } from "../../utils/auth";
@@ -75,6 +77,10 @@ const TablesAdminPanel = () => {
   const [isCustomGame, setIsCustomGame] = useState(false);
   const [isGeneratingLayout, setIsGeneratingLayout] = useState(false);
 
+  const [hostRequests, setHostRequests] = useState({});
+  const [isApplicationsModalOpen, setIsApplicationsModalOpen] = useState(false);
+  const [selectedApplicationsEvent, setSelectedApplicationsEvent] = useState(null);
+
   const backendUrl = config.backendUrl;
   const apiKey = getApiKey();
 
@@ -118,6 +124,28 @@ const TablesAdminPanel = () => {
           }),
         );
         setEvents(eventsWithTables);
+
+        const gameEvents = eventsData.filter(
+          (e) => e.is_ongoing && e.event_type === "game",
+        );
+        const requestResults = await Promise.all(
+          gameEvents.map(async (event) => {
+            try {
+              const res = await fetch(
+                `${backendUrl}/api/admin/host-requests/${event.slug}`,
+                { headers: { apiKey } },
+              );
+              return { slug: event.slug, data: res.ok ? await res.json() : [] };
+            } catch {
+              return { slug: event.slug, data: [] };
+            }
+          }),
+        );
+        const requestsMap = {};
+        requestResults.forEach(({ slug, data }) => {
+          requestsMap[slug] = data;
+        });
+        setHostRequests(requestsMap);
       }
 
       if (gamesRes.ok) {
@@ -446,6 +474,88 @@ const TablesAdminPanel = () => {
     }
   };
 
+  const handleHostRequestAction = async (eventSlug, studentId, action) => {
+    try {
+      const res = await fetch(
+        `${backendUrl}/api/admin/host-requests/${eventSlug}/${studentId}/${action}`,
+        { method: "POST", headers: { apiKey } },
+      );
+      if (!res.ok) throw new Error(`Failed to ${action} request`);
+      setHostRequests((prev) => ({
+        ...prev,
+        [eventSlug]: (prev[eventSlug] ?? []).map((r) =>
+          r.student_id === studentId
+            ? { ...r, status: action === "accept" ? "accepted" : "rejected" }
+            : r,
+        ),
+      }));
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to ${action} request`);
+    }
+  };
+
+  const handleAcceptApplication = async (app) => {
+    const eventSlug = selectedApplicationsEvent.slug;
+    try {
+      const res = await fetch(
+        `${backendUrl}/api/admin/host-requests/${eventSlug}/${app.student_id}/accept`,
+        { method: "POST", headers: { apiKey } },
+      );
+      if (!res.ok) throw new Error("Failed to accept request");
+
+      setHostRequests((prev) => ({
+        ...prev,
+        [eventSlug]: (prev[eventSlug] ?? []).map((r) =>
+          r.student_id === app.student_id ? { ...r, status: "accepted" } : r,
+        ),
+      }));
+
+      const matchedGame = app.game_id
+        ? games.find((g) => g.id === app.game_id)
+        : null;
+
+      if (matchedGame) {
+        setTableForm({
+          game_name: matchedGame.name,
+          game_master: app.game_master,
+          player_quota: String(app.player_quota),
+          language: app.language,
+          game_id: matchedGame.id,
+          game_image: matchedGame.image_url || "",
+          game_play_time: matchedGame.avg_play_time || 0,
+          game_guide_text: matchedGame.guide_text || "",
+          game_guide_video: matchedGame.guide_video_url || "",
+          theme_id: "default",
+        });
+        setSelectedGameId(matchedGame.id);
+        setIsCustomGame(false);
+      } else {
+        setTableForm({
+          game_name: app.game_name,
+          game_master: app.game_master,
+          player_quota: String(app.player_quota),
+          language: app.language,
+          game_id: null,
+          game_image: "",
+          game_play_time: 0,
+          game_guide_text: "",
+          game_guide_video: "",
+          theme_id: "default",
+        });
+        setSelectedGameId("custom");
+        setIsCustomGame(true);
+      }
+
+      setSelectedEvent(selectedApplicationsEvent);
+      setIsApplicationsModalOpen(false);
+      setIsCreateModalOpen(true);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to accept request");
+    }
+  };
+
   const resetTableForm = () => {
     setTableForm({
       game_name: "",
@@ -509,6 +619,10 @@ const TablesAdminPanel = () => {
       (sum, t) => sum + (t.total_joined_players || 0),
       0,
     ),
+    applications: Object.values(hostRequests).reduce(
+      (sum, reqs) => sum + reqs.length,
+      0,
+    ),
   };
 
   if (isLoading) {
@@ -544,7 +658,7 @@ const TablesAdminPanel = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-1">
             <Users className="w-4 h-4 text-yellow-500" />
@@ -573,6 +687,15 @@ const TablesAdminPanel = () => {
           </div>
           <p className="text-2xl font-bold text-blue-400">
             {stats.totalPlayers}
+          </p>
+        </div>
+        <div className="bg-gray-800/50 border border-purple-700/50 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <ClipboardList className="w-4 h-4 text-purple-400" />
+            <span className="text-gray-400 text-sm">Applications</span>
+          </div>
+          <p className="text-2xl font-bold text-purple-400">
+            {stats.applications}
           </p>
         </div>
       </div>
@@ -611,15 +734,32 @@ const TablesAdminPanel = () => {
             <h3 className="text-lg font-semibold text-yellow-500">
               {event.name}
             </h3>
-            <AdminButton
-              onClick={() => handleGenerateTableLayout(event)}
-              variant="secondary"
-              size="sm"
-              icon={Image}
-              disabled={isGeneratingLayout || !event.tableDetails?.length}
-            >
-              {isGeneratingLayout ? "Generating..." : "Table Layout"}
-            </AdminButton>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setSelectedApplicationsEvent(event);
+                  setIsApplicationsModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-900/40 hover:bg-purple-900/70 border border-purple-600/50 text-purple-300 rounded-lg text-sm transition-colors"
+              >
+                <ClipboardList className="w-3.5 h-3.5" />
+                Table Applications
+                {(hostRequests[event.slug]?.length ?? 0) > 0 && (
+                  <span className="ml-0.5 bg-purple-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {hostRequests[event.slug].length}
+                  </span>
+                )}
+              </button>
+              <AdminButton
+                onClick={() => handleGenerateTableLayout(event)}
+                variant="secondary"
+                size="sm"
+                icon={Image}
+                disabled={isGeneratingLayout || !event.tableDetails?.length}
+              >
+                {isGeneratingLayout ? "Generating..." : "Table Layout"}
+              </AdminButton>
+            </div>
           </div>
 
           {event.tableDetails?.length === 0 ? (
@@ -1180,6 +1320,132 @@ const TablesAdminPanel = () => {
             )}
           </div>
         </div>
+      </AdminModal>
+
+      {/* Table Applications Modal */}
+      <AdminModal
+        isOpen={isApplicationsModalOpen}
+        onClose={() => {
+          setIsApplicationsModalOpen(false);
+          setSelectedApplicationsEvent(null);
+        }}
+        title={`Table Applications — ${selectedApplicationsEvent?.name ?? ""}`}
+        size="lg"
+      >
+        {(() => {
+          const apps =
+            hostRequests[selectedApplicationsEvent?.slug] ?? [];
+          if (apps.length === 0) {
+            return (
+              <div className="text-center py-12 text-gray-400">
+                <ClipboardList className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                <p>No hosting applications yet.</p>
+              </div>
+            );
+          }
+          return (
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+              {apps.map((app, idx) => {
+                const status = app.status ?? "pending";
+                const borderColor =
+                  status === "accepted"
+                    ? "border-green-600/60 bg-green-900/10"
+                    : status === "rejected"
+                      ? "border-red-600/60 bg-red-900/10"
+                      : "border-gray-700 bg-gray-800/60";
+                const badgeColor =
+                  status === "accepted"
+                    ? "bg-green-900/50 text-green-300 border-green-600/40"
+                    : status === "rejected"
+                      ? "bg-red-900/50 text-red-300 border-red-600/40"
+                      : "bg-purple-900/50 text-purple-300 border-purple-600/40";
+                const waNumber = (app.whatsapp ?? "").replace(/\D/g, "");
+                return (
+                  <div
+                    key={app._id ?? idx}
+                    className={`border rounded-lg p-4 transition-colors ${borderColor}`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="font-semibold text-white">{app.game_name}</p>
+                        <p className="text-sm text-gray-400">
+                          GM: {app.game_master}
+                        </p>
+                      </div>
+                      <span
+                        className={`text-xs border px-2 py-0.5 rounded-full ${badgeColor}`}
+                      >
+                        {status}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-sm text-gray-300 mb-3">
+                      <p>
+                        <span className="text-gray-500">Quota:</span>{" "}
+                        {app.player_quota}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">Language:</span>{" "}
+                        {app.language}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">Student ID:</span>{" "}
+                        {app.student_id}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">WhatsApp:</span>{" "}
+                        {app.whatsapp}
+                      </p>
+                      <p className="col-span-2 text-xs text-gray-500">
+                        Submitted:{" "}
+                        {app.submitted_at
+                          ? new Date(app.submitted_at).toLocaleString()
+                          : "—"}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <AdminButton
+                        onClick={() => handleAcceptApplication(app)}
+                        size="sm"
+                        icon={CheckCircle}
+                        disabled={status === "accepted"}
+                      >
+                        Accept
+                      </AdminButton>
+                      <AdminButton
+                        onClick={() =>
+                          handleHostRequestAction(
+                            selectedApplicationsEvent.slug,
+                            app.student_id,
+                            "reject",
+                          )
+                        }
+                        variant="danger"
+                        size="sm"
+                        icon={XCircle}
+                        disabled={status === "rejected"}
+                      >
+                        Reject
+                      </AdminButton>
+                      {waNumber && (
+                        <a
+                          href={`https://wa.me/${waNumber}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-green-800/40 hover:bg-green-700/60 border border-green-600/50 text-green-300 rounded-lg text-sm transition-colors"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          Message on WhatsApp
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
       </AdminModal>
 
       <ConfirmDialog
