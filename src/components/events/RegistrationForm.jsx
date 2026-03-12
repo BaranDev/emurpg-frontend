@@ -10,32 +10,54 @@ import {
   FaIdCard,
   FaPhoneAlt,
   FaShieldAlt,
-  FaClock,
-  FaUsers,
-  FaBookOpen,
   FaPlayCircle,
-  FaGamepad,
-  FaChevronDown,
-  FaChevronUp,
   FaExclamationTriangle,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Modal = ({ isOpen, children }) => (
+const GOLD = "rgba(201,162,39,";
+const CORNER_POS = ["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"];
+
+// ── Arcane rules modal ────────────────────────────────────────────────────────
+const Modal = ({ isOpen, onClose, children }) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(30,10,60,0.6) 0%, rgba(0,0,0,0.88) 100%)",
+        }}
+        onClick={onClose}
       >
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
+          initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg p-6 max-w-md w-full relative shadow-[0_0_15px_rgba(202,138,4,0.15)] max-h-[90vh] overflow-y-auto"
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="relative max-w-md w-full rounded-xl max-h-[90vh] overflow-y-auto"
+          style={{
+            background: "rgba(10, 12, 22, 0.97)",
+            border: `1px solid ${GOLD}0.28)`,
+            boxShadow: [
+              "0 32px 80px rgba(0,0,0,0.9)",
+              `inset 0 1px 0 ${GOLD}0.18)`,
+            ].join(", "),
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
+          {CORNER_POS.map((pos) => (
+            <span
+              key={pos}
+              className={`absolute ${pos} text-xs select-none pointer-events-none`}
+              style={{ color: `${GOLD}0.22)` }}
+              aria-hidden="true"
+            >
+              ◆
+            </span>
+          ))}
           {children}
         </motion.div>
       </motion.div>
@@ -45,17 +67,23 @@ const Modal = ({ isOpen, children }) => (
 
 Modal.propTypes = {
   isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
   children: PropTypes.node,
 };
 
+// ── Arcane input field ────────────────────────────────────────────────────────
 const Input = ({ icon: Icon, ...props }) => (
   <div className="relative">
-    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-      <Icon size={18} />
+    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-600 pointer-events-none">
+      <Icon size={14} />
     </div>
     <input
       {...props}
-      className="shadow-inner appearance-none border-2 border-gray-600 rounded-lg w-full py-3 pl-12 pr-4 bg-gray-700/90 text-gray-100 leading-tight focus:outline-none focus:border-yellow-500 focus:shadow-[0_0_10px_rgba(202,138,4,0.2)] transition-all duration-300 text-sm"
+      className="w-full py-3 pl-11 pr-4 rounded-lg text-sm text-stone-200 placeholder:text-stone-600 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all duration-200"
+      style={{
+        background: "rgba(6, 8, 18, 0.85)",
+        border: `1px solid ${GOLD}0.2)`,
+      }}
     />
   </div>
 );
@@ -64,6 +92,38 @@ Input.propTypes = {
   icon: PropTypes.elementType.isRequired,
 };
 
+// ── Stat tile ─────────────────────────────────────────────────────────────────
+const StatTile = ({ glyph, label, value }) => (
+  <div
+    className="rounded-lg p-3 text-center flex flex-col items-center gap-1.5"
+    style={{
+      background: "rgba(6, 8, 18, 0.85)",
+      border: `1px solid ${GOLD}0.13)`,
+    }}
+  >
+    <span className="text-lg text-amber-200/40">{glyph}</span>
+    <p className="text-xs font-cinzel tracking-wide text-stone-500">{label}</p>
+    <p className="text-stone-200 font-semibold text-xs tabular-nums">{value}</p>
+  </div>
+);
+
+StatTile.propTypes = {
+  glyph: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
+
+// ── Section divider ───────────────────────────────────────────────────────────
+const Divider = () => (
+  <div
+    className="h-px w-full"
+    style={{
+      background: `linear-gradient(to right, transparent, ${GOLD}0.3), transparent)`,
+    }}
+  />
+);
+
+// ── Main component ────────────────────────────────────────────────────────────
 const RegistrationForm = ({
   tableSlug,
   tableId,
@@ -119,9 +179,9 @@ const RegistrationForm = ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         student_id: studentId,
-        name: name,
+        name,
         table_id: tableId,
-        contact: contact,
+        contact,
       }),
     });
 
@@ -133,7 +193,6 @@ const RegistrationForm = ({
     }
   };
 
-  // Format playtime
   const formatPlaytime = (minutes) => {
     if (!minutes) return t("registration.not_specified");
     if (minutes < 60) return `${minutes} min`;
@@ -142,31 +201,47 @@ const RegistrationForm = ({
     return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
   };
 
+  const canSubmit = termsAccepted && gameKnowledgeAccepted;
+
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Game Information Card */}
-      {gameInfo && (
+    <div
+      className="w-full"
+      style={{ background: "rgba(10, 12, 22, 0.96)" }}
+    >
+      {/* ── Game Information (collapsible) ──────────────────────────────── */}
+      {gameInfo ? (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-800/90 border-2 border-yellow-600/50 rounded-lg mb-6 overflow-hidden"
         >
-          {/* Game Info Header */}
+          {/* Collapsible header */}
           <button
             onClick={() => setShowGameDetails(!showGameDetails)}
-            className="w-full flex items-center justify-between p-4 bg-yellow-600/20 hover:bg-yellow-600/30 transition-colors"
+            className="w-full flex items-center justify-between px-6 py-4 transition-colors"
+            style={{
+              background: showGameDetails
+                ? `${GOLD}0.07)`
+                : `${GOLD}0.03)`,
+              borderBottom: showGameDetails
+                ? `1px solid ${GOLD}0.18)`
+                : "none",
+            }}
           >
-            <div className="flex items-center gap-3">
-              <FaGamepad className="text-yellow-500 text-xl" />
-              <span className="text-yellow-500 font-bold text-lg">
+            <div className="flex items-center gap-2.5">
+              <span className="text-amber-200/50 text-xs">◆</span>
+              <span className="font-cinzel font-semibold text-xs text-amber-200/75 tracking-widest uppercase">
                 {t("registration.game_information")}
               </span>
             </div>
-            {showGameDetails ? (
-              <FaChevronUp className="text-yellow-500" />
-            ) : (
-              <FaChevronDown className="text-yellow-500" />
-            )}
+            <span
+              className="text-stone-600 text-xs transition-transform duration-300"
+              style={{
+                display: "inline-block",
+                transform: showGameDetails ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            >
+              ▾
+            </span>
           </button>
 
           <AnimatePresence>
@@ -178,10 +253,15 @@ const RegistrationForm = ({
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="p-4 space-y-4">
-                  {/* Game Image */}
+                <div className="px-6 py-5 space-y-5">
+                  {/* Game image */}
                   {gameInfo.image_url && (
-                    <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-700">
+                    <div
+                      className="w-full aspect-video rounded-lg overflow-hidden"
+                      style={{
+                        boxShadow: `inset 0 0 0 1px ${GOLD}0.2)`,
+                      }}
+                    >
                       <img
                         src={gameInfo.image_url}
                         alt={gameName}
@@ -190,120 +270,116 @@ const RegistrationForm = ({
                     </div>
                   )}
 
-                  {/* Game Stats Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {/* Average Playtime */}
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600">
-                      <FaClock className="text-yellow-500 mx-auto mb-1 text-lg" />
-                      <p className="text-xs text-gray-400">
-                        {t("registration.avg_playtime")}
-                      </p>
-                      <p className="text-white font-semibold text-sm">
-                        {formatPlaytime(gameInfo.avg_play_time)}
-                      </p>
-                    </div>
-
-                    {/* Player Count */}
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600">
-                      <FaUsers className="text-yellow-500 mx-auto mb-1 text-lg" />
-                      <p className="text-xs text-gray-400">
-                        {t("registration.players")}
-                      </p>
-                      <p className="text-white font-semibold text-sm">
-                        {gameInfo.min_players && gameInfo.max_players
-                          ? `${gameInfo.min_players}-${gameInfo.max_players}`
-                          : playerQuota || t("registration.not_available")}
-                      </p>
-                    </div>
-
-                    {/* Table Quota */}
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center border border-gray-600 col-span-2 sm:col-span-1">
-                      <FaDiceD20 className="text-yellow-500 mx-auto mb-1 text-lg" />
-                      <p className="text-xs text-gray-400">
-                        {t("registration.table_quota")}
-                      </p>
-                      <p className="text-white font-semibold text-sm">
-                        {playerQuota} {t("registration.seats")}
-                      </p>
-                    </div>
+                  {/* Stat tiles */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <StatTile
+                      glyph="⏱"
+                      label={t("registration.avg_playtime")}
+                      value={formatPlaytime(gameInfo.avg_play_time)}
+                    />
+                    <StatTile
+                      glyph="⚔"
+                      label={t("registration.players")}
+                      value={
+                        gameInfo.min_players && gameInfo.max_players
+                          ? `${gameInfo.min_players}–${gameInfo.max_players}`
+                          : playerQuota || t("registration.not_available")
+                      }
+                    />
+                    <StatTile
+                      glyph="🎲"
+                      label={t("registration.table_quota")}
+                      value={`${playerQuota} ${t("registration.seats")}`}
+                    />
                   </div>
 
-                  {/* Game Description */}
+                  {/* Guide text */}
                   {gameInfo.guide_text && (
-                    <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FaBookOpen className="text-yellow-500" />
-                        <h4 className="text-yellow-500 font-semibold text-sm">
-                          {t("registration.about_game")}
-                        </h4>
+                    <div>
+                      <h4 className="font-cinzel text-xs text-amber-200/65 tracking-widest uppercase mb-2.5">
+                        ✦ {t("registration.about_game")}
+                      </h4>
+                      <div
+                        className="text-stone-300 text-sm leading-relaxed pl-3"
+                        style={{ borderLeft: `2px solid ${GOLD}0.18)` }}
+                      >
+                        <p className="whitespace-pre-line">{gameInfo.guide_text}</p>
                       </div>
-                      <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
-                        {gameInfo.guide_text}
-                      </p>
                     </div>
                   )}
 
-                  {/* Tutorial Video Link */}
+                  {/* Video link */}
                   {gameInfo.guide_video_url && (
                     <a
                       href={gameInfo.guide_video_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/50 rounded-lg p-3 transition-colors group"
+                      className="flex items-center justify-center gap-2.5 rounded-lg p-3 transition-all duration-200 group"
+                      style={{
+                        background: "rgba(127,29,29,0.25)",
+                        border: "1px solid rgba(248,113,113,0.22)",
+                      }}
                     >
-                      <FaPlayCircle className="text-red-500 text-xl group-hover:scale-110 transition-transform" />
-                      <span className="text-red-400 font-semibold text-sm">
+                      <FaPlayCircle className="text-red-400 text-lg group-hover:scale-110 transition-transform" />
+                      <span className="text-red-300 font-cinzel text-xs tracking-wide">
                         {t("registration.watch_tutorial")}
                       </span>
                     </a>
                   )}
 
-                  {/* Important Notice */}
-                  <div className="bg-orange-900/20 border border-orange-500/50 rounded-lg p-3">
-                    <div className="flex items-start gap-2">
-                      <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
-                      <p className="text-orange-300 text-xs leading-relaxed">
-                        {t("registration.review_game_info")}
-                      </p>
-                    </div>
+                  {/* Important notice */}
+                  <div
+                    className="rounded-lg p-3 flex items-start gap-2.5"
+                    style={{
+                      background: "rgba(120,53,15,0.22)",
+                      border: "1px solid rgba(251,146,60,0.22)",
+                    }}
+                  >
+                    <FaExclamationTriangle className="text-amber-400/60 mt-0.5 flex-shrink-0 text-xs" />
+                    <p className="text-amber-200/65 text-xs leading-relaxed">
+                      {t("registration.review_game_info")}
+                    </p>
                   </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
-      )}
 
-      {/* No Game Info Warning */}
-      {!gameInfo && (
-        <div className="bg-gray-800/90 border-2 border-gray-600 rounded-lg p-4 mb-6">
-          <div className="flex items-center gap-3 text-gray-400">
-            <FaGamepad className="text-2xl" />
-            <div>
-              <p className="font-semibold">{gameName}</p>
-              <p className="text-sm">
-                {t("registration.player_quota")} {playerQuota} |{" "}
-                {t("registration.game_details_unavailable")}
-              </p>
-            </div>
+          <Divider />
+        </motion.div>
+      ) : (
+        /* No game info fallback */
+        <div
+          className="px-6 py-4 flex items-center gap-3"
+          style={{ borderBottom: `1px solid ${GOLD}0.15)` }}
+        >
+          <span className="text-stone-600 text-xl">⚔</span>
+          <div>
+            <p className="text-stone-300 text-sm font-semibold">{gameName}</p>
+            <p className="text-stone-600 text-xs">
+              {t("registration.player_quota")} {playerQuota} ·{" "}
+              {t("registration.game_details_unavailable")}
+            </p>
           </div>
         </div>
       )}
 
-      {/* Registration Form */}
+      {/* ── Registration form ──────────────────────────────────────────────── */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-gray-800/90 shadow-[0_0_25px_rgba(0,0,0,0.3)] rounded-lg p-4 sm:p-6 border-2 border-yellow-500/30 backdrop-blur-sm"
+        transition={{ duration: 0.4, delay: 0.15 }}
+        className="px-6 py-7"
       >
-        {/* Form Header */}
-        <div className="text-center mb-6">
-          <FaDiceD20 className="text-4xl text-yellow-500 mx-auto mb-2" />
-          <h2 className="text-xl font-bold text-yellow-500">
+        {/* Form header */}
+        <div className="text-center mb-7">
+          <div className="text-2xl mb-2 text-amber-200/25" aria-hidden="true">
+            <FaDiceD20 className="inline" />
+          </div>
+          <h2 className="font-cinzel font-bold text-lg text-amber-100">
             {t("registration.join_adventure")}
           </h2>
-          <p className="text-gray-400 text-sm">
+          <p className="text-stone-600 text-xs mt-1">
             {t("registration.quest_awaits")}
           </p>
         </div>
@@ -318,7 +394,6 @@ const RegistrationForm = ({
             onChange={(e) => setStudentId(e.target.value)}
             required
           />
-
           <Input
             icon={FaUser}
             type="text"
@@ -327,7 +402,6 @@ const RegistrationForm = ({
             onChange={(e) => setName(e.target.value)}
             required
           />
-
           <Input
             icon={FaPhoneAlt}
             type="number"
@@ -337,22 +411,26 @@ const RegistrationForm = ({
             onChange={(e) => setContact(e.target.value)}
           />
 
-          {/* Game Knowledge Checkbox */}
-          <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30">
+          {/* Game knowledge checkbox */}
+          <div
+            className="rounded-lg p-4"
+            style={{
+              background: "rgba(30,27,75,0.4)",
+              border: "1px solid rgba(99,102,241,0.22)",
+            }}
+          >
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="form-checkbox h-5 w-5 text-blue-500 rounded border-gray-600 focus:ring-blue-500 focus:ring-offset-gray-800 mt-0.5 flex-shrink-0"
+                className="form-checkbox h-4 w-4 mt-0.5 flex-shrink-0 rounded border-indigo-700 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
                 checked={gameKnowledgeAccepted}
-                onChange={() =>
-                  setGameKnowledgeAccepted(!gameKnowledgeAccepted)
-                }
+                onChange={() => setGameKnowledgeAccepted(!gameKnowledgeAccepted)}
               />
-              <div className="text-sm">
-                <span className="text-blue-300 font-semibold">
+              <div>
+                <span className="text-indigo-300 font-cinzel text-xs tracking-wide block">
                   {t("registration.game_knowledge_confirm")}
                 </span>
-                <p className="text-gray-400 mt-1 text-xs leading-relaxed">
+                <p className="text-stone-500 mt-1 text-xs leading-relaxed">
                   {gameInfo?.guide_video_url
                     ? t("registration.game_knowledge_video")
                     : t("registration.game_knowledge_research")}
@@ -361,32 +439,36 @@ const RegistrationForm = ({
             </label>
           </div>
 
-          {/* Terms Checkbox */}
-          <div className="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+          {/* Terms checkbox */}
+          <div
+            className="rounded-lg p-4"
+            style={{
+              background: "rgba(6, 8, 18, 0.8)",
+              border: `1px solid ${GOLD}0.16)`,
+            }}
+          >
             <label className="flex items-start gap-3 cursor-pointer">
-              <div className="flex-shrink-0 mt-0.5">
-                <FaShieldAlt className="text-yellow-500/50" />
-              </div>
-              <div className="text-sm text-gray-300">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-yellow-500 rounded border-gray-600 focus:ring-yellow-500 focus:ring-offset-gray-800 mr-2"
-                  checked={termsAccepted}
-                  onChange={() => setTermsAccepted(!termsAccepted)}
-                />
+              <input
+                type="checkbox"
+                className="form-checkbox h-4 w-4 mt-0.5 flex-shrink-0 rounded border-amber-800 text-amber-600 focus:ring-amber-500 focus:ring-offset-0"
+                checked={termsAccepted}
+                onChange={() => setTermsAccepted(!termsAccepted)}
+              />
+              <div className="text-xs text-stone-400 leading-relaxed">
+                <FaShieldAlt className="inline text-amber-500/40 mr-1.5 mb-0.5" />
                 {t("registration.accept_privacy")}{" "}
                 <a
                   href="/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-yellow-500 hover:text-yellow-400 underline"
+                  className="text-amber-400/80 hover:text-amber-300 underline"
                 >
                   {t("registration.privacy_policy")}
                 </a>{" "}
                 {t("registration.and_the")}{" "}
                 <span
                   onClick={() => setIsModalOpen(true)}
-                  className="text-yellow-500 hover:text-yellow-400 underline cursor-pointer"
+                  className="text-amber-400/80 hover:text-amber-300 underline cursor-pointer"
                 >
                   {t("registration.event_rules")}
                 </span>
@@ -394,71 +476,103 @@ const RegistrationForm = ({
             </label>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`w-full font-bold py-4 px-6 rounded-lg 
-                       focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-800 
-                       transition duration-300 ease-in-out shadow-lg relative overflow-hidden
-                       ${
-                         termsAccepted && gameKnowledgeAccepted
-                           ? "bg-yellow-600 hover:bg-yellow-700 text-white"
-                           : "bg-gray-600 text-gray-400 cursor-not-allowed"
-                       }`}
+            whileHover={canSubmit ? { scale: 1.01 } : {}}
+            whileTap={canSubmit ? { scale: 0.99 } : {}}
             type="submit"
-            disabled={!termsAccepted || !gameKnowledgeAccepted}
+            disabled={!canSubmit}
+            className="w-full py-3.5 px-6 rounded-xl font-cinzel font-semibold text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-200"
+            style={
+              canSubmit
+                ? {
+                    background:
+                      "linear-gradient(135deg, rgba(112,72,8,0.85) 0%, rgba(180,120,20,0.85) 50%, rgba(112,72,8,0.85) 100%)",
+                    border: `1px solid ${GOLD}0.5)`,
+                    color: "#fde68a",
+                    boxShadow: `0 4px 20px ${GOLD}0.12), inset 0 1px 0 rgba(255,255,255,0.08)`,
+                  }
+                : {
+                    background: "rgba(20, 22, 35, 0.8)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    color: "rgba(255,255,255,0.25)",
+                    cursor: "not-allowed",
+                  }
+            }
           >
-            <span className="relative z-10 flex items-center justify-center">
-              <FaDiceD20 className="mr-2" />
-              {t("registration.begin_quest")}
-            </span>
+            <FaDiceD20 />
+            {t("registration.begin_quest")}
           </motion.button>
 
-          {/* Validation Hints */}
-          {(!termsAccepted || !gameKnowledgeAccepted) && (
-            <p className="text-center text-gray-500 text-xs">
+          {!canSubmit && (
+            <p className="text-center text-stone-600 text-xs">
               {t("registration.accept_both")}
             </p>
           )}
         </form>
       </motion.div>
 
-      {/* Rules Modal */}
+      {/* ── Rules modal ──────────────────────────────────────────────────────── */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-yellow-500 text-2xl font-bold flex items-center">
-              <FaScroll className="mr-2" /> {t("registration.event_rules")}
+        <div className="p-6 flex flex-col">
+          {/* Header */}
+          <div className="mb-5 pr-4">
+            <h2 className="font-cinzel font-bold text-lg text-amber-100 flex items-center gap-2">
+              <FaScroll className="text-amber-200/50 text-base" />
+              {t("registration.event_rules")}
             </h2>
+            <div
+              className="mt-2.5 h-px w-full"
+              style={{
+                background: `linear-gradient(to right, transparent, ${GOLD}0.42), transparent)`,
+              }}
+            />
           </div>
+
+          {/* Language toggle */}
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN")}
-            className="w-40 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-4"
+            onClick={() =>
+              setRuleLanguage(ruleLanguage === "EN" ? "TR" : "EN")
+            }
+            className="self-start px-4 py-1.5 rounded-lg text-xs font-cinzel tracking-wide text-amber-200 mb-5 transition-all duration-200"
+            style={{
+              background: `${GOLD}0.12)`,
+              border: `1px solid ${GOLD}0.3)`,
+            }}
           >
             {ruleLanguage === "EN" ? "Türkçe" : "English"}
           </motion.button>
-          <div className="text-gray-300 space-y-3">
+
+          {/* Rules list */}
+          <div className="space-y-1.5">
             {rules[ruleLanguage].map((rule, index) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
+                key={`${ruleLanguage}-${index}`}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-start p-3 rounded-lg hover:bg-gray-700/50 transition-colors"
+                transition={{ delay: index * 0.05 }}
+                className="flex items-start gap-2.5 p-2.5 rounded-lg transition-colors hover:bg-white/[0.025]"
               >
-                <FaCheck className="text-yellow-500 mt-1 mr-3 flex-shrink-0" />
-                <span className="text-sm">{rule}</span>
+                <FaCheck className="text-amber-400/50 mt-0.5 flex-shrink-0 text-xs" />
+                <span className="text-stone-300 text-xs leading-relaxed">
+                  {rule}
+                </span>
               </motion.div>
             ))}
           </div>
+
+          {/* Close */}
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
             onClick={() => setIsModalOpen(false)}
-            className="mt-6 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+            className="mt-6 w-full py-2.5 px-6 rounded-lg font-cinzel text-xs tracking-wide text-amber-200 transition-all duration-200"
+            style={{
+              background: `${GOLD}0.12)`,
+              border: `1px solid ${GOLD}0.3)`,
+            }}
           >
             {t("common.close")}
           </motion.button>
