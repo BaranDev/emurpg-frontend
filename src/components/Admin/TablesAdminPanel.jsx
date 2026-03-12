@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Plus,
   Edit3,
@@ -80,93 +80,137 @@ const TablesAdminPanel = () => {
   const [hostRequests, setHostRequests] = useState({});
   const [isApplicationsModalOpen, setIsApplicationsModalOpen] = useState(false);
   const [selectedApplicationsEvent, setSelectedApplicationsEvent] = useState(null);
+  const selectedTableRef = useRef(null);
+  const isPlayersModalOpenRef = useRef(false);
 
   const backendUrl = config.backendUrl;
   const apiKey = getApiKey();
 
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const [eventsRes, gamesRes, themesRes] = await Promise.all([
-        fetch(`${backendUrl}/api/admin/events`, { headers: { apiKey } }),
-        fetch(`${backendUrl}/api/games`, { headers: { apiKey } }),
-        fetch(`${backendUrl}/api/themes`, { headers: { apiKey } }),
-      ]);
+  useEffect(() => {
+    selectedTableRef.current = selectedTable;
+  }, [selectedTable]);
 
-      if (themesRes && themesRes.ok) {
-        setThemes(await themesRes.json());
-      }
+  useEffect(() => {
+    isPlayersModalOpenRef.current = isPlayersModalOpen;
+  }, [isPlayersModalOpen]);
 
-      if (eventsRes.ok) {
-        const eventsData = await eventsRes.json();
-        const eventsWithTables = await Promise.all(
-          eventsData.map(async (event) => {
-            const tableDetails = await Promise.all(
-              (event.tables || []).map(async (tableSlug) => {
-                try {
-                  const tableRes = await fetch(
-                    `${backendUrl}/api/admin/table/${tableSlug}`,
-                    {
-                      headers: { apiKey },
-                    },
-                  );
-                  if (tableRes.ok) {
-                    const { data } = await tableRes.json();
-                    return data;
-                  }
-                  return null;
-                } catch {
-                  return null;
-                }
-              }),
-            );
-            return { ...event, tableDetails: tableDetails.filter(Boolean) };
-          }),
-        );
-        setEvents(eventsWithTables);
+  const fetchEventsAndRequests = useCallback(async () => {
+    const eventsRes = await fetch(`${backendUrl}/api/admin/events`, {
+      headers: { apiKey },
+    });
 
-        const gameEvents = eventsData.filter(
-          (e) => e.is_ongoing && e.event_type === "game",
-        );
-        const requestResults = await Promise.all(
-          gameEvents.map(async (event) => {
+    if (!eventsRes.ok) {
+      throw new Error("Failed to fetch events");
+    }
+
+    const eventsData = await eventsRes.json();
+    const eventsWithTables = await Promise.all(
+      eventsData.map(async (event) => {
+        const tableDetails = await Promise.all(
+          (event.tables || []).map(async (tableSlug) => {
             try {
-              const res = await fetch(
-                `${backendUrl}/api/admin/host-requests/${event.slug}`,
-                { headers: { apiKey } },
+              const tableRes = await fetch(
+                `${backendUrl}/api/admin/table/${tableSlug}`,
+                {
+                  headers: { apiKey },
+                },
               );
-              return { slug: event.slug, data: res.ok ? await res.json() : [] };
+              if (tableRes.ok) {
+                const { data } = await tableRes.json();
+                return data;
+              }
+              return null;
             } catch {
-              return { slug: event.slug, data: [] };
+              return null;
             }
           }),
         );
-        const requestsMap = {};
-        requestResults.forEach(({ slug, data }) => {
-          requestsMap[slug] = data;
-        });
-        setHostRequests(requestsMap);
+        return { ...event, tableDetails: tableDetails.filter(Boolean) };
+      }),
+    );
+
+    const gameEvents = eventsData.filter(
+      (e) => e.is_ongoing && e.event_type === "game",
+    );
+    const requestResults = await Promise.all(
+      gameEvents.map(async (event) => {
+        try {
+          const res = await fetch(
+            `${backendUrl}/api/admin/host-requests/${event.slug}`,
+            { headers: { apiKey } },
+          );
+          return { slug: event.slug, data: res.ok ? await res.json() : [] };
+        } catch {
+          return { slug: event.slug, data: [] };
+        }
+      }),
+    );
+
+    const requestsMap = {};
+    requestResults.forEach(({ slug, data }) => {
+      requestsMap[slug] = data;
+    });
+
+    return { eventsWithTables, requestsMap };
+  }, [backendUrl, apiKey]);
+
+  const fetchData = useCallback(async (options = {}) => {
+    const { showLoading = false, includeCatalog = false } = options;
+    if (showLoading) {
+      setIsLoading(true);
+    }
+
+    try {
+      const { eventsWithTables, requestsMap } = await fetchEventsAndRequests();
+      setEvents(eventsWithTables);
+      setHostRequests(requestsMap);
+
+      const activeTable = selectedTableRef.current;
+      if (activeTable) {
+        const refreshedTable = eventsWithTables
+          .flatMap((event) => event.tableDetails || [])
+          .find((table) => table.slug === activeTable.slug);
+        if (refreshedTable) {
+          setSelectedTable(refreshedTable);
+          if (isPlayersModalOpenRef.current) {
+            setPlayers(refreshedTable.joined_players || []);
+          }
+        }
       }
 
-      if (gamesRes.ok) {
-        setGames(await gamesRes.json());
+      if (includeCatalog) {
+        const [gamesRes, themesRes] = await Promise.all([
+          fetch(`${backendUrl}/api/games`, { headers: { apiKey } }),
+          fetch(`${backendUrl}/api/themes`, { headers: { apiKey } }),
+        ]);
+
+        if (themesRes.ok) {
+          setThemes(await themesRes.json());
+        }
+
+        if (gamesRes.ok) {
+          setGames(await gamesRes.json());
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setIsLoading(false);
+      if (showLoading) {
+        setIsLoading(false);
+      }
     }
-  }, [backendUrl, apiKey]);
+  }, [
+    apiKey,
+    backendUrl,
+    fetchEventsAndRequests,
+  ]);
 
   useWebSocket("tables", () => {
     fetchData();
-    if (selectedTable) {
-      refreshPlayers(selectedTable.slug);
-    }
   });
 
   useEffect(() => {
-    fetchData();
+    fetchData({ showLoading: true, includeCatalog: true });
   }, [fetchData]);
 
   const handleCreateTable = async (e) => {
@@ -645,7 +689,11 @@ const TablesAdminPanel = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          <AdminButton onClick={fetchData} variant="secondary" icon={RefreshCw}>
+          <AdminButton
+            onClick={() => fetchData({ showLoading: true, includeCatalog: true })}
+            variant="secondary"
+            icon={RefreshCw}
+          >
             Refresh
           </AdminButton>
           <AdminButton
