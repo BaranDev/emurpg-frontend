@@ -2,11 +2,13 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import AnnouncementCard from "../components/Admin/AnnouncementCard";
 
-vi.mock("../assets/images/announcement-bg-game.jpg", () => ({
-  default: "game-bg.jpg",
-}));
-vi.mock("../assets/images/announcement-bg-general.jpg", () => ({
-  default: "general-bg.jpg",
+vi.mock("../assets/images/announcement-bg-game.jpg", () => ({ default: "game-bg.jpg" }));
+vi.mock("../assets/images/announcement-bg-general.jpg", () => ({ default: "general-bg.jpg" }));
+vi.mock("../assets/logo/LOGO_WHITE.png", () => ({ default: "logo-white.png" }));
+vi.mock("lucide-react", () => ({
+  Calendar: ({ size, color }) => <svg data-testid="icon-calendar" style={{ width: size, color }} />,
+  Clock: ({ size, color }) => <svg data-testid="icon-clock" style={{ width: size, color }} />,
+  MapPin: ({ size, color }) => <svg data-testid="icon-mappin" style={{ width: size, color }} />,
 }));
 
 const gameEvent = {
@@ -66,14 +68,14 @@ describe("AnnouncementCard", () => {
     expect(screen.getByText(/Alice/)).toBeInTheDocument();
   });
 
-  it("shows Game Event badge for game type", () => {
+  it("shows Game Night badge for game type", () => {
     render(<AnnouncementCard event={gameEvent} />);
-    expect(screen.getByText("Game Event")).toBeInTheDocument();
+    expect(screen.getByText("Game Night")).toBeInTheDocument();
   });
 
-  it("shows General Event badge for general type", () => {
+  it("shows Club Event badge for general type", () => {
     render(<AnnouncementCard event={generalEvent} />);
-    expect(screen.getByText("General Event")).toBeInTheDocument();
+    expect(screen.getByText("Club Event")).toBeInTheDocument();
   });
 
   it("renders clubs section for general events", () => {
@@ -84,7 +86,7 @@ describe("AnnouncementCard", () => {
 
   it("renders footer with website and social handle", () => {
     render(<AnnouncementCard event={gameEvent} />);
-    expect(screen.getByText(/emurpg\.emu\.edu\.tr/)).toBeInTheDocument();
+    expect(screen.getByText(/emurpg\.com/)).toBeInTheDocument();
     expect(screen.getByText(/@emurpgclub/)).toBeInTheDocument();
   });
 
