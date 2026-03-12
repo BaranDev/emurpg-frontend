@@ -190,6 +190,70 @@ const EventList = () => {
                   {event.name}
                 </h2>
                 <p className="text-stone-300 mb-4 text-lg">{event.description}</p>
+                {/* Meta strip — only render if any metadata field is present */}
+                {(event.start_time || event.end_time || event.venue_name ||
+                  (event.announcement_title && event.announcement_url) ||
+                  event.bus_time || event.bus_from || event.bus_to) && (
+                  <div className="flex flex-wrap gap-2 mb-4 pt-3 border-t border-white/5">
+                    {(event.start_time || event.end_time) && (
+                      <span
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
+                        style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                      >
+                        🕐 {[event.start_time, event.end_time].filter(Boolean).join(" – ")}
+                      </span>
+                    )}
+                    {event.venue_name && (
+                      event.location_url ? (
+                        <a
+                          href={event.location_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-opacity hover:opacity-75"
+                          style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          📍 {event.venue_name} ↗
+                        </a>
+                      ) : (
+                        <span
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
+                          style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                        >
+                          📍 {event.venue_name}
+                        </span>
+                      )
+                    )}
+                    {event.announcement_title && event.announcement_url && (
+                      <a
+                        href={event.announcement_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-opacity hover:opacity-75"
+                        style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        📢 {event.announcement_title} ↗
+                      </a>
+                    )}
+                    {(event.bus_time || event.bus_from || event.bus_to) && (
+                      <span
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
+                        style={{ background: accentRgba.replace("0.65", "0.08"), color: accentRgba }}
+                      >
+                        🚌{" "}
+                        {[
+                          event.bus_time,
+                          event.bus_from && event.bus_to
+                            ? `${event.bus_from} → ${event.bus_to}`
+                            : event.bus_from || event.bus_to,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <div className="flex flex-wrap justify-between text-sm md:text-base gap-4">
                   {isGeneral ? (
                     <span className="px-4 py-2 rounded-full bg-sky-950/60 text-sky-200 border border-sky-400/30">
