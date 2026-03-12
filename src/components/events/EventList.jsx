@@ -332,64 +332,64 @@ const EventList = () => {
                     </p>
                   </div>
 
-                  {/* Scrollable meta chip rail */}
+                  {/* Meta rows — same pattern as wide layout's details column */}
                   {hasMeta && (
-                    <div className="flex flex-wrap items-center gap-2 px-5 pb-3">
+                    <div
+                      className="mx-5 mb-3 px-3 py-2.5 rounded-lg space-y-2"
+                      style={{
+                        background: "rgba(6, 8, 18, 0.45)",
+                        border: isGeneral
+                          ? "1px solid rgba(125,211,252,0.10)"
+                          : "1px solid rgba(253,164,175,0.10)",
+                      }}
+                    >
                       {(event.start_time || event.end_time) && (
-                        <span
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full whitespace-nowrap text-xs text-stone-400 flex-shrink-0"
-                          style={{ background: "rgba(6,8,18,0.65)", border: "1px solid rgba(255,255,255,0.07)" }}
-                        >
-                          <Clock size={10} style={iconStyle} />
-                          {[event.start_time, event.end_time].filter(Boolean).join("–")}
-                        </span>
+                        <div className="flex items-center gap-2 text-xs text-stone-400">
+                          <Clock size={11} className="flex-shrink-0" style={iconStyle} />
+                          <span>{[event.start_time, event.end_time].filter(Boolean).join(" – ")}</span>
+                        </div>
                       )}
                       {event.venue_name && (
-                        event.location_url ? (
-                          <a
-                            href={event.location_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full whitespace-nowrap text-xs flex-shrink-0 transition-opacity hover:opacity-75 underline decoration-dotted underline-offset-2"
-                            style={{ background: "rgba(6,8,18,0.65)", border: "1px solid rgba(255,255,255,0.07)", color: linkStyle.color }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MapPin size={10} style={iconStyle} />
-                            {event.venue_name}
-                            <ExternalLink size={9} className="opacity-70" />
-                          </a>
-                        ) : (
-                          <span
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full whitespace-nowrap text-xs text-stone-400 flex-shrink-0"
-                            style={{ background: "rgba(6,8,18,0.65)", border: "1px solid rgba(255,255,255,0.07)" }}
-                          >
-                            <MapPin size={10} style={iconStyle} />
-                            {event.venue_name}
-                          </span>
-                        )
+                        <div className="flex items-center gap-2 text-xs min-w-0">
+                          <MapPin size={11} className="flex-shrink-0" style={iconStyle} />
+                          {event.location_url ? (
+                            <a
+                              href={event.location_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75 min-w-0"
+                              style={linkStyle}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <span className="truncate">{event.venue_name}</span>
+                              <ExternalLink size={9} className="flex-shrink-0 opacity-70" />
+                            </a>
+                          ) : (
+                            <span className="text-stone-400 truncate">{event.venue_name}</span>
+                          )}
+                        </div>
                       )}
                       {event.announcement_title && event.announcement_url && (
-                        <a
-                          href={event.announcement_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full whitespace-nowrap text-xs flex-shrink-0 transition-opacity hover:opacity-75 underline decoration-dotted underline-offset-2"
-                          style={{ background: "rgba(6,8,18,0.65)", border: "1px solid rgba(255,255,255,0.07)", color: linkStyle.color }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Megaphone size={10} style={iconStyle} />
-                          {event.announcement_title}
-                          <ExternalLink size={9} className="opacity-70" />
-                        </a>
+                        <div className="flex items-center gap-2 text-xs min-w-0">
+                          <Megaphone size={11} className="flex-shrink-0" style={iconStyle} />
+                          <a
+                            href={event.announcement_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-75 min-w-0"
+                            style={linkStyle}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span className="truncate">{event.announcement_title}</span>
+                            <ExternalLink size={9} className="flex-shrink-0 opacity-70" />
+                          </a>
+                        </div>
                       )}
                       {busText && (
-                        <span
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full whitespace-nowrap text-xs text-stone-400 flex-shrink-0"
-                          style={{ background: "rgba(6,8,18,0.65)", border: "1px solid rgba(255,255,255,0.07)" }}
-                        >
-                          <Bus size={10} style={iconStyle} />
-                          {busText}
-                        </span>
+                        <div className="flex items-center gap-2 text-xs text-stone-400">
+                          <Bus size={11} className="flex-shrink-0" style={iconStyle} />
+                          <span className="truncate">{busText}</span>
+                        </div>
                       )}
                     </div>
                   )}
