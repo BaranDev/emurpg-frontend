@@ -18,6 +18,17 @@ import { getApiKey } from "../../utils/auth";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import AdminButton from "./shared/AdminButton";
 
+const formatValue = (v) => {
+  if (v === null || v === undefined) return "—";
+  if (typeof v === "number") return v.toLocaleString();
+  if (typeof v !== "object") return String(v);
+  // Flatten object/array into readable key: value lines
+  const entries = Array.isArray(v) ? v.map((item, i) => [i, item]) : Object.entries(v);
+  return entries
+    .map(([k, val]) => `${String(k).replace(/_/g, " ")}: ${formatValue(val)}`)
+    .join(", ");
+};
+
 const AnalyticsPanel = () => {
   const [analytics, setAnalytics] = useState(null);
   const [events, setEvents] = useState([]);
@@ -394,67 +405,196 @@ const AnalyticsPanel = () => {
         </div>
       </div>
 
-      {/* API Analytics Data */}
+      {/* Server Analytics — structured sections */}
       {analytics && (
-        <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <BarChart3 className="w-5 h-5 text-[#ffba08]" />
-            <h3 className="text-lg font-semibold text-white">
-              Server Analytics
-            </h3>
-          </div>
+        <div className="space-y-6">
 
-          <div className="space-y-4">
-            {Object.entries(analytics).map(([key, value]) => (
-              <div key={key}>
-                <h4 className="text-sm font-semibold text-[#faa307] mb-2 capitalize">
-                  {key.replace(/_/g, " ")}
-                </h4>
-                {typeof value === "object" && value !== null ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {Object.entries(value).map(([subKey, subValue]) => (
-                      <div
-                        key={subKey}
-                        className="bg-gray-900/50 rounded-lg p-3"
-                      >
-                        <p className="text-gray-400 text-xs mb-1 capitalize">
-                          {subKey.replace(/_/g, " ")}
-                        </p>
-                        {typeof subValue === "object" && subValue !== null ? (
-                          <ul className="text-sm text-white space-y-0.5">
-                            {Object.entries(subValue).map(([k, v]) => (
-                              <li key={k} className="flex justify-between gap-2">
-                                <span className="text-gray-400 capitalize truncate">
-                                  {k.replace(/_/g, " ")}
-                                </span>
-                                <span className="font-medium shrink-0">
-                                  {typeof v === "number" ? v.toLocaleString() : String(v)}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-lg font-bold text-white">
-                            {typeof subValue === "number"
-                              ? subValue.toLocaleString()
-                              : String(subValue)}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="bg-gray-900/50 rounded-lg p-3">
-                    <p className="text-xl font-bold text-white">
-                      {typeof value === "number"
-                        ? value.toLocaleString()
-                        : String(value)}
-                    </p>
-                  </div>
-                )}
+          {/* Summary KPIs */}
+          {analytics.summary && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <BarChart3 className="w-5 h-5 text-[#ffba08]" />
+                <h3 className="text-lg font-semibold text-white">Report Summary</h3>
               </div>
-            ))}
-          </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="bg-gray-900/50 rounded-lg p-4 text-center">
+                  <p className="text-3xl font-bold text-white">{analytics.summary.total_events_reported ?? 0}</p>
+                  <p className="text-gray-400 text-xs mt-1">Events Reported</p>
+                </div>
+                <div className="bg-gray-900/50 rounded-lg p-4 text-center">
+                  <p className="text-3xl font-bold text-white">{(analytics.summary.total_registrations ?? 0).toLocaleString()}</p>
+                  <p className="text-gray-400 text-xs mt-1">Total Registrations</p>
+                </div>
+                <div className="bg-gray-900/50 rounded-lg p-4 text-center">
+                  <p className="text-3xl font-bold text-emerald-400">{(analytics.summary.total_approved ?? 0).toLocaleString()}</p>
+                  <p className="text-gray-400 text-xs mt-1">Approved</p>
+                </div>
+                <div className="bg-gray-900/50 rounded-lg p-4 text-center">
+                  <p className="text-3xl font-bold text-[#ffba08]">{analytics.summary.overall_approval_rate ?? 0}%</p>
+                  <p className="text-gray-400 text-xs mt-1">Approval Rate</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Club Totals */}
+          {analytics.club_totals && Object.keys(analytics.club_totals).length > 0 && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Users className="w-5 h-5 text-[#ffba08]" />
+                <h3 className="text-lg font-semibold text-white">Club Participation (All Time)</h3>
+              </div>
+              <div className="space-y-3">
+                {Object.entries(analytics.club_totals)
+                  .sort(([, a], [, b]) => b - a)
+                  .map(([club, count]) => {
+                    const max = Math.max(...Object.values(analytics.club_totals));
+                    const pct = max > 0 ? Math.round((count / max) * 100) : 0;
+                    return (
+                      <div key={club}>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-gray-300">{club}</span>
+                          <span className="text-white font-semibold">{count.toLocaleString()}</span>
+                        </div>
+                        <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#dc2f02] rounded-full transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
+          {/* Per-Event Reports */}
+          {analytics.event_reports && analytics.event_reports.length > 0 && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Calendar className="w-5 h-5 text-[#ffba08]" />
+                <h3 className="text-lg font-semibold text-white">Per-Event Reports</h3>
+                <span className="ml-auto text-xs text-gray-500">{analytics.event_reports.length} reports</span>
+              </div>
+              <div className="space-y-4">
+                {analytics.event_reports.map((report, i) => (
+                  <details
+                    key={report.event_slug ?? i}
+                    className="bg-gray-900/50 rounded-xl overflow-hidden group"
+                  >
+                    <summary className="flex items-center justify-between p-4 cursor-pointer list-none hover:bg-gray-700/30 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Award className="w-4 h-4 text-[#faa307] shrink-0" />
+                        <div>
+                          <p className="text-white font-medium text-sm">
+                            {report.event_slug ?? `Report #${i + 1}`}
+                          </p>
+                          <p className="text-gray-500 text-xs capitalize">
+                            {report.report_type?.replace(/_/g, " ")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm">
+                        {report.statistics && (
+                          <>
+                            <span className="text-gray-400">
+                              <span className="text-white font-semibold">
+                                {report.statistics.total_registrations ?? 0}
+                              </span>{" "}
+                              registered
+                            </span>
+                            <span className="text-emerald-400 font-semibold">
+                              {report.statistics.approved ?? 0} approved
+                            </span>
+                          </>
+                        )}
+                        <svg className="w-4 h-4 text-gray-500 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </summary>
+
+                    <div className="px-4 pb-4 space-y-4">
+                      {/* Statistics breakdown */}
+                      {report.statistics && (
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                          {Object.entries(report.statistics).map(([k, v]) => (
+                            <div key={k} className="bg-gray-800/60 rounded-lg p-3 text-center">
+                              <p className="text-lg font-bold text-white">
+                                {typeof v === "number" ? v.toLocaleString() : String(v)}
+                              </p>
+                              <p className="text-gray-400 text-xs mt-0.5 capitalize">{k.replace(/_/g, " ")}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Club distribution */}
+                      {report.club_distribution && Object.keys(report.club_distribution).length > 0 && (
+                        <div>
+                          <p className="text-xs font-semibold text-[#faa307] uppercase tracking-wide mb-2">Club Distribution</p>
+                          <div className="space-y-2">
+                            {Object.entries(report.club_distribution)
+                              .sort(([, a], [, b]) => b - a)
+                              .map(([club, count]) => {
+                                const total = Object.values(report.club_distribution).reduce((s, n) => s + n, 0);
+                                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                                return (
+                                  <div key={club}>
+                                    <div className="flex justify-between text-xs mb-0.5">
+                                      <span className="text-gray-300">{club}</span>
+                                      <span className="text-white font-medium">{count} <span className="text-gray-500">({pct}%)</span></span>
+                                    </div>
+                                    <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-[#f48c06] rounded-full transition-all"
+                                        style={{ width: `${pct}%` }}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Clubs list */}
+                      {Array.isArray(report.clubs) && report.clubs.length > 0 && (
+                        <div>
+                          <p className="text-xs font-semibold text-[#faa307] uppercase tracking-wide mb-2">Participating Clubs</p>
+                          <div className="flex flex-wrap gap-2">
+                            {report.clubs.map((club) => (
+                              <span key={club} className="text-xs bg-gray-800 border border-gray-600 text-gray-300 px-2 py-1 rounded-full">
+                                {club}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Any other top-level scalar fields */}
+                      {(() => {
+                        const skip = new Set(["report_type", "event_slug", "statistics", "club_distribution", "clubs"]);
+                        const extras = Object.entries(report).filter(([k]) => !skip.has(k));
+                        if (!extras.length) return null;
+                        return (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {extras.map(([k, v]) => (
+                              <div key={k} className="bg-gray-800/60 rounded-lg p-3">
+                                <p className="text-gray-400 text-xs mb-1 capitalize">{k.replace(/_/g, " ")}</p>
+                                <p className="text-sm font-semibold text-white break-words">{formatValue(v)}</p>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

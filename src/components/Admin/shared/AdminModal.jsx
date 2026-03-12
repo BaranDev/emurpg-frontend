@@ -60,7 +60,7 @@ const AdminModal = ({
 
         {/* Header */}
         <div
-          className="relative flex items-center justify-between px-6 py-4"
+          className="relative flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4"
           style={{
             background:
               "linear-gradient(to right, rgba(201,162,39,0.07), rgba(201,162,39,0.04), rgba(201,162,39,0.07))",
@@ -82,7 +82,7 @@ const AdminModal = ({
 
         {/* Content */}
         <div
-          className="relative overflow-y-auto px-6 py-5"
+          className="relative overflow-y-auto px-4 py-4 sm:px-6 sm:py-5"
           style={{ maxHeight: "calc(90vh - 68px)" }}
         >
           {children}
