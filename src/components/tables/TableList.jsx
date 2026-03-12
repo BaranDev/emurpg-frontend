@@ -7,21 +7,6 @@ import GameGuideModal from "./GameGuideModal";
 import HostTableModal from "./HostTableModal";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
-// Module-level cache — survives remounts, cleared only on full page refresh.
-// Game data (including image URLs) changes very rarely, so 60 min TTL is safe.
-const _gameCache = {};
-const GAME_CACHE_TTL_MS = 60 * 60 * 1000;
-
-async function fetchGameCached(backendUrl, gameId) {
-  const entry = _gameCache[gameId];
-  if (entry && Date.now() - entry.ts < GAME_CACHE_TTL_MS) return entry.data;
-  const res = await fetch(`${backendUrl}/api/game/${gameId}`);
-  if (!res.ok) throw new Error(`Failed with status: ${res.status}`);
-  const data = await res.json();
-  _gameCache[gameId] = { data, ts: Date.now() };
-  return data;
-}
-
 const TableList = ({ eventSlug }) => {
   const { t } = useTranslation();
   const [tables, setTables] = useState([]);
@@ -85,17 +70,28 @@ const TableList = ({ eventSlug }) => {
   }, [eventSlug, backendUrl, fetchTables]);
 
   useEffect(() => {
+    const fetchGameDetails = async (gameId) => {
+      try {
+        const response = await fetch(`${config.backendUrl}/api/game/${gameId}`);
+        if (!response.ok) {
+          throw new Error(`Failed with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setGameDetails((prevDetails) => ({
+          ...prevDetails,
+          [gameId]: data,
+        }));
+      } catch (error) {
+        console.error(`Error fetching game details for ID "${gameId}":`, error);
+      }
+    };
+
+    // Fetch details for tables with game_id
     tables.forEach((table) => {
-      if (!table.game_id) return;
-      // Skip if already loaded into component state this session
-      if (gameDetails[table.game_id]) return;
-      fetchGameCached(config.backendUrl, table.game_id)
-        .then((data) =>
-          setGameDetails((prev) => ({ ...prev, [table.game_id]: data }))
-        )
-        .catch((err) =>
-          console.error(`Error fetching game details for ID "${table.game_id}":`, err)
-        );
+      if (table.game_id && !gameDetails[table.game_id]) {
+        fetchGameDetails(table.game_id);
+      }
     });
   }, [tables, gameDetails]);
 
@@ -226,6 +222,22 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
   const accentRgba = table.is_marked_full
     ? "rgba(251, 113, 133, 0.5)"
     : "rgba(110, 231, 183, 0.55)";
+  const glowColor = (() => {
+    if (isDefaultTheme) return accentRgba;
+    const styles = `${theme.card_styles || ""} ${theme.button_styles || ""}`;
+    if (styles.includes("sky") || styles.includes("blue")) return "rgba(56,189,248,0.35)";
+    if (styles.includes("rose") || styles.includes("red")) return "rgba(244,63,94,0.35)";
+    if (styles.includes("emerald") || styles.includes("green")) return "rgba(52,211,153,0.35)";
+    if (styles.includes("amber") || styles.includes("yellow")) return "rgba(251,191,36,0.35)";
+    if (styles.includes("violet") || styles.includes("purple")) return "rgba(167,139,250,0.35)";
+    if (styles.includes("indigo")) return "rgba(129,140,248,0.35)";
+    if (styles.includes("orange")) return "rgba(251,146,60,0.35)";
+    return "rgba(255,255,255,0.15)";
+  })();
+
+  const themedSecondaryButton = theme.button_styles
+    ? `${theme.button_styles} opacity-85 hover:opacity-100`
+    : "bg-indigo-950/60 hover:bg-indigo-900/70 text-indigo-300 border border-indigo-500/30 hover:border-indigo-400/50";
 
   return (
     <div
@@ -256,36 +268,52 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
         </div>
       )}
       <div className="flex flex-col h-full relative z-10">
-        {(gameData?.image_url || table.game_image) ? (
-          <div className="w-full h-36 overflow-hidden relative">
+        {gameData?.image_url || table.game_image ? (
+          <div className="w-full h-36 relative flex-shrink-0">
+            {/* Glow behind the image */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(ellipse 90% 80% at 50% 40%, ${glowColor} 0%, transparent 70%)`,
+              }}
+            />
             <img
               src={gameData?.image_url || table.game_image}
               alt={table.game_name}
-              className="w-full h-full object-cover"
+              className="relative w-full h-full object-contain drop-shadow-lg"
               onError={(e) => {
                 e.target.src =
                   "https://placehold.co/600x400/0d1020/c9a227?text=⚔";
               }}
             />
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to bottom, transparent 50%, rgba(13,16,30,0.85) 100%)",
-              }}
-            />
+            {isDefaultTheme && (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to bottom, transparent 50%, rgba(13,16,30,0.85) 100%)",
+                }}
+              />
+            )}
           </div>
         ) : (
-          <div
-            className="w-full h-20 flex items-center justify-center"
-            style={{ background: "rgba(8, 10, 20, 0.6)" }}
-          >
-            <span className="text-3xl opacity-25">⚔</span>
+          <div className="w-full h-20 relative flex-shrink-0 flex items-center justify-center">
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(ellipse 80% 80% at 50% 50%, ${glowColor} 0%, transparent 70%)`,
+              }}
+            />
+            <span className="text-3xl opacity-25 relative">⚔</span>
           </div>
         )}
 
         <div className="p-5 flex-grow flex flex-col gap-2">
-          <h3 className="text-base font-cinzel font-semibold text-amber-100 text-center leading-snug">
+          <h3
+            className={`text-base font-cinzel font-semibold text-center leading-snug ${
+              isDefaultTheme ? "text-amber-100" : "text-white"
+            }`}
+          >
             {table.game_name}
           </h3>
 
@@ -297,12 +325,22 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
             </p>
           )}
 
-          <p className="text-xs text-stone-400 text-center">
+          <p
+            className={`text-xs text-center ${
+              isDefaultTheme ? "text-stone-400" : "text-white/70"
+            }`}
+          >
             {t("table_list.quest_master")}:{" "}
-            <span className="text-stone-200">{table.game_master}</span>
+            <span className={isDefaultTheme ? "text-stone-200" : "text-white"}>
+              {table.game_master}
+            </span>
           </p>
 
-          <p className="text-xs text-center text-amber-200/60">
+          <p
+            className={`text-xs text-center ${
+              isDefaultTheme ? "text-amber-200/60" : "text-white/75"
+            }`}
+          >
             ⏱ ~{gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
             {t("table_list.minutes")}
           </p>
@@ -325,7 +363,7 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
         <div
           className="p-3"
           style={{
-            background: "rgba(6, 8, 16, 0.7)",
+            background: isDefaultTheme ? "rgba(6, 8, 16, 0.7)" : "rgba(0, 0, 0, 0.22)",
             borderTop: "1px solid rgba(255,255,255,0.05)",
           }}
         >
@@ -362,7 +400,9 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
                   );
                 }, 300);
               }}
-              className="text-center text-sm bg-indigo-950/60 hover:bg-indigo-900/70 text-indigo-300 border border-indigo-500/30 hover:border-indigo-400/50 px-3 py-2 rounded-lg transition-all duration-200"
+              className={`text-center text-sm px-3 py-2 rounded-lg transition-all duration-200 ${
+                isDefaultTheme ? "bg-indigo-950/60 hover:bg-indigo-900/70 text-indigo-300 border border-indigo-500/30 hover:border-indigo-400/50" : themedSecondaryButton
+              }`}
             >
               {t("table_list.game_info")}
             </button>
