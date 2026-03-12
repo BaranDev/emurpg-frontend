@@ -36,6 +36,10 @@ const INPUT_STYLE = {
 };
 const LABEL_CLS =
   "block text-xs text-stone-500 font-cinzel tracking-wide uppercase mb-1";
+const HOUR_OPTIONS = Array.from({ length: 24 }, (_, hour) => ({
+  value: String(hour),
+  label: `${String(hour).padStart(2, "0")}:00`,
+}));
 
 function AInput(props) {
   return <input {...props} className={INPUT_CLS} style={INPUT_STYLE} />;
@@ -161,6 +165,35 @@ function EventFormFields({
             onChange={onChange}
             placeholder="18:00"
           />
+        </div>
+      </div>
+
+      {/* ── Registration Start ─────────────────────────── */}
+      <FormDivider label="Registration Starting Time" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className={LABEL_CLS}>Registration Date</label>
+          <AInput
+            type="date"
+            name="registration_start_date"
+            value={formData.registration_start_date}
+            onChange={onChange}
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLS}>Registration Hour</label>
+          <ASelect
+            name="registration_start_hour"
+            value={formData.registration_start_hour}
+            onChange={onChange}
+          >
+            <option value="">Select hour</option>
+            {HOUR_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </ASelect>
         </div>
       </div>
 
@@ -351,6 +384,8 @@ const EventsAdminPanel = ({ onNavigate }) => {
     clubs: [],
     start_time: "",
     end_time: "",
+    registration_start_date: "",
+    registration_start_hour: "",
     venue_name: "",
     location_url: "",
     announcement_title: "",
@@ -363,6 +398,27 @@ const EventsAdminPanel = ({ onNavigate }) => {
 
   const backendUrl = config.backendUrl;
   const apiKey = getApiKey();
+
+  const buildEventPayload = (data) => {
+    const hasRegistrationDate =
+      data.registration_start_date !== "" &&
+      data.registration_start_date !== null &&
+      data.registration_start_date !== undefined;
+    const hasRegistrationHour =
+      data.registration_start_hour !== "" &&
+      data.registration_start_hour !== null &&
+      data.registration_start_hour !== undefined;
+
+    return {
+      ...data,
+      registration_start_date: hasRegistrationDate
+        ? data.registration_start_date
+        : null,
+      registration_start_hour: hasRegistrationHour
+        ? Number(data.registration_start_hour)
+        : null,
+    };
+  };
 
   const fetchEvents = useCallback(async () => {
     setIsLoading(true);
@@ -426,7 +482,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
           "Content-Type": "application/json",
           apiKey,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(buildEventPayload(formData)),
       });
 
       if (!response.ok) throw new Error("Failed to create event");
@@ -453,7 +509,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
             "Content-Type": "application/json",
             apiKey,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(buildEventPayload(formData)),
         },
       );
 
@@ -609,6 +665,8 @@ const EventsAdminPanel = ({ onNavigate }) => {
       clubs: [],
       start_time: "",
       end_time: "",
+      registration_start_date: "",
+      registration_start_hour: "",
       venue_name: "",
       location_url: "",
       announcement_title: "",
@@ -631,6 +689,8 @@ const EventsAdminPanel = ({ onNavigate }) => {
       clubs: event.clubs || [],
       start_time: event.start_time || "",
       end_time: event.end_time || "",
+      registration_start_date: event.registration_start_date || "",
+      registration_start_hour: event.registration_start_hour ?? "",
       venue_name: event.venue_name || "",
       location_url: event.location_url || "",
       announcement_title: event.announcement_title || "",

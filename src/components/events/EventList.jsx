@@ -7,6 +7,11 @@ import { motion } from "framer-motion";
 import { FaCalendar, FaExclamationTriangle } from "react-icons/fa";
 import { Clock, MapPin, Megaphone, Bus, ExternalLink } from "lucide-react";
 import { useWebSocket } from "../../hooks/useWebSocket";
+import {
+  formatRegistrationCountdown,
+  getRegistrationOpenAt,
+  isRegistrationOpen,
+} from "../../utils/registrationCountdown";
 
 const EventList = () => {
   const { t } = useTranslation();
@@ -14,6 +19,7 @@ const EventList = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
     fetch(`${config.backendUrl}/api/events`)
@@ -43,6 +49,11 @@ const EventList = () => {
 
   useWebSocket("events", handleWsUpdate);
   useWebSocket("tables", handleWsUpdate);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setNow(new Date()), 30000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   // Fallback for unsupported browsers
   if (!window.fetch || !window.WebSocket) {
@@ -159,7 +170,12 @@ const EventList = () => {
               : "rgba(253, 164, 175, 0.65)";
             const iconStyle = { color: isGeneral ? "rgba(125,211,252,0.55)" : "rgba(253,164,175,0.55)" };
             const linkStyle = { color: isGeneral ? "rgba(125,211,252,0.85)" : "rgba(253,164,175,0.85)" };
-            const isClickable = event.total_tables > 0 || isGeneral;
+            const registrationOpenAt = getRegistrationOpenAt(event);
+            const isLockedByCountdown = !isRegistrationOpen(event, now);
+            const registrationCountdown = isLockedByCountdown && registrationOpenAt
+              ? formatRegistrationCountdown(registrationOpenAt, now)
+              : null;
+            const isClickable = !isLockedByCountdown && (event.total_tables > 0 || isGeneral);
 
             const hasMeta =
               event.start_time || event.end_time || event.venue_name ||
@@ -173,21 +189,45 @@ const EventList = () => {
                 : event.bus_from || event.bus_to,
             ].filter(Boolean).join("  ·  ");
 
-            const StatusBadge = ({ compact = false }) => isGeneral ? (
-              <span className={`${compact ? "rounded-full px-2.5 py-1" : "rounded-lg px-3 py-1.5 text-center leading-tight"} bg-sky-950/60 text-sky-200 border border-sky-400/30 text-xs`}>
-                {t("event_list_component.general_event") || "General Event — Registration Open"}
-              </span>
-            ) : (
-              <span className={`${compact ? "rounded-full px-2.5 py-1" : "rounded-lg px-3 py-1.5 text-center leading-tight"} text-xs ${
-                event.available_tables > 0
-                  ? "bg-emerald-950/60 text-emerald-300 border border-emerald-400/30"
-                  : "bg-rose-950/60 text-rose-300 border border-rose-400/30"
-              }`}>
-                {event.available_tables > 0
-                  ? `${event.available_seats} ${t("event_list_component.seats_available")}`
-                  : t("event_list_component.registrations_not_started")}
-              </span>
-            );
+            const StatusBadge = ({ compact = false }) => {
+              const shared = compact
+                ? "rounded-full px-2.5 py-1"
+                : "rounded-lg px-3 py-1.5 text-center leading-tight";
+
+              if (registrationCountdown) {
+                return (
+                  <span
+                    className={`${shared} bg-amber-950/60 text-amber-200 border border-amber-400/35 text-xs`}
+                  >
+                    Opens in {registrationCountdown}
+                  </span>
+                );
+              }
+
+              if (isGeneral) {
+                return (
+                  <span
+                    className={`${shared} bg-sky-950/60 text-sky-200 border border-sky-400/30 text-xs`}
+                  >
+                    {t("event_list_component.general_event") || "General Event — Registration Open"}
+                  </span>
+                );
+              }
+
+              return (
+                <span
+                  className={`${shared} text-xs ${
+                    event.available_tables > 0
+                      ? "bg-emerald-950/60 text-emerald-300 border border-emerald-400/30"
+                      : "bg-rose-950/60 text-rose-300 border border-rose-400/30"
+                  }`}
+                >
+                  {event.available_tables > 0
+                    ? `${event.available_seats} ${t("event_list_component.seats_available")}`
+                    : t("event_list_component.registrations_not_started")}
+                </span>
+              );
+            };
 
             return (
               <motion.div
@@ -196,6 +236,7 @@ const EventList = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => isClickable ? setSelectedEvent(event) : null}
+                aria-disabled={!isClickable}
                 className={`relative rounded-xl overflow-hidden transition-all duration-300 ${
                   isClickable
                     ? `cursor-pointer hover:translate-x-1 group ${
@@ -203,7 +244,7 @@ const EventList = () => {
                           ? "hover:shadow-[0_0_0_1px_rgba(125,211,252,0.28),0_12px_40px_rgba(0,0,0,0.5)]"
                           : "hover:shadow-[0_0_0_1px_rgba(253,164,175,0.28),0_12px_40px_rgba(0,0,0,0.5)]"
                       }`
-                    : "opacity-75"
+                    : "opacity-75 cursor-not-allowed"
                 }`}
                 style={{
                   background: "rgba(15, 18, 35, 0.75)",
