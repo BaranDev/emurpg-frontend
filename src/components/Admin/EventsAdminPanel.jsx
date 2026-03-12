@@ -26,6 +26,71 @@ import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
+function OptionalDetailsSection({ formData, onChange, show, onToggle }) {
+  return (
+    <div className="border border-gray-700 rounded-lg overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-4 py-3 bg-gray-800/50 hover:bg-gray-800 text-sm text-gray-300 transition-colors"
+      >
+        <span>Optional Details (time, location, announcement, bus)</span>
+        <span className="text-gray-500">{show ? "▲" : "▼"}</span>
+      </button>
+      {show && (
+        <div className="px-4 py-3 space-y-3 border-t border-gray-700">
+          {/* Time */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Start Time</label>
+              <input type="text" name="start_time" value={formData.start_time} onChange={onChange} placeholder="e.g. 10:00" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">End Time</label>
+              <input type="text" name="end_time" value={formData.end_time} onChange={onChange} placeholder="e.g. 18:00" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+          </div>
+          {/* Venue */}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Venue Name</label>
+            <input type="text" name="venue_name" value={formData.venue_name} onChange={onChange} placeholder="e.g. Engineering Faculty B Block" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Google Maps Link (optional)</label>
+            <input type="url" name="location_url" value={formData.location_url} onChange={onChange} placeholder="https://maps.google.com/..." className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+          </div>
+          {/* Announcement */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Announcement Title</label>
+              <input type="text" name="announcement_title" value={formData.announcement_title} onChange={onChange} placeholder="e.g. Register Now" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Announcement URL</label>
+              <input type="url" name="announcement_url" value={formData.announcement_url} onChange={onChange} placeholder="https://..." className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+          </div>
+          {/* Bus */}
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Bus Departure Time</label>
+              <input type="text" name="bus_time" value={formData.bus_time} onChange={onChange} placeholder="e.g. 09:00" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">From</label>
+              <input type="text" name="bus_from" value={formData.bus_from} onChange={onChange} placeholder="e.g. Main Gate" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">To</label>
+              <input type="text" name="bus_to" value={formData.bus_to} onChange={onChange} placeholder="e.g. Event Hall" className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const EventsAdminPanel = ({ onNavigate }) => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -325,6 +390,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
   };
 
   const openEditModal = (event) => {
+    setShowDetails(false);
     setSelectedEvent(event);
     setFormData({
       name: event.name,
@@ -742,10 +808,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
             </label>
             <input
               type="text"
+              name="name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={handleInputChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
               required
             />
@@ -756,10 +821,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
               Description
             </label>
             <textarea
+              name="description"
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={handleInputChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
               rows={3}
             />
@@ -772,10 +836,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
               </label>
               <input
                 type="date"
+                name="start_date"
                 value={formData.start_date}
-                onChange={(e) =>
-                  setFormData({ ...formData, start_date: e.target.value })
-                }
+                onChange={handleInputChange}
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
                 required
               />
@@ -786,10 +849,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
               </label>
               <input
                 type="date"
+                name="end_date"
                 value={formData.end_date}
-                onChange={(e) =>
-                  setFormData({ ...formData, end_date: e.target.value })
-                }
+                onChange={handleInputChange}
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
                 required
               />
@@ -801,10 +863,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
               Event Type
             </label>
             <select
+              name="event_type"
               value={formData.event_type}
-              onChange={(e) =>
-                setFormData({ ...formData, event_type: e.target.value })
-              }
+              onChange={handleInputChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
             >
               <option value="game">Game Event (Tables & RPG)</option>
@@ -852,130 +913,12 @@ const EventsAdminPanel = ({ onNavigate }) => {
             </div>
           )}
 
-          {/* Optional Details collapsible */}
-          <div className="border border-gray-700 rounded-lg overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setShowDetails((v) => !v)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-800/50 hover:bg-gray-800 text-sm text-gray-300 transition-colors"
-            >
-              <span>Optional Details (time, location, announcement, bus)</span>
-              <span className="text-gray-500">{showDetails ? "▲" : "▼"}</span>
-            </button>
-            {showDetails && (
-              <div className="px-4 py-3 space-y-3 border-t border-gray-700">
-                {/* Time */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Start Time</label>
-                    <input
-                      type="text"
-                      name="start_time"
-                      value={formData.start_time}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 10:00"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">End Time</label>
-                    <input
-                      type="text"
-                      name="end_time"
-                      value={formData.end_time}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 18:00"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-                {/* Venue */}
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Venue Name</label>
-                  <input
-                    type="text"
-                    name="venue_name"
-                    value={formData.venue_name}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Engineering Faculty B Block"
-                    className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Google Maps Link (optional)</label>
-                  <input
-                    type="url"
-                    name="location_url"
-                    value={formData.location_url}
-                    onChange={handleInputChange}
-                    placeholder="https://maps.google.com/..."
-                    className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-                {/* Announcement */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Announcement Title</label>
-                    <input
-                      type="text"
-                      name="announcement_title"
-                      value={formData.announcement_title}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Register Now"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Announcement URL</label>
-                    <input
-                      type="url"
-                      name="announcement_url"
-                      value={formData.announcement_url}
-                      onChange={handleInputChange}
-                      placeholder="https://..."
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-                {/* Bus */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Bus Departure Time</label>
-                    <input
-                      type="text"
-                      name="bus_time"
-                      value={formData.bus_time}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 09:00"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">From</label>
-                    <input
-                      type="text"
-                      name="bus_from"
-                      value={formData.bus_from}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Main Gate"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">To</label>
-                    <input
-                      type="text"
-                      name="bus_to"
-                      value={formData.bus_to}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Event Hall"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <OptionalDetailsSection
+            formData={formData}
+            onChange={handleInputChange}
+            show={showDetails}
+            onToggle={() => setShowDetails((v) => !v)}
+          />
 
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
             <AdminButton
@@ -1012,10 +955,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
             </label>
             <input
               type="text"
+              name="name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={handleInputChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
               required
             />
@@ -1026,10 +968,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
               Description
             </label>
             <textarea
+              name="description"
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={handleInputChange}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
               rows={3}
             />
@@ -1042,10 +983,9 @@ const EventsAdminPanel = ({ onNavigate }) => {
               </label>
               <input
                 type="date"
+                name="start_date"
                 value={formData.start_date}
-                onChange={(e) =>
-                  setFormData({ ...formData, start_date: e.target.value })
-                }
+                onChange={handleInputChange}
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
                 required
               />
@@ -1056,140 +996,21 @@ const EventsAdminPanel = ({ onNavigate }) => {
               </label>
               <input
                 type="date"
+                name="end_date"
                 value={formData.end_date}
-                onChange={(e) =>
-                  setFormData({ ...formData, end_date: e.target.value })
-                }
+                onChange={handleInputChange}
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
                 required
               />
             </div>
           </div>
 
-          {/* Optional Details collapsible */}
-          <div className="border border-gray-700 rounded-lg overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setShowDetails((v) => !v)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-800/50 hover:bg-gray-800 text-sm text-gray-300 transition-colors"
-            >
-              <span>Optional Details (time, location, announcement, bus)</span>
-              <span className="text-gray-500">{showDetails ? "▲" : "▼"}</span>
-            </button>
-            {showDetails && (
-              <div className="px-4 py-3 space-y-3 border-t border-gray-700">
-                {/* Time */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Start Time</label>
-                    <input
-                      type="text"
-                      name="start_time"
-                      value={formData.start_time}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 10:00"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">End Time</label>
-                    <input
-                      type="text"
-                      name="end_time"
-                      value={formData.end_time}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 18:00"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-                {/* Venue */}
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Venue Name</label>
-                  <input
-                    type="text"
-                    name="venue_name"
-                    value={formData.venue_name}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Engineering Faculty B Block"
-                    className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Google Maps Link (optional)</label>
-                  <input
-                    type="url"
-                    name="location_url"
-                    value={formData.location_url}
-                    onChange={handleInputChange}
-                    placeholder="https://maps.google.com/..."
-                    className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-                {/* Announcement */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Announcement Title</label>
-                    <input
-                      type="text"
-                      name="announcement_title"
-                      value={formData.announcement_title}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Register Now"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Announcement URL</label>
-                    <input
-                      type="url"
-                      name="announcement_url"
-                      value={formData.announcement_url}
-                      onChange={handleInputChange}
-                      placeholder="https://..."
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-                {/* Bus */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Bus Departure Time</label>
-                    <input
-                      type="text"
-                      name="bus_time"
-                      value={formData.bus_time}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 09:00"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">From</label>
-                    <input
-                      type="text"
-                      name="bus_from"
-                      value={formData.bus_from}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Main Gate"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">To</label>
-                    <input
-                      type="text"
-                      name="bus_to"
-                      value={formData.bus_to}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Event Hall"
-                      className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <OptionalDetailsSection
+            formData={formData}
+            onChange={handleInputChange}
+            show={showDetails}
+            onToggle={() => setShowDetails((v) => !v)}
+          />
 
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
             <AdminButton
