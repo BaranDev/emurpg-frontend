@@ -300,7 +300,7 @@ const EventList = () => {
 
                   {/* Col 3: Status + Date */}
                   <div
-                    className="py-5 px-4 flex flex-col items-center justify-center gap-3"
+                    className="py-5 px-4 flex flex-col items-center justify-between"
                     style={{
                       borderLeft: "1px solid rgba(255,255,255,0.06)",
                       background: "rgba(6, 8, 18, 0.30)",
