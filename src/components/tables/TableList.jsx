@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { config } from "../../config";
 import GameGuideModal from "./GameGuideModal";
+import HostTableModal from "./HostTableModal";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
 const TableList = ({ eventSlug }) => {
@@ -15,6 +16,7 @@ const TableList = ({ eventSlug }) => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [gameDetails, setGameDetails] = useState({});
   const [themes, setThemes] = useState({});
+  const [hostModalOpen, setHostModalOpen] = useState(false);
 
   const fetchTables = useCallback(() => {
     fetch(`${config.backendUrl}/api/events/${eventSlug}/tables`)
@@ -97,7 +99,7 @@ const TableList = ({ eventSlug }) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
-        <p className="text-lg text-yellow-500">
+        <p className="text-lg font-cinzel tracking-wide text-amber-200/70">
           {t("table_list.loading_tables")}
         </p>
       </div>
@@ -108,16 +110,16 @@ const TableList = ({ eventSlug }) => {
   if (error || tables.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
-        <p className="text-lg text-gray-300 mb-4">
+        <p className="text-lg text-stone-300 mb-4">
           {t("table_list.event_being_created")}
         </p>
-        <p className="text-lg text-gray-300 mb-4">
+        <p className="text-lg text-stone-300 mb-4">
           {t("table_list.make_sure_join")}{" "}
           <a
             href={config.WHATSAPP_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-green-500 hover:text-green-400 underline"
+            className="text-emerald-400 hover:text-emerald-300 underline"
           >
             WhatsApp
           </a>{" "}
@@ -126,7 +128,7 @@ const TableList = ({ eventSlug }) => {
             href={config.DISCORD_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-indigo-500 hover:text-indigo-400 underline"
+            className="text-indigo-400 hover:text-indigo-300 underline"
           >
             Discord
           </a>
@@ -146,7 +148,12 @@ const TableList = ({ eventSlug }) => {
           className="z-150"
         />
       )}
-      <p className="text-lg md:text-xl text-center mb-4 md:mb-8 font-medieval">
+      <HostTableModal
+        isOpen={hostModalOpen}
+        onClose={() => setHostModalOpen(false)}
+        eventSlug={eventSlug}
+      />
+      <p className="text-lg md:text-xl font-cinzel text-center mb-4 md:mb-8 text-amber-100/80 tracking-wide">
         {t("table_list.welcome_adventurer")}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
@@ -157,25 +164,42 @@ const TableList = ({ eventSlug }) => {
         })}
 
         {/* Host your own table card */}
-        <div className="bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 border-2 border-purple-500 flex flex-col h-full">
-          <div className="w-full h-32 overflow-hidden bg-purple-900 flex items-center justify-center">
-            <div className="text-5xl text-purple-300">🎲</div>
+        <div
+          className="relative flex flex-col h-full min-h-[420px] overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-0.5"
+          style={{
+            background: "rgba(20, 10, 40, 0.82)",
+            borderTop: "3px solid rgba(167, 139, 250, 0.55)",
+            boxShadow:
+              "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <div
+            className="w-full h-24 flex items-center justify-center"
+            style={{ background: "rgba(30, 10, 60, 0.5)" }}
+          >
+            <span className="text-4xl opacity-50">🎲</span>
           </div>
-          <div className="p-6 flex-grow flex flex-col items-center justify-center">
-            <h3 className="text-xl font-bold text-purple-400 mb-4 text-center font-medieval">
+          <div className="p-5 flex-grow flex flex-col items-center justify-center text-center gap-3">
+            <h3 className="text-lg font-cinzel font-semibold text-violet-200">
               {t("table_list.want_to_host")}
             </h3>
-            <p className="text-sm text-gray-300 mb-6 text-center">
+            <p className="text-sm text-stone-400">
               {t("table_list.share_favorite_game")}
             </p>
           </div>
-          <div className="p-4 bg-gray-700">
-            <a
-              href="mailto:emufrpclub@gmail.com"
-              className="block w-full text-center bg-purple-600 text-white px-4 py-2 rounded-md transition-colors hover:bg-purple-700"
+          <div
+            className="p-3"
+            style={{
+              background: "rgba(6, 8, 16, 0.7)",
+              borderTop: "1px solid rgba(255,255,255,0.05)",
+            }}
+          >
+            <button
+              onClick={() => setHostModalOpen(true)}
+              className="block w-full text-center text-sm bg-violet-900/50 text-violet-200 border border-violet-500/35 hover:bg-violet-800/65 hover:border-violet-400/55 px-4 py-2 rounded-lg transition-all duration-200"
             >
-              {t("table_list.mail_us")}
-            </a>
+              {t("table_list.host_table_button")}
+            </button>
           </div>
         </div>
       </div>
@@ -192,17 +216,31 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
   const theme =
     table.theme_id && themes[table.theme_id]
       ? themes[table.theme_id]
-      : themes["default"] || {
-          background_styles: "bg-gray-800",
-          card_styles: "rounded-lg border-2 border-yellow-600",
-          hover_animations: "transition-transform transform hover:scale-105",
-          button_styles: "bg-yellow-600 hover:bg-yellow-700 text-white",
-        };
+      : themes["default"] || { id: "default" };
+
+  const isDefaultTheme = !theme.id || theme.id === "default";
+  const accentRgba = table.is_marked_full
+    ? "rgba(251, 113, 133, 0.5)"
+    : "rgba(110, 231, 183, 0.55)";
 
   return (
     <div
       key={table.slug}
-      className={`shadow-lg !flex !flex-col h-full min-h-[420px] overflow-hidden relative ${theme.background_styles || "bg-gray-800"} ${theme.card_styles} ${theme.hover_animations}`}
+      className={`relative !flex !flex-col h-full min-h-[420px] overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-0.5 ${
+        isDefaultTheme
+          ? ""
+          : `${theme.background_styles || ""} ${theme.card_styles || ""} ${theme.hover_animations || ""}`
+      }`}
+      style={
+        isDefaultTheme
+          ? {
+              background: "rgba(13, 16, 30, 0.82)",
+              borderTop: `3px solid ${accentRgba}`,
+              boxShadow:
+                "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
+            }
+          : undefined
+      }
     >
       {theme.background_image_url && config.ENABLE_R2 && (
         <div className="absolute inset-0 z-0">
@@ -214,61 +252,89 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
         </div>
       )}
       <div className="flex flex-col h-full relative z-10">
-        {(gameData?.image_url || table.game_image) && (
-          <div className="w-full h-32 overflow-hidden">
+        {(gameData?.image_url || table.game_image) ? (
+          <div className="w-full h-36 overflow-hidden relative">
             <img
               src={gameData?.image_url || table.game_image}
               alt={table.game_name}
               className="w-full h-full object-cover"
               onError={(e) => {
-                console.error(`Image failed to load:`, e.target.src);
                 e.target.src =
-                  "https://placehold.co/600x400/333/CCC?text=Game+Image";
+                  "https://placehold.co/600x400/0d1020/c9a227?text=⚔";
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to bottom, transparent 50%, rgba(13,16,30,0.85) 100%)",
               }}
             />
           </div>
-        )}
-        <div className="p-6 flex-grow">
-          <h3
-            className={`text-xl font-bold mb-2 text-center font-medieval ${
-              !theme.id || theme.id === "default" ? "text-yellow-500" : ""
-            }`}
+        ) : (
+          <div
+            className="w-full h-20 flex items-center justify-center"
+            style={{ background: "rgba(8, 10, 20, 0.6)" }}
           >
+            <span className="text-3xl opacity-25">⚔</span>
+          </div>
+        )}
+
+        <div className="p-5 flex-grow flex flex-col gap-2">
+          <h3 className="text-base font-cinzel font-semibold text-amber-100 text-center leading-snug">
             {table.game_name}
           </h3>
 
           {table.language && (
-            <p className="text-sm text-red-500 mb-1 text-center">
-              {table.language}
+            <p className="text-center">
+              <span className="px-2 py-0.5 rounded-full bg-red-950/60 text-red-300 border border-red-400/25 text-xs">
+                {table.language}
+              </span>
             </p>
           )}
 
-          <p className="text-sm text-gray-300 mb-1 text-center">
-            {t("table_list.quest_master")}: {table.game_master}
+          <p className="text-xs text-stone-400 text-center">
+            {t("table_list.quest_master")}:{" "}
+            <span className="text-stone-200">{table.game_master}</span>
           </p>
 
-          <p className="text-sm text-center text-gray-400 mb-2">
-            ⏱️ ~
-            {gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
+          <p className="text-xs text-center text-amber-200/60">
+            ⏱ ~{gameData ? gameData.avg_play_time : table.game_play_time || "?"}{" "}
             {t("table_list.minutes")}
           </p>
 
-          {!table.is_marked_full && (
-            <p className="text-sm text-center text-green-400 mb-3">
-              {table.player_quota} {t("table_list.seats")}
+          {!table.is_marked_full ? (
+            <p className="text-center">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-300 border border-emerald-400/25 text-xs">
+                {table.player_quota} {t("table_list.seats")}
+              </span>
+            </p>
+          ) : (
+            <p className="text-center">
+              <span className="px-2 py-0.5 rounded-full bg-rose-950/60 text-rose-300 border border-rose-400/25 text-xs">
+                {t("table_list.full")}
+              </span>
             </p>
           )}
         </div>
 
-        <div className="p-4 bg-gray-700">
+        <div
+          className="p-3"
+          style={{
+            background: "rgba(6, 8, 16, 0.7)",
+            borderTop: "1px solid rgba(255,255,255,0.05)",
+          }}
+        >
           <div className="flex gap-2">
             <Link
               to={`/table/${table.slug}`}
-              className={`flex-1 text-center ${
+              className={`flex-1 text-center text-sm px-3 py-2 rounded-lg border transition-all duration-200 ${
                 table.is_marked_full
-                  ? "bg-gray-500 text-white cursor-not-allowed"
-                  : theme.button_styles
-              } px-4 py-2 rounded-md transition-colors`}
+                  ? "bg-gray-800/60 text-gray-500 border-gray-700/40 cursor-not-allowed"
+                  : isDefaultTheme
+                    ? "bg-amber-900/50 text-amber-200 border-amber-500/35 hover:bg-amber-800/65 hover:border-amber-400/55"
+                    : theme.button_styles
+              }`}
               onClick={(e) => table.is_marked_full && e.preventDefault()}
             >
               {table.is_marked_full
@@ -277,12 +343,7 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
             </Link>
             <button
               onClick={() => {
-                // First scroll to top
-                window.scrollTo({
-                  top: 400,
-                  behavior: "smooth",
-                });
-                // Set a small timeout to ensure scroll completes before modal opens
+                window.scrollTo({ top: 400, behavior: "smooth" });
                 setTimeout(() => {
                   setSelectedGame(
                     gameData || {
@@ -297,7 +358,7 @@ function tableListFunction(table, gameData, setSelectedGame, t, themes) {
                   );
                 }, 300);
               }}
-              className="text-center text-sm bg-blue-600/50 hover:bg-blue-600/70 text-white px-3 py-2 rounded-md transition-colors"
+              className="text-center text-sm bg-indigo-950/60 hover:bg-indigo-900/70 text-indigo-300 border border-indigo-500/30 hover:border-indigo-400/50 px-3 py-2 rounded-lg transition-all duration-200"
             >
               {t("table_list.game_info")}
             </button>
