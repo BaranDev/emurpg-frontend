@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useLayoutEffect } from "react";
 import PropTypes from "prop-types";
 import { toPng } from "html-to-image";
 import { Download } from "lucide-react";
@@ -13,7 +13,27 @@ const PREVIEW_SCALE = PREVIEW_WIDTH / CARD_WIDTH;
 
 const AnnouncementModal = ({ event, isOpen, onClose }) => {
   const exportRef = useRef(null);
+  const previewWrapperRef = useRef(null);
+  const previewContainerRef = useRef(null);
   const [exporting, setExporting] = useState(false);
+
+  // Keep the preview container height in sync with the card's natural height
+  // multiplied by the scale factor. transform: scale() doesn't affect layout,
+  // so without this the container stays at the card's full unscaled height.
+  useLayoutEffect(() => {
+    const wrapper = previewWrapperRef.current;
+    const container = previewContainerRef.current;
+    if (!wrapper || !container) return;
+
+    const sync = () => {
+      container.style.height = `${wrapper.offsetHeight * PREVIEW_SCALE}px`;
+    };
+
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  });
 
   const handleDownload = useCallback(async () => {
     if (!exportRef.current) return;
@@ -64,29 +84,21 @@ const AnnouncementModal = ({ event, isOpen, onClose }) => {
       >
         {/* Scaled live preview */}
         <div
+          ref={previewContainerRef}
           style={{
             width: PREVIEW_WIDTH,
-            // Height of the preview container must match the scaled card height.
-            // We use overflow:hidden on the outer div and let the inner scaled
-            // div determine its own natural height.
             overflow: "hidden",
             margin: "0 auto 24px",
             borderRadius: 8,
             border: "1px solid rgba(245,196,50,0.18)",
-            // Establish a block-formatting context so the scaled child height
-            // collapses correctly.
-            display: "block",
           }}
         >
           <div
+            ref={previewWrapperRef}
             style={{
               width: CARD_WIDTH,
               transformOrigin: "top left",
               transform: `scale(${PREVIEW_SCALE})`,
-              // The element is CARD_WIDTH wide but scaled down.
-              // We need the wrapper to shrink to the scaled height, so we set
-              // the wrapper to `height: <scaled height>` via a wrapping trick:
-              // using a negative margin-bottom equal to the unscaled excess.
             }}
           >
             <AnnouncementCard event={event} />
