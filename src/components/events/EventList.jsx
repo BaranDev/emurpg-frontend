@@ -70,7 +70,7 @@ const EventList = () => {
         animate={{ opacity: 1 }}
         className="flex flex-col items-center justify-center min-h-[400px] p-6 text-center"
       >
-        <div className="text-yellow-500 text-xl">Loading events...</div>
+        <div className="text-amber-200/70 text-xl font-cinzel tracking-wide">Loading events…</div>
       </motion.div>
     );
   }
@@ -80,10 +80,11 @@ const EventList = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col items-center justify-center min-h-[400px] p-6 text-center bg-gray-800/50 rounded-lg shadow-xl"
+        className="flex flex-col items-center justify-center min-h-[400px] p-6 text-center rounded-xl shadow-xl"
+        style={{ background: "rgba(15, 18, 35, 0.6)" }}
       >
-        <FaCalendar className="text-6xl text-yellow-500 mb-6" />
-        <h1 className="text-3xl md:text-5xl font-bold text-yellow-500 mb-4">
+        <FaCalendar className="text-6xl text-amber-200/60 mb-6" />
+        <h1 className="text-3xl md:text-5xl font-cinzel font-bold text-amber-100 mb-4">
           {selectedEvent
             ? selectedEvent.name
             : t("event_list_component.emurpg_events")}
@@ -124,7 +125,11 @@ const EventList = () => {
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           onClick={() => setSelectedEvent(null)}
-          className="mb-6 text-yellow-500 hover:text-yellow-400 flex items-center gap-2 text-lg"
+          className={`mb-6 flex items-center gap-2 text-lg transition-colors ${
+            selectedEvent?.event_type === "general"
+              ? "text-sky-300 hover:text-sky-200"
+              : "text-rose-300 hover:text-rose-200"
+          }`}
         >
           ← {t("event_list_component.back_to_events")}
         </motion.button>
@@ -133,7 +138,7 @@ const EventList = () => {
       <motion.h1
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="text-4xl md:text-6xl font-bold text-center text-yellow-500 mb-8 md:mb-12"
+        className="text-4xl md:text-6xl font-cinzel font-bold text-center text-amber-100 mb-8 md:mb-12"
       >
         {selectedEvent
           ? selectedEvent.name
@@ -146,56 +151,73 @@ const EventList = () => {
           animate={{ y: 0, opacity: 1 }}
           className="grid gap-6"
         >
-          {events.map((event, index) => (
-            <motion.div
-              key={event.slug}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() =>
-                event.total_tables > 0 || event.event_type === "general"
-                  ? setSelectedEvent(event)
-                  : null
-              }
-              className={`bg-gray-800/50 rounded-lg border-2 border-yellow-600/50 p-6 
-                ${
-                  event.total_tables > 0 || event.event_type === "general"
-                    ? "cursor-pointer hover:bg-gray-700/50 hover:border-yellow-500 transform hover:scale-[1.01] transition-all"
+          {events.map((event, index) => {
+            const isGeneral = event.event_type === "general";
+            const accentRgba = isGeneral
+              ? "rgba(125, 211, 252, 0.65)"
+              : "rgba(253, 164, 175, 0.65)";
+            const isClickable =
+              event.total_tables > 0 || isGeneral;
+            return (
+              <motion.div
+                key={event.slug}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => isClickable ? setSelectedEvent(event) : null}
+                className={`relative rounded-xl p-6 transition-all duration-300 ${
+                  isClickable
+                    ? "cursor-pointer hover:translate-x-1"
                     : "opacity-75"
                 }`}
-            >
-              <h2 className="text-2xl md:text-3xl font-bold text-yellow-500 mb-3">
-                {event.name}
-              </h2>
-              <p className="text-gray-300 mb-4 text-lg">{event.description}</p>
-              <div className="flex flex-wrap justify-between text-sm md:text-base gap-4">
-                {event.event_type === "general" ? (
-                  <span className="px-4 py-2 rounded-full bg-purple-900/50 text-purple-400 border border-purple-500">
-                    {t("event_list_component.general_event") ||
-                      "General Event - Registration Open"}
-                  </span>
-                ) : (
-                  <span
-                    className={`px-4 py-2 rounded-full ${
-                      event.available_tables > 0
-                        ? "bg-green-900/50 text-green-400"
-                        : "bg-red-900/50 text-red-400"
-                    }`}
-                  >
-                    {event.available_tables > 0
-                      ? `${event.available_seats} ${t(
-                          "event_list_component.seats_available",
-                        )}`
-                      : t("event_list_component.registrations_not_started")}
-                  </span>
-                )}
-                <span className="text-gray-400 flex items-center gap-2">
-                  <FaCalendar />
-                  {new Date(event.start_date).toLocaleDateString()}
+                style={{
+                  background: "rgba(15, 18, 35, 0.75)",
+                  borderLeft: `4px solid ${accentRgba}`,
+                }}
+              >
+                <span
+                  className="absolute top-4 left-[-2px] text-xs leading-none select-none"
+                  style={{ color: accentRgba }}
+                  aria-hidden="true"
+                >
+                  ◆
                 </span>
-              </div>
-            </motion.div>
-          ))}
+                <h2
+                  className={`text-2xl md:text-3xl font-cinzel font-bold mb-3 ${
+                    isGeneral ? "text-sky-200" : "text-rose-200"
+                  }`}
+                >
+                  {event.name}
+                </h2>
+                <p className="text-stone-300 mb-4 text-lg">{event.description}</p>
+                <div className="flex flex-wrap justify-between text-sm md:text-base gap-4">
+                  {isGeneral ? (
+                    <span className="px-4 py-2 rounded-full bg-sky-950/60 text-sky-200 border border-sky-400/30">
+                      {t("event_list_component.general_event") ||
+                        "General Event - Registration Open"}
+                    </span>
+                  ) : (
+                    <span
+                      className={`px-4 py-2 rounded-full ${
+                        event.available_tables > 0
+                          ? "bg-emerald-950/60 text-emerald-300 border border-emerald-400/30"
+                          : "bg-rose-950/60 text-rose-300 border border-rose-400/30"
+                      }`}
+                    >
+                      {event.available_tables > 0
+                        ? `${event.available_seats} ${t(
+                            "event_list_component.seats_available",
+                          )}`
+                        : t("event_list_component.registrations_not_started")}
+                    </span>
+                  )}
+                  <span className="text-amber-200/70 flex items-center gap-1.5 text-sm">
+                    ✦ {new Date(event.start_date).toLocaleDateString()}
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
       ) : (
         <>
