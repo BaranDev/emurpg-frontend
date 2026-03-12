@@ -95,15 +95,15 @@ Input.propTypes = {
 // ── Stat tile ─────────────────────────────────────────────────────────────────
 const StatTile = ({ glyph, label, value }) => (
   <div
-    className="rounded-lg p-3 text-center flex flex-col items-center gap-1.5"
+    className="rounded-lg p-2 sm:p-3 text-center flex flex-col items-center gap-1"
     style={{
       background: "rgba(6, 8, 18, 0.85)",
       border: `1px solid ${GOLD}0.13)`,
     }}
   >
-    <span className="text-lg text-amber-200/40">{glyph}</span>
-    <p className="text-xs font-cinzel tracking-wide text-stone-500">{label}</p>
-    <p className="text-stone-200 font-semibold text-xs tabular-nums">{value}</p>
+    <span className="text-base sm:text-lg text-amber-200/40">{glyph}</span>
+    <p className="text-[10px] sm:text-xs font-cinzel tracking-wide text-stone-500 truncate w-full text-center">{label}</p>
+    <p className="text-stone-200 font-semibold text-[10px] sm:text-xs tabular-nums">{value}</p>
   </div>
 );
 
@@ -217,7 +217,7 @@ const RegistrationForm = ({
           {/* Collapsible header */}
           <button
             onClick={() => setShowGameDetails(!showGameDetails)}
-            className="w-full flex items-center justify-between px-6 py-4 transition-colors"
+            className="w-full flex items-center justify-between px-4 sm:px-6 py-4 transition-colors"
             style={{
               background: showGameDetails
                 ? `${GOLD}0.07)`
@@ -253,7 +253,7 @@ const RegistrationForm = ({
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="px-6 py-5 space-y-5">
+                <div className="px-4 sm:px-6 py-5 space-y-5">
                   {/* Game image */}
                   {gameInfo.image_url && (
                     <div
@@ -271,7 +271,7 @@ const RegistrationForm = ({
                   )}
 
                   {/* Stat tiles */}
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <StatTile
                       glyph="⏱"
                       label={t("registration.avg_playtime")}
@@ -350,7 +350,7 @@ const RegistrationForm = ({
       ) : (
         /* No game info fallback */
         <div
-          className="px-6 py-4 flex items-center gap-3"
+          className="px-4 sm:px-6 py-4 flex items-center gap-3"
           style={{ borderBottom: `1px solid ${GOLD}0.15)` }}
         >
           <span className="text-stone-600 text-xl">⚔</span>
@@ -369,7 +369,7 @@ const RegistrationForm = ({
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
-        className="px-6 py-7"
+        className="px-4 sm:px-6 py-6 sm:py-7"
       >
         {/* Form header */}
         <div className="text-center mb-7">
@@ -514,7 +514,7 @@ const RegistrationForm = ({
 
       {/* ── Rules modal ──────────────────────────────────────────────────────── */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="p-6 flex flex-col">
+        <div className="p-4 sm:p-6 flex flex-col">
           {/* Header */}
           <div className="mb-5 pr-4">
             <h2 className="font-cinzel font-bold text-lg text-amber-100 flex items-center gap-2">

@@ -44,7 +44,13 @@ function ATextarea(props) {
   return <textarea {...props} className={INPUT_CLS} style={INPUT_STYLE} />;
 }
 function ASelect(props) {
-  return <select {...props} className={`${INPUT_CLS} bg-[rgba(6,8,18,0.85)]`} style={INPUT_STYLE} />;
+  return (
+    <select
+      {...props}
+      className={`${INPUT_CLS} bg-[rgba(6,8,18,0.85)]`}
+      style={INPUT_STYLE}
+    />
+  );
 }
 
 function FormDivider({ label }) {
@@ -65,11 +71,19 @@ function FormDivider({ label }) {
   );
 }
 
-function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onAddClub, onRemoveClub, showClubs }) {
+function EventFormFields({
+  formData,
+  onChange,
+  clubInput,
+  onClubInputChange,
+  onAddClub,
+  onRemoveClub,
+  showClubs,
+}) {
   return (
     <div className="space-y-3">
       {/* ── Identity ────────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="col-span-2">
           <label className={LABEL_CLS}>Event Name</label>
           <AInput
@@ -107,7 +121,7 @@ function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onA
 
       {/* ── Schedule ────────────────────────────────────── */}
       <FormDivider label="Schedule" />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className={LABEL_CLS}>Start Date</label>
           <AInput
@@ -152,7 +166,7 @@ function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onA
 
       {/* ── Venue ───────────────────────────────────────── */}
       <FormDivider label="Location" />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className={LABEL_CLS}>Venue Name</label>
           <AInput
@@ -160,7 +174,7 @@ function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onA
             name="venue_name"
             value={formData.venue_name}
             onChange={onChange}
-            placeholder="Engineering Faculty B Block"
+            placeholder="Kaleiçi Pasaj..."
           />
         </div>
         <div>
@@ -177,7 +191,7 @@ function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onA
 
       {/* ── Announcement ────────────────────────────────── */}
       <FormDivider label="Announcement" />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className={LABEL_CLS}>Title</label>
           <AInput
@@ -185,7 +199,7 @@ function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onA
             name="announcement_title"
             value={formData.announcement_title}
             onChange={onChange}
-            placeholder="Register Now"
+            placeholder="Instagram Post"
           />
         </div>
         <div>
@@ -195,14 +209,14 @@ function EventFormFields({ formData, onChange, clubInput, onClubInputChange, onA
             name="announcement_url"
             value={formData.announcement_url}
             onChange={onChange}
-            placeholder="https://…"
+            placeholder="https://www.instagram.com/…"
           />
         </div>
       </div>
 
       {/* ── Transport ───────────────────────────────────── */}
       <FormDivider label="Transport" />
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
           <label className={LABEL_CLS}>Bus Time</label>
           <AInput
@@ -1011,7 +1025,10 @@ const EventsAdminPanel = ({ onNavigate }) => {
 
       <AdminModal
         isOpen={isCreateModalOpen}
-        onClose={() => { setIsCreateModalOpen(false); resetForm(); }}
+        onClose={() => {
+          setIsCreateModalOpen(false);
+          resetForm();
+        }}
         title="Create New Event"
       >
         <form onSubmit={handleCreateEvent}>
@@ -1024,11 +1041,17 @@ const EventsAdminPanel = ({ onNavigate }) => {
             onRemoveClub={handleRemoveClub}
             showClubs={formData.event_type === "general"}
           />
-          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-5 mt-4" style={{ borderTop: "1px solid rgba(201,162,39,0.12)" }}>
+          <div
+            className="flex flex-col-reverse sm:flex-row gap-3 pt-5 mt-4"
+            style={{ borderTop: "1px solid rgba(201,162,39,0.12)" }}
+          >
             <AdminButton
               type="button"
               variant="secondary"
-              onClick={() => { setIsCreateModalOpen(false); resetForm(); }}
+              onClick={() => {
+                setIsCreateModalOpen(false);
+                resetForm();
+              }}
               className="w-full sm:w-auto"
             >
               Cancel
@@ -1042,7 +1065,11 @@ const EventsAdminPanel = ({ onNavigate }) => {
 
       <AdminModal
         isOpen={isEditModalOpen}
-        onClose={() => { setIsEditModalOpen(false); setSelectedEvent(null); resetForm(); }}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedEvent(null);
+          resetForm();
+        }}
         title={`Edit: ${selectedEvent?.name || ""}`}
       >
         <form onSubmit={handleUpdateEvent}>
@@ -1055,11 +1082,18 @@ const EventsAdminPanel = ({ onNavigate }) => {
             onRemoveClub={handleRemoveClub}
             showClubs={formData.event_type === "general"}
           />
-          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-5 mt-4" style={{ borderTop: "1px solid rgba(201,162,39,0.12)" }}>
+          <div
+            className="flex flex-col-reverse sm:flex-row gap-3 pt-5 mt-4"
+            style={{ borderTop: "1px solid rgba(201,162,39,0.12)" }}
+          >
             <AdminButton
               type="button"
               variant="secondary"
-              onClick={() => { setIsEditModalOpen(false); setSelectedEvent(null); resetForm(); }}
+              onClick={() => {
+                setIsEditModalOpen(false);
+                setSelectedEvent(null);
+                resetForm();
+              }}
               className="w-full sm:w-auto"
             >
               Cancel

@@ -54,7 +54,7 @@ const TableDetailPage = () => {
     >
       {/* Back button */}
       <button
-        className="fixed top-5 left-5 z-50 flex items-center gap-1.5 text-rose-300 hover:text-rose-200 transition-colors text-sm font-cinzel"
+        className="fixed top-24 left-4 z-50 flex items-center gap-1.5 text-rose-300 hover:text-rose-200 transition-colors text-sm font-cinzel"
         onClick={() => (window.location.href = "/events")}
         aria-label="Back to events"
       >
