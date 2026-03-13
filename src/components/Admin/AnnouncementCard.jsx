@@ -1,32 +1,265 @@
-import { forwardRef } from "react";
+import { createContext, useContext, forwardRef } from "react";
 import PropTypes from "prop-types";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import gameBg from "../../assets/images/announcement-bg-game.jpg";
 import generalBg from "../../assets/images/announcement-bg-general.jpg";
 import logoWhite from "../../assets/logo/LOGO_WHITE.png";
 
-// ── Design tokens ─────────────────────────────────────────────────────────────
+// ── Card constants ─────────────────────────────────────────────────────────────
 const CARD_WIDTH = 1080;
-const GOLD = "#FFD426";
-const GOLD_DIM = "rgba(255,212,38,0.56)";
-const GOLD_RULE = "rgba(255,212,38,0.28)";
-const GOLD_BORDER = "rgba(255,212,38,0.18)";
-const CRIMSON = "#B91C34";
-const HEADER_BG = "rgba(4,2,1,0.94)";
-const TABLE_BG = "rgba(10,4,2,0.78)";
-const WARM_WHITE = "#F5EFE0";
-const WARM_WHITE_DIM = "rgba(245,239,224,0.60)";
-const CINZEL = "Cinzel, 'Times New Roman', serif";
+const CINZEL   = "Cinzel, 'Times New Roman', serif";
 const SPECTRAL = "Spectral, Georgia, serif";
+
+// ── Theme catalogue ────────────────────────────────────────────────────────────
+// Each theme controls: overlay gradient, accent palette, header/table
+// backgrounds, badge, title glow, and ornament glyph.  Colour tokens are
+// propagated to every sub-component via ThemeCtx so zero props need to change.
+
+export const THEMES = {
+  // ── 1. Shadow (default) ── dark, brooding, timeless ──────────────────────
+  shadow: {
+    id: "shadow", label: "Shadow", swatch: "#FFD426",
+    overlay: "linear-gradient(to bottom, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.72) 50%, rgba(0,0,0,0.88) 100%)",
+    cardBg:        "#050201",
+    accent:        "#FFD426",
+    accentDim:     "rgba(255,212,38,0.56)",
+    accentRule:    "rgba(255,212,38,0.28)",
+    accentBorder:  "rgba(255,212,38,0.18)",
+    headerBg:      "rgba(4,2,1,0.94)",
+    tableBg:       "rgba(10,4,2,0.78)",
+    badgeBg:       "#B91C34",
+    badgeBorder:   "rgba(185,28,52,0.60)",
+    badgeShadow:   "0 0 18px rgba(185,28,52,0.35)",
+    tableTopBar:   "#B91C34",
+    textLight:     "#F5EFE0",
+    textLightDim:  "rgba(245,239,224,0.60)",
+    titleShadow:   "0 2px 24px rgba(255,212,38,0.20)",
+    ornament:      "✦",
+    playerDiv:     "rgba(255,212,38,0.06)",
+    innerDiv:      "rgba(255,212,38,0.12)",
+    backupBar:     "rgba(255,212,38,0.55)",
+  },
+
+  // ── 2. Arcane ── mystical, rune-etched, violet sorcery ───────────────────
+  arcane: {
+    id: "arcane", label: "Arcane", swatch: "#A78BFA",
+    overlay: [
+      "radial-gradient(ellipse at 50% 28%, rgba(88,28,135,0.52) 0%, transparent 62%)",
+      "linear-gradient(to bottom, rgba(8,0,22,0.55) 0%, rgba(22,0,52,0.76) 50%, rgba(3,0,12,0.94) 100%)",
+    ].join(", "),
+    cardBg:        "#03000D",
+    accent:        "#C084FC",
+    accentDim:     "rgba(192,132,252,0.62)",
+    accentRule:    "rgba(167,139,250,0.30)",
+    accentBorder:  "rgba(139,92,246,0.22)",
+    headerBg:      "rgba(8,0,22,0.97)",
+    tableBg:       "rgba(14,3,36,0.83)",
+    badgeBg:       "#5B21B6",
+    badgeBorder:   "rgba(167,139,250,0.55)",
+    badgeShadow:   "0 0 22px rgba(139,92,246,0.55)",
+    tableTopBar:   "#7C3AED",
+    textLight:     "#EDE9FE",
+    textLightDim:  "rgba(237,233,254,0.62)",
+    titleShadow:   "0 2px 32px rgba(167,139,250,0.32)",
+    ornament:      "✤",
+    playerDiv:     "rgba(167,139,250,0.07)",
+    innerDiv:      "rgba(167,139,250,0.14)",
+    backupBar:     "rgba(192,132,252,0.55)",
+  },
+
+  // ── 3. Infernal ── hellfire rising, demonic siege ─────────────────────────
+  infernal: {
+    id: "infernal", label: "Infernal", swatch: "#F97316",
+    // Fire rises from bottom — invert the gradient direction for a unique look
+    overlay: [
+      "radial-gradient(ellipse at 50% 115%, rgba(153,27,27,0.68) 0%, rgba(80,10,0,0.35) 52%, transparent 72%)",
+      "linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, rgba(12,2,0,0.62) 45%, rgba(50,7,0,0.93) 100%)",
+    ].join(", "),
+    cardBg:        "#080100",
+    accent:        "#F97316",
+    accentDim:     "rgba(249,115,22,0.60)",
+    accentRule:    "rgba(239,68,68,0.32)",
+    accentBorder:  "rgba(220,38,38,0.22)",
+    headerBg:      "rgba(18,2,0,0.97)",
+    tableBg:       "rgba(30,5,2,0.83)",
+    badgeBg:       "#7F1D1D",
+    badgeBorder:   "rgba(239,68,68,0.60)",
+    badgeShadow:   "0 0 22px rgba(239,68,68,0.52)",
+    tableTopBar:   "#DC2626",
+    textLight:     "#FEF2F2",
+    textLightDim:  "rgba(254,242,242,0.60)",
+    titleShadow:   "0 2px 30px rgba(239,68,68,0.28)",
+    ornament:      "❖",
+    playerDiv:     "rgba(239,68,68,0.06)",
+    innerDiv:      "rgba(239,68,68,0.12)",
+    backupBar:     "rgba(249,115,22,0.55)",
+  },
+
+  // ── 4. Divine ── celestial radiance, paladin's oath ───────────────────────
+  divine: {
+    id: "divine", label: "Divine", swatch: "#FCD34D",
+    // Golden corona bleeds down from the very top
+    overlay: [
+      "radial-gradient(ellipse at 50% -12%, rgba(253,224,71,0.28) 0%, rgba(251,191,36,0.09) 42%, transparent 68%)",
+      "linear-gradient(to bottom, rgba(10,7,0,0.36) 0%, rgba(5,4,0,0.60) 50%, rgba(0,0,0,0.86) 100%)",
+    ].join(", "),
+    cardBg:        "#060400",
+    accent:        "#FCD34D",
+    accentDim:     "rgba(252,211,77,0.62)",
+    accentRule:    "rgba(245,158,11,0.36)",
+    accentBorder:  "rgba(217,119,6,0.26)",
+    headerBg:      "rgba(12,9,0,0.97)",
+    tableBg:       "rgba(16,11,2,0.80)",
+    badgeBg:       "#92400E",
+    badgeBorder:   "rgba(251,191,36,0.55)",
+    badgeShadow:   "0 0 24px rgba(252,211,77,0.45)",
+    tableTopBar:   "#D97706",
+    textLight:     "#FFFBEB",
+    textLightDim:  "rgba(255,251,235,0.65)",
+    titleShadow:   "0 2px 36px rgba(253,224,71,0.36)",
+    ornament:      "✦",
+    playerDiv:     "rgba(245,158,11,0.07)",
+    innerDiv:      "rgba(245,158,11,0.15)",
+    backupBar:     "rgba(252,211,77,0.55)",
+  },
+
+  // ── 5. Verdant ── ancient forest, elven sanctum ───────────────────────────
+  verdant: {
+    id: "verdant", label: "Verdant", swatch: "#4ADE80",
+    // Twin radial glows rise from the lower corners (like forest underglow)
+    overlay: [
+      "radial-gradient(ellipse at 20% 90%, rgba(5,46,22,0.52) 0%, transparent 55%)",
+      "radial-gradient(ellipse at 80% 90%, rgba(5,46,22,0.52) 0%, transparent 55%)",
+      "linear-gradient(to bottom, rgba(0,10,3,0.52) 0%, rgba(0,16,5,0.72) 50%, rgba(0,6,1,0.94) 100%)",
+    ].join(", "),
+    cardBg:        "#000902",
+    accent:        "#4ADE80",
+    accentDim:     "rgba(74,222,128,0.56)",
+    accentRule:    "rgba(34,197,94,0.30)",
+    accentBorder:  "rgba(22,163,74,0.22)",
+    headerBg:      "rgba(0,10,3,0.97)",
+    tableBg:       "rgba(2,16,5,0.83)",
+    badgeBg:       "#14532D",
+    badgeBorder:   "rgba(74,222,128,0.50)",
+    badgeShadow:   "0 0 22px rgba(74,222,128,0.32)",
+    tableTopBar:   "#16A34A",
+    textLight:     "#F0FDF4",
+    textLightDim:  "rgba(240,253,244,0.62)",
+    titleShadow:   "0 2px 28px rgba(74,222,128,0.24)",
+    ornament:      "❧",
+    playerDiv:     "rgba(34,197,94,0.06)",
+    innerDiv:      "rgba(34,197,94,0.12)",
+    backupBar:     "rgba(74,222,128,0.55)",
+  },
+};
+
+const ThemeCtx = createContext(THEMES.shadow);
+
+// ── Theme decorations (unique per-theme SVG elements) ─────────────────────────
+
+// Arcane: concentric magic circle + 8-point compass, etched into darkness
+function ArcaneCircles() {
+  // All coordinates relative to a 1080×720 viewport, centred at (540, 320)
+  const cx = 540, cy = 320;
+  const compassPts = [
+    [cx,       cy - 380], [cx + 269, cy - 269],
+    [cx + 380, cy      ], [cx + 269, cy + 269],
+    [cx,       cy + 380], [cx - 269, cy + 269],
+    [cx - 380, cy      ], [cx - 269, cy - 269],
+  ];
+  return (
+    <svg
+      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 2, opacity: 0.07 }}
+      viewBox="0 0 1080 720"
+      preserveAspectRatio="xMidYMin meet"
+    >
+      <g fill="none" stroke="#A78BFA" strokeLinecap="round">
+        {[380, 290, 185, 88, 36].map((r, i) => (
+          <circle key={r} cx={cx} cy={cy} r={r} strokeWidth={i === 0 ? 1.1 : 0.7} />
+        ))}
+        {compassPts.map(([x, y], i) => (
+          <line key={i} x1={cx} y1={cy} x2={x} y2={y} strokeWidth="0.5" />
+        ))}
+        {compassPts.map(([x, y], i) => (
+          <circle key={`m${i}`} cx={x} cy={y} r={i % 2 === 0 ? 8 : 5} strokeWidth={i % 2 === 0 ? 0.9 : 0.6} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+// Divine: golden light rays fanning downward from above the card top
+function DivineRays() {
+  const ox = 540, oy = -40, L = 1600;
+  const angles = [-68, -52, -36, -22, -10, 0, 10, 22, 36, 52, 68];
+  return (
+    <svg
+      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 2 }}
+      viewBox="0 0 1080 1400"
+      preserveAspectRatio="xMidYMin meet"
+    >
+      {angles.map((a, i) => {
+        const r = (a * Math.PI) / 180;
+        return (
+          <line
+            key={i}
+            x1={ox} y1={oy}
+            x2={Math.round(ox + L * Math.sin(r))}
+            y2={Math.round(oy + L * Math.cos(r))}
+            stroke="#FCD34D"
+            strokeWidth={a === 0 ? 80 : 52}
+            opacity={a === 0 ? 0.07 : 0.045}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+// Verdant: delicate vine / branch flourishes growing from the top corners
+function VerdantVines() {
+  const strokeProps = { fill: "none", stroke: "#4ADE80", strokeLinecap: "round", strokeLinejoin: "round" };
+  return (
+    <svg
+      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 2, opacity: 0.22 }}
+      viewBox="0 0 1080 360"
+      preserveAspectRatio="xMidYMin meet"
+    >
+      {/* Top-left */}
+      <g {...strokeProps}>
+        <path d="M0,0 C8,55 35,75 55,115 C65,135 60,165 78,198" strokeWidth="1.8" />
+        <path d="M26,58 C48,46 68,34 88,12" strokeWidth="1.3" />
+        <path d="M46,98 C68,76 88,64 106,44" strokeWidth="1.0" />
+        <path d="M88,12 C93,2 106,1 109,10 C103,17 92,17 88,12 Z" fill="#4ADE80" opacity="0.6" />
+        <path d="M106,44 C111,34 124,33 127,42 C121,49 109,49 106,44 Z" fill="#4ADE80" opacity="0.5" />
+        <path d="M0,82 C11,76 18,64 15,55 C12,46 3,45 1,53" strokeWidth="0.8" opacity="0.6" />
+      </g>
+      {/* Top-right (mirrored) */}
+      <g {...strokeProps}>
+        <path d="M1080,0 C1072,55 1045,75 1025,115 C1015,135 1020,165 1002,198" strokeWidth="1.8" />
+        <path d="M1054,58 C1032,46 1012,34 992,12" strokeWidth="1.3" />
+        <path d="M1034,98 C1012,76 992,64 974,44" strokeWidth="1.0" />
+        <path d="M992,12 C987,2 974,1 971,10 C977,17 988,17 992,12 Z" fill="#4ADE80" opacity="0.6" />
+        <path d="M974,44 C969,34 956,33 953,42 C959,49 971,49 974,44 Z" fill="#4ADE80" opacity="0.5" />
+        <path d="M1080,82 C1069,76 1062,64 1065,55 C1068,46 1077,45 1079,53" strokeWidth="0.8" opacity="0.6" />
+      </g>
+    </svg>
+  );
+}
+
+function ThemeDecoration({ themeId }) {
+  if (themeId === "arcane")   return <ArcaneCircles />;
+  if (themeId === "divine")   return <DivineRays />;
+  if (themeId === "verdant")  return <VerdantVines />;
+  return null;
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatDate(dateStr) {
   if (!dateStr) return "";
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+    day: "numeric", month: "long", year: "numeric",
   });
 }
 
@@ -37,138 +270,55 @@ function buildDateDisplay(start, end) {
 }
 
 // ── Primitives ────────────────────────────────────────────────────────────────
-function GoldRule() {
-  return <div style={{ height: 1, background: GOLD_RULE, margin: "0 36px" }} />;
+function AccentRule() {
+  const t = useContext(ThemeCtx);
+  return <div style={{ height: 1, background: t.accentRule, margin: "0 36px" }} />;
 }
 
 function HeraldRule() {
+  const t = useContext(ThemeCtx);
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-      }}
-    >
-      <div style={{ flex: 1, height: 1, background: GOLD_RULE }} />
-      <div
-        style={{
-          fontFamily: CINZEL,
-          fontSize: 11,
-          color: GOLD_DIM,
-          letterSpacing: "0.3em",
-          userSelect: "none",
-        }}
-      >
-        ✦
+    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <div style={{ flex: 1, height: 1, background: t.accentRule }} />
+      <div style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.3em", userSelect: "none" }}>
+        {t.ornament}
       </div>
-      <div style={{ flex: 1, height: 1, background: GOLD_RULE }} />
+      <div style={{ flex: 1, height: 1, background: t.accentRule }} />
     </div>
   );
 }
 
 function SectionLabel({ children }) {
+  const t = useContext(ThemeCtx);
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 16,
-        marginBottom: 28,
-      }}
-    >
-      <div style={{ flex: 1, height: 1, background: GOLD_RULE }} />
-      <div
-        style={{
-          fontFamily: CINZEL,
-          fontSize: 10,
-          letterSpacing: "0.36em",
-          color: GOLD_DIM,
-          textTransform: "uppercase",
-          whiteSpace: "nowrap",
-        }}
-      >
-        ✦ {children} ✦
+    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
+      <div style={{ flex: 1, height: 1, background: t.accentRule }} />
+      <div style={{ fontFamily: CINZEL, fontSize: 10, letterSpacing: "0.36em", color: t.accentDim, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+        {t.ornament} {children} {t.ornament}
       </div>
-      <div style={{ flex: 1, height: 1, background: GOLD_RULE }} />
+      <div style={{ flex: 1, height: 1, background: t.accentRule }} />
     </div>
   );
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
 function CardHeader({ isGame }) {
+  const t = useContext(ThemeCtx);
   return (
-    <div
-      style={{
-        background: HEADER_BG,
-        padding: "14px 44px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      {/* Left: Logo + club name */}
+    <div style={{ background: t.headerBg, padding: "14px 44px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-        <img
-          src={logoWhite}
-          alt="EMU RPG"
-          style={{
-            height: 32,
-            width: "auto",
-            objectFit: "contain",
-            opacity: 0.9,
-          }}
-        />
-        <div
-          style={{
-            width: 1,
-            height: 28,
-            background: GOLD_RULE,
-          }}
-        />
+        <img src={logoWhite} alt="EMU RPG" style={{ height: 32, width: "auto", objectFit: "contain", opacity: 0.9 }} />
+        <div style={{ width: 1, height: 28, background: t.accentRule }} />
         <div>
-          <div
-            style={{
-              fontFamily: CINZEL,
-              fontSize: 13,
-              letterSpacing: "0.3em",
-              color: GOLD,
-              textTransform: "uppercase",
-              lineHeight: 1.2,
-            }}
-          >
+          <div style={{ fontFamily: CINZEL, fontSize: 13, letterSpacing: "0.3em", color: t.accent, textTransform: "uppercase", lineHeight: 1.2 }}>
             EMURPG CLUB
           </div>
-          <div
-            style={{
-              fontFamily: SPECTRAL,
-              fontSize: 10,
-              color: GOLD_DIM,
-              letterSpacing: "0.12em",
-              fontStyle: "italic",
-              marginTop: 2,
-            }}
-          >
+          <div style={{ fontFamily: SPECTRAL, fontSize: 10, color: t.accentDim, letterSpacing: "0.12em", fontStyle: "italic", marginTop: 2 }}>
             Eastern Mediterranean University
           </div>
         </div>
       </div>
-
-      {/* Right: Event type badge */}
-      <div
-        style={{
-          fontFamily: CINZEL,
-          fontSize: 10,
-          letterSpacing: "0.24em",
-          color: WARM_WHITE,
-          textTransform: "uppercase",
-          padding: "7px 20px",
-          background: CRIMSON,
-          borderRadius: 2,
-          border: "1px solid rgba(185,28,52,0.6)",
-          boxShadow: "0 0 18px rgba(185,28,52,0.35)",
-        }}
-      >
+      <div style={{ fontFamily: CINZEL, fontSize: 10, letterSpacing: "0.24em", color: t.textLight, textTransform: "uppercase", padding: "7px 20px", background: t.badgeBg, borderRadius: 2, border: `1px solid ${t.badgeBorder}`, boxShadow: t.badgeShadow }}>
         {isGame ? "Game Night" : "Club Event"}
       </div>
     </div>
@@ -177,30 +327,11 @@ function CardHeader({ isGame }) {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function InfoRow({ icon: Icon, children }) {
+  const t = useContext(ThemeCtx);
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "0 20px",
-      }}
-    >
-      <Icon
-        size={15}
-        color={GOLD_DIM}
-        strokeWidth={1.5}
-        style={{ flexShrink: 0 }}
-      />
-      <span
-        style={{
-          fontFamily: SPECTRAL,
-          fontSize: 17,
-          color: WARM_WHITE,
-          lineHeight: 1.3,
-          whiteSpace: "nowrap",
-        }}
-      >
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 20px" }}>
+      <Icon size={15} color={t.accentDim} strokeWidth={1.5} style={{ flexShrink: 0 }} />
+      <span style={{ fontFamily: SPECTRAL, fontSize: 17, color: t.textLight, lineHeight: 1.3, whiteSpace: "nowrap" }}>
         {children}
       </span>
     </div>
@@ -208,68 +339,25 @@ function InfoRow({ icon: Icon, children }) {
 }
 
 function MetaDivider() {
-  return (
-    <div
-      style={{
-        width: 1,
-        height: 18,
-        background: GOLD_RULE,
-        flexShrink: 0,
-      }}
-    />
-  );
+  const t = useContext(ThemeCtx);
+  return <div style={{ width: 1, height: 18, background: t.accentRule, flexShrink: 0 }} />;
 }
 
 function HeroSection({ event, dateDisplay }) {
+  const t = useContext(ThemeCtx);
   return (
     <div style={{ padding: "48px 80px 44px", textAlign: "center" }}>
-      <div style={{ marginBottom: 22 }}>
-        <HeraldRule />
-      </div>
-
-      <h1
-        style={{
-          fontFamily: CINZEL,
-          fontWeight: 700,
-          fontSize: 56,
-          color: GOLD,
-          margin: "0 0 20px",
-          lineHeight: 1.12,
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-          letterSpacing: "0.04em",
-          textShadow: "0 2px 24px rgba(255,212,38,0.20)",
-        }}
-      >
+      <div style={{ marginBottom: 22 }}><HeraldRule /></div>
+      <h1 style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: 56, color: t.accent, margin: "0 0 20px", lineHeight: 1.12, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", letterSpacing: "0.04em", textShadow: t.titleShadow }}>
         {event.name}
       </h1>
-
-      <div style={{ marginBottom: 26 }}>
-        <HeraldRule />
-      </div>
-
-      {/* Event metadata — horizontal row with dividers */}
-      <div
-        style={{
-          display: "inline-flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 0,
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
+      <div style={{ marginBottom: 26 }}><HeraldRule /></div>
+      <div style={{ display: "inline-flex", flexDirection: "row", alignItems: "center", gap: 0, flexWrap: "wrap", justifyContent: "center" }}>
         {dateDisplay && <InfoRow icon={Calendar}>{dateDisplay}</InfoRow>}
         {(event.start_time || event.end_time) && (
           <>
             <MetaDivider />
-            <InfoRow icon={Clock}>
-              {[event.start_time, event.end_time]
-                .filter(Boolean)
-                .join(" \u2013 ")}
-            </InfoRow>
+            <InfoRow icon={Clock}>{[event.start_time, event.end_time].filter(Boolean).join(" \u2013 ")}</InfoRow>
           </>
         )}
         {event.venue_name && (
@@ -285,132 +373,31 @@ function HeroSection({ event, dateDisplay }) {
 
 // ── Table card ────────────────────────────────────────────────────────────────
 function TableCard({ table, index }) {
+  const t = useContext(ThemeCtx);
   const players = table.approved_players || [];
   return (
-    <div
-      style={{
-        flex: "1 1 0",
-        minWidth: 0,
-        background: TABLE_BG,
-        border: `1px solid ${GOLD_BORDER}`,
-        borderRadius: 6,
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Crimson top accent */}
-      <div style={{ height: 3, background: CRIMSON, flexShrink: 0 }} />
-
+    <div style={{ flex: "1 1 0", minWidth: 0, background: t.tableBg, border: `1px solid ${t.accentBorder}`, borderRadius: 6, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ height: 3, background: t.tableTopBar, flexShrink: 0 }} />
       <div style={{ padding: "16px 18px 20px" }}>
-        {/* Table number */}
-        <div
-          style={{
-            fontFamily: CINZEL,
-            fontSize: 9,
-            letterSpacing: "0.32em",
-            color: GOLD_DIM,
-            textTransform: "uppercase",
-            marginBottom: 8,
-          }}
-        >
+        <div style={{ fontFamily: CINZEL, fontSize: 9, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", marginBottom: 8 }}>
           Table {String(index + 1).padStart(2, "0")}
         </div>
-
-        {/* Game name */}
-        <div
-          style={{
-            fontFamily: CINZEL,
-            fontWeight: 700,
-            fontSize: 13,
-            color: GOLD,
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            marginBottom: 5,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            lineHeight: 1.35,
-          }}
-        >
+        <div style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: 13, color: t.accent, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: 1.35 }}>
           {table.game_name}
         </div>
-
-        {/* GM name */}
-        <div
-          style={{
-            fontFamily: SPECTRAL,
-            fontSize: 12,
-            color: WARM_WHITE_DIM,
-            fontStyle: "italic",
-            marginBottom: 13,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <div style={{ fontFamily: SPECTRAL, fontSize: 12, color: t.textLightDim, fontStyle: "italic", marginBottom: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {table.game_master}
         </div>
-
-        {/* Divider */}
-        <div
-          style={{
-            height: 1,
-            background: "rgba(255,212,38,0.12)",
-            marginBottom: 11,
-          }}
-        />
-
-        {/* Players — numbered, no bullets */}
+        <div style={{ height: 1, background: t.innerDiv, marginBottom: 11 }} />
         {players.length === 0 ? (
-          <div
-            style={{
-              fontFamily: SPECTRAL,
-              fontSize: 12,
-              color: "rgba(245,239,224,0.28)",
-              fontStyle: "italic",
-            }}
-          >
-            No players
-          </div>
+          <div style={{ fontFamily: SPECTRAL, fontSize: 12, color: t.textLightDim, fontStyle: "italic", opacity: 0.45 }}>No players</div>
         ) : (
           players.map((p, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 9,
-                paddingTop: i > 0 ? 5 : 0,
-                marginTop: i > 0 ? 5 : 0,
-                borderTop: i > 0 ? "1px solid rgba(255,212,38,0.06)" : "none",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: CINZEL,
-                  fontSize: 9,
-                  color: GOLD_DIM,
-                  letterSpacing: "0.05em",
-                  flexShrink: 0,
-                  minWidth: 16,
-                  lineHeight: 1.6,
-                }}
-              >
+            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 9, paddingTop: i > 0 ? 5 : 0, marginTop: i > 0 ? 5 : 0, borderTop: i > 0 ? `1px solid ${t.playerDiv}` : "none" }}>
+              <span style={{ fontFamily: CINZEL, fontSize: 9, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 16, lineHeight: 1.6 }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span
-                style={{
-                  fontFamily: SPECTRAL,
-                  fontSize: 13,
-                  color: WARM_WHITE,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  lineHeight: 1.5,
-                }}
-              >
+              <span style={{ fontFamily: SPECTRAL, fontSize: 13, color: t.textLight, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.5 }}>
                 {p.name}
               </span>
             </div>
@@ -423,71 +410,22 @@ function TableCard({ table, index }) {
 
 // ── Backup players card ───────────────────────────────────────────────────────
 function BackupPlayersCard({ players }) {
+  const t = useContext(ThemeCtx);
   if (!players || players.length === 0) return null;
   return (
-    <div
-      style={{
-        background: TABLE_BG,
-        border: `1px solid ${GOLD_BORDER}`,
-        borderRadius: 6,
-        overflow: "hidden",
-        marginTop: 16,
-      }}
-    >
-      {/* Amber accent bar — distinct from the crimson on table cards */}
-      <div
-        style={{
-          height: 3,
-          background: "rgba(255,212,38,0.55)",
-          flexShrink: 0,
-        }}
-      />
+    <div style={{ background: t.tableBg, border: `1px solid ${t.accentBorder}`, borderRadius: 6, overflow: "hidden", marginTop: 16 }}>
+      <div style={{ height: 3, background: t.backupBar, flexShrink: 0 }} />
       <div style={{ padding: "16px 24px 20px" }}>
-        <div
-          style={{
-            fontFamily: CINZEL,
-            fontSize: 10,
-            letterSpacing: "0.32em",
-            color: GOLD_DIM,
-            textTransform: "uppercase",
-            textAlign: "center",
-            marginBottom: 14,
-          }}
-        >
-          ✦ Backup Players ✦
+        <div style={{ fontFamily: CINZEL, fontSize: 10, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", textAlign: "center", marginBottom: 14 }}>
+          {t.ornament} Backup Players {t.ornament}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 28px" }}>
           {players.map((p, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 8,
-                minWidth: 160,
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: CINZEL,
-                  fontSize: 9,
-                  color: GOLD_DIM,
-                  letterSpacing: "0.05em",
-                  flexShrink: 0,
-                  minWidth: 16,
-                  lineHeight: 1.6,
-                }}
-              >
+            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 160 }}>
+              <span style={{ fontFamily: CINZEL, fontSize: 9, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 16, lineHeight: 1.6 }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span
-                style={{
-                  fontFamily: SPECTRAL,
-                  fontSize: 13,
-                  color: WARM_WHITE_DIM,
-                  lineHeight: 1.5,
-                }}
-              >
+              <span style={{ fontFamily: SPECTRAL, fontSize: 13, color: t.textLightDim, lineHeight: 1.5 }}>
                 {p.name}
               </span>
             </div>
@@ -500,62 +438,35 @@ function BackupPlayersCard({ players }) {
 
 // ── Game content ──────────────────────────────────────────────────────────────
 function GameContent({ tableDetails }) {
+  const t = useContext(ThemeCtx);
   if (!tableDetails || tableDetails.length === 0) {
     return (
-      <div
-        style={{
-          padding: "48px 44px",
-          textAlign: "center",
-          fontFamily: SPECTRAL,
-          fontSize: 16,
-          color: WARM_WHITE_DIM,
-          fontStyle: "italic",
-        }}
-      >
+      <div style={{ padding: "48px 44px", textAlign: "center", fontFamily: SPECTRAL, fontSize: 16, color: t.textLightDim, fontStyle: "italic" }}>
         No tables registered yet.
       </div>
     );
   }
-
   const rows = [];
-  for (let i = 0; i < tableDetails.length; i += 3) {
-    rows.push(tableDetails.slice(i, i + 3));
-  }
+  for (let i = 0; i < tableDetails.length; i += 3) rows.push(tableDetails.slice(i, i + 3));
 
-  // Collect all backup players across tables, deduplicated by name
   const seen = new Set();
-  const allBackups = tableDetails
-    .flatMap((t) => t.backup_players || [])
-    .filter((p) => {
-      if (seen.has(p.name)) return false;
-      seen.add(p.name);
-      return true;
-    });
+  const allBackups = tableDetails.flatMap((t) => t.backup_players || []).filter((p) => {
+    if (seen.has(p.name)) return false;
+    seen.add(p.name);
+    return true;
+  });
 
   return (
     <div style={{ padding: "36px 32px" }}>
       <SectionLabel>Registered Adventurers</SectionLabel>
       {rows.map((row, ri) => (
-        <div
-          key={ri}
-          style={{
-            display: "flex",
-            gap: 16,
-            marginBottom: ri < rows.length - 1 ? 16 : 0,
-            alignItems: "stretch",
-          }}
-        >
+        <div key={ri} style={{ display: "flex", gap: 16, marginBottom: ri < rows.length - 1 ? 16 : 0, alignItems: "stretch" }}>
           {row.map((table, ci) => (
-            <TableCard
-              key={table.slug || `${ri}-${ci}`}
-              table={table}
-              index={ri * 3 + ci}
-            />
+            <TableCard key={table.slug || `${ri}-${ci}`} table={table} index={ri * 3 + ci} />
           ))}
-          {row.length < 3 &&
-            Array.from({ length: 3 - row.length }).map((_, si) => (
-              <div key={`sp-${si}`} style={{ flex: "1 1 0", minWidth: 0 }} />
-            ))}
+          {row.length < 3 && Array.from({ length: 3 - row.length }).map((_, si) => (
+            <div key={`sp-${si}`} style={{ flex: "1 1 0", minWidth: 0 }} />
+          ))}
         </div>
       ))}
       <BackupPlayersCard players={allBackups} />
@@ -565,32 +476,14 @@ function GameContent({ tableDetails }) {
 
 // ── General content ───────────────────────────────────────────────────────────
 function GeneralContent({ clubs }) {
+  const t = useContext(ThemeCtx);
   if (!clubs || clubs.length === 0) return null;
   return (
     <div style={{ padding: "48px 56px" }}>
       <SectionLabel>Participating Clubs</SectionLabel>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 14,
-          justifyContent: "center",
-        }}
-      >
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
         {clubs.map((club, i) => (
-          <div
-            key={i}
-            style={{
-              fontFamily: CINZEL,
-              fontSize: 16,
-              color: GOLD,
-              padding: "12px 28px",
-              border: `1px solid ${GOLD_BORDER}`,
-              borderRadius: 4,
-              background: TABLE_BG,
-              letterSpacing: "0.05em",
-            }}
-          >
+          <div key={i} style={{ fontFamily: CINZEL, fontSize: 16, color: t.accent, padding: "12px 28px", border: `1px solid ${t.accentBorder}`, borderRadius: 4, background: t.tableBg, letterSpacing: "0.05em" }}>
             {club}
           </div>
         ))}
@@ -601,104 +494,59 @@ function GeneralContent({ clubs }) {
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 function CardFooter() {
+  const t = useContext(ThemeCtx);
   return (
-    <div
-      style={{
-        background: HEADER_BG,
-        padding: "14px 44px",
-        display: "flex",
-        alignItems: "center",
-        gap: 20,
-      }}
-    >
-      <div
-        style={{
-          fontFamily: CINZEL,
-          fontSize: 11,
-          color: GOLD_DIM,
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-        }}
-      >
-        emurpg.com
-      </div>
-      <div style={{ flex: 1, height: 1, background: GOLD_RULE }} />
-      <div
-        style={{
-          fontFamily: CINZEL,
-          fontSize: 11,
-          color: GOLD_DIM,
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-        }}
-      >
-        @emurpgclub
-      </div>
+    <div style={{ background: t.headerBg, padding: "14px 44px", display: "flex", alignItems: "center", gap: 20 }}>
+      <div style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>emurpg.com</div>
+      <div style={{ flex: 1, height: 1, background: t.accentRule }} />
+      <div style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.16em", textTransform: "uppercase" }}>@emurpgclub</div>
     </div>
   );
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
-const AnnouncementCard = forwardRef(function AnnouncementCard({ event, bgUrl }, ref) {
+const AnnouncementCard = forwardRef(function AnnouncementCard(
+  { event, bgUrl, theme = "shadow" },
+  ref,
+) {
+  const t = THEMES[theme] ?? THEMES.shadow;
   const isGame = event.event_type !== "general";
   const bg = bgUrl || (isGame ? gameBg : generalBg);
   const dateDisplay = buildDateDisplay(event.start_date, event.end_date);
 
   return (
-    <div
-      ref={ref}
-      style={{
-        width: CARD_WIDTH,
-        position: "relative",
-        overflow: "hidden",
-        background: "#050201",
-      }}
-    >
-      {/* Background artwork */}
-      <img
-        src={bg}
-        alt=""
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
-        }}
-      />
+    <ThemeCtx.Provider value={t}>
+      <div ref={ref} style={{ width: CARD_WIDTH, position: "relative", overflow: "hidden", background: t.cardBg }}>
+        {/* Background artwork — z:0 */}
+        <img src={bg} alt="" aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }} />
 
-      {/* Dark gradient overlay — heavier at bottom so tables are always legible */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.72) 50%, rgba(0,0,0,0.88) 100%)",
-          zIndex: 1,
-        }}
-      />
+        {/* Theme overlay — z:1 */}
+        <div style={{ position: "absolute", inset: 0, background: t.overlay, zIndex: 1 }} />
 
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <CardHeader isGame={isGame} />
-        <GoldRule />
-        <HeroSection event={event} dateDisplay={dateDisplay} />
-        {isGame ? (
-          <GameContent tableDetails={event.tableDetails || []} />
-        ) : (
-          <GeneralContent clubs={event.clubs || []} />
-        )}
-        <GoldRule />
-        <CardFooter />
+        {/* Per-theme decorative SVG — z:2, between overlay and content */}
+        <ThemeDecoration themeId={t.id} />
+
+        {/* Content — z:3 */}
+        <div style={{ position: "relative", zIndex: 3 }}>
+          <CardHeader isGame={isGame} />
+          <AccentRule />
+          <HeroSection event={event} dateDisplay={dateDisplay} />
+          {isGame ? (
+            <GameContent tableDetails={event.tableDetails || []} />
+          ) : (
+            <GeneralContent clubs={event.clubs || []} />
+          )}
+          <AccentRule />
+          <CardFooter />
+        </div>
       </div>
-    </div>
+    </ThemeCtx.Provider>
   );
 });
 
 // ── PropTypes ─────────────────────────────────────────────────────────────────
 const playerShape = PropTypes.shape({ name: PropTypes.string.isRequired });
-const tableShape = PropTypes.shape({
+const tableShape  = PropTypes.shape({
   slug: PropTypes.string,
   game_name: PropTypes.string.isRequired,
   game_master: PropTypes.string.isRequired,
@@ -718,24 +566,17 @@ AnnouncementCard.propTypes = {
     clubs: PropTypes.arrayOf(PropTypes.string),
     tableDetails: PropTypes.arrayOf(tableShape),
   }).isRequired,
-  bgUrl: PropTypes.string,
+  bgUrl:  PropTypes.string,
+  theme:  PropTypes.oneOf(Object.keys(THEMES)),
 };
 
-CardHeader.propTypes = { isGame: PropTypes.bool.isRequired };
-HeroSection.propTypes = {
-  event: PropTypes.object.isRequired,
-  dateDisplay: PropTypes.string.isRequired,
-};
-InfoRow.propTypes = {
-  icon: PropTypes.elementType.isRequired,
-  children: PropTypes.node.isRequired,
-};
-TableCard.propTypes = {
-  table: tableShape.isRequired,
-  index: PropTypes.number.isRequired,
-};
-GameContent.propTypes = { tableDetails: PropTypes.arrayOf(tableShape) };
-GeneralContent.propTypes = { clubs: PropTypes.arrayOf(PropTypes.string) };
+CardHeader.propTypes   = { isGame: PropTypes.bool.isRequired };
+HeroSection.propTypes  = { event: PropTypes.object.isRequired, dateDisplay: PropTypes.string.isRequired };
+InfoRow.propTypes      = { icon: PropTypes.elementType.isRequired, children: PropTypes.node.isRequired };
+TableCard.propTypes    = { table: tableShape.isRequired, index: PropTypes.number.isRequired };
+GameContent.propTypes  = { tableDetails: PropTypes.arrayOf(tableShape) };
+GeneralContent.propTypes   = { clubs: PropTypes.arrayOf(PropTypes.string) };
 BackupPlayersCard.propTypes = { players: PropTypes.arrayOf(playerShape) };
+ThemeDecoration.propTypes  = { themeId: PropTypes.string.isRequired };
 
 export default AnnouncementCard;
