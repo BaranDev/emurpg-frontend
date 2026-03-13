@@ -155,6 +155,53 @@ export const THEMES = {
 
 const ThemeCtx = createContext(THEMES.shadow);
 
+// ── Layout / content options ──────────────────────────────────────────────────
+export const DEFAULT_OPTIONS = {
+  tableFontScale: 1,   // 0.82 | 1 | 1.25  — scales all table-card typography
+  tablesPerRow:   3,   // 1 | 2 | 3
+  showBackup:     true,
+  showVenue:      true,
+  titleOverride:  "",  // empty = use event.name
+};
+
+const OptionsCtx = createContext(DEFAULT_OPTIONS);
+
+// Available px width for a player name given the number of columns
+function playerNameMaxWidth(tablesPerRow) {
+  const inner   = CARD_WIDTH - 64;               // 32 px padding each side → 1016
+  const gaps    = 16 * (tablesPerRow - 1);
+  const col     = (inner - gaps) / tablesPerRow;
+  const content = col - 40;                      // 20 px padding each side
+  return content - 30;                           // 20 px number badge + 10 px gap
+}
+
+// Lazily-created canvas for synchronous text measurement
+let _mc = null;
+function measureTextWidth(text, fontSize) {
+  if (typeof document === "undefined") return 0;
+  if (!_mc) _mc = document.createElement("canvas");
+  const ctx = _mc.getContext("2d");
+  ctx.font = `${fontSize}px Georgia, serif`; // Georgia ≈ Spectral in proportions
+  return ctx.measureText(text).width;
+}
+
+// Abbreviate a name to fit maxWidth px at the given font size.
+// Trailing words are replaced with "FirstLetter." one at a time until it fits.
+// e.g. "Cevdet Baran Oral" → "Cevdet Baran O." (not "Cevdet Baran Ora...")
+function abbreviateName(name, maxWidth, fontSize) {
+  if (measureTextWidth(name, fontSize) <= maxWidth) return name;
+  const words = name.split(" ").filter(Boolean);
+  for (let from = words.length - 1; from >= 0; from--) {
+    const parts = [
+      ...words.slice(0, from),
+      ...words.slice(from).map((w) => w[0].toUpperCase() + "."),
+    ];
+    const candidate = parts.join(" ");
+    if (measureTextWidth(candidate, fontSize) <= maxWidth) return candidate;
+  }
+  return (words[0]?.[0]?.toUpperCase() ?? "") + ".";
+}
+
 // ── Colour helpers ─────────────────────────────────────────────────────────────
 function hexToRgba(hex, alpha) {
   const h = hex.replace("#", "");
@@ -392,12 +439,14 @@ function MetaDivider() {
 }
 
 function HeroSection({ event, dateDisplay }) {
-  const t = useContext(ThemeCtx);
+  const t    = useContext(ThemeCtx);
+  const opts = useContext(OptionsCtx);
+  const title = opts.titleOverride?.trim() || event.name;
   return (
     <div style={{ padding: "48px 80px 44px", textAlign: "center" }}>
       <div style={{ marginBottom: 22 }}><HeraldRule /></div>
       <h1 style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: 56, color: t.accent, margin: "0 0 20px", lineHeight: 1.12, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", letterSpacing: "0.04em", textShadow: t.titleShadow }}>
-        {event.name}
+        {title}
       </h1>
       <div style={{ marginBottom: 26 }}><HeraldRule /></div>
       <div style={{ display: "inline-flex", flexDirection: "row", alignItems: "center", gap: 0, flexWrap: "wrap", justifyContent: "center" }}>
@@ -408,7 +457,7 @@ function HeroSection({ event, dateDisplay }) {
             <InfoRow icon={Clock}>{[event.start_time, event.end_time].filter(Boolean).join(" \u2013 ")}</InfoRow>
           </>
         )}
-        {event.venue_name && (
+        {opts.showVenue && event.venue_name && (
           <>
             <MetaDivider />
             <InfoRow icon={MapPin}>{event.venue_name}</InfoRow>
@@ -421,35 +470,54 @@ function HeroSection({ event, dateDisplay }) {
 
 // ── Table card ────────────────────────────────────────────────────────────────
 function TableCard({ table, index }) {
-  const t = useContext(ThemeCtx);
+  const t       = useContext(ThemeCtx);
+  const opts    = useContext(OptionsCtx);
+  const scale   = opts.tableFontScale ?? 1;
+  const maxW    = playerNameMaxWidth(opts.tablesPerRow ?? 3);
+  const sz      = (n) => Math.round(n * scale);
   const players = table.approved_players || [];
+
   return (
     <div style={{ flex: "1 1 0", minWidth: 0, background: t.tableBg, border: `1px solid ${t.accentBorder}`, borderRadius: 6, overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <div style={{ height: 4, background: t.tableTopBar, flexShrink: 0 }} />
-      <div style={{ padding: "18px 20px 22px" }}>
-        <div style={{ fontFamily: CINZEL, fontSize: 11, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", marginBottom: 9 }}>
+      <div style={{ padding: `${sz(18)}px ${sz(20)}px ${sz(22)}px` }}>
+
+        {/* Table number */}
+        <div style={{ fontFamily: CINZEL, fontSize: sz(11), letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", marginBottom: sz(9) }}>
           Table {String(index + 1).padStart(2, "0")}
         </div>
-        <div style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: 16, color: t.accent, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: 1.35 }}>
+
+        {/* Game name */}
+        <div style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: sz(16), color: t.accent, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: sz(6), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: 1.35 }}>
           {table.game_name}
         </div>
-        <div style={{ fontFamily: SPECTRAL, fontSize: 14, color: t.textLightDim, fontStyle: "italic", marginBottom: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+
+        {/* GM name */}
+        <div style={{ fontFamily: SPECTRAL, fontSize: sz(14), color: t.textLightDim, fontStyle: "italic", marginBottom: sz(14), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {table.game_master}
         </div>
-        <div style={{ height: 1, background: t.innerDiv, marginBottom: 12 }} />
+
+        <div style={{ height: 1, background: t.innerDiv, marginBottom: sz(12) }} />
+
+        {/* Player list */}
         {players.length === 0 ? (
-          <div style={{ fontFamily: SPECTRAL, fontSize: 14, color: t.textLightDim, fontStyle: "italic", opacity: 0.45 }}>No players</div>
+          <div style={{ fontFamily: SPECTRAL, fontSize: sz(14), color: t.textLightDim, fontStyle: "italic", opacity: 0.45 }}>No players</div>
         ) : (
-          players.map((p, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 10, paddingTop: i > 0 ? 7 : 0, marginTop: i > 0 ? 7 : 0, borderTop: i > 0 ? `1px solid ${t.playerDiv}` : "none" }}>
-              <span style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 20, lineHeight: 1.6 }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span style={{ fontFamily: SPECTRAL, fontSize: 15, color: t.textLight, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.5 }}>
-                {p.name}
-              </span>
-            </div>
-          ))
+          players.map((p, i) => {
+            const nameFontSize = sz(15);
+            const displayName  = abbreviateName(p.name, maxW, nameFontSize);
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "baseline", gap: sz(10), paddingTop: i > 0 ? sz(7) : 0, marginTop: i > 0 ? sz(7) : 0, borderTop: i > 0 ? `1px solid ${t.playerDiv}` : "none" }}>
+                <span style={{ fontFamily: CINZEL, fontSize: sz(11), color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: sz(20), lineHeight: 1.6 }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {/* fontWeight 500 + slight tracking = wider, more legible */}
+                <span style={{ fontFamily: SPECTRAL, fontWeight: 500, fontSize: nameFontSize, letterSpacing: "0.015em", color: t.textLight, whiteSpace: "nowrap", lineHeight: 1.5 }}>
+                  {displayName}
+                </span>
+              </div>
+            );
+          })
         )}
       </div>
     </div>
@@ -458,26 +526,38 @@ function TableCard({ table, index }) {
 
 // ── Backup players card ───────────────────────────────────────────────────────
 function BackupPlayersCard({ players }) {
-  const t = useContext(ThemeCtx);
+  const t     = useContext(ThemeCtx);
+  const opts  = useContext(OptionsCtx);
+  const scale = opts.tableFontScale ?? 1;
+  const sz    = (n) => Math.round(n * scale);
+
   if (!players || players.length === 0) return null;
+
+  // Backup names live in a multi-column flex grid; max ~140 px per entry
+  const backupNameMaxW = 140;
+
   return (
     <div style={{ background: t.tableBg, border: `1px solid ${t.accentBorder}`, borderRadius: 6, overflow: "hidden", marginTop: 16 }}>
       <div style={{ height: 3, background: t.backupBar, flexShrink: 0 }} />
-      <div style={{ padding: "18px 24px 22px" }}>
-        <div style={{ fontFamily: CINZEL, fontSize: 12, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", textAlign: "center", marginBottom: 14 }}>
+      <div style={{ padding: `${sz(18)}px ${sz(24)}px ${sz(22)}px` }}>
+        <div style={{ fontFamily: CINZEL, fontSize: sz(12), letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", textAlign: "center", marginBottom: sz(14) }}>
           {t.ornament} Backup Players {t.ornament}
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 28px" }}>
-          {players.map((p, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 9, minWidth: 170 }}>
-              <span style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 20, lineHeight: 1.6 }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span style={{ fontFamily: SPECTRAL, fontSize: 15, color: t.textLightDim, lineHeight: 1.5 }}>
-                {p.name}
-              </span>
-            </div>
-          ))}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: `${sz(8)}px ${sz(28)}px` }}>
+          {players.map((p, i) => {
+            const nameFontSize = sz(15);
+            const displayName  = abbreviateName(p.name, backupNameMaxW, nameFontSize);
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "baseline", gap: sz(9), minWidth: sz(170) }}>
+                <span style={{ fontFamily: CINZEL, fontSize: sz(11), color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: sz(20), lineHeight: 1.6 }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span style={{ fontFamily: SPECTRAL, fontWeight: 500, fontSize: nameFontSize, letterSpacing: "0.015em", color: t.textLightDim, lineHeight: 1.5, whiteSpace: "nowrap" }}>
+                  {displayName}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -486,7 +566,10 @@ function BackupPlayersCard({ players }) {
 
 // ── Game content ──────────────────────────────────────────────────────────────
 function GameContent({ tableDetails }) {
-  const t = useContext(ThemeCtx);
+  const t    = useContext(ThemeCtx);
+  const opts = useContext(OptionsCtx);
+  const tpr  = opts.tablesPerRow ?? 3; // tables per row
+
   if (!tableDetails || tableDetails.length === 0) {
     return (
       <div style={{ padding: "48px 44px", textAlign: "center", fontFamily: SPECTRAL, fontSize: 16, color: t.textLightDim, fontStyle: "italic" }}>
@@ -494,11 +577,12 @@ function GameContent({ tableDetails }) {
       </div>
     );
   }
+
   const rows = [];
-  for (let i = 0; i < tableDetails.length; i += 3) rows.push(tableDetails.slice(i, i + 3));
+  for (let i = 0; i < tableDetails.length; i += tpr) rows.push(tableDetails.slice(i, i + tpr));
 
   const seen = new Set();
-  const allBackups = tableDetails.flatMap((t) => t.backup_players || []).filter((p) => {
+  const allBackups = tableDetails.flatMap((td) => td.backup_players || []).filter((p) => {
     if (seen.has(p.name)) return false;
     seen.add(p.name);
     return true;
@@ -510,14 +594,14 @@ function GameContent({ tableDetails }) {
       {rows.map((row, ri) => (
         <div key={ri} style={{ display: "flex", gap: 16, marginBottom: ri < rows.length - 1 ? 16 : 0, alignItems: "stretch" }}>
           {row.map((table, ci) => (
-            <TableCard key={table.slug || `${ri}-${ci}`} table={table} index={ri * 3 + ci} />
+            <TableCard key={table.slug || `${ri}-${ci}`} table={table} index={ri * tpr + ci} />
           ))}
-          {row.length < 3 && Array.from({ length: 3 - row.length }).map((_, si) => (
+          {row.length < tpr && Array.from({ length: tpr - row.length }).map((_, si) => (
             <div key={`sp-${si}`} style={{ flex: "1 1 0", minWidth: 0 }} />
           ))}
         </div>
       ))}
-      <BackupPlayersCard players={allBackups} />
+      {opts.showBackup && <BackupPlayersCard players={allBackups} />}
     </div>
   );
 }
@@ -554,16 +638,18 @@ function CardFooter() {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 const AnnouncementCard = forwardRef(function AnnouncementCard(
-  { event, bgUrl, theme = "shadow", colorOverrides = {} },
+  { event, bgUrl, theme = "shadow", colorOverrides = {}, cardOptions = {} },
   ref,
 ) {
-  const t = buildEffectiveTheme(THEMES[theme] ?? THEMES.shadow, colorOverrides);
+  const t    = buildEffectiveTheme(THEMES[theme] ?? THEMES.shadow, colorOverrides);
+  const opts = { ...DEFAULT_OPTIONS, ...cardOptions };
   const isGame = event.event_type !== "general";
   const bg = bgUrl || (isGame ? gameBg : generalBg);
   const dateDisplay = buildDateDisplay(event.start_date, event.end_date);
 
   return (
     <ThemeCtx.Provider value={t}>
+    <OptionsCtx.Provider value={opts}>
       <div ref={ref} style={{ width: CARD_WIDTH, position: "relative", overflow: "hidden", background: t.cardBg }}>
         {/* Background artwork — z:0 */}
         <img src={bg} alt="" aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }} />
@@ -588,6 +674,7 @@ const AnnouncementCard = forwardRef(function AnnouncementCard(
           <CardFooter />
         </div>
       </div>
+    </OptionsCtx.Provider>
     </ThemeCtx.Provider>
   );
 });
@@ -617,6 +704,7 @@ AnnouncementCard.propTypes = {
   bgUrl:         PropTypes.string,
   theme:         PropTypes.oneOf(Object.keys(THEMES)),
   colorOverrides:PropTypes.object,
+  cardOptions:   PropTypes.object,
 };
 
 CardHeader.propTypes   = { isGame: PropTypes.bool.isRequired };
