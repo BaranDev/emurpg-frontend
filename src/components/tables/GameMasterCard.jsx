@@ -169,14 +169,26 @@ const GameMasterCard = ({
                   </a>
                 ),
               )}
-              {!isValidUrl(socials.discord) && socials.discord && (
-                <button
-                  onClick={handleDiscordClick}
-                  className="text-yellow-500/50 hover:text-yellow-500 transition-colors bg-transparent border-none cursor-pointer"
-                  title="Click to view Discord username"
-                >
-                  <FaDiscord size={20} />
-                </button>
+              {socials.discord && (
+                isValidUrl(socials.discord) ? (
+                  <a
+                    href={socials.discord}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-yellow-500/50 hover:text-yellow-500 transition-colors"
+                    title="Join Discord"
+                  >
+                    <FaDiscord size={20} />
+                  </a>
+                ) : (
+                  <button
+                    onClick={handleDiscordClick}
+                    className="text-yellow-500/50 hover:text-yellow-500 transition-colors bg-transparent border-none cursor-pointer"
+                    title="Click to view Discord username"
+                  >
+                    <FaDiscord size={20} />
+                  </button>
+                )
               )}
             </div>
           ) : null}

@@ -108,9 +108,18 @@ const TeamMembersPanel = () => {
     return fd;
   };
 
-  // Validate social URLs - must be http:// or https://
+  // Auto-normalize discord.gg invite links that are missing the protocol
+  const normalizeDiscord = (value) => {
+    const v = value.trim();
+    if (!v) return v;
+    if (/^discord\.gg(\/|$)/i.test(v)) return `https://${v}`;
+    return v;
+  };
+
+  // Validate social URLs - must be http:// or https:// (discord is exempt: can be a username)
   const validateSocialUrls = () => {
     for (const [key, url] of Object.entries(formData.socials)) {
+      if (key === "discord") continue;
       if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
         showToast(
           `${key} URL must start with http:// or https:// (got: ${url})`,
@@ -307,6 +316,17 @@ const TeamMembersPanel = () => {
     }));
   };
 
+  const blurSocialLink = (key, value) => {
+    if (key !== "discord") return;
+    const normalized = normalizeDiscord(value);
+    if (normalized !== value) {
+      setFormData((prev) => ({
+        ...prev,
+        socials: { ...prev.socials, discord: normalized },
+      }));
+    }
+  };
+
   const getInitials = (name) => {
     if (!name) return "?";
     return name
@@ -474,8 +494,9 @@ const TeamMembersPanel = () => {
           Social Links
         </label>
         <p className="text-xs text-gray-400 mb-3">
-          💡 Enter full URLs for socials. For Discord, enter the username only
-          (e.g., baran__)
+          Enter full URLs for socials. Discord accepts either a username (e.g.,{" "}
+          <code className="text-gray-300">baran__</code>) or an invite link
+          (e.g., <code className="text-gray-300">https://discord.gg/abc123</code>).
         </p>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex items-center gap-2">
@@ -530,7 +551,8 @@ const TeamMembersPanel = () => {
               type="text"
               value={formData.socials.discord}
               onChange={(e) => updateSocialLink("discord", e.target.value)}
-              placeholder="Discord username"
+              onBlur={(e) => blurSocialLink("discord", e.target.value)}
+              placeholder="Discord username or invite link"
               className="w-full px-3 py-1.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:border-yellow-500 focus:outline-none"
             />
           </div>
