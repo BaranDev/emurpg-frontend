@@ -16,13 +16,7 @@ These two images are used as full-bleed backdrop artwork in the announcement car
 **Used for:** Game Night events
 
 **Prompt:**
-> A cinematic vertical digital fantasy illustration of a grand medieval great hall turned adventurers' game night. A long oak table dominates the foreground, scattered with polished dice, hand-drawn treasure maps, spell books with glowing runes, and painted miniatures. Iron torch sconces blaze with amber and deep crimson fire, casting dramatic chiaroscuro pools of light across rough stone walls hung with battle-worn tapestries in jewel tones — blood crimson, burnished gold, sapphire. A dragon skull and crossed swords mounted above a gothic stone fireplace occupy the far wall. Blue-violet arcane light bleeds from a cracked stone doorway at center-back. The atmosphere crackles with anticipation and fellowship.
->
-> Lighting: theatrical chiaroscuro — vivid warm amber firelight in the upper quarter, with the central and lower portions deepening into near-black shadow. The bottom half of the image should be very dark to allow white and gold text overlay at high contrast.
->
-> Color palette: near-black stone and shadow (#08040A) as dominant; accents of ember orange (#C17020), deep crimson (#9B1E2E), antique gold (#C9A227), and arcane cobalt (#2A3B6A). Jewel-saturated tones throughout with no washed-out midtones.
->
-> Style: premium digital fantasy concept art, painterly with crisp high-contrast detail, reminiscent of official D&D sourcebook illustrations. Tall vertical portrait composition, 9:16 aspect ratio. Upper third richly detailed; lower two-thirds transitions to deep shadow.
+> Flat vector illustration, looking upward through the interior of a medieval wizard's stone tower at night, spiraling bookshelves stuffed with glowing spell tomes lining the curved walls, arcane orbs and floating rune tablets drifting in shadow, iron chandelier with dozens of lit candles hanging overhead, a circular stained-glass oculus window at the top revealing a crimson full moon and the silhouette of a circling dragon, polished dice and a rolled dungeon map resting on a stone lectern in the foreground, jewel-tone flat fills of midnight navy #0D1522, deep crimson #8B1525, amber gold #C9A020, and arcane violet #2A1547 against near-black stone, bold geometric shapes, hard edges, zero gradients or shading, upper half richly detailed and luminous, lower half fading to near-black for text overlay, vertical portrait 9:16 aspect ratio
 
 ---
 
@@ -31,15 +25,7 @@ These two images are used as full-bleed backdrop artwork in the announcement car
 **Used for:** General / club events
 
 **Prompt:**
-> A breathtaking cinematic vertical illustration of a vast medieval cathedral repurposed as a grand festival hall. Soaring Gothic stone arches rise to a vaulted ceiling lost in shadow. Tall narrow stained glass windows line both sides, beaming dramatic shafts of colored light across worn flagstone floors — deep emerald, ruby red, royal cobalt, and amber gold. Between the windows hang massive heraldic tapestries featuring mythical beasts, crossed swords, and guild crests in rich jewel tones. Stone columns wrapped in ivy and torchlit by iron candelabras lead the eye toward a raised dais at the far end, where banners stream in unseen air.
->
-> The mood is celebratory, majestic, and legendary — a gathering of people who belong to something greater than themselves. Hundreds of candle flames create a warm golden haze in the upper register. The floor and lower walls deepen into cool shadow.
->
-> Lighting: warm golden candlelight above, vivid colored spill from stained glass in the mid-register, transitioning to deep shadow below. The bottom half of the image should be very dark to allow text overlay at high contrast.
->
-> Color palette: near-black stone (#060408) as dominant; accents of stained-glass ruby (#8C1A2A), emerald (#1A5C3A), royal cobalt (#1C2E6A), and burnished gold (#C9A027). The overall effect should feel rich, theatrical, and alive with color despite the dark stone base.
->
-> Style: premium digital fantasy concept art, cinematic painterly rendering, reminiscent of high-fantasy RPG sourcebook covers. Tall vertical portrait composition, 9:16 aspect ratio. Upper half carries the most visual information; lower half deepens to near-black.
+> Flat vector illustration, high rooftop vantage point overlooking a grand medieval walled city festival at dusk, cobblestone plaza below strung wall-to-wall with hundreds of glowing amber lanterns, colorful guild banners of crimson, emerald, and cobalt cascading from every gothic stone facade, silhouetted crowd gathered around an ornate central fountain, distant cathedral spires and castle towers rising against a deep indigo-violet sky packed with stars and a crescent moon, jewel-tone flat fills of deep indigo #0D0F2A, forest emerald #0D3020, blood crimson #8C1A20, and warm amber #C9920A against dark stone, bold geometric flat shapes, zero gradients or shading, upper half vivid and detailed, lower half dissolving to near-black for text overlay, vertical portrait 9:16 aspect ratio
 
 ---
 
@@ -84,6 +70,103 @@ These could enhance the medieval/fantasy theme if generated:
 - After generation, backgrounds can be removed using color key/chroma key tools in image editing software
 - All other visual elements (gradients, overlays, ornaments) are implemented using pure CSS/Tailwind utilities
 - The icons used in the UI are custom React SVG components in `EmuconIcons.jsx`
+
+---
+
+# On Code SVG Inventory
+
+> Identified via `svg_usage_map.csv` (SVGSource = "On Code").
+> These are SVGs hand-drawn with JSX path/shape code. They are candidates for replacement with proper generated SVG files or an icon library.
+
+## Group A — Illustration SVGs (Scene Elements)
+
+These are larger decorative scene elements embedded inside component files.
+Target path when replaced: `src/assets/icons/`
+
+| Component Name | Defined In | Used In | viewBox | Description |
+| --- | --- | --- | --- | --- |
+| `MoonSVG` | `CharrollerBackground.jsx` | `CharrollerBackground.jsx` (line 162) | 0 0 200 200 | Moon with glow rings and crater circles |
+| `ScrollSVG` | `CharrollerBackground.jsx` | `CharrollerBackground.jsx` (line 227) | 0 0 120 160 | Magical tome / scroll shape |
+| `DiceSVG` | `CharrollerBackground.jsx` | `CharrollerBackground.jsx` (line 241) | 0 0 100 100 | D6 dice with pips |
+| `TreeSVG` | `CharrollerBackground.jsx` | `CharrollerBackground.jsx` (line 255, ×2) | 0 0 200 400 | Dark fantasy tree silhouette |
+| `MoonSVG` | `ParallaxBackground.jsx` | `ParallaxBackground.jsx` (line 324) | 0 0 200 200 | Same moon motif, parallax variant |
+| `TreeSVG` | `ParallaxBackground.jsx` | `ParallaxBackground.jsx` (line 389, ×2) | 0 0 200 400 | Same tree motif, parallax variant |
+| `OwlSVG` | `ParallaxBackground.jsx` | `ParallaxBackground.jsx` (line 415) | 0 0 120 160 | Owl silhouette |
+
+Also inline (direct `<svg>`) in the same files:
+
+| File | viewBox | Description |
+| --- | --- | --- |
+| `CharrollerBackground.jsx` | 0 0 120 160 | Scroll/tome shape |
+| `CharrollerBackground.jsx` | 0 0 100 100 | Dice shape |
+| `CharrollerBackground.jsx` | 0 0 200 400 | Tree shape |
+| `CharrollerBackground.jsx` | 0 0 200 200 | Moon shape |
+| `TavernBackground.jsx` | 0 0 1200 100 | Decorative wave/ground |
+| `EmuconParallax.jsx` | 0 0 200 80 | Cloud / landscape element |
+| `EmuconParallax.jsx` | 0 0 180 70 | Cloud / landscape element |
+| `EmuconParallax.jsx` | 0 0 150 60 | Cloud / landscape element |
+| `ParallaxBackground.jsx` | 0 0 200 200 | Decorative shape |
+| `ParallaxBackground.jsx` | 0 0 120 160 | Decorative shape |
+| `ParallaxBackground.jsx` | 0 0 100 120 | Decorative shape |
+| `ParallaxBackground.jsx` | 0 0 200 400 | Tree silhouette |
+| `ParallaxBackground.jsx` | 0 0 200 200 | Decorative shape |
+
+---
+
+## Group B — EmuconIcons (Icon Set, all On Code)
+
+All 20 icons in `src/components/Emucon/EmuconIcons.jsx` are hand-coded JSX path components using a 24×24 viewBox.
+
+**Replacement options:**
+- A: Swap with matching Lucide React icons (Lucide is already installed in the project)
+- B: Generate proper `.svg` files and place in `src/assets/icons/emucon/`
+
+| Icon Name | Used In | Current Usage |
+| --- | --- | --- |
+| `ShieldIcon` | EmuconContactGrid, EmuconDivider, EmuconFooter, EmuconNavbar, EmuconStatsRow, SponsorTierCard, Sponsors | Decorative, sponsor tiers, stats |
+| `LeafIcon` | EmuconContentCard, EmuconDivider, EmuconFooter, EmuconNavbar, EmuconSectionHeader | Decorative dividers, headers |
+| `StarIcon` | EmuconFooter, EmuconNavbar, EmuconStatsRow, Sponsors | Ratings, decorative |
+| `TreeIcon` | EmuconFooter (×3) | Footer decoration |
+| `MoonIcon` | EmuconFooter | Footer decoration |
+| `CrownIcon` | EmuconContactGrid, SponsorHero, Sponsors | Sponsor tiers |
+| `SwordIcon` | EmuconNavbar | Navbar decoration |
+| `UpArrowIcon` | EmuconFooter | Back-to-top button |
+| `CalendarIcon` | EmuconHero, EmuconSchedule | Event date display |
+| `ClockIcon` | EmuconHero, EmuconSchedule | Event time display |
+| `LocationIcon` | EmuconHero | Event venue display |
+| `EmailIcon` | EmuconContactGrid, SponsorContactCTA | Contact info |
+| `PhoneIcon` | Sponsors | Contact info |
+| `ScrollIcon` | EmuconSchedule, Sponsors | Schedule / info |
+| `ArtIcon` | Sponsors | Sponsor category |
+| `GamepadIcon` | *(not in CSV — defined but currently unused)* | — |
+| `MusicIcon` | *(not in CSV — defined but currently unused)* | — |
+| `FoodIcon` | *(not in CSV — defined but currently unused)* | — |
+| `CameraIcon` | *(not in CSV — defined but currently unused)* | — |
+| `WorkshopIcon` | *(not in CSV — defined but currently unused)* | — |
+
+---
+
+## Group C — Admin & Misc Inline SVGs
+
+Small utility SVGs coded directly in component files. Lower priority for replacement.
+
+| File | viewBox | Description |
+| --- | --- | --- |
+| `AdminLayout.jsx` | 0 0 1200 200 | Decorative wave separator |
+| `AdminLogin.jsx` | 0 0 1200 200 | Decorative wave separator |
+| `AnalyticsPanel.jsx` | 0 0 24 24 | Small icon |
+| `AnnouncementCard.jsx` | 0 0 1080 720 | Background art (landscape ratio) |
+| `AnnouncementCard.jsx` | 0 0 1080 1400 | Background art (portrait ratio) |
+| `AnnouncementCard.jsx` | 0 0 1080 360 | Background art (banner ratio) |
+| `TeamMembersPanel.jsx` | 0 0 24 24 | Small icon |
+| `AdminButton.jsx` | 0 0 24 24 | Button icon |
+| `LoadingSpinner.jsx` | 0 0 20 20 | Spinner animation |
+| `EmuconIcons.jsx` | 0 0 24 24 | IconWrapper base (shared SVG root) |
+| `EmuconNavbar.jsx` | 0 0 1200 60 | Navbar bottom decoration |
+| `Landing.jsx` | 0 0 24 24 | Small icon |
+| `EmuconRulesPage.jsx` | 80×80 | Decorative element |
+| `EventsPage.jsx` | 200×200 | Decorative element |
+| `HomePage.jsx` | 0 0 24 24 | Small icon |
 
 ## Logo Assets (Already Available)
 
