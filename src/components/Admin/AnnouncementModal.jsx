@@ -16,19 +16,45 @@ const PREVIEW_SCALE = PREVIEW_WIDTH / CARD_WIDTH;
 // Ordered list of themes for the selector row
 const THEME_LIST = Object.values(THEMES);
 
+// Colour keys exposed to the picker panel — in visual importance order
+const COLOR_KEYS = [
+  { key: "accent",      label: "Accent",    hint: "Title · rules · ornaments" },
+  { key: "badgeBg",     label: "Badge",     hint: "Event type badge" },
+  { key: "tableTopBar", label: "Table Bar", hint: "Stripe on table cards" },
+  { key: "textLight",   label: "Text",      hint: "Primary text" },
+  { key: "headerBg",    label: "Header",    hint: "Header & footer band" },
+];
+
+// Convert any CSS colour string (hex or rgba) to a #rrggbb hex string
+// so it can be used as the value of <input type="color">.
+function toHex(color) {
+  if (!color) return "#ffffff";
+  if (color.startsWith("#")) return color.slice(0, 7);
+  const m = color.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  if (!m) return "#000000";
+  return (
+    "#" +
+    [m[1], m[2], m[3]]
+      .map((n) => parseInt(n, 10).toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
+
 const AnnouncementModal = ({ event, isOpen, onClose }) => {
   const exportRef           = useRef(null);
   const previewWrapperRef   = useRef(null);
   const previewContainerRef = useRef(null);
   const bgFileRef           = useRef(null);
 
-  const [exporting, setExporting]       = useState(false);
-  const [customBg,  setCustomBg]        = useState(null);
-  const [bgPickerOpen, setBgPickerOpen] = useState(false);
-  const [savedBgs, setSavedBgs]         = useState([]);
-  const [bgLoading, setBgLoading]       = useState(false);
-  const [uploading, setUploading]       = useState(false);
-  const [theme, setTheme]               = useState("shadow");
+  const [exporting, setExporting]         = useState(false);
+  const [customBg,  setCustomBg]          = useState(null);
+  const [bgPickerOpen, setBgPickerOpen]   = useState(false);
+  const [savedBgs, setSavedBgs]           = useState([]);
+  const [bgLoading, setBgLoading]         = useState(false);
+  const [uploading, setUploading]         = useState(false);
+  const [theme, setTheme]                 = useState("shadow");
+  // Per-key colour overrides on top of the selected theme
+  const [colorOverrides, setColorOverrides] = useState({});
 
   const backendUrl = config.backendUrl;
   const apiKey     = getApiKey();
@@ -104,7 +130,7 @@ const AnnouncementModal = ({ event, isOpen, onClose }) => {
     <>
       {/* Hidden full-size card — html-to-image capture target */}
       <div style={{ position: "fixed", left: -9999, top: 0, zIndex: -1, pointerEvents: "none" }} aria-hidden="true">
-        <AnnouncementCard ref={exportRef} event={event} bgUrl={customBg} theme={theme} />
+        <AnnouncementCard ref={exportRef} event={event} bgUrl={customBg} theme={theme} colorOverrides={colorOverrides} />
       </div>
 
       <AdminModal isOpen={isOpen} onClose={onClose} title="Announcement Preview" size="xl">
@@ -115,38 +141,117 @@ const AnnouncementModal = ({ event, isOpen, onClose }) => {
           style={{ width: PREVIEW_WIDTH, overflow: "hidden", margin: "0 auto 20px", borderRadius: 8, border: "1px solid rgba(245,196,50,0.18)" }}
         >
           <div ref={previewWrapperRef} style={{ width: CARD_WIDTH, transformOrigin: "top left", transform: `scale(${PREVIEW_SCALE})` }}>
-            <AnnouncementCard event={event} bgUrl={customBg} theme={theme} />
+            <AnnouncementCard event={event} bgUrl={customBg} theme={theme} colorOverrides={colorOverrides} />
           </div>
         </div>
 
-        {/* ── Theme selector ── */}
-        <div className="mb-4 rounded-xl border border-gray-700 bg-gray-800/40 p-3">
-          <p className="text-xs text-gray-400 mb-2.5 font-medium tracking-wide uppercase">Overlay Theme</p>
-          <div className="flex gap-2 flex-wrap">
-            {THEME_LIST.map((t) => {
-              const active = theme === t.id;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setTheme(t.id)}
-                  title={t.label}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-150 ${
-                    active
-                      ? "border-transparent text-gray-900"
-                      : "border-gray-600 bg-gray-800 text-gray-300 hover:border-gray-500 hover:text-white"
-                  }`}
-                  style={active ? { background: t.swatch, borderColor: t.swatch } : {}}
-                >
-                  <span
-                    className="w-2.5 h-2.5 rounded-full flex-shrink-0 border border-white/20"
-                    style={{ background: t.swatch }}
-                  />
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* ── Theme + colour customisation panel ── */}
+        {(() => {
+          const activeThemeColors = THEMES[theme] ?? THEMES.shadow;
+          const hasOverrides = Object.keys(colorOverrides).length > 0;
+
+          return (
+            <div className="mb-4 rounded-xl border border-gray-700 bg-gray-800/40 p-3 space-y-3">
+
+              {/* Row 1 — theme presets */}
+              <div>
+                <p className="text-xs text-gray-400 mb-2 font-medium tracking-wide uppercase">
+                  Overlay Theme
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {THEME_LIST.map((t) => {
+                    const active = theme === t.id;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => { setTheme(t.id); setColorOverrides({}); }}
+                        title={t.label}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-150 ${
+                          active
+                            ? "border-transparent text-gray-900"
+                            : "border-gray-600 bg-gray-800 text-gray-300 hover:border-gray-500 hover:text-white"
+                        }`}
+                        style={active ? { background: t.swatch, borderColor: t.swatch } : {}}
+                      >
+                        <span
+                          className="w-2.5 h-2.5 rounded-full flex-shrink-0 border border-white/20"
+                          style={{ background: t.swatch }}
+                        />
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-700/60" />
+
+              {/* Row 2 — per-colour pickers */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-gray-400 font-medium tracking-wide uppercase">
+                    Colours
+                  </p>
+                  {hasOverrides && (
+                    <button
+                      onClick={() => setColorOverrides({})}
+                      className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                    >
+                      ↩ Reset to theme
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {COLOR_KEYS.map(({ key, label, hint }) => {
+                    const defaultColor = activeThemeColors[key] ?? "#ffffff";
+                    const current      = colorOverrides[key] ?? defaultColor;
+                    const hexVal       = toHex(current);
+                    const isOverridden = !!colorOverrides[key];
+
+                    return (
+                      <label
+                        key={key}
+                        title={hint}
+                        className="flex flex-col gap-1 cursor-pointer group"
+                      >
+                        <span className={`text-xs ${isOverridden ? "text-yellow-400" : "text-gray-500"} transition-colors`}>
+                          {label}
+                        </span>
+
+                        {/* Visible swatch + hex — wraps the hidden input */}
+                        <span className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border transition-all duration-150 bg-gray-900/60 group-hover:border-gray-400 ${
+                          isOverridden ? "border-yellow-500/60" : "border-gray-600"
+                        }`}>
+                          {/* Colour swatch */}
+                          <span
+                            className="w-4 h-4 rounded-sm flex-shrink-0 border border-white/10"
+                            style={{ background: current }}
+                          />
+                          {/* Hex value */}
+                          <span className="text-xs font-mono text-gray-300 leading-none">
+                            {hexVal}
+                          </span>
+                        </span>
+
+                        {/* Native colour picker — invisible but clickable via the label */}
+                        <input
+                          type="color"
+                          value={hexVal}
+                          onChange={(e) =>
+                            setColorOverrides((prev) => ({ ...prev, [key]: e.target.value }))
+                          }
+                          className="sr-only"
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Background picker panel */}
         {bgPickerOpen && (

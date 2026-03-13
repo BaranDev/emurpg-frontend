@@ -155,6 +155,54 @@ export const THEMES = {
 
 const ThemeCtx = createContext(THEMES.shadow);
 
+// ── Colour helpers ─────────────────────────────────────────────────────────────
+function hexToRgba(hex, alpha) {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// Merge per-key colour overrides into a base theme, re-deriving dependent tokens
+// so that, e.g., changing `accent` also updates accentDim, accentRule, etc.
+function buildEffectiveTheme(base, overrides = {}) {
+  const t = { ...base };
+
+  if (overrides.accent) {
+    const a = overrides.accent;
+    Object.assign(t, {
+      accent:      a,
+      accentDim:   hexToRgba(a, 0.56),
+      accentRule:  hexToRgba(a, 0.28),
+      accentBorder:hexToRgba(a, 0.18),
+      backupBar:   hexToRgba(a, 0.55),
+      playerDiv:   hexToRgba(a, 0.06),
+      innerDiv:    hexToRgba(a, 0.12),
+      titleShadow: `0 2px 26px ${hexToRgba(a, 0.28)}`,
+    });
+  }
+  if (overrides.badgeBg) {
+    const b = overrides.badgeBg;
+    Object.assign(t, {
+      badgeBg:    b,
+      badgeBorder:hexToRgba(b, 0.60),
+      badgeShadow:`0 0 20px ${hexToRgba(b, 0.40)}`,
+    });
+  }
+  if (overrides.tableTopBar) t.tableTopBar = overrides.tableTopBar;
+  if (overrides.textLight) {
+    const tx = overrides.textLight;
+    Object.assign(t, {
+      textLight:   tx,
+      textLightDim:hexToRgba(tx, 0.60),
+    });
+  }
+  if (overrides.headerBg) t.headerBg = overrides.headerBg;
+
+  return t;
+}
+
 // ── Theme decorations (unique per-theme SVG elements) ─────────────────────────
 
 // Arcane: concentric magic circle + 8-point compass, etched into darkness
@@ -506,10 +554,10 @@ function CardFooter() {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 const AnnouncementCard = forwardRef(function AnnouncementCard(
-  { event, bgUrl, theme = "shadow" },
+  { event, bgUrl, theme = "shadow", colorOverrides = {} },
   ref,
 ) {
-  const t = THEMES[theme] ?? THEMES.shadow;
+  const t = buildEffectiveTheme(THEMES[theme] ?? THEMES.shadow, colorOverrides);
   const isGame = event.event_type !== "general";
   const bg = bgUrl || (isGame ? gameBg : generalBg);
   const dateDisplay = buildDateDisplay(event.start_date, event.end_date);
@@ -566,8 +614,9 @@ AnnouncementCard.propTypes = {
     clubs: PropTypes.arrayOf(PropTypes.string),
     tableDetails: PropTypes.arrayOf(tableShape),
   }).isRequired,
-  bgUrl:  PropTypes.string,
-  theme:  PropTypes.oneOf(Object.keys(THEMES)),
+  bgUrl:         PropTypes.string,
+  theme:         PropTypes.oneOf(Object.keys(THEMES)),
+  colorOverrides:PropTypes.object,
 };
 
 CardHeader.propTypes   = { isGame: PropTypes.bool.isRequired };
