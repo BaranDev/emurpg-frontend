@@ -29,3 +29,7 @@ tofix.md
 docs/plans/
 # Trash folder
 trash/
+AGENTS.md
+# Root-level generated image stubs (real assets live in src/assets/images/)
+announcement-bg-game.jpg
+announcement-bg-general.jpg
