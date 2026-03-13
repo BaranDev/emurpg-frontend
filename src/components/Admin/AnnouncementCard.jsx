@@ -425,27 +425,27 @@ function TableCard({ table, index }) {
   const players = table.approved_players || [];
   return (
     <div style={{ flex: "1 1 0", minWidth: 0, background: t.tableBg, border: `1px solid ${t.accentBorder}`, borderRadius: 6, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-      <div style={{ height: 3, background: t.tableTopBar, flexShrink: 0 }} />
-      <div style={{ padding: "16px 18px 20px" }}>
-        <div style={{ fontFamily: CINZEL, fontSize: 9, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", marginBottom: 8 }}>
+      <div style={{ height: 4, background: t.tableTopBar, flexShrink: 0 }} />
+      <div style={{ padding: "18px 20px 22px" }}>
+        <div style={{ fontFamily: CINZEL, fontSize: 11, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", marginBottom: 9 }}>
           Table {String(index + 1).padStart(2, "0")}
         </div>
-        <div style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: 13, color: t.accent, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: 1.35 }}>
+        <div style={{ fontFamily: CINZEL, fontWeight: 700, fontSize: 16, color: t.accent, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: 1.35 }}>
           {table.game_name}
         </div>
-        <div style={{ fontFamily: SPECTRAL, fontSize: 12, color: t.textLightDim, fontStyle: "italic", marginBottom: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div style={{ fontFamily: SPECTRAL, fontSize: 14, color: t.textLightDim, fontStyle: "italic", marginBottom: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {table.game_master}
         </div>
-        <div style={{ height: 1, background: t.innerDiv, marginBottom: 11 }} />
+        <div style={{ height: 1, background: t.innerDiv, marginBottom: 12 }} />
         {players.length === 0 ? (
-          <div style={{ fontFamily: SPECTRAL, fontSize: 12, color: t.textLightDim, fontStyle: "italic", opacity: 0.45 }}>No players</div>
+          <div style={{ fontFamily: SPECTRAL, fontSize: 14, color: t.textLightDim, fontStyle: "italic", opacity: 0.45 }}>No players</div>
         ) : (
           players.map((p, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 9, paddingTop: i > 0 ? 5 : 0, marginTop: i > 0 ? 5 : 0, borderTop: i > 0 ? `1px solid ${t.playerDiv}` : "none" }}>
-              <span style={{ fontFamily: CINZEL, fontSize: 9, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 16, lineHeight: 1.6 }}>
+            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 10, paddingTop: i > 0 ? 7 : 0, marginTop: i > 0 ? 7 : 0, borderTop: i > 0 ? `1px solid ${t.playerDiv}` : "none" }}>
+              <span style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 20, lineHeight: 1.6 }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span style={{ fontFamily: SPECTRAL, fontSize: 13, color: t.textLight, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.5 }}>
+              <span style={{ fontFamily: SPECTRAL, fontSize: 15, color: t.textLight, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.5 }}>
                 {p.name}
               </span>
             </div>
@@ -463,17 +463,17 @@ function BackupPlayersCard({ players }) {
   return (
     <div style={{ background: t.tableBg, border: `1px solid ${t.accentBorder}`, borderRadius: 6, overflow: "hidden", marginTop: 16 }}>
       <div style={{ height: 3, background: t.backupBar, flexShrink: 0 }} />
-      <div style={{ padding: "16px 24px 20px" }}>
-        <div style={{ fontFamily: CINZEL, fontSize: 10, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", textAlign: "center", marginBottom: 14 }}>
+      <div style={{ padding: "18px 24px 22px" }}>
+        <div style={{ fontFamily: CINZEL, fontSize: 12, letterSpacing: "0.32em", color: t.accentDim, textTransform: "uppercase", textAlign: "center", marginBottom: 14 }}>
           {t.ornament} Backup Players {t.ornament}
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 28px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 28px" }}>
           {players.map((p, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 160 }}>
-              <span style={{ fontFamily: CINZEL, fontSize: 9, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 16, lineHeight: 1.6 }}>
+            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 9, minWidth: 170 }}>
+              <span style={{ fontFamily: CINZEL, fontSize: 11, color: t.accentDim, letterSpacing: "0.05em", flexShrink: 0, minWidth: 20, lineHeight: 1.6 }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span style={{ fontFamily: SPECTRAL, fontSize: 13, color: t.textLightDim, lineHeight: 1.5 }}>
+              <span style={{ fontFamily: SPECTRAL, fontSize: 15, color: t.textLightDim, lineHeight: 1.5 }}>
                 {p.name}
               </span>
             </div>
