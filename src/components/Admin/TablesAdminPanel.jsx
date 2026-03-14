@@ -461,6 +461,7 @@ const TablesAdminPanel = () => {
           }))
           .filter((group) => group.apps.length >= 2),
       );
+      fetchData();
     } catch (error) {
       console.error("Error rejecting player:", error);
       alert("Failed to reject player");
@@ -493,6 +494,7 @@ const TablesAdminPanel = () => {
               }))
               .filter((group) => group.apps.length >= 2),
           );
+          fetchData();
         } catch (error) {
           console.error("Error removing player:", error);
           alert("Failed to remove player");
