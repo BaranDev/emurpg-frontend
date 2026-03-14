@@ -176,7 +176,7 @@ const TablesAdminPanel = () => {
         if (refreshedTable) {
           setSelectedTable(refreshedTable);
           if (isPlayersModalOpenRef.current) {
-            setPlayers(refreshedTable.joined_players || []);
+            setPlayers(getAllPlayers(refreshedTable));
           }
         }
       }
@@ -337,13 +337,49 @@ const TablesAdminPanel = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setPlayers(data.players || []);
+        // Merge all player lists, deduplicating by student_id
+        const seen = new Set();
+        const allPlayers = [];
+        for (const list of [
+          data.players,
+          data.approved_players,
+          data.backup_players,
+          data.rejected_players,
+        ]) {
+          for (const p of list || []) {
+            if (!seen.has(p.student_id)) {
+              seen.add(p.student_id);
+              allPlayers.push(p);
+            }
+          }
+        }
+        setPlayers(allPlayers);
         setIsPlayersModalOpen(true);
       }
     } catch (error) {
       console.error("Error fetching players:", error);
       alert("Failed to fetch players");
     }
+  };
+
+  const getAllPlayers = (table) => {
+    const seen = new Set();
+    const result = [];
+    // Show joined (pending) first, then approved, backup, rejected
+    for (const list of [
+      table.joined_players,
+      table.approved_players,
+      table.backup_players,
+      table.rejected_players,
+    ]) {
+      for (const p of list || []) {
+        if (!seen.has(p.student_id)) {
+          seen.add(p.student_id);
+          result.push(p);
+        }
+      }
+    }
+    return result;
   };
 
   const refreshPlayers = async (tableSlug) => {
@@ -357,7 +393,7 @@ const TablesAdminPanel = () => {
       if (response.ok) {
         const { data } = await response.json();
         setSelectedTable(data);
-        setPlayers(data.joined_players || []);
+        setPlayers(getAllPlayers(data));
       }
     } catch (error) {
       console.error("Error refreshing players:", error);
