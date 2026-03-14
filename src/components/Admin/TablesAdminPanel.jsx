@@ -25,6 +25,7 @@ import AdminButton from "./shared/AdminButton";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
 import { useWebSocket } from "../../hooks/useWebSocket";
+import { findDuplicatePlayers } from "../../utils/duplicateDetection";
 
 const TablesAdminPanel = () => {
   const [events, setEvents] = useState([]);
@@ -776,131 +777,8 @@ const TablesAdminPanel = () => {
     ),
   };
 
-  const normalizeName = (name) =>
-    (name ?? "")
-      .toLowerCase()
-      .replace(/ı/g, "i")
-      .replace(/ğ/g, "g")
-      .replace(/ü/g, "u")
-      .replace(/ş/g, "s")
-      .replace(/ö/g, "o")
-      .replace(/ç/g, "c")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]/g, "");
-
-  const normalizeId = (id) => (id ?? "").replace(/\D/g, "");
-
   const handleCheckDuplicates = () => {
-    console.group("[DuplicateCheck] ─────────────────────────────");
-
-    // Collect every player entry from every table across all events.
-    // A player may appear in multiple status arrays (joined, approved, backup,
-    // rejected) within the same table — keep only their most-significant status
-    // per table to avoid counting the same slot twice.
-    const STATUS_RANK = { approved: 0, joined: 1, backup: 2, rejected: 3 };
-
-    // rawEntries: one record per player per table (deduped within a table)
-    const seenInTable = new Map(); // `${tableSlug}:${normId}` → index in rawEntries
-    const rawEntries = [];
-
-    ongoingEvents.forEach((event) => {
-      (event.tableDetails ?? []).forEach((table) => {
-        const lists = [
-          { arr: table.approved_players ?? [], status: "approved" },
-          { arr: table.joined_players ?? [], status: "joined" },
-          { arr: table.backup_players ?? [], status: "backup" },
-          { arr: table.rejected_players ?? [], status: "rejected" },
-        ];
-
-        lists.forEach(({ arr, status }) => {
-          arr.forEach((player) => {
-            const normId = normalizeId(player.student_id);
-            const dedupeKey = `${table.slug}:${normId || normalizeName(player.name)}`;
-
-            if (seenInTable.has(dedupeKey)) {
-              // Keep the higher-priority status for this player in this table
-              const existing = rawEntries[seenInTable.get(dedupeKey)];
-              if (STATUS_RANK[status] < STATUS_RANK[existing._status]) {
-                existing._status = status;
-              }
-            } else {
-              seenInTable.set(dedupeKey, rawEntries.length);
-              rawEntries.push({
-                ...player,
-                _status: status,
-                _tableName: table.game_name,
-                _tableSlug: table.slug,
-                _eventName: event.name,
-              });
-            }
-          });
-        });
-      });
-    });
-
-    console.log(`Total unique player-table entries: ${rawEntries.length}`);
-    rawEntries.forEach((p, i) => {
-      const nameKey = normalizeName(p.name);
-      const idKey = normalizeId(p.student_id);
-      console.log(
-        `  #${i} [${p._eventName} › ${p._tableName}] ` +
-          `name: "${p.name}" → "${nameKey}" | ` +
-          `id: "${p.student_id}" → "${idKey}" | status: ${p._status}`,
-      );
-    });
-
-    // Single-pass O(n) grouping by normalised name and normalised student ID.
-    const nameMap = new Map();
-    const idMap = new Map();
-
-    rawEntries.forEach((player) => {
-      const nameKey = normalizeName(player.name);
-      const idKey = normalizeId(player.student_id);
-
-      if (nameKey) {
-        if (!nameMap.has(nameKey)) nameMap.set(nameKey, []);
-        nameMap.get(nameKey).push(player);
-      }
-      if (idKey) {
-        if (!idMap.has(idKey)) idMap.set(idKey, []);
-        idMap.get(idKey).push(player);
-      }
-    });
-
-    // Merge groups: if the same set of players matches on >1 criterion, produce
-    // one group with all reasons listed rather than two separate entries.
-    const groupMap = new Map(); // serialised player-set key → { reasons[], apps[] }
-
-    const upsertGroup = (reason, groupPlayers) => {
-      const key = groupPlayers
-        .map((p) => `${p._tableSlug}:${normalizeId(p.student_id) || normalizeName(p.name)}`)
-        .sort()
-        .join("|");
-      if (groupMap.has(key)) {
-        groupMap.get(key).reasons.push(reason);
-      } else {
-        groupMap.set(key, { reasons: [reason], apps: groupPlayers });
-      }
-    };
-
-    nameMap.forEach((players, key) => {
-      if (players.length > 1) {
-        console.log(`  → Name match "${key}": ${players.length} entries`);
-        upsertGroup(`Matching name: "${key}"`, players);
-      }
-    });
-    idMap.forEach((players, id) => {
-      if (players.length > 1) {
-        console.log(`  → Student ID match "${id}": ${players.length} entries`);
-        upsertGroup(`Matching student ID: ${id}`, players);
-      }
-    });
-
-    const groups = [...groupMap.values()];
-    console.log(`Result: ${groups.length} duplicate group(s)`);
-    console.groupEnd();
-
+    const groups = findDuplicatePlayers(ongoingEvents);
     setDuplicateGroups(groups);
     setIsDuplicatesModalOpen(true);
   };

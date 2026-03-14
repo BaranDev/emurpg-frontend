@@ -29,6 +29,7 @@ import LoadingSpinner from "./shared/LoadingSpinner";
 import ConfirmDialog from "./shared/ConfirmDialog";
 import AnnouncementModal from "./AnnouncementModal";
 import { useWebSocket } from "../../hooks/useWebSocket";
+import { findDuplicatePlayers } from "../../utils/duplicateDetection";
 
 // ── Shared arcane input style helpers ────────────────────────────────────────
 const INPUT_CLS =
@@ -737,70 +738,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
   };
 
   // ── Duplicate-player helpers ─────────────────────────────────────────────
-  const normalizeName = (name) =>
-    (name ?? "")
-      .toLowerCase()
-      .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u")
-      .replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c")
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]/g, "");
-
-  const normalizeId = (id) => (id ?? "").replace(/\D/g, "");
-
-  const checkDuplicatesForEvent = (event) => {
-    const STATUS_RANK = { approved: 0, joined: 1, backup: 2, rejected: 3 };
-    const seenInTable = new Map();
-    const rawEntries = [];
-
-    (event.tableDetails ?? []).forEach((table) => {
-      [
-        { arr: table.approved_players ?? [], status: "approved" },
-        { arr: table.joined_players   ?? [], status: "joined"   },
-        { arr: table.backup_players   ?? [], status: "backup"   },
-        { arr: table.rejected_players ?? [], status: "rejected" },
-      ].forEach(({ arr, status }) => {
-        arr.forEach((player) => {
-          const normId  = normalizeId(player.student_id);
-          const dedupeKey = `${table.slug}:${normId || normalizeName(player.name)}`;
-          if (seenInTable.has(dedupeKey)) {
-            const ex = rawEntries[seenInTable.get(dedupeKey)];
-            if (STATUS_RANK[status] < STATUS_RANK[ex._status]) ex._status = status;
-          } else {
-            seenInTable.set(dedupeKey, rawEntries.length);
-            rawEntries.push({
-              ...player,
-              _status:    status,
-              _tableName: table.game_name,
-              _tableSlug: table.slug,
-              _eventName: event.name,
-            });
-          }
-        });
-      });
-    });
-
-    const nameMap = new Map();
-    const idMap   = new Map();
-    rawEntries.forEach((p) => {
-      const nk = normalizeName(p.name);
-      const ik = normalizeId(p.student_id);
-      if (nk) { if (!nameMap.has(nk)) nameMap.set(nk, []); nameMap.get(nk).push(p); }
-      if (ik) { if (!idMap.has(ik))   idMap.set(ik, []);   idMap.get(ik).push(p);   }
-    });
-
-    const groupMap = new Map();
-    const upsert = (reason, players) => {
-      const key = players
-        .map((p) => `${p._tableSlug}:${normalizeId(p.student_id) || normalizeName(p.name)}`)
-        .sort().join("|");
-      if (groupMap.has(key)) groupMap.get(key).reasons.push(reason);
-      else groupMap.set(key, { reasons: [reason], apps: players });
-    };
-    nameMap.forEach((ps, k) => { if (ps.length > 1) upsert(`Matching name: "${k}"`, ps); });
-    idMap.forEach((ps, id) => { if (ps.length > 1) upsert(`Matching student ID: ${id}`, ps); });
-
-    return [...groupMap.values()];
-  };
+  const checkDuplicatesForEvent = (event) => findDuplicatePlayers([event]);
 
   const handleDupDetailReject = async (player) => {
     try {
@@ -822,6 +760,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
           }))
           .filter((group) => group.apps.length >= 2),
       );
+      fetchEvents();
     } catch (error) {
       console.error("Error rejecting player:", error);
       alert("Failed to reject player");
@@ -854,6 +793,7 @@ const EventsAdminPanel = ({ onNavigate }) => {
               }))
               .filter((group) => group.apps.length >= 2),
           );
+          fetchEvents();
         } catch (error) {
           console.error("Error removing player:", error);
           alert("Failed to remove player");
