@@ -11,9 +11,9 @@ const parseDice = (notation) => {
   if (!notation || typeof notation !== "string") {
     return { count: 1, sides: 20, modifier: 0, isFudge: false };
   }
-  
+
   const clean = notation.trim().toLowerCase();
-  
+
   // Fudge dice for Fate
   if (clean.includes("df")) {
     const match = clean.match(/(\d*)df([+-]\d+)?/);
@@ -21,15 +21,15 @@ const parseDice = (notation) => {
       count: parseInt(match?.[1]) || 4,
       sides: 0,
       modifier: parseInt(match?.[2]) || 0,
-      isFudge: true
+      isFudge: true,
     };
   }
-  
+
   // Percentile
   if (clean === "d100" || clean === "d%") {
     return { count: 1, sides: 100, modifier: 0, isFudge: false };
   }
-  
+
   // Standard dice notation
   const match = clean.match(/^(\d*)d(\d+)([+-]\d+)?$/);
   if (match) {
@@ -37,20 +37,20 @@ const parseDice = (notation) => {
       count: parseInt(match[1]) || 1,
       sides: parseInt(match[2]),
       modifier: parseInt(match[3]) || 0,
-      isFudge: false
+      isFudge: false,
     };
   }
-  
+
   return { count: 1, sides: 20, modifier: 0, isFudge: false };
 };
 
 // Roll dice and get results
 const rollDice = (notation) => {
   const { count, sides, modifier, isFudge } = parseDice(notation);
-  
+
   const rolls = [];
   let total = 0;
-  
+
   if (isFudge) {
     // Fudge dice: -1, 0, or +1
     for (let i = 0; i < count; i++) {
@@ -65,21 +65,22 @@ const rollDice = (notation) => {
       total += roll;
     }
   }
-  
+
   return {
     notation,
     rolls,
     modifier,
     total: total + modifier,
-    isCriticalSuccess: !isFudge && sides === 20 && count === 1 && rolls[0] === 20,
+    isCriticalSuccess:
+      !isFudge && sides === 20 && count === 1 && rolls[0] === 20,
     isCriticalFail: !isFudge && sides === 20 && count === 1 && rolls[0] === 1,
-    isFudgeCritical: isFudge && (total === count || total === -count)
+    isFudgeCritical: isFudge && (total === count || total === -count),
   };
 };
 
-const DiceRoller = ({ 
-  notation = "1d20", 
-  rollName = "Roll", 
+const DiceRoller = ({
+  notation = "1d20",
+  rollName = "Roll",
   onRoll,
   criticalMin = 1,
   criticalMax = 20,
@@ -115,7 +116,7 @@ const DiceRoller = ({
     setIsRolling(true);
     setResult(null);
     setRollingDisplay(null);
-    
+
     // Animate for 800ms then show result
     setTimeout(() => {
       const rollResult = rollDice(notation);
@@ -170,7 +171,7 @@ const DiceRoller = ({
         .critical-success { animation: explode 0.5s ease-out; }
         .critical-fail { animation: shake 0.5s ease-out; }
       `}</style>
-      
+
       <button
         onClick={handleRoll}
         disabled={isRolling}
@@ -186,29 +187,35 @@ const DiceRoller = ({
           background: result?.isCriticalSuccess
             ? "linear-gradient(180deg, rgba(202,138,4,0.35), rgba(139,69,19,0.4))"
             : result?.isCriticalFail
-            ? "linear-gradient(180deg, rgba(127,29,29,0.4), rgba(69,10,10,0.5))"
-            : "linear-gradient(180deg, rgba(61,40,23,0.9), rgba(42,26,15,0.95))",
+              ? "linear-gradient(180deg, rgba(127,29,29,0.4), rgba(69,10,10,0.5))"
+              : "linear-gradient(180deg, rgba(61,40,23,0.9), rgba(42,26,15,0.95))",
           borderColor: result?.isCriticalSuccess
             ? "#c9a227"
             : result?.isCriticalFail
-            ? "#991b1b"
-            : "#5c3d2e",
+              ? "#991b1b"
+              : "#5c3d2e",
           boxShadow: result?.isCriticalSuccess
             ? "inset 0 1px 0 rgba(255,255,255,0.1), 0 0 12px rgba(201,162,39,0.4)"
             : result?.isCriticalFail
-            ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 12px rgba(220,38,38,0.3)"
-            : "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3)"
+              ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 12px rgba(220,38,38,0.3)"
+              : "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3)",
         }}
       >
         {/* Roll name - D&D style label (hidden when showLabel=false, e.g. in table rows) */}
         {showLabel && (
-          <span className="font-cinzel text-[9px] text-amber-200/80 tracking-widest uppercase truncate w-full text-center max-w-full" title={rollName}>
+          <span
+            className="font-cinzel text-[9px] text-amber-200/80 tracking-widest uppercase truncate w-full text-center max-w-full"
+            title={rollName}
+          >
             {rollName}
           </span>
         )}
-        
+
         {/* Dice face - carved/inset look, perspective wrapper for 3D roll */}
-        <div className={`perspective-[120px] ${diceSize === "lg" ? "w-14 h-14" : "w-12 h-12"}`} style={{ perspectiveOrigin: "center center" }}>
+        <div
+          className={`perspective-[120px] ${diceSize === "lg" ? "w-14 h-14" : "w-12 h-12"}`}
+          style={{ perspectiveOrigin: "center center" }}
+        >
           <div
             className={`
               w-full h-full rounded-sm flex items-center justify-center
@@ -216,40 +223,49 @@ const DiceRoller = ({
               ${isRolling ? "dice-rolling" : result && !isRolling ? "dice-landed" : ""}
             `}
             style={{
-              background: "linear-gradient(145deg, rgba(26,26,26,0.9), rgba(15,15,15,0.95))",
+              background:
+                "linear-gradient(145deg, rgba(26,26,26,0.9), rgba(15,15,15,0.95))",
               border: "1px solid rgba(92,61,46,0.8)",
-              boxShadow: "inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(201,162,39,0.15)",
-              backfaceVisibility: "hidden"
+              boxShadow:
+                "inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(201,162,39,0.15)",
+              backfaceVisibility: "hidden",
             }}
           >
             {isRolling ? (
-              <span className="text-amber-400/90 tabular-nums">{rollingDisplay ?? "?"}</span>
+              <span className="text-amber-400/90 tabular-nums">
+                {rollingDisplay ?? "?"}
+              </span>
             ) : result ? (
-            <span
-              className={
-                result.isCriticalSuccess ? "text-amber-300 drop-shadow-[0_0_6px_rgba(234,179,8,0.8)]" :
-                result.isCriticalFail ? "text-red-400" :
-                "text-amber-100"
-              }
-            >
-              {result.total}
-            </span>
-          ) : (
-            <span className="text-amber-200/60 text-sm">{notation}</span>
-          )}
+              <span
+                className={
+                  result.isCriticalSuccess
+                    ? "text-amber-300 drop-shadow-[0_0_6px_rgba(234,179,8,0.8)]"
+                    : result.isCriticalFail
+                      ? "text-red-400"
+                      : "text-amber-100"
+                }
+              >
+                {result.total}
+              </span>
+            ) : (
+              <span className="text-amber-200/60 text-sm">{notation}</span>
+            )}
           </div>
         </div>
-        
+
         {/* Roll breakdown */}
         {result && !isRolling && (
           <div className="font-cinzel text-[10px] text-amber-200/50 tracking-wide">
             {result.rolls.join(" + ")}
             {result.modifier !== 0 && (
-              <span>{result.modifier > 0 ? " + " : " − "}{Math.abs(result.modifier)}</span>
+              <span>
+                {result.modifier > 0 ? " + " : " − "}
+                {Math.abs(result.modifier)}
+              </span>
             )}
           </div>
         )}
-        
+
         {/* Critical badges */}
         {result?.isCriticalSuccess && (
           <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 font-cinzel text-[9px] font-bold bg-amber-500 text-amber-950 rounded-sm border border-amber-400">
