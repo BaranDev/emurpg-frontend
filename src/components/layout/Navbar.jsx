@@ -148,7 +148,7 @@ const Navbar = ({
                 {/* Club name with magical forest styling */}
                 <div className="flex flex-col">
                   <span className="text-white/90 font-bold text-lg md:text-xl tracking-wide group-hover:text-white transition-colors drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                    EMU RPG Club
+                    EMURPG Club
                   </span>
                   <div className="flex items-center text-[10px] text-slate-400/70 mt-0.5">
                     {t("navbar.made_by")}

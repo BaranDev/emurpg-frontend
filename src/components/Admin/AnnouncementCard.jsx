@@ -181,6 +181,7 @@ function measureTextWidth(text, fontSize) {
   if (typeof document === "undefined") return 0;
   if (!_mc) _mc = document.createElement("canvas");
   const ctx = _mc.getContext("2d");
+  if (!ctx) return 0; // JSDOM / environments without Canvas 2D support
   ctx.font = `${fontSize}px Georgia, serif`; // Georgia ≈ Spectral in proportions
   return ctx.measureText(text).width;
 }

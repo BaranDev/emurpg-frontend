@@ -9,7 +9,7 @@ const config = {
   WHATSAPP_LINK: "https://chat.whatsapp.com/IMoi88nhVWDDU5lS65dgLL",
   INSTAGRAM_LINK: "https://www.instagram.com/emurpgclub/",
   LINKEDIN_LINK: "https://www.linkedin.com/company/emu-rpg-club/",
-  FOOTER_TEXT: "© 2024 EMU RPG Club. All rights reserved.",
+  FOOTER_TEXT: "© 2024 EMURPG Club. All rights reserved.",
   FOOTER_ICON_SIZE: 18,
   ENABLE_SCROLL_SNAP: false, // Toggle scroll snapping for EmuconHome
   ENABLE_R2: import.meta.env.VITE_ENABLE_R2 === "true",

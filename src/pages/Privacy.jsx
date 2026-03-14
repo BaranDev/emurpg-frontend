@@ -5,10 +5,10 @@ const Privacy = () => {
   const content = {
     en: {
       title:
-        "EMU RPG Club - Privacy Policy, Terms of Participation & Liability Waiver",
+        "EMURPG Club - Privacy Policy, Terms of Participation & Liability Waiver",
       intro: {
         title: "Introduction & Scope",
-        text: "EMU RPG Club (hereinafter 'the Club') is a student organization operating under Eastern Mediterranean University (EMU). The Club's sole purpose is to organize and coordinate tabletop role-playing game (TTRPG) and tabletop board game events for students. By registering for or attending any Club event, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy, Terms of Participation, and Liability Waiver in its entirety.",
+        text: "EMURPG Club (hereinafter 'the Club') is a student organization operating under Eastern Mediterranean University (EMU). The Club's sole purpose is to organize and coordinate tabletop role-playing game (TTRPG) and tabletop board game events for students. By registering for or attending any Club event, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy, Terms of Participation, and Liability Waiver in its entirety.",
       },
       clubRole: {
         title: "Role & Limitations of the Club",
@@ -152,7 +152,7 @@ const Privacy = () => {
       },
       acceptance: {
         title: "Acceptance of Terms",
-        text: "BY REGISTERING FOR OR ATTENDING ANY EMU RPG CLUB EVENT, YOU CONFIRM THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO ALL TERMS IN THIS DOCUMENT. YOU ACKNOWLEDGE THAT THIS AGREEMENT CONSTITUTES A LEGALLY BINDING CONTRACT AND THAT YOU ARE WAIVING CERTAIN LEGAL RIGHTS. IF YOU DO NOT AGREE TO THESE TERMS, DO NOT REGISTER FOR OR ATTEND CLUB EVENTS.",
+        text: "BY REGISTERING FOR OR ATTENDING ANY EMURPG CLUB EVENT, YOU CONFIRM THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO ALL TERMS IN THIS DOCUMENT. YOU ACKNOWLEDGE THAT THIS AGREEMENT CONSTITUTES A LEGALLY BINDING CONTRACT AND THAT YOU ARE WAIVING CERTAIN LEGAL RIGHTS. IF YOU DO NOT AGREE TO THESE TERMS, DO NOT REGISTER FOR OR ATTEND CLUB EVENTS.",
       },
       footer: {
         lastUpdated: "Last updated:",

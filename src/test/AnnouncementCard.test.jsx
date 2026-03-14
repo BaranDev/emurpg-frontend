@@ -2,13 +2,23 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import AnnouncementCard from "../components/Admin/AnnouncementCard";
 
-vi.mock("../assets/images/announcement-bg-game.jpg", () => ({ default: "game-bg.jpg" }));
-vi.mock("../assets/images/announcement-bg-general.jpg", () => ({ default: "general-bg.jpg" }));
+vi.mock("../assets/images/announcement-bg-game.jpg", () => ({
+  default: "game-bg.jpg",
+}));
+vi.mock("../assets/images/announcement-bg-general.jpg", () => ({
+  default: "general-bg.jpg",
+}));
 vi.mock("../assets/logo/LOGO_WHITE.png", () => ({ default: "logo-white.png" }));
 vi.mock("lucide-react", () => ({
-  Calendar: ({ size, color }) => <svg data-testid="icon-calendar" style={{ width: size, color }} />,
-  Clock: ({ size, color }) => <svg data-testid="icon-clock" style={{ width: size, color }} />,
-  MapPin: ({ size, color }) => <svg data-testid="icon-mappin" style={{ width: size, color }} />,
+  Calendar: ({ size, color }) => (
+    <svg data-testid="icon-calendar" style={{ width: size, color }} />
+  ),
+  Clock: ({ size, color }) => (
+    <svg data-testid="icon-clock" style={{ width: size, color }} />
+  ),
+  MapPin: ({ size, color }) => (
+    <svg data-testid="icon-mappin" style={{ width: size, color }} />
+  ),
 }));
 
 const gameEvent = {
@@ -49,7 +59,7 @@ const generalEvent = {
 describe("AnnouncementCard", () => {
   it("renders header with club name", () => {
     render(<AnnouncementCard event={gameEvent} />);
-    expect(screen.getByText(/EMU RPG CLUB/i)).toBeInTheDocument();
+    expect(screen.getByText(/EMURPG CLUB/i)).toBeInTheDocument();
   });
 
   it("renders event name in hero section", () => {

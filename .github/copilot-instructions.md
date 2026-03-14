@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-React 18 + Vite 5 frontend for EMU RPG Club's event management system with medieval/fantasy theme. Communicates with a FastAPI backend at `api.emurpg.com` for table management, player registration, CharRoller AI character tools, EMUCON event management, and real-time updates via WebSockets.
+React 18 + Vite 5 frontend for EMURPG Club's event management system with medieval/fantasy theme. Communicates with a FastAPI backend at `api.emurpg.com` for table management, player registration, CharRoller AI character tools, EMUCON event management, and real-time updates via WebSockets.
 
 ## Architecture Pattern
 

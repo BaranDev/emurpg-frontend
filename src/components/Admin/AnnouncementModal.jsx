@@ -165,6 +165,11 @@ const AnnouncementModal = ({ event, isOpen, onClose }) => {
   const handleBgFileChange = async (e) => {
     const raw = e.target.files?.[0];
     if (!raw) return;
+    if (raw.size > 15 * 1024 * 1024) {
+      alert("File is too large. Maximum size is 15 MB.");
+      if (bgFileRef.current) bgFileRef.current.value = "";
+      return;
+    }
     setUploading(true);
     try {
       const file = await convertToWebP(raw);
