@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 /**
@@ -86,20 +86,34 @@ const DiceRoller = ({
 }) => {
   const [isRolling, setIsRolling] = useState(false);
   const [result, setResult] = useState(null);
+  const [rollingDisplay, setRollingDisplay] = useState(null);
+
+  const parsed = parseDice(notation);
+
+  useEffect(() => {
+    if (!isRolling) return;
+    const interval = setInterval(() => {
+      if (parsed.isFudge) {
+        setRollingDisplay(["-", "0", "+"][Math.floor(Math.random() * 3)]);
+      } else {
+        setRollingDisplay(Math.floor(Math.random() * (parsed.sides || 20)) + 1);
+      }
+    }, 70);
+    return () => clearInterval(interval);
+  }, [isRolling, parsed.sides, parsed.isFudge]);
 
   const handleRoll = useCallback(() => {
     setIsRolling(true);
     setResult(null);
+    setRollingDisplay(null);
     
     // Animate for 800ms then show result
     setTimeout(() => {
       const rollResult = rollDice(notation);
       setResult(rollResult);
       setIsRolling(false);
-      
-      if (onRoll) {
-        onRoll(rollResult);
-      }
+      setRollingDisplay(null);
+      if (onRoll) onRoll(rollResult);
     }, 800);
   }, [notation, onRoll]);
 
@@ -116,11 +130,16 @@ const DiceRoller = ({
     <>
       <style>{`
         @keyframes dice-roll {
-          0% { transform: rotateX(0deg) rotateY(0deg); }
-          25% { transform: rotateX(90deg) rotateY(45deg); }
-          50% { transform: rotateX(180deg) rotateY(90deg); }
-          75% { transform: rotateX(270deg) rotateY(135deg); }
-          100% { transform: rotateX(360deg) rotateY(180deg); }
+          0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+          25% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg); }
+          50% { transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg); }
+          75% { transform: rotateX(540deg) rotateY(270deg) rotateZ(135deg); }
+          100% { transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg); }
+        }
+        @keyframes dice-land {
+          0% { transform: scale(1.15); }
+          60% { transform: scale(0.95); }
+          100% { transform: scale(1); }
         }
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
@@ -133,96 +152,101 @@ const DiceRoller = ({
           100% { transform: scale(1); opacity: 1; }
         }
         .dice-rolling {
-          animation: dice-roll 0.8s ease-in-out;
+          animation: dice-roll 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          transform-style: preserve-3d;
         }
-        .critical-success {
-          animation: explode 0.5s ease-out;
+        .dice-landed {
+          animation: dice-land 0.35s ease-out;
         }
-        .critical-fail {
-          animation: shake 0.5s ease-out;
-        }
+        .critical-success { animation: explode 0.5s ease-out; }
+        .critical-fail { animation: shake 0.5s ease-out; }
       `}</style>
       
       <button
         onClick={handleRoll}
         disabled={isRolling}
         className={`
-          relative flex flex-col items-center gap-2 p-4 rounded-xl
-          transition-all duration-200 min-w-[120px]
-          ${isRolling ? "cursor-wait" : "hover:scale-105 cursor-pointer"}
+          relative flex flex-col items-center gap-1.5 px-3 py-3 min-w-[100px]
+          border-2 border-double rounded
+          transition-all duration-200
+          ${isRolling ? "cursor-wait" : "hover:scale-[1.02] hover:brightness-110 cursor-pointer active:scale-[0.98]"}
           ${getCriticalClass()}
         `}
         style={{
-          background: result?.isCriticalSuccess 
-            ? "linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(202, 138, 4, 0.2))"
+          background: result?.isCriticalSuccess
+            ? "linear-gradient(180deg, rgba(202,138,4,0.35), rgba(139,69,19,0.4))"
             : result?.isCriticalFail
-            ? "linear-gradient(135deg, rgba(220, 38, 38, 0.3), rgba(185, 28, 28, 0.2))"
-            : "rgba(30, 58, 95, 0.5)",
-          border: result?.isCriticalSuccess
-            ? "2px solid #eab308"
+            ? "linear-gradient(180deg, rgba(127,29,29,0.4), rgba(69,10,10,0.5))"
+            : "linear-gradient(180deg, rgba(61,40,23,0.9), rgba(42,26,15,0.95))",
+          borderColor: result?.isCriticalSuccess
+            ? "#c9a227"
             : result?.isCriticalFail
-            ? "2px solid #dc2626"
-            : "1px solid rgba(74, 158, 255, 0.3)",
+            ? "#991b1b"
+            : "#5c3d2e",
           boxShadow: result?.isCriticalSuccess
-            ? "0 0 30px rgba(234, 179, 8, 0.5)"
+            ? "inset 0 1px 0 rgba(255,255,255,0.1), 0 0 12px rgba(201,162,39,0.4)"
             : result?.isCriticalFail
-            ? "0 0 30px rgba(220, 38, 38, 0.5)"
-            : "none"
+            ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 12px rgba(220,38,38,0.3)"
+            : "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3)"
         }}
       >
-        {/* Roll name */}
-        <span className="text-xs text-silver-dark font-medium uppercase tracking-wide">
+        {/* Roll name - D&D style label */}
+        <span className="font-cinzel text-[10px] text-amber-200/80 tracking-widest uppercase">
           {rollName}
         </span>
         
-        {/* Dice display */}
-        <div 
-          className={`
-            w-14 h-14 rounded-lg flex items-center justify-center
-            font-bold text-xl
-            ${isRolling ? "dice-rolling" : ""}
-          `}
-          style={{
-            background: "rgba(74, 158, 255, 0.15)",
-            border: "1px solid rgba(74, 158, 255, 0.4)"
-          }}
-        >
-          {isRolling ? (
-            <span className="text-arcane-glow">?</span>
-          ) : result ? (
-            <span 
+        {/* Dice face - carved/inset look, perspective wrapper for 3D roll */}
+        <div className="perspective-[120px] w-12 h-12" style={{ perspectiveOrigin: "center center" }}>
+          <div
+            className={`
+              w-full h-full rounded-sm flex items-center justify-center
+              font-cinzel font-bold text-lg
+              ${isRolling ? "dice-rolling" : result && !isRolling ? "dice-landed" : ""}
+            `}
+            style={{
+              background: "linear-gradient(145deg, rgba(26,26,26,0.9), rgba(15,15,15,0.95))",
+              border: "1px solid rgba(92,61,46,0.8)",
+              boxShadow: "inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(201,162,39,0.15)",
+              backfaceVisibility: "hidden"
+            }}
+          >
+            {isRolling ? (
+              <span className="text-amber-400/90 tabular-nums">{rollingDisplay ?? "?"}</span>
+            ) : result ? (
+            <span
               className={
-                result.isCriticalSuccess ? "text-yellow-400" :
-                result.isCriticalFail ? "text-red-500" :
-                "text-white"
+                result.isCriticalSuccess ? "text-amber-300 drop-shadow-[0_0_6px_rgba(234,179,8,0.8)]" :
+                result.isCriticalFail ? "text-red-400" :
+                "text-amber-100"
               }
             >
               {result.total}
             </span>
           ) : (
-            <span className="text-silver-dark">{notation}</span>
+            <span className="text-amber-200/60 text-sm">{notation}</span>
           )}
+          </div>
         </div>
         
         {/* Roll breakdown */}
         {result && !isRolling && (
-          <div className="text-xs text-silver-dark">
+          <div className="font-cinzel text-[10px] text-amber-200/50 tracking-wide">
             {result.rolls.join(" + ")}
             {result.modifier !== 0 && (
-              <span>{result.modifier > 0 ? " + " : " - "}{Math.abs(result.modifier)}</span>
+              <span>{result.modifier > 0 ? " + " : " − "}{Math.abs(result.modifier)}</span>
             )}
           </div>
         )}
         
-        {/* Critical text */}
+        {/* Critical badges */}
         {result?.isCriticalSuccess && (
-          <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-yellow-500 text-black text-xs font-bold rounded-full">
-            CRIT!
+          <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 font-cinzel text-[9px] font-bold bg-amber-500 text-amber-950 rounded-sm border border-amber-400">
+            CRIT
           </span>
         )}
         {result?.isCriticalFail && (
-          <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-red-600 text-white text-xs font-bold rounded-full">
-            FAIL
+          <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 font-cinzel text-[9px] font-bold bg-red-800 text-red-200 rounded-sm border border-red-600">
+            FUMBLE
           </span>
         )}
       </button>
