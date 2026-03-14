@@ -1035,33 +1035,54 @@ All state is **local `useState` / `useRef`** — there is no Redux, Zustand, or 
 
 ---
 
-## ReportsPanel — Current State and Bugs
+## ReportsPanel — Current State
 
 **File:** `src/components/Admin/ReportsPanel.jsx`
 
 ### What it does now
 
-The `ReportsPanel` component:
-1. Renders a language selector (EN/TR toggle buttons).
-2. Renders three "report cards" — Current Event, Previous Event, All Events.
-3. Each card has a "Download CSV" button.
-4. On click, calls `POST /api/admin/generate-report` with `{ type: reportType, language: selectedLanguage }` and an `apiKey` header.
-5. Expects a binary response (CSV). Reads `Content-Disposition` header for filename.
-6. Creates a temporary anchor and triggers a file download.
-7. On success: sets `lastGenerated` state, shows a green banner.
-8. On error: parses error JSON, shows a red error banner.
+The `ReportsPanel` component has been fully rewritten from the old "three CSV download cards" design into a rich event-history viewer.
 
-### What's broken / notable issues
+**Primary flow:**
+1. On mount, calls `GET /api/admin/reports` (with `apiKey` header) to fetch the list of all finished events with their stats, table breakdowns, and registration data.
+2. Shows a summary bar: Finished Events count, Total Participants, Anonymized count.
+3. Renders one collapsible `EventCard` per finished event, sorted by start date (newest first).
 
-1. **Shared `isGenerating` flag across all three cards:** All three "Download CSV" buttons share a single `isGenerating` boolean. If one report is generating, all three buttons are disabled and all three show "Generating...". This is a minor UX issue — it is not a functional bug, just imprecise feedback.
+**EventCard (per event):**
+- Header always visible: event name, `EventTypeBadge` (Game/General), `AnonymizedBadge`, `NoReportBadge`, quick stats (tables + players for game events; registrations + approved for general events), **Excel** download button, **Anonymize** button.
+- Clicking the header expands the detail area.
+- **Game events:** Shows a clickable grid of table cards. Clicking a table opens a `PlayerListModal` showing all approved players with name, student ID, contact, and registration timestamp.
+- **General events:** Shows a `RegistrationList` with each registrant's name, student ID, contact, status, and timestamp. If registrations were cleared at event finish, shows a placeholder message directing to Excel download.
+- **General events with club data:** Shows a Club Distribution grid (club name → count).
+- Footer shows report generation timestamp if available.
 
-2. **Single `lastGenerated` record:** Only one record is kept for the last successful generation. If the user generates a "current" report and then a "previous" report, the "current" report's success banner is replaced. Not a bug but a UX limitation.
+**PlayerListModal:** Full-screen overlay with table name, GM, fill stats, and a scrollable player list. Closes on Escape key or backdrop click.
 
-3. **No independent per-report status:** There is no way to see which of the three was last generated independently.
+**Bulk CSV Export section (bottom of panel):**
+- Language selector: EN / TR.
+- Three buttons: Current Events, Previous Events, All Events — each calls `POST /api/admin/generate-report` with `{ type, language }`.
+- Per-button loading state (`generating` is `null` or the active type string); all buttons disable while one is running.
+- Success/error shown via toast.
 
-4. **`error` state is shared:** A single `error` string is used for all three report types. Generating one report clears errors from a previous attempt even if the user tries a different type.
+**State:**
+```js
+events: []          // array from GET /api/admin/reports
+loading: bool
+fetchError: string | null
+toast: { type, message } | null
+```
 
-5. **Backend dependency:** The panel itself has no logic bugs. Its behavior depends entirely on `/api/admin/generate-report` working correctly for each `type` value (`"current"`, `"previous"`, `"all"`). If the backend returns an error (e.g., no active/previous events), the `detail` field from the error JSON is shown.
+**API calls:**
+- `GET /api/admin/reports` — load finished events list (primary)
+- `GET /api/admin/events/{slug}/report` — download Excel report for one event
+- `POST /api/admin/reports/{slug}/anonymize` — anonymize event data; refreshes list on success
+- `POST /api/admin/generate-report` — bulk CSV download (via BulkCsvSection)
+
+### Known issues / limitations
+
+1. **Anonymize endpoint:** The panel calls `POST /api/admin/reports/{slug}/anonymize`. Verify this endpoint exists and is correctly implemented in the backend.
+
+2. **No known functional bugs** — the rewrite addressed all previous UX issues (shared loading state, shared error, no per-event tracking).
 
 ---
 
