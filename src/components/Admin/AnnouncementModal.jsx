@@ -241,6 +241,7 @@ const AnnouncementModal = ({ event, isOpen, onClose }) => {
           bgUrl={customBg}
           theme={theme}
           colorOverrides={colorOverrides}
+          cardOptions={cardOptions}
         />
       </div>
 
