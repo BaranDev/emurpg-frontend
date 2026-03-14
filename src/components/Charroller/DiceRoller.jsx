@@ -82,13 +82,22 @@ const DiceRoller = ({
   rollName = "Roll", 
   onRoll,
   criticalMin = 1,
-  criticalMax = 20
+  criticalMax = 20,
+  clearResultAfterMs = null,
+  showLabel = true,
+  diceSize = "md", // "md" (48px) | "lg" (56px)
 }) => {
   const [isRolling, setIsRolling] = useState(false);
   const [result, setResult] = useState(null);
   const [rollingDisplay, setRollingDisplay] = useState(null);
 
   const parsed = parseDice(notation);
+
+  useEffect(() => {
+    if (!result || !clearResultAfterMs) return;
+    const t = setTimeout(() => setResult(null), clearResultAfterMs);
+    return () => clearTimeout(t);
+  }, [result, clearResultAfterMs]);
 
   useEffect(() => {
     if (!isRolling) return;
@@ -166,7 +175,8 @@ const DiceRoller = ({
         onClick={handleRoll}
         disabled={isRolling}
         className={`
-          relative flex flex-col items-center gap-1.5 px-3 py-3 min-w-[100px]
+          relative flex flex-col items-center justify-center gap-1 px-2 py-2
+          w-[120px] min-w-[120px] max-w-[120px]
           border-2 border-double rounded
           transition-all duration-200
           ${isRolling ? "cursor-wait" : "hover:scale-[1.02] hover:brightness-110 cursor-pointer active:scale-[0.98]"}
@@ -190,17 +200,19 @@ const DiceRoller = ({
             : "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3)"
         }}
       >
-        {/* Roll name - D&D style label */}
-        <span className="font-cinzel text-[10px] text-amber-200/80 tracking-widest uppercase">
-          {rollName}
-        </span>
+        {/* Roll name - D&D style label (hidden when showLabel=false, e.g. in table rows) */}
+        {showLabel && (
+          <span className="font-cinzel text-[9px] text-amber-200/80 tracking-widest uppercase truncate w-full text-center max-w-full" title={rollName}>
+            {rollName}
+          </span>
+        )}
         
         {/* Dice face - carved/inset look, perspective wrapper for 3D roll */}
-        <div className="perspective-[120px] w-12 h-12" style={{ perspectiveOrigin: "center center" }}>
+        <div className={`perspective-[120px] ${diceSize === "lg" ? "w-14 h-14" : "w-12 h-12"}`} style={{ perspectiveOrigin: "center center" }}>
           <div
             className={`
               w-full h-full rounded-sm flex items-center justify-center
-              font-cinzel font-bold text-lg
+              font-cinzel font-bold ${diceSize === "lg" ? "text-xl" : "text-lg"}
               ${isRolling ? "dice-rolling" : result && !isRolling ? "dice-landed" : ""}
             `}
             style={{
@@ -259,7 +271,10 @@ DiceRoller.propTypes = {
   rollName: PropTypes.string,
   onRoll: PropTypes.func,
   criticalMin: PropTypes.number,
-  criticalMax: PropTypes.number
+  criticalMax: PropTypes.number,
+  clearResultAfterMs: PropTypes.number,
+  showLabel: PropTypes.bool,
+  diceSize: PropTypes.oneOf(["md", "lg"]),
 };
 
 export { parseDice, rollDice };

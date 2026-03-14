@@ -45,7 +45,16 @@ const CharrollerResults = ({
 }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [rollHistory, setRollHistory] = useState([]);
+  const [lastInlineRoll, setLastInlineRoll] = useState(null); // { source, key, result } - clears after timeout
   const [showHistory, setShowHistory] = useState(false);
+
+  const INLINE_ROLL_DURATION_MS = 5000;
+
+  useEffect(() => {
+    if (!lastInlineRoll) return;
+    const t = setTimeout(() => setLastInlineRoll(null), INLINE_ROLL_DURATION_MS);
+    return () => clearTimeout(t);
+  }, [lastInlineRoll]);
   const [showTrackers, setShowTrackers] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editDescription, setEditDescription] = useState("");
@@ -185,17 +194,16 @@ const CharrollerResults = ({
 
   const rollD20 = () => Math.floor(Math.random() * 20) + 1;
 
-  const handleRoll = (result, rollName) => {
-    setRollHistory((prev) =>
-      [
-        {
-          ...result,
-          rollName,
-          timestamp: new Date().toLocaleTimeString(),
-        },
-        ...prev,
-      ].slice(0, 20),
-    );
+  const handleRoll = (result, rollName, source = null) => {
+    const entry = {
+      ...result,
+      rollName,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+    setRollHistory((prev) => [entry, ...prev].slice(0, 20));
+    if (source) {
+      setLastInlineRoll({ source: source.type, key: source.key, result });
+    }
   };
 
   const updateTracker = (key, value) => {
@@ -244,6 +252,22 @@ const CharrollerResults = ({
   };
 
   // Group rolls by category
+  const abbreviateRollName = (name) => {
+    const abbr = {
+      Strength: "STR",
+      Dexterity: "DEX",
+      Constitution: "CON",
+      Intelligence: "INT",
+      Wisdom: "WIS",
+      Charisma: "CHA",
+    };
+    let result = name || "";
+    for (const [full, short] of Object.entries(abbr)) {
+      result = result.replace(new RegExp(`\\b${full}\\b`, "gi"), short);
+    }
+    return result;
+  };
+
   const groupedRolls = {};
   (characterData.roll_list || []).forEach((roll) => {
     const category = roll.category || "other";
@@ -759,16 +783,42 @@ const CharrollerResults = ({
                         if (!abilityRoll) return;
                         const d20 = rollD20();
                         const mod = parseInt(abMod);
-                        handleRoll(
-                          { rolls: [d20], total: d20 + mod, modifier: mod },
-                          abilityRoll.roll_name,
-                        );
+                        const critMin = characterData?.critical_min ?? 1;
+                        const critMax = characterData?.critical_max ?? 20;
+                        const result = {
+                          rolls: [d20],
+                          total: d20 + mod,
+                          modifier: mod,
+                          isCriticalSuccess: d20 === critMax,
+                          isCriticalFail: d20 === critMin,
+                        };
+                        handleRoll(result, abilityRoll.roll_name, {
+                          type: "ability",
+                          key: abilityRoll.roll_name,
+                        });
                       }}
                       className="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider flex flex-col items-center gap-1"
                     >
-                      <div className="w-6 h-6 border border-gray-600 rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-gray-300">
-                        {abMod}
-                      </div>
+                      {lastInlineRoll?.source === "ability" &&
+                      lastInlineRoll?.key === abilityRoll?.roll_name &&
+                      lastInlineRoll?.result ? (
+                        <div
+                          className={`w-6 h-6 border rounded flex items-center justify-center font-cinzel font-bold text-xs tabular-nums ${
+                            lastInlineRoll.result.isCriticalSuccess
+                              ? "text-amber-400 border-amber-500/50 bg-amber-950/40 shadow-[0_0_8px_rgba(234,179,8,0.25)]"
+                              : lastInlineRoll.result.isCriticalFail
+                              ? "text-red-400 border-red-500/50 bg-red-950/30 shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+                              : "text-amber-200 border-amber-300/40 bg-[#2a2218] shadow-[inset_0_0_0_1px_rgba(251,191,36,0.15)]"
+                          }`}
+                          title={`${lastInlineRoll.result.rolls?.join(" + ")}${lastInlineRoll.result.modifier !== 0 ? (lastInlineRoll.result.modifier > 0 ? " + " : " − ") + Math.abs(lastInlineRoll.result.modifier) : ""} = ${lastInlineRoll.result.total}`}
+                        >
+                          {lastInlineRoll.result.total}
+                        </div>
+                      ) : (
+                        <div className="w-6 h-6 border border-gray-600 rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-xs text-gray-300">
+                          {abMod}
+                        </div>
+                      )}
                       Ability
                     </button>
                     <button
@@ -777,16 +827,42 @@ const CharrollerResults = ({
                         if (!saveRoll) return;
                         const d20 = rollD20();
                         const mod = parseInt(svMod);
-                        handleRoll(
-                          { rolls: [d20], total: d20 + mod, modifier: mod },
-                          saveRoll.roll_name,
-                        );
+                        const critMin = characterData?.critical_min ?? 1;
+                        const critMax = characterData?.critical_max ?? 20;
+                        const result = {
+                          rolls: [d20],
+                          total: d20 + mod,
+                          modifier: mod,
+                          isCriticalSuccess: d20 === critMax,
+                          isCriticalFail: d20 === critMin,
+                        };
+                        handleRoll(result, saveRoll.roll_name, {
+                          type: "save",
+                          key: saveRoll.roll_name,
+                        });
                       }}
                       className="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider flex flex-col items-center gap-1"
                     >
-                      <div className="w-6 h-6 border dnd-border-accent rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-gray-300 ring-1 ring-red-900/50">
-                        {svMod}
-                      </div>
+                      {lastInlineRoll?.source === "save" &&
+                      lastInlineRoll?.key === saveRoll?.roll_name &&
+                      lastInlineRoll?.result ? (
+                        <div
+                          className={`w-6 h-6 border rounded flex items-center justify-center font-cinzel font-bold text-xs tabular-nums ring-1 ring-red-900/50 ${
+                            lastInlineRoll.result.isCriticalSuccess
+                              ? "text-amber-400 border-amber-500/50 bg-amber-950/40 shadow-[0_0_8px_rgba(234,179,8,0.25)]"
+                              : lastInlineRoll.result.isCriticalFail
+                              ? "text-red-400 border-red-500/50 bg-red-950/30 shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+                              : "text-amber-200 border-amber-300/40 bg-[#2a2218] shadow-[inset_0_0_0_1px_rgba(251,191,36,0.15)]"
+                          }`}
+                          title={`${lastInlineRoll.result.rolls?.join(" + ")}${lastInlineRoll.result.modifier !== 0 ? (lastInlineRoll.result.modifier > 0 ? " + " : " − ") + Math.abs(lastInlineRoll.result.modifier) : ""} = ${lastInlineRoll.result.total}`}
+                        >
+                          {lastInlineRoll.result.total}
+                        </div>
+                      ) : (
+                        <div className="w-6 h-6 border dnd-border-accent rounded bg-[#2a2a2a] flex items-center justify-center font-bold text-xs text-gray-300 ring-1 ring-red-900/50">
+                          {svMod}
+                        </div>
+                      )}
                       Save
                     </button>
                   </div>
@@ -797,10 +873,54 @@ const CharrollerResults = ({
         </div>
       </div>
 
+      {/* STICKY LAST ROLL BAR */}
+      {rollHistory.length > 0 && (
+        <div
+          className="sticky top-0 z-20 mb-4 -mx-1 px-4 py-2.5 rounded-lg border-2 border-double transition-all duration-300 animate-in fade-in slide-in-from-top-2"
+          style={{
+            background: "linear-gradient(180deg, rgba(61,40,23,0.98), rgba(42,26,15,0.98))",
+            borderColor: rollHistory[0]?.isCriticalSuccess
+              ? "rgba(234,179,8,0.6)"
+              : rollHistory[0]?.isCriticalFail
+              ? "rgba(220,38,38,0.5)"
+              : "rgba(139,69,19,0.5)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 12px rgba(0,0,0,0.4)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-4 min-w-0">
+            <span className="font-cinzel text-[10px] text-amber-200/70 tracking-widest uppercase flex-shrink-0">
+              Last roll
+            </span>
+            <div className="flex items-center gap-2 min-w-0 flex-1 justify-end">
+              <span className="text-sm font-bold text-gray-400 truncate" title={rollHistory[0]?.rollName}>
+                {rollHistory[0]?.rollName}
+              </span>
+              <span
+                className={`font-cinzel font-bold text-lg tabular-nums flex-shrink-0 ${
+                  rollHistory[0]?.isCriticalSuccess
+                    ? "text-amber-400 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
+                    : rollHistory[0]?.isCriticalFail
+                    ? "text-red-400"
+                    : "text-amber-100"
+                }`}
+              >
+                {rollHistory[0]?.total}
+              </span>
+              <span className="text-xs text-amber-200/50 font-cinzel flex-shrink-0">
+                ({rollHistory[0]?.rolls?.join(" + ") ?? "—"}
+                {rollHistory[0]?.modifier !== 0 && (
+                  <span>{rollHistory[0].modifier > 0 ? " + " : " − "}{Math.abs(rollHistory[0].modifier)}</span>
+                )})
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* MAIN 3-COLUMN LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         {/* LEFT COLUMN: Skills (3 cols) */}
-        <div className="md:col-span-3 dnd-panel rounded-xl p-4 h-fit">
+        <div className="md:col-span-3 dnd-panel rounded-xl p-4 h-fit min-w-0 overflow-x-hidden">
           <div className="flex justify-between items-center mb-4 border-b border-[#3a2f26] pb-2">
             <h3 className="font-cinzel text-sm text-[#e5e5e5] tracking-widest font-bold">
               SKILLS
@@ -817,46 +937,78 @@ const CharrollerResults = ({
           </div>
           <div className="space-y-[2px]">
             {(groupedRolls["skill"] || []).map((roll, i) => {
-              // Extract mod
               const match = roll.dice.match(/([+-]\d+)/);
               const mod = match ? match[1] : "+0";
-              const isProf = parseInt(mod) > 2; // rough approx for UI design
+              const isProf = parseInt(mod) > 2;
               const displayMod =
                 parseInt(mod) >= 0 ? `+${parseInt(mod)}` : `${parseInt(mod)}`;
+              const showInline =
+                lastInlineRoll?.source === "skill" &&
+                lastInlineRoll?.key === roll.roll_name &&
+                lastInlineRoll?.result;
+              const r = lastInlineRoll?.result;
 
               return (
                 <button
                   key={i}
                   onClick={() => {
                     const d20 = rollD20();
-                    handleRoll(
-                      {
-                        rolls: [d20],
-                        total: d20 + parseInt(mod),
-                        modifier: parseInt(mod),
-                      },
-                      roll.roll_name,
-                    );
+                    const critMin = characterData?.critical_min ?? 1;
+                    const critMax = characterData?.critical_max ?? 20;
+                    const result = {
+                      rolls: [d20],
+                      total: d20 + parseInt(mod),
+                      modifier: parseInt(mod),
+                      isCriticalSuccess: d20 === critMax,
+                      isCriticalFail: d20 === critMin,
+                    };
+                    handleRoll(result, roll.roll_name, { type: "skill", key: roll.roll_name });
                   }}
-                  className="w-full flex items-center justify-between py-1.5 px-2 hover:bg-white/5 rounded group text-left"
+                  className="w-full flex items-center justify-between gap-2 py-1.5 px-2 hover:bg-white/5 rounded group text-left min-w-0"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
                     <div
-                      className={`w-3 h-3 rounded-full border border-gray-500 ${isProf ? "bg-tavern-accent border-tavern-accent" : "bg-transparent"}`}
+                      className={`w-3 h-3 rounded-full border border-gray-500 flex-shrink-0 ${isProf ? "bg-tavern-accent border-tavern-accent" : "bg-transparent"}`}
                     />
-                    <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">
+                    <span
+                      className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors truncate"
+                      title={roll.roll_name}
+                    >
                       {roll.roll_name}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-600 font-bold uppercase w-6 text-right">
-                      {roll.roll_name.substring(0, 3)}
-                    </span>
-                    <span
-                      className={`text-sm font-bold w-6 text-center rounded bg-[#1a1511] border border-[#3a2f26] ${isProf ? "text-tavern-accent" : "text-gray-400"}`}
-                    >
-                      {displayMod}
-                    </span>
+                  <div className="flex items-center gap-2 flex-shrink-0 min-w-0 overflow-hidden">
+                    {showInline ? (
+                      <span
+                        className={`font-cinzel font-bold text-sm tabular-nums inline-flex items-baseline ${
+                          r?.isCriticalSuccess
+                            ? "text-amber-400"
+                            : r?.isCriticalFail
+                            ? "text-red-400"
+                            : "text-amber-200"
+                        }`}
+                        title={`${r?.rolls?.join(" + ")}${r?.modifier !== 0 ? (r.modifier > 0 ? " + " : " − ") + Math.abs(r.modifier) : ""} = ${r?.total}`}
+                      >
+                        {r?.total}
+                        <span className="text-[10px] text-amber-200/60 font-normal ml-0.5">
+                          ({r?.rolls?.join("+")}
+                          {r?.modifier !== 0 && (
+                            <span>{r.modifier > 0 ? "+" : "−"}{Math.abs(r.modifier)}</span>
+                          )})
+                        </span>
+                      </span>
+                    ) : (
+                      <>
+                        <span className="text-[10px] text-gray-600 font-bold uppercase w-6 text-right hidden sm:block">
+                          {roll.roll_name.substring(0, 3)}
+                        </span>
+                        <span
+                          className={`text-sm font-bold w-8 text-center rounded bg-[#1a1511] border border-[#3a2f26] ${isProf ? "text-tavern-accent" : "text-gray-400"}`}
+                        >
+                          {displayMod}
+                        </span>
+                      </>
+                    )}
                   </div>
                 </button>
               );
@@ -942,29 +1094,24 @@ const CharrollerResults = ({
                           <div className="bg-[#1a1511] border border-[#3a2f26] rounded-t px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider flex justify-between">
                             <span>{categoryLabels[cat]}</span>
                           </div>
-                          <div className="border border-t-0 border-[#3a2f26] rounded-b">
+                          <div className="border border-t-0 border-[#3a2f26] rounded-b p-2 flex flex-wrap justify-center gap-2">
                             {rolls.map((roll, idx) => (
                               <div
                                 key={idx}
-                                className="flex items-center justify-between p-2 border-b border-[#3a2f26] last:border-0 hover:bg-white/5 transition-colors"
+                                className="flex items-center justify-center"
                               >
-                                <span
-                                  className="text-sm font-bold text-gray-300 w-1/3 truncate"
-                                  title={roll.roll_name}
-                                >
-                                  {roll.roll_name}
-                                </span>
-                                <div className="flex-1 flex justify-center">
-                                  <DiceRoller
-                                    notation={roll.dice}
-                                    rollName={roll.roll_name}
-                                    onRoll={(result) =>
-                                      handleRoll(result, roll.roll_name)
-                                    }
-                                    criticalMin={characterData.critical_min}
-                                    criticalMax={characterData.critical_max}
-                                  />
-                                </div>
+                                <DiceRoller
+                                  notation={roll.dice}
+                                  rollName={abbreviateRollName(roll.roll_name)}
+                                  onRoll={(result) =>
+                                    handleRoll(result, roll.roll_name)
+                                  }
+                                  criticalMin={characterData.critical_min}
+                                  criticalMax={characterData.critical_max}
+                                  clearResultAfterMs={INLINE_ROLL_DURATION_MS}
+                                  showLabel={true}
+                                  diceSize="lg"
+                                />
                               </div>
                             ))}
                           </div>
