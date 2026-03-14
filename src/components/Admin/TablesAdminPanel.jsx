@@ -13,7 +13,6 @@ import {
   XCircle,
   AlertCircle,
   UserPlus,
-  Image,
   ClipboardList,
   MessageCircle,
   Copy,
@@ -77,7 +76,6 @@ const TablesAdminPanel = () => {
 
   const [selectedGameId, setSelectedGameId] = useState("");
   const [isCustomGame, setIsCustomGame] = useState(false);
-  const [isGeneratingLayout, setIsGeneratingLayout] = useState(false);
 
   const [hostRequests, setHostRequests] = useState({});
   const [isApplicationsModalOpen, setIsApplicationsModalOpen] = useState(false);
@@ -557,74 +555,6 @@ const TablesAdminPanel = () => {
     return "pending";
   };
 
-  const handleGenerateTableLayout = async (event) => {
-    if (!event.tableDetails?.length) {
-      alert("No tables in this event");
-      return;
-    }
-
-    setIsGeneratingLayout(true);
-    try {
-      const csvRows = [
-        [
-          "isim",
-          "yonetici_mi",
-          "birlikte_oynadigi_yonetici",
-          "oynattigi_oyun",
-          "player_quota",
-        ],
-      ];
-
-      event.tableDetails.forEach((table) => {
-        csvRows.push([
-          table.game_master,
-          "1",
-          "",
-          table.game_name,
-          table.player_quota,
-        ]);
-        (table.joined_players || []).forEach((player) => {
-          csvRows.push([player.name, "0", table.game_master, "", ""]);
-        });
-      });
-
-      const csvContent = csvRows
-        .map((row) =>
-          row
-            .map((cell) => `"${(cell || "").toString().replace(/"/g, '""')}"`)
-            .join(","),
-        )
-        .join("\n");
-      const csvFile = new File([csvContent], "tables.csv", {
-        type: "text/csv",
-      });
-      const formData = new FormData();
-      formData.append("file", csvFile);
-
-      const response = await fetch(`${backendUrl}/api/admin/generate-tables`, {
-        method: "POST",
-        headers: { apiKey },
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Failed to generate layout");
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${event.name}_table_layout.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error generating layout:", error);
-      alert("Failed to generate table layout");
-    } finally {
-      setIsGeneratingLayout(false);
-    }
-  };
 
   const handleHostRequestAction = async (eventSlug, studentId, action) => {
     try {
@@ -920,15 +850,6 @@ const TablesAdminPanel = () => {
                   </span>
                 )}
               </button>
-              <AdminButton
-                onClick={() => handleGenerateTableLayout(event)}
-                variant="secondary"
-                size="sm"
-                icon={Image}
-                disabled={isGeneratingLayout || !event.tableDetails?.length}
-              >
-                {isGeneratingLayout ? "Generating..." : "Table Layout"}
-              </AdminButton>
             </div>
           </div>
 
