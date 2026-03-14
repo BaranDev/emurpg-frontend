@@ -80,11 +80,37 @@ export const setLoginData = (data, expirationMinutes = 30) => {
 };
 
 /**
+ * Get the EMUCON manager session token from localStorage
+ * @returns {string|null}
+ */
+export const getManagerToken = () => {
+  return localStorage.getItem("managerToken") || null;
+};
+
+/**
+ * Store the EMUCON manager session token in localStorage
+ * @param {string} token
+ */
+export const setManagerToken = (token) => {
+  if (token) {
+    localStorage.setItem("managerToken", token);
+  }
+};
+
+/**
+ * Remove the EMUCON manager session token from localStorage
+ */
+export const clearManagerToken = () => {
+  localStorage.removeItem("managerToken");
+};
+
+/**
  * Clear all session data from localStorage
  */
 export const clearSession = () => {
   localStorage.removeItem("login");
   localStorage.removeItem("apiKey");
+  clearManagerToken();
 };
 
 /**

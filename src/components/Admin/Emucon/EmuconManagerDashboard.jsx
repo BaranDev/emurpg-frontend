@@ -17,6 +17,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { config } from "../../../config";
+import { getManagerToken } from "../../../utils/auth";
 import AdminModal from "../shared/AdminModal";
 import AdminButton from "../shared/AdminButton";
 import LoadingSpinner from "../shared/LoadingSpinner";
@@ -60,6 +61,10 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
 
   const backendUrl = config.backendUrl;
   const loginData = JSON.parse(localStorage.getItem("login") || "{}");
+  const managerHeaders = {
+    "Content-Type": "application/json",
+    "X-Manager-Token": getManagerToken() || "",
+  };
 
   // Fetch club's events
   const fetchEvents = useCallback(async () => {
@@ -68,9 +73,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
       const response = await fetch(
         `${backendUrl}/api/emucon/manager/events/${clubId}`,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: managerHeaders,
         }
       );
       if (response.ok) {
@@ -99,7 +102,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
       const response = await fetch(
         `${backendUrl}/api/emucon/manager/available-periods/${clubId}`,
         {
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
         }
       );
       if (response.ok) {
@@ -153,7 +156,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
         `${backendUrl}/api/emucon/manager/event/${selectedEvent.id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
           body: JSON.stringify({
             activityEn: editForm.eventName,
             activity: editForm.eventNameTr,
@@ -191,7 +194,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
         `${backendUrl}/api/emucon/manager/reschedule/${selectedEvent.id}`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
           body: JSON.stringify({
             newPeriodId: selectedSlot.id,
           }),
@@ -246,7 +249,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
         `${backendUrl}/api/emucon/manager/add-participant`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
           body: JSON.stringify({
             eventId: selectedEvent.id,
             name: normalizeName(newParticipant.name),
@@ -276,7 +279,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
         `${backendUrl}/api/emucon/manager/remove-participant/${selectedEvent.id}/${participantId}`,
         {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
         }
       );
 
@@ -296,7 +299,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
         `${backendUrl}/api/emucon/manager/registration-link/${event.id}`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
         }
       );
 
@@ -324,7 +327,7 @@ const EmuconManagerDashboard = ({ clubId, clubName, onLogout }) => {
         `${backendUrl}/api/emucon/manager/event/${eventId}/status`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: managerHeaders,
           body: JSON.stringify({ status: newStatus }),
         }
       );

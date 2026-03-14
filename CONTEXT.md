@@ -156,12 +156,13 @@ A castle silhouette SVG with animated torch flames is rendered as a fixed decora
 **File:** `src/components/Admin/AdminLogin.jsx`
 
 Two login modes:
-1. **Credentials (Sign In):** Username + password (SHA-256 hashed before sending) → `POST /api/admin/login`. If `adminType === "emurpg"`, a second step opens a modal requiring an API key validated via `POST /api/admin/validate-key`. If `adminType === "emucon_manager"`, login completes directly.
+1. **Credentials (Sign In):** Username + password (SHA-256 hashed before sending) → `POST /api/admin/login`. If `adminType === "emurpg"`, a second step opens a modal requiring an API key validated via `POST /api/admin/validate-key`. If `adminType === "emucon_manager"`, login completes directly and `sessionToken` from the response is stored in `localStorage.managerToken`.
 2. **Invite Code:** Enter code → `POST /api/admin/verify-invite` → if valid, show Set Password form → `POST /api/admin/activate-invite`.
 
 Session data stored in `localStorage`:
 - `login` key: `{ username, adminType, clubId, clubName, expirationTime (30 min) }`
-- `apiKey` key: raw API key string
+- `apiKey` key: raw API key string (EMURPG admins only — entered manually in 2FA modal)
+- `managerToken` key: EMUCON manager session token (issued by backend on login/activation, sent as `X-Manager-Token` header on all `/api/emucon/manager/*` calls)
 
 Two admin types routed differently in `AdminPage`:
 - `emurpg` → `AdminMain` (full admin panel)
@@ -815,7 +816,10 @@ Low-level context hook; `useWebSocket` is the public API.
 | `clearApiKey()` | Removes `localStorage.apiKey` |
 | `getLoginData()` | Reads and validates `localStorage.login`; clears expired session, returns `null` |
 | `setLoginData(data, expirationMinutes=30)` | Writes login object with expiration timestamp |
-| `clearSession()` | Removes both `login` and `apiKey` from localStorage |
+| `getManagerToken()` | Reads `localStorage.managerToken`; returns raw session token or `null` |
+| `setManagerToken(token)` | Writes to `localStorage.managerToken` |
+| `clearManagerToken()` | Removes `localStorage.managerToken` |
+| `clearSession()` | Removes `login`, `apiKey`, and `managerToken` from localStorage |
 | `isLoggedIn()` | `getLoginData() !== null` |
 | `getAdminType()` | Returns `loginData.adminType` or `null` |
 | `getAuthHeaders(includeContentType=true)` | Returns `{ "Content-Type": "application/json", apiKey }` |

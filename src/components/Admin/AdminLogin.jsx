@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { sha256 } from "js-sha256";
 import { config } from "../../config";
-import { setApiKey, setLoginData } from "../../utils/auth";
+import { setApiKey, setLoginData, setManagerToken } from "../../utils/auth";
 import {
   Shield,
   Key,
@@ -82,6 +82,9 @@ const AdminLogin = ({ onLogin, onEmuconManagerLogin }) => {
 
           if (result.apiKey) {
             setApiKey(result.apiKey);
+          }
+          if (result.sessionToken) {
+            setManagerToken(result.sessionToken);
           }
 
           onEmuconManagerLogin?.(result);
@@ -171,6 +174,10 @@ const AdminLogin = ({ onLogin, onEmuconManagerLogin }) => {
             clubId: result.clubId,
           })
         );
+
+        if (result.sessionToken) {
+          setManagerToken(result.sessionToken);
+        }
 
         onEmuconManagerLogin?.(result);
       } else {
