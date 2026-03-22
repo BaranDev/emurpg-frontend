@@ -98,10 +98,9 @@ describe("Initiative button", () => {
     const user = userEvent.setup();
     renderCharroller();
     await user.click(screen.getByRole("button", { name: /initiative/i }));
-    // Roll history toggle should expose the entry
-    const historyBtn = screen.getByTestId("roll-history-toggle");
-    await user.click(historyBtn);
-    expect(screen.getByText(/initiative/i)).toBeInTheDocument();
+    // Initiative click opens history; find it async since it may animate in
+    const history = await screen.findByTestId("roll-history");
+    expect(within(history).getByText(/initiative/i)).toBeInTheDocument();
   });
 });
 
