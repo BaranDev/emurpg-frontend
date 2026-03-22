@@ -20,7 +20,7 @@ const STATUS_CONFIG = {
   },
   offline: {
     dotClass: "bg-red-500",
-    label: "Server Offline(don't refresh)",
+    label: "Server Offline",
     labelClass: "text-red-400",
   },
 };
