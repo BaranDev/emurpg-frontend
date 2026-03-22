@@ -2,7 +2,7 @@
 
 # EMURPG Frontend
 
-**Event management platform for the Eastern Mediterranean University RPG Club**
+**Event management platform for the EMURPG Club**
 
 [![GitHub License](https://img.shields.io/github/license/barandev/emurpg-frontend?style=for-the-badge)](LICENSE)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/barandev/emurpg-frontend?style=for-the-badge)](https://github.com/BaranDev/emurpg-frontend/releases)
