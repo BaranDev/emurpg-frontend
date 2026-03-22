@@ -24,6 +24,7 @@ import {
   HomePageEventList,
 } from "../components";
 import ParallaxBackground from "../components/shared/ParallaxBackground";
+import GameMasterSkeleton from "../components/tables/GameMasterSkeleton";
 import emurpgLogo from "../assets/logo/LOGO_WHITE.png";
 import { config } from "../config";
 
@@ -154,7 +155,7 @@ const HomePage = ({ onLanguageSwitch }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="min-h-screen bg-gray-900 relative"
+        className="min-h-screen bg-gray-900 relative overflow-x-hidden"
       >
         {/* Parallax Background */}
         <ParallaxBackground />
@@ -345,16 +346,20 @@ const HomePage = ({ onLanguageSwitch }) => {
             <div className="container mx-auto px-4">
               <SectionTitle icon={FaUser}>{t("homepage.meet_gm")}</SectionTitle>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {teamMembers.map((member) => (
-                  <GameMasterCard
-                    key={member._id}
-                    name={member.name}
-                    title={member.title}
-                    description={member.description || ""}
-                    image={member.photo_url}
-                    socials={member.socials}
-                  />
-                ))}
+                {teamMembers.length === 0 ? (
+                  <GameMasterSkeleton />
+                ) : (
+                  teamMembers.map((member) => (
+                    <GameMasterCard
+                      key={member._id}
+                      name={member.name}
+                      title={member.title}
+                      description={member.description || ""}
+                      image={member.photo_url}
+                      socials={member.socials}
+                    />
+                  ))
+                )}
               </div>
             </div>
           </section>
