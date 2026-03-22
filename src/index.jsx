@@ -7,7 +7,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <div
       id="app-wrapper"
-      className="bg-gray-900 bg-medieval-pattern min-h-screen"
+      className="bg-gray-900 bg-medieval-pattern min-h-screen overflow-x-hidden"
     >
       <App />
     </div>
