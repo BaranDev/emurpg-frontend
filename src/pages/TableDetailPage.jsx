@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 import RegistrationForm from "../components/events/RegistrationForm";
 import { config } from "../config";
 import { useWebSocket } from "../hooks/useWebSocket";
@@ -52,16 +53,27 @@ const TableDetailPage = () => {
       className="min-h-screen text-gray-100 relative select-none"
       style={{ background: NEBULA_BG }}
     >
-      {/* Back button */}
-      <button
-        className="fixed top-24 left-4 z-50 flex items-center gap-1.5 text-rose-300 hover:text-rose-200 transition-colors text-sm font-cinzel"
-        onClick={() => (window.location.href = "/events")}
-        aria-label="Back to events"
+      {/* Top nav bar */}
+      <nav
+        className="sticky top-0 z-50 backdrop-blur-md border-b"
+        style={{
+          background: "rgba(10, 12, 22, 0.85)",
+          borderColor: "rgba(201,162,39,0.15)",
+        }}
       >
-        ← Events
-      </button>
+        <div className="container mx-auto max-w-2xl px-4 h-12 flex items-center">
+          <button
+            className="flex items-center gap-2 text-amber-200/80 hover:text-amber-100 transition-colors text-sm font-cinzel group"
+            onClick={() => (window.location.href = "/events")}
+            aria-label="Back to events"
+          >
+            <FaArrowLeft className="text-xs group-hover:-translate-x-0.5 transition-transform" />
+            <span>Events</span>
+          </button>
+        </div>
+      </nav>
 
-      <div className="container mx-auto px-4 py-14 max-w-2xl">
+      <div className="container mx-auto px-4 py-10 max-w-2xl">
         {/* Page header */}
         <div className="text-center mb-8">
           <div className="text-3xl mb-3 select-none text-amber-200/30" aria-hidden="true">

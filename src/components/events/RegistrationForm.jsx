@@ -12,6 +12,7 @@ import {
   FaShieldAlt,
   FaPlayCircle,
   FaExclamationTriangle,
+  FaChevronDown,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -140,6 +141,7 @@ const RegistrationForm = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ruleLanguage, setRuleLanguage] = useState("EN");
   const [showGameDetails, setShowGameDetails] = useState(true);
+  const [showTutorialVideo, setShowTutorialVideo] = useState(false);
   const backendUrl = config.backendUrl;
 
   const rules = {
@@ -308,23 +310,51 @@ const RegistrationForm = ({
                     </div>
                   )}
 
-                  {/* Video link */}
+                  {/* Tutorial video */}
                   {gameInfo.guide_video_url && (
-                    <a
-                      href={gameInfo.guide_video_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2.5 rounded-lg p-3 transition-all duration-200 group"
+                    <div
+                      className="rounded-lg overflow-hidden"
                       style={{
-                        background: "rgba(127,29,29,0.25)",
                         border: "1px solid rgba(248,113,113,0.22)",
                       }}
                     >
-                      <FaPlayCircle className="text-red-400 text-lg group-hover:scale-110 transition-transform" />
-                      <span className="text-red-300 font-cinzel text-xs tracking-wide">
-                        {t("registration.watch_tutorial")}
-                      </span>
-                    </a>
+                      <button
+                        type="button"
+                        onClick={() => setShowTutorialVideo((v) => !v)}
+                        className="flex items-center gap-2.5 px-3 py-2.5 w-full transition-all duration-200 group cursor-pointer"
+                        style={{ background: "rgba(127,29,29,0.25)" }}
+                      >
+                        <FaPlayCircle className="text-red-400 text-sm group-hover:scale-110 transition-transform" />
+                        <span className="text-red-300 font-cinzel text-xs tracking-wide flex-1 text-left">
+                          {t("registration.watch_tutorial")}
+                        </span>
+                        <FaChevronDown
+                          className="text-red-400/60 text-xs transition-transform duration-300"
+                          style={{ transform: showTutorialVideo ? "rotate(180deg)" : "rotate(0deg)" }}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {showTutorialVideo && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                              <iframe
+                                src={gameInfo.guide_video_url}
+                                title={t("registration.watch_tutorial")}
+                                className="absolute inset-0 w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   )}
 
                   {/* Important notice */}
