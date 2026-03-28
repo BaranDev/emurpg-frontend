@@ -53,25 +53,22 @@ const TableDetailPage = () => {
       className="min-h-screen text-gray-100 relative select-none"
       style={{ background: NEBULA_BG }}
     >
-      {/* Top nav bar */}
-      <nav
-        className="sticky top-0 z-50 backdrop-blur-md border-b"
-        style={{
-          background: "rgba(10, 12, 22, 0.85)",
-          borderColor: "rgba(201,162,39,0.15)",
-        }}
-      >
-        <div className="container mx-auto max-w-2xl px-4 h-12 flex items-center">
-          <button
-            className="flex items-center gap-2 text-amber-200/80 hover:text-amber-100 transition-colors text-sm font-cinzel group"
-            onClick={() => (window.location.href = "/events")}
-            aria-label="Back to events"
-          >
-            <FaArrowLeft className="text-xs group-hover:-translate-x-0.5 transition-transform" />
-            <span>Events</span>
-          </button>
-        </div>
-      </nav>
+      {/* Floating back button */}
+      <div className="fixed top-4 left-4 z-50">
+        <button
+          className="flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-lg text-amber-200/90 hover:text-amber-100 transition-all duration-200 text-sm font-cinzel group hover:scale-105"
+          style={{
+            background: "rgba(10, 12, 22, 0.75)",
+            border: "1px solid rgba(201,162,39,0.2)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+          }}
+          onClick={() => (window.location.href = "/events")}
+          aria-label="Back to events"
+        >
+          <FaArrowLeft className="text-xs group-hover:-translate-x-0.5 transition-transform" />
+          <span>Events</span>
+        </button>
+      </div>
 
       <div className="container mx-auto px-4 py-10 max-w-2xl">
         {/* Page header */}
